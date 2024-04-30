@@ -1,0 +1,191 @@
+name: l_breez
+description: "Flutter app showcasing Breez Liquid SDK."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  another_flushbar: ^1.12.30
+  app_group_directory: ^2.0.0
+  archive: ^3.6.0
+  auto_size_text: ^3.0.0
+  bip39: ^1.0.6
+  breez_sdk:
+    path: ../breez-sdk/libs/sdk-flutter
+  breez_liquid:
+    path: ../breez-liquid-sdk/packages/dart
+  flutter_breez_liquid:
+    path: ../breez-liquid-sdk/packages/flutter
+  flutter_rust_bridge: ">= 2.0.0-dev.0 <=2.0.0-dev.36"
+  breez_translations:
+    git:
+      url: https://github.com/breez/Breez-Translations
+      ref: 106e187b7290b4bb0ffe5d2e20e4110c893aaf63
+  clipboard_watcher: ^0.2.1
+  csv: ^6.0.0
+  connectivity_plus: ^6.0.3
+  device_info_plus: ^10.1.0
+  drag_and_drop_lists:
+    git:
+      url: https://github.com/breez/DragAndDropLists
+      ref: 38cc3155a6161730b4ec476d781873afb7ec4846
+  duration: ^3.0.13
+  email_validator: ^2.1.17
+  extended_image: ^8.2.0
+  ffi: ^2.1.2
+  firebase_core: ^2.32.0
+  firebase_dynamic_links: ^5.5.7
+  firebase_messaging: ^14.9.4
+  flutter_bloc: ^8.1.5
+  flutter_fgbg:
+    git:
+      url: https://github.com/breez/flutter_fgbg.git
+      ref: 976b28ff3c299836f215b6deb2003838c49a8001
+  flutter_inappwebview: ^6.0.0
+  flutter_secure_storage: ^9.2.2
+  flutter_svg: ^2.0.10+1
+  flutter_typeahead:
+    git:
+      url: https://github.com/breez/flutter_typeahead.git
+      ref: 4a494322762af9f30820f3c63aba784d46b86b69
+  git_info: ^1.1.2
+  hex: ^0.2.0
+  http: ^1.2.1
+  hydrated_bloc: ^9.1.5
+  image: ^4.2.0
+  # Doesn't support: Linux Mac Windows
+  image_cropper: <6.0.0 # flutter_secure_storage 9.2.2 depends on flutter_secure_storage_web ^1.2.1 and no versions of flutter_secure_storage match >9.2.2 <10.0.0, image_cropper >=6.0.0
+  # Doesn't support: Linux Mac Windows
+  image_picker: ^1.1.1
+  ini: ^2.1.0
+  intl: ^0.19.0
+  # Doesn't support: Linux Mac
+  local_auth: ^2.2.0
+  local_auth_android: ^1.0.39
+  local_auth_darwin: ^1.3.1
+  logging: ^1.2.0
+  mockito: ^5.4.4
+  # Doesn't support: Linux Windows
+  mobile_scanner: ^5.1.1
+  package_info_plus: ^8.0.0
+  path: ^1.9.0
+  path_provider: ^2.1.3
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
+  qr_flutter: ^4.1.0
+  rxdart: ^0.27.7
+  share_plus: ^9.0.0
+  shared_preferences: ^2.2.3
+  shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
+  simple_animations: ^5.0.2
+  sqflite_common_ffi: ^2.3.3
+  sqlite3_flutter_libs: ^0.5.22
+  synchronized: ^3.1.0+1
+  theme_provider: ^0.6.0
+  timeago: ^3.6.1
+  # Doesn't support: Linux Mac Windows
+  uni_links: ^0.5.1
+  url_launcher: ^6.2.6
+  vector_math: ^2.1.4
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.4.10
+  flutter_lints: ^4.0.0
+  test: ^1.25.5
+
+dependency_overrides:
+  test_api: <0.7.1 # test_api >=0.7.1 is incompatible with flutter_test from the flutter SDK
+  intl: ^0.19.0 # intl is pinned to version 0.18.1 by flutter_localizations from the flutter SDK.
+  # Comment-out to work with breez-sdk from git repository
+  breez_sdk:
+    path: ../breez-sdk/libs/sdk-flutter
+  breez_liquid:
+    path: ../breez-liquid-sdk/packages/dart
+  flutter_breez_liquid:
+    path: ../breez-liquid-sdk/packages/flutter
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - src/json/
+    - src/images/
+    - src/icon/
+    - src/icon/animals/
+    - src/icon/vendors/
+    - src/animations/welcome/
+    - assets/images/
+    - assets/icons/
+    - .git/
+    - .git/refs/heads/
+  fonts:
+    - family: IBMPlexSans
+      fonts:
+        - asset: fonts/IBMPlexSans-Thin.otf
+          weight: 100
+        - asset: fonts/IBMPlexSans-ThinItalic.otf
+          weight: 100
+          style: italic
+        - asset: fonts/IBMPlexSans-ExtraLight.otf
+          weight: 200
+        - asset: fonts/IBMPlexSans-ExtraLightItalic.otf
+          weight: 200
+          style: italic
+        - asset: fonts/IBMPlexSans-Light.otf
+          weight: 300
+        - asset: fonts/IBMPlexSans-LightItalic.otf
+          weight: 300
+          style: italic
+        - asset: fonts/IBMPlexSans-Regular.otf
+          weight: 400
+        - asset: fonts/IBMPlexSans-Italic.otf
+          weight: 400
+          style: italic
+        - asset: fonts/IBMPlexSans-Medium.otf
+          weight: 500
+        - asset: fonts/IBMPlexSans-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: fonts/IBMPlexSans-SemiBold.otf
+          weight: 600
+        - asset: fonts/IBMPlexSans-SemiBoldItalic.otf
+          weight: 600
+          style: italic
+        - asset: fonts/IBMPlexSans-Bold.otf
+          weight: 700
+        - asset: fonts/IBMPlexSans-BoldItalic.otf
+          weight: 700
+          style: italic
+    - family: icomoon
+      fonts:
+        - asset: fonts/icomoon.ttf
+    - family: animals
+      fonts:
+        - asset: fonts/animals.ttf
+    - family: Breez Logo
+      fonts:
+        - asset: fonts/breezlogo.ttf
+    - family: ComfortaaBold
+      fonts:
+        - asset: fonts/Comfortaa-Bold.ttf
+    - family: IBMPlexSansRegular
+      fonts:
+        - asset: fonts/IBMPlexSans-Regular.ttf
+    - family: HacenTunisia
+      fonts:
+        - asset: fonts/Hacen-Tunisia.ttf
+    - family: SAT
+      fonts:
+        - asset: fonts/sat.otf

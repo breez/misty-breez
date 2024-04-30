@@ -1,0 +1,4 @@
+analyzer:
+  errors:
+    constant_identifier_names: ignore
+include: package:flutter_lints/flutter.yaml
