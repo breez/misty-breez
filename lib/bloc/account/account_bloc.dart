@@ -189,7 +189,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Future<liquid_sdk.PrepareReceiveResponse> prepareReceivePayment(int payerAmountSat) async {
     _log.info("prepareReceivePayment: $payerAmountSat");
     try {
-      final req = liquid_sdk.PrepareReceiveRequest(payerAmountSat: payerAmountSat);
+      final req = liquid_sdk.PrepareReceiveRequest(payerAmountSat: BigInt.from(payerAmountSat));
       return await ServiceInjector().liquidSDK!.prepareReceivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);

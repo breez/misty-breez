@@ -76,7 +76,17 @@ class InputBloc extends Cubit<InputState> {
          */
         final req = PrepareSendRequest(invoice: input.data);
         final resp = await ServiceInjector().liquidSDK!.prepareSendPayment(req: req);
-        return InputState.invoice(Invoice(bolt11: resp.invoice, lspFee: resp.feesSat, paymentHash: "", amountMsat: BigInt.zero, expiry: BigInt.zero), input.source);
+        // TODO: Liquid/FRB - Address BigInt & Int changes
+        return InputState.invoice(
+          Invoice(
+            bolt11: resp.invoice,
+            lspFee: resp.feesSat.toInt(),
+            paymentHash: "",
+            amountMsat: BigInt.zero,
+            expiry: BigInt.zero,
+          ),
+          input.source,
+        );
       } catch (e) {
         _log.severe("Failed to parse input", e);
         return const InputState.empty();

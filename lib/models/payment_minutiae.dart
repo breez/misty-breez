@@ -36,8 +36,8 @@ class PaymentMinutiae {
       swapId: payment.swapId ?? "",
       paymentType: payment.paymentType,
       paymentTime: factory._paymentTime(),
-      feeSat: payment.feesSat ?? 0,
-      amountSat: payment.amountSat,
+      feeSat: payment.feesSat?.toInt() ?? 0,
+      amountSat: payment.amountSat.toInt(),
       status: payment.status,
     );
   }

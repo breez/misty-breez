@@ -22,9 +22,9 @@ AccountState? assembleAccountState(
   return state.copyWith(
     id: nodeState.pubkey,
     initial: false,
-    balance: nodeState.balanceSat,
-    pendingReceive: nodeState.pendingReceiveSat,
-    pendingSend: nodeState.pendingSendSat,
+    balance: nodeState.balanceSat.toInt(),
+    pendingReceive: nodeState.pendingReceiveSat.toInt(),
+    pendingSend: nodeState.pendingSendSat.toInt(),
     maxPaymentAmount: maxPaymentAmount,
     onChainFeeRate: 0,
     payments: payments?.map((e) => PaymentMinutiae.fromPayment(e, texts)).toList(),
