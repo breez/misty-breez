@@ -67,10 +67,10 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
 
   Stream<List<liquid_sdk.Payment>?> paymentsStream() async* {
     final liquidSDK = ServiceInjector().liquidSDK;
-    yield await liquidSDK?.listPayments();
+    yield liquidSDK?.listPayments();
     while (true) {
       await Future.delayed(const Duration(seconds: 10));
-      yield await liquidSDK?.listPayments();
+      yield liquidSDK?.listPayments();
     }
   }
 
@@ -190,7 +190,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     _log.info("prepareReceivePayment: $payerAmountSat");
     try {
       final req = liquid_sdk.PrepareReceiveRequest(payerAmountSat: BigInt.from(payerAmountSat));
-      return await ServiceInjector().liquidSDK!.prepareReceivePayment(req: req);
+      return ServiceInjector().liquidSDK!.prepareReceivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);
@@ -200,7 +200,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Future<liquid_sdk.ReceivePaymentResponse> receivePayment(liquid_sdk.PrepareReceiveResponse req) async {
     _log.info("receivePayment: ${req.payerAmountSat}, fees: ${req.feesSat}");
     try {
-      return await ServiceInjector().liquidSDK!.receivePayment(req: req);
+      return ServiceInjector().liquidSDK!.receivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);
