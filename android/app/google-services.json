@@ -1,0 +1,267 @@
+{
+  "project_info": {
+    "project_number": "463327817067",
+    "firebase_url": "https://breez-technology.firebaseio.com",
+    "project_id": "breez-technology",
+    "storage_bucket": "breez-technology.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463327817067:android:90ddc9c877b6277f",
+        "android_client_info": {
+          "package_name": "com.breez.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463327817067-45ma4sens6b4aku5sogmvq2jbtarolf2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.breez.client",
+            "certificate_hash": "31f528a2fcc122d2c5c16f216af1e45e0f33e6f5"
+          }
+        },
+        {
+          "client_id": "463327817067-o2oipdggl2itlgud0j7na0nrieanpedd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.breez.client",
+            "certificate_hash": "04b8cac4bcd38d6cf4ccb9b7ea47ac84d86da3f7"
+          }
+        },
+        {
+          "client_id": "463327817067-3508ng7nsbmp3kv3v19nljdu8o5a8cku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJWsGJcsK2U9BcYahortPZ7epzKmDcU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101382430098653387527",
+              "client_type": 3
+            },
+            {
+              "client_id": "463327817067-abe9qr1ls86ua9n6jvgs5eofcjadfsoq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cBreez.client"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463327817067:android:862f4c426d32c979b2b02e",
+        "android_client_info": {
+          "package_name": "com.breez.client.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463327817067-tv5kdk4aokf1ojp428j02o6a1h4bvl9h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.breez.client.debug",
+            "certificate_hash": "c5b762ce60c4377a280d30fc9da2777858998f77"
+          }
+        },
+        {
+          "client_id": "463327817067-3508ng7nsbmp3kv3v19nljdu8o5a8cku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJWsGJcsK2U9BcYahortPZ7epzKmDcU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101382430098653387527",
+              "client_type": 3
+            },
+            {
+              "client_id": "463327817067-abe9qr1ls86ua9n6jvgs5eofcjadfsoq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cBreez.client"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463327817067:android:8e1161e70c670a58",
+        "android_client_info": {
+          "package_name": "com.breez.client.pos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463327817067-18vj3qv2bqh0k2ql9b55fbpkih59ld84.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.breez.client.pos",
+            "certificate_hash": "31f528a2fcc122d2c5c16f216af1e45e0f33e6f5"
+          }
+        },
+        {
+          "client_id": "463327817067-oq0015kagbvqteadvff7dai212i5p4ru.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.breez.client.pos",
+            "certificate_hash": "04b8cac4bcd38d6cf4ccb9b7ea47ac84d86da3f7"
+          }
+        },
+        {
+          "client_id": "463327817067-3508ng7nsbmp3kv3v19nljdu8o5a8cku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJWsGJcsK2U9BcYahortPZ7epzKmDcU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101382430098653387527",
+              "client_type": 3
+            },
+            {
+              "client_id": "463327817067-abe9qr1ls86ua9n6jvgs5eofcjadfsoq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cBreez.client"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463327817067:android:d165d33fb339175ab2b02e",
+        "android_client_info": {
+          "package_name": "com.breez.liquid.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463327817067-3508ng7nsbmp3kv3v19nljdu8o5a8cku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJWsGJcsK2U9BcYahortPZ7epzKmDcU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101382430098653387527",
+              "client_type": 3
+            },
+            {
+              "client_id": "463327817067-abe9qr1ls86ua9n6jvgs5eofcjadfsoq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cBreez.client"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463327817067:android:73e1216321b4fc03b2b02e",
+        "android_client_info": {
+          "package_name": "com.cBreez.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463327817067-3508ng7nsbmp3kv3v19nljdu8o5a8cku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJWsGJcsK2U9BcYahortPZ7epzKmDcU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101382430098653387527",
+              "client_type": 3
+            },
+            {
+              "client_id": "463327817067-abe9qr1ls86ua9n6jvgs5eofcjadfsoq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cBreez.client"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463327817067:android:94fa2a15c7d889aab2b02e",
+        "android_client_info": {
+          "package_name": "com.cBreez.client.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463327817067-3508ng7nsbmp3kv3v19nljdu8o5a8cku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJWsGJcsK2U9BcYahortPZ7epzKmDcU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101382430098653387527",
+              "client_type": 3
+            },
+            {
+              "client_id": "463327817067-abe9qr1ls86ua9n6jvgs5eofcjadfsoq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cBreez.client"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
