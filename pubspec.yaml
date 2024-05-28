@@ -24,7 +24,7 @@ dependencies:
     path: ../breez-liquid-sdk/packages/dart
   flutter_breez_liquid:
     path: ../breez-liquid-sdk/packages/flutter
-  flutter_rust_bridge: ">= 2.0.0-dev.0 <=2.0.0-dev.35"
+  flutter_rust_bridge: ">= 2.0.0-dev.0 <=2.0.0-dev.36"
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations
