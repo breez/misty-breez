@@ -1,13 +1,9 @@
 import 'package:breez_translations/generated/breez_translations.dart';
-import 'package:l_breez/bloc/currency/currency_bloc.dart';
-import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:l_breez/models/currency.dart';
+import 'package:l_breez/utils/fiat_conversion.dart';
 
-import 'currency_converter_dialog.dart';
 import 'sat_amount_form_field_formatter.dart';
 
 class AmountFormField extends TextFormField {
@@ -46,6 +42,8 @@ class AmountFormField extends TextFormField {
             labelText: texts.amount_form_denomination(
               bitcoinCurrency.displayName,
             ),
+            // TODO: Liquid - Hide CurrencyConverterDialog button until Fiat Currencies are supported on Liquid SDK
+            /*
             suffixIcon: (readOnly ?? false)
                 ? null
                 : IconButton(
@@ -72,6 +70,7 @@ class AmountFormField extends TextFormField {
                       ),
                     ),
                   ),
+             */
           ),
           inputFormatters: bitcoinCurrency != BitcoinCurrency.SAT
               ? [
