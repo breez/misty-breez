@@ -28,15 +28,13 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
             texts.bottom_action_bar_receive_invoice,
             style: theme.bottomSheetTextStyle,
           ),
-          onTap: () => _push(context, "/create_invoice"),
+          onTap: () {
+            final navigatorState = Navigator.of(context);
+            navigatorState.pop();
+            navigatorState.pushNamed("/create_invoice");
+          },
         ),
       ],
     );
-  }
-
-  void _push(BuildContext context, String route) {
-    final navigatorState = Navigator.of(context);
-    navigatorState.pop();
-    navigatorState.pushNamed(route);
   }
 }

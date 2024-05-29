@@ -43,6 +43,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
     BuildContext context,
     GlobalKey<State<StatefulWidget>> firstPaymentItemKey,
   ) async {
+    Navigator.of(context).pop();
     await showDialog(
       useRootNavigator: false,
       context: context,
