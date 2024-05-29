@@ -181,6 +181,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
           case 'stop':
             final command = commandArgs[0].toLowerCase();
             _log.info("executing command: $command");
+            // TODO: Liquid - Add execute_commands to Dart bindings
             const answer = ""; // await _breezSDK.executeCommand(command: command);
             _log.info("Received answer: $answer");
             reply = encoder.convert(answer);
