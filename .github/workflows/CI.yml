@@ -1,0 +1,61 @@
+name: Run CI
+on:
+  # Triggers the workflow on push events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'SDK commit/tag/branch reference'
+        required: false
+        type: string
+        default: 'main'
+
+jobs:
+  build:
+    runs-on: macOS-13
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        with: 
+          path: 'lbreez'
+
+      - uses: actions/checkout@v3
+        with:
+          repository: 'breez/breez-liquid-sdk'
+          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          path: 'breez-liquid-sdk'
+          ref: ${{ inputs.ref }}
+
+      # Setup the flutter environment.
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: pub-get
+        run: |
+          cd lbreez
+          flutter pub get
+
+      - name: dart-analyze
+        run: |
+          cd lbreez
+          dart analyze --fatal-infos
+
+      - name: run-tests
+        run: |
+          cd lbreez
+          flutter test
+
+      - name: dart-format
+        run: |
+          cd lbreez
+          dart format -o none --set-exit-if-changed -l 110 .

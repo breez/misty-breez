@@ -1,0 +1,217 @@
+name: Build iOS
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'SDK commit/tag/branch reference'
+        required: false
+        type: string
+        default: 'main'
+
+jobs:
+  build-ios:
+    name: Build iOS
+    runs-on: macOS-13
+    env:
+      SCHEME: Runner
+      BUILD_CONFIGURATION: Release
+      TESTFLIGHT_USERNAME: ${{secrets.TESTFLIGHT_USERNAME}}
+      TESTFLIGHT_PASSWORD: ${{secrets.TESTFLIGHT_PASSWORD}}
+      IOS_VERSION_STRING: 0.1.0
+      DISTRIBUTION_CERT: ${{secrets.DISTRIBUTION_CERT}}
+      P12_BASE64: ${{secrets.P12_BASE64}}
+      P12_PASSWORD: ${{secrets.P12_PASSWORD}}
+      GOOGLE_SERVICES_IOS: ${{secrets.GOOGLE_SERVICES_IOS}}
+    steps:
+      - name: 🏗️ Setup l-breez repository
+        uses: actions/checkout@v4
+        with:
+          path: 'lbreez'
+      - name: Install rust
+        run: |
+          rustup set auto-self-update disable
+          rustup toolchain install stable --profile minimal
+
+      - name: 🏗️ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 🏗️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Set up just
+        uses: extractions/setup-just@v2
+
+      - name: Set up Melos
+        uses: bluefireteam/melos-action@v3
+        with:
+          run-bootstrap: false
+
+      - name: 🔐 Install Keychain keys
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/ios-build.keychain
+          security create-keychain -p ci $KEYCHAIN_PATH
+          security default-keychain -s $KEYCHAIN_PATH
+          security unlock-keychain -p ci $KEYCHAIN_PATH
+          security set-keychain-settings -t 6400 -l $KEYCHAIN_PATH
+
+          CERT_PATH=$RUNNER_TEMP/apple_distribution.cer
+          echo -n "$DISTRIBUTION_CERT" | base64 --decode -o $CERT_PATH
+          security import $CERT_PATH -k $KEYCHAIN_PATH -A
+
+          P12_KEY_PATH=$RUNNER_TEMP/key.p12
+          echo -n "$P12_BASE64" | base64 --decode -o $P12_KEY_PATH
+          security import $P12_KEY_PATH -k $KEYCHAIN_PATH -P "$P12_PASSWORD" -A
+
+          security set-key-partition-list -S apple-tool:,apple: -s -k ci $KEYCHAIN_PATH > /dev/null
+
+      - name: 🏗️ Copy Firebase configuration file
+        working-directory: lbreez
+        run: echo "$GOOGLE_SERVICES_IOS" > ios/Runner/GoogleService-Info.plist
+
+      - name: 🏗️ Setup breez-liquid-sdk repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'breez/breez-liquid-sdk'
+          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          path: 'breez-liquid-sdk'
+          ref: ${{ inputs.ref }}
+
+      - name: 🏗️ Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: breez-liquid-sdk/lib/
+          cache-all-crates: true
+
+      - name: 📦 Install Breez Liquid SDK dependencies
+        run: |
+          cd breez-liquid-sdk/lib/bindings/langs/flutter/
+          just clean
+          just init
+
+      - name: Install flutter_rust_bridge_codegen dependencies
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        run: just frb
+
+      - name: Generate Dart/Flutter bindings
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just codegen
+
+      - name: Generate FFI bindings
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just ffigen
+
+      - name: 🔒 Install SSH Key
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          ssh-add ~/.ssh/id_rsa
+
+      - name: 🔨 Build Breez Liquid SDK
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        run: |
+          rm -rf ../../../target
+          just build
+
+      - name: 🔨 Build iOS binaries
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        run: |
+          just build-apple
+          just link
+
+      - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
+        working-directory: lbreez
+        run: flutter precache
+
+      - name: 📦 Install Flutter dependencies
+        working-directory: lbreez
+        run: flutter pub get
+
+      - name: 🔍 Perform static analysis
+        working-directory: lbreez
+        run: dart analyze --fatal-infos
+
+      - name: 🛠️ Run tests
+        working-directory: lbreez
+        run: flutter test
+
+      - name: ⚙️ Setup compile-time variables
+        env:
+          CONFIG_FILE: ${{secrets.CONFIG_FILE}}
+        run: echo "$CONFIG_FILE" > ./lbreez/config.json
+
+      - name: 📝 Install the Provisioning Profile
+        env:
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+          NOTIFICATION_PROVISIONING_PROFILE_BASE64: ${{ secrets.NOTIFICATION_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          # create variables
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          NOTIFICATIONS_PP_PATH=$RUNNER_TEMP/build_notifications_pp.mobileprovision
+          # import provisioning profile from secrets
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+          echo -n "$NOTIFICATION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $NOTIFICATIONS_PP_PATH
+          # apply provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $NOTIFICATIONS_PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - name: 🚀 Build app
+        working-directory: lbreez
+        run: flutter build ios --release --split-debug-info=./obsfucated/debug --obfuscate --config-only --no-pub --no-codesign --dart-define-from-file=config.json
+
+      - name: 📦 Resolve Swift package dependencies
+        working-directory: lbreez
+        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme ${{ env.SCHEME }} -configuration ${{ env.BUILD_CONFIGURATION }}
+
+      - name: 🔨 Build application and generate xcarchive file
+        working-directory: lbreez
+        run: |
+          buildNumber=$(($GITHUB_RUN_NUMBER + 6000)).1
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" ios/Runner/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ env.IOS_VERSION_STRING }}" ios/Runner/Info.plist
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme ${{ env.SCHEME }} -configuration ${{ env.BUILD_CONFIGURATION }} -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive clean archive
+
+      - name: 📤 Export the archive to an ipa file
+        working-directory: lbreez
+        run: xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+
+      - name: 🗃️ Compress build folder
+        if: github.event_name == 'release'
+        uses: TheDoctor0/zip-release@master
+        with:
+          filename: build.zip
+          directory: lbreez/build/ios/iphoneos
+          type: zip
+
+      - name: 📤 Upload release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          asset_name: release-iOS.zip
+          file: lbreez/build/ios/iphoneos/build.zip
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-iOS
+          path: lbreez/build/ios/iphoneos
+
+      - name: 📱 Publish to TestFlight
+        run: |
+          altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
+          ipa="$PWD/lbreez/build-output/ios/c_breez.ipa"
+          "$altool" --upload-app --type ios --file "$ipa" --username $TESTFLIGHT_USERNAME --password $TESTFLIGHT_PASSWORD

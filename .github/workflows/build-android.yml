@@ -1,0 +1,177 @@
+name: Build Android
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'SDK commit/tag/branch reference'
+        required: false
+        type: string
+        default: 'main'
+
+jobs:
+  build-android:
+    name: Build Android
+    runs-on: macOS-latest
+    steps:
+      - name: 🏗️ Setup l-breez repository
+        uses: actions/checkout@v4
+        with:
+          path: 'lbreez'
+
+      - name: Decode Keystore
+        env:
+            STORE_FILE_BASE64: ${{ secrets.STORE_FILE_BASE64 }}
+            STORE_FILE: ${RUNNER_TEMP}/keystore/lbreez-release.keystore
+        run: |
+            echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore" >> $GITHUB_ENV
+            echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore"
+            TMP_KEYSTORE_FILE_PATH=${RUNNER_TEMP}/keystore
+            mkdir -p ${TMP_KEYSTORE_FILE_PATH}
+            echo $STORE_FILE_BASE64 | base64 -do ${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore
+            echo "${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore"
+
+      - name: Install rust
+        run: |
+          rustup set auto-self-update disable
+          rustup toolchain install stable --profile minimal
+
+      - name: 🏗️ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 🏗️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Set up just
+        uses: extractions/setup-just@v2
+
+      - name: Set up Melos
+        uses: bluefireteam/melos-action@v3
+        with:
+          run-bootstrap: false
+
+      - name: 🏗️ Android cache
+        id: android-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.android/debug.keystore
+          key: debug.keystore
+
+      - name: 🏗️ Copy Firebase configuration file
+        working-directory: lbreez
+        env:
+          GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES}}
+        run: echo "$GOOGLE_SERVICES" > android/app/google-services.json
+
+      - name: 🏗️ Setup breez-liquid-sdk repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'breez/breez-liquid-sdk'
+          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          path: 'breez-liquid-sdk'
+          ref: ${{ inputs.ref }}
+
+      - name: 🏗️ Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: breez-liquid-sdk/lib/
+          cache-all-crates: true
+
+      - name: 📦 Install Breez Liquid SDK dependencies
+        run: |
+          cd breez-liquid-sdk/lib/bindings/langs/flutter/
+          just clean
+          just init
+
+      - name: Install flutter_rust_bridge_codegen dependencies
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        run: just frb
+
+      - name: Generate Dart/Flutter bindings
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just codegen
+
+      - name: Generate FFI bindings
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just ffigen
+
+      - name: 🔒 Install SSH Key
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          ssh-add ~/.ssh/id_rsa
+
+      - name: 🔨 Build Breez Liquid SDK
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        run: |
+          rm -rf ../../../target
+          just build
+
+      - name: 🔨 Build Android binaries
+        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        run: |
+          just build-android
+          just link
+
+      - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
+        working-directory: lbreez
+        run: flutter precache
+
+      - name: 📦 Install Flutter dependencies
+        working-directory: lbreez
+        run: flutter pub get
+
+      - name: 🔍 Perform static analysis
+        working-directory: lbreez
+        run: dart analyze --fatal-infos
+
+      - name: 🛠️ Run tests
+        working-directory: lbreez
+        run: flutter test
+
+      - name: ⚙️ Setup compile-time variables
+        env:
+          CONFIG_FILE: ${{secrets.CONFIG_FILE}}
+        run: echo "$CONFIG_FILE" > ./lbreez/config.json
+
+      - name: 🚀 Build Release apk
+        env:          
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        working-directory: lbreez
+        run: flutter build apk --release --split-debug-info=./obsfucated/debug --obfuscate --no-pub --split-per-abi --dart-define-from-file=config.json
+
+      - name: 🗃️ Compress build folder (APK)
+        if: github.event_name == 'release'
+        uses: TheDoctor0/zip-release@master
+        with:
+          filename: build.zip
+          directory: lbreez/build/app/outputs/flutter-apk
+          type: zip
+
+      - name: 📤 Upload asset (APK)
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          asset_name: Android-APK.zip
+          file: lbreez/build/app/outputs/flutter-apk/build.zip
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload artifact (APK)
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Android-APK
+          path: lbreez/build/app/outputs/flutter-apk/app-*.apk
