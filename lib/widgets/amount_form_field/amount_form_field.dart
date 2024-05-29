@@ -46,6 +46,8 @@ class AmountFormField extends TextFormField {
             labelText: texts.amount_form_denomination(
               bitcoinCurrency.displayName,
             ),
+            // TODO: Liquid - Hide CurrencyConverterDialog button until Fiat Currencies are supported on Liquid SDK
+            /*
             suffixIcon: (readOnly ?? false)
                 ? null
                 : IconButton(
@@ -72,6 +74,7 @@ class AmountFormField extends TextFormField {
                       ),
                     ),
                   ),
+             */
           ),
           inputFormatters: bitcoinCurrency != BitcoinCurrency.SAT
               ? [
