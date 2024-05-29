@@ -141,6 +141,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
     return showDialog(
       useRootNavigator: false,
+      // ignore: use_build_context_synchronously
       context: context,
       barrierDismissible: false,
       builder: (_) => dialog,

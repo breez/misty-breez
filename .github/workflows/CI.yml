@@ -1,0 +1,69 @@
+name: Run CI
+on:
+  # Triggers the workflow on push events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      liquid_sdk_ref:
+        description: 'Liquid SDK commit/tag/branch reference'
+        required: false
+        type: string
+        default: 'main'
+      breez_sdk_ref:
+        description: 'Breez SDK commit/tag/branch reference'
+        required: false
+        type: string
+        default: 'flutter_rust_bridge_v2'
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: 🏗️ Setup l-breez repository
+        uses: actions/checkout@v4
+        with: 
+          path: 'lbreez'
+
+      # TODO: Liquid - Revert once breez-sdk dependency is removed
+      - name: 🏗️ Setup breez-sdk repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'breez/breez-sdk'
+          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          path: 'breez-sdk'
+          ref: ${{ inputs.breez_sdk_ref }}
+
+      - name: 🏗️ Setup breez-liquid-sdk repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'breez/breez-liquid-sdk'
+          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          path: 'breez-liquid-sdk'
+          ref: ${{ inputs.liquid_sdk_ref }}
+
+      - name: 🏗️ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 🏗️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install Flutter dependencies
+        working-directory: lbreez
+        run: flutter pub get
+
+      - name: 🔍 Perform static analysis
+        working-directory: lbreez
+        run: dart analyze --fatal-infos
+
+      - name: Check Formatting
+        working-directory: lbreez
+        run: dart format -o none --set-exit-if-changed -l 110 .
