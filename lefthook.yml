@@ -1,0 +1,18 @@
+# EXAMPLE USAGE:
+#
+#   Refer for explanation to following link:
+#   https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+
+pre-commit:
+  parallel: true
+  commands:
+#    tests:
+#      run: flutter test
+#    analyze:
+#      run: flutter analyze
+#    lint_code:
+#      glob: '*.dart'
+#      run: dart fix --dry-run .
+    format_code:
+      glob: '*.dart'
+      run: dart format --fix -l 110 .
