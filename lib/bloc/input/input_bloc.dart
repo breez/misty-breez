@@ -74,16 +74,18 @@ class InputBloc extends Cubit<InputState> {
         final parsedInput = await parseInput(input: input.data);
         return await _handleParsedInput(parsedInput, input.source);
          */
-        final req = liquid_sdk.PrepareSendRequest(invoice: input.data);
+        final parsedInput = parseInvoice(input: input.data);
+        final req = liquid_sdk.PrepareSendRequest(invoice: parsedInput.bolt11);
         final resp = await ServiceInjector().liquidSDK!.prepareSendPayment(req: req);
         // TODO: Liquid/FRB - Address BigInt & Int changes
         return InputState.invoice(
           Invoice(
             bolt11: resp.invoice,
+            paymentHash: parsedInput.paymentHash,
+            description: parsedInput.description ?? "",
+            amountMsat: parsedInput.amountMsat ?? BigInt.zero,
+            expiry: parsedInput.expiry,
             lspFee: resp.feesSat.toInt(),
-            paymentHash: "",
-            amountMsat: BigInt.zero,
-            expiry: BigInt.zero,
           ),
           input.source,
         );
