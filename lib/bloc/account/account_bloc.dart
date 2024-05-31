@@ -67,10 +67,10 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
 
   Stream<List<liquid_sdk.Payment>?> paymentsStream() async* {
     final liquidSDK = ServiceInjector().liquidSDK;
-    yield liquidSDK?.listPayments();
+    yield await liquidSDK?.listPayments();
     while (true) {
       await Future.delayed(const Duration(seconds: 10));
-      yield liquidSDK?.listPayments();
+      yield await liquidSDK?.listPayments();
     }
   }
 
