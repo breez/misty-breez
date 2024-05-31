@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/sdk.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:l_breez/bloc/input/input_data.dart';
 import 'package:l_breez/bloc/input/input_printer.dart';
@@ -11,20 +11,17 @@ import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/services/device.dart';
 import 'package:l_breez/services/injector.dart';
 import 'package:l_breez/services/lightning_links.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
 class InputBloc extends Cubit<InputState> {
   final _log = Logger("InputBloc");
-  final BreezSDK _breezSDK;
   final LightningLinksService _lightningLinks;
   final Device _device;
 
   final _decodeInvoiceController = StreamController<InputData>();
 
   InputBloc(
-    this._breezSDK,
     this._lightningLinks,
     this._device,
   ) : super(const InputState.empty()) {
@@ -41,13 +38,30 @@ class InputBloc extends Cubit<InputState> {
     _decodeInvoiceController.add(InputData(data: bolt11, source: source));
   }
 
-  Future trackPayment(String? paymentHash) async {
-    _log.info("trackPayment: $paymentHash");
-    await _breezSDK.invoicePaidStream.firstWhere((invoice) {
-      _log.info("invoice paid: ${invoice.paymentHash} we are waiting for "
-          "$paymentHash, same: ${invoice.paymentHash == paymentHash}");
-      return paymentHash == null || invoice.paymentHash == paymentHash;
-    });
+  // TODO: Liquid - Remove once paymentStream is moved to plugin
+  Stream<List<liquid_sdk.Payment>?> paymentsStream() async* {
+    final liquidSDK = ServiceInjector().liquidSDK;
+    yield await liquidSDK?.listPayments();
+    while (true) {
+      await Future.delayed(const Duration(seconds: 10));
+      yield await liquidSDK?.listPayments();
+    }
+  }
+
+  Future trackPayment(String? invoiceId) async {
+    _log.info("trackPayment: $invoiceId");
+    await paymentsStream().firstWhere(
+      (paymentList) {
+        if (paymentList != null && invoiceId != null && invoiceId.isNotEmpty) {
+          if (paymentList.any((e) => e.swapId == invoiceId)) {
+            _log.info("Payment Received! Id: $invoiceId");
+            return true;
+          }
+        }
+
+        return false;
+      },
+    );
   }
 
   Stream<InputState?> _watchIncomingInvoices() {
@@ -65,8 +79,7 @@ class InputBloc extends Cubit<InputState> {
     ]).asyncMap((input) async {
       _log.info("Incoming input: '$input'");
       // wait for node state to be available
-      // TODO: Liquid - Wait for GetInfoResponse
-      // await _waitForNodeState();
+      await _waitForNodeState();
       // Emit an empty InputState with isLoading to display a loader on UI layer
       emit(const InputState.loading());
       try {
@@ -147,11 +160,21 @@ class InputBloc extends Cubit<InputState> {
     return liquid_sdk.parseInvoice(input: input);
   }
 
-  // TODO: Liquid - Wait for GetInfoResponse
+  // TODO: Liquid - Remove once walletInfoStream is moved to plugin
+  Stream<liquid_sdk.GetInfoResponse?> walletInfoStream() async* {
+    const req = liquid_sdk.GetInfoRequest(withScan: false);
+    final liquidSDK = ServiceInjector().liquidSDK;
+    yield await liquidSDK?.getInfo(req: req);
+    while (true) {
+      await Future.delayed(const Duration(seconds: 10));
+      yield await liquidSDK?.getInfo(req: req);
+    }
+  }
+
   // ignore: unused_element
   Future<void> _waitForNodeState() async {
     _log.info("waitForNodeState");
-    await _breezSDK.nodeStateStream.firstWhere((nodeState) => nodeState != null);
+    await walletInfoStream().firstWhere((getInfoResp) => getInfoResp != null);
     _log.info("waitForNodeState: done");
   }
 }

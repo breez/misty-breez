@@ -15,6 +15,7 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
 
   void _initializeCurrencyBloc() {
     late final StreamSubscription streamSubscription;
+    // TODO: Liquid - Listen to Liquid SDK's invoice paid stream
     streamSubscription = _breezSDK.nodeStateStream.where((nodeState) => nodeState != null).listen(
       (nodeState) {
         listFiatCurrencies();

@@ -69,7 +69,6 @@ void main() async {
           ),
           BlocProvider<InputBloc>(
             create: (BuildContext context) => InputBloc(
-              breezSDK,
               injector.lightningLinks,
               injector.device,
             ),

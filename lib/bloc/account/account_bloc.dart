@@ -306,6 +306,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
 
   void _listenPaymentResultEvents() {
     _log.info("_listenPaymentResultEvents");
+    // TODO: Liquid - Listen to Liquid SDK's payment result stream
     _breezSDK.paymentResultStream.listen((paymentInfo) {
       _paymentResultStreamController.add(
         PaymentResult(paymentInfo: paymentInfo),
