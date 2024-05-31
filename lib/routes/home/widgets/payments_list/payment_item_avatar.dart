@@ -24,8 +24,8 @@ class PaymentItemAvatar extends StatelessWidget {
           color: const Color(0xb3303234),
         ),
       );
-    // TODO: Liquid - Check if payment's metadata has image - https://github.com/breez/breez-liquid-sdk/issues/232
-    // ignore: dead_code
+      // TODO: Liquid - Check if payment's metadata has image - https://github.com/breez/breez-liquid-sdk/issues/232
+      // ignore: dead_code
     } else {
       return BreezAvatar("", radius: radius);
     }

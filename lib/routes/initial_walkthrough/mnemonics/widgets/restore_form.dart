@@ -13,7 +13,8 @@ class RestoreForm extends StatefulWidget {
   final List<TextEditingController> textEditingControllers;
   final AutovalidateMode autoValidateMode;
 
-  const RestoreForm({super.key,
+  const RestoreForm({
+    super.key,
     required this.formKey,
     required this.currentPage,
     required this.lastPage,

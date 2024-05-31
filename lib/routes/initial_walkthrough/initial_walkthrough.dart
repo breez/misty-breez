@@ -126,7 +126,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       child: Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                         child: GestureDetector(
-                          onTap: () => _restoreNodeFromMnemonicSeed(initialWords: "cute gallery debris flame service used expect poverty clarify window demise slim".split(" ")),
+                          onTap: () => _restoreNodeFromMnemonicSeed(),
                           child: Text(
                             texts.initial_walk_through_restore_from_backup,
                             style: theme.restoreLinkStyle,

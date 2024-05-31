@@ -1,4 +1,3 @@
-
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
@@ -72,8 +71,7 @@ class AccountPage extends StatelessWidget {
       ),
     );
 
-    final bool showSliver =
-        nonFilteredPayments.isNotEmpty || paymentFilters.filters != PaymentType.values;
+    final bool showSliver = nonFilteredPayments.isNotEmpty || paymentFilters.filters != PaymentType.values;
     int? startDate = paymentFilters.fromTimestamp;
     int? endDate = paymentFilters.toTimestamp;
     bool hasDateFilter = startDate != null && endDate != null;

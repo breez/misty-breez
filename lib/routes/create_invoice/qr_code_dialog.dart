@@ -151,7 +151,9 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
                           const Padding(padding: EdgeInsets.only(top: 16.0)),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            child: ExpiryAndFeeMessage(feesSat: widget.prepareReceiveResponse.feesSat.toInt()),
+                            child: ExpiryAndFeeMessage(
+                              feesSat: widget.prepareReceiveResponse.feesSat.toInt(),
+                            ),
                           ),
                           const Padding(padding: EdgeInsets.only(top: 16.0)),
                         ],

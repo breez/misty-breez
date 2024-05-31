@@ -8,7 +8,8 @@ class LoadingAnimatedText extends StatefulWidget {
   final TextAlign? textAlign;
   final List<TextSpan> textElements;
 
-  const LoadingAnimatedText({super.key,
+  const LoadingAnimatedText({
+    super.key,
     this.loadingMessage = "",
     this.textStyle,
     this.textAlign,

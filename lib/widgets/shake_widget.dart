@@ -9,7 +9,8 @@ class ShakeWidget extends StatelessWidget {
   final Animation _anim;
   final Widget child;
 
-  ShakeWidget({super.key,
+  ShakeWidget({
+    super.key,
     required this.controller,
     required this.child,
   }) : _anim = Tween<double>(begin: 50, end: 120).animate(controller);

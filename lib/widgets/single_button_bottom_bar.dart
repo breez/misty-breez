@@ -6,7 +6,8 @@ class SingleButtonBottomBar extends StatelessWidget {
   final String text;
   final bool stickToBottom;
 
-  const SingleButtonBottomBar({super.key,
+  const SingleButtonBottomBar({
+    super.key,
     required this.text,
     this.onPressed,
     this.stickToBottom = false,
@@ -44,7 +45,8 @@ class SubmitButton extends StatelessWidget {
 
   const SubmitButton(
     this.text,
-    this.onPressed, {super.key,
+    this.onPressed, {
+    super.key,
     this.enabled = true,
   });
 

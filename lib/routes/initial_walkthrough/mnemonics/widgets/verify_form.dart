@@ -9,7 +9,8 @@ class VerifyForm extends StatefulWidget {
   final VoidCallback onError;
   final Widget errorText;
 
-  const VerifyForm({super.key,
+  const VerifyForm({
+    super.key,
     required this.formKey,
     required this.mnemonicsList,
     required this.randomlySelectedIndexes,

@@ -19,7 +19,8 @@ class AddressWidget extends StatelessWidget {
   final AddressWidgetType type;
 
   const AddressWidget(
-    this.address, {super.key,
+    this.address, {
+    super.key,
     this.footer,
     this.title,
     this.onLongPress,

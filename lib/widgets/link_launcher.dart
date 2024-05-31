@@ -10,7 +10,8 @@ class LinkLauncher extends StatelessWidget {
   final String linkAddress;
   final Function() onCopy;
 
-  const LinkLauncher({super.key,
+  const LinkLauncher({
+    super.key,
     this.linkName,
     required this.linkAddress,
     required this.onCopy,

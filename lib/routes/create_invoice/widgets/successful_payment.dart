@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 class SuccessfulPaymentRoute extends StatefulWidget {
   final Function()? onPrint;
 
-  const SuccessfulPaymentRoute({super.key,
+  const SuccessfulPaymentRoute({
+    super.key,
     this.onPrint,
   });
 
