@@ -51,7 +51,7 @@ void main() async {
     // iOS Extension requirement
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       SharedPreferenceAppGroup.setAppGroup(
-        "group.${const String.fromEnvironment("APP_ID_PREFIX")}.com.cBreez.client",
+        "group.${const String.fromEnvironment("APP_ID_PREFIX")}.com.breez.liquid.lBreez",
       );
     }
 
