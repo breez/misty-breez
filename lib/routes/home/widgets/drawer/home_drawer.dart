@@ -18,7 +18,7 @@ class HomeDrawerState extends State<HomeDrawer> {
   // TODO: Liquid - Hide Fiat Currency route until it's supported on Liquid SDK
   final Set<String> _hiddenRoutes = {"/fiat_currency"};
   final List<DrawerItemConfig> _screens = [
-    const DrawerItemConfig("breezHome", "Breez Liquid", ""),
+    const DrawerItemConfig("breezHome", "Misty Breez", ""),
   ];
   final Map<String, Widget> _screenBuilders = {};
 
