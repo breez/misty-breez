@@ -212,12 +212,6 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     throw Exception("not implemented");
   }
 
-  Future<bool> isValidBitcoinAddress(String? address) async {
-    _log.info("isValidBitcoinAddress: $address");
-    if (address == null) return false;
-    return _breezSDK.isValidBitcoinAddress(address);
-  }
-
   // validatePayment is used to validate that outgoing/incoming payments meet the liquidity
   // constraints.
   void validatePayment(
