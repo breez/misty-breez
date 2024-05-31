@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/sdk.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:l_breez/bloc/input/input_data.dart';
 import 'package:l_breez/bloc/input/input_printer.dart';
 import 'package:l_breez/bloc/input/input_source.dart';
@@ -74,7 +74,7 @@ class InputBloc extends Cubit<InputState> {
         final parsedInput = await parseInput(input: input.data);
         return await _handleParsedInput(parsedInput, input.source);
          */
-        final req = PrepareSendRequest(invoice: input.data);
+        final req = liquid_sdk.PrepareSendRequest(invoice: input.data);
         final resp = await ServiceInjector().liquidSDK!.prepareSendPayment(req: req);
         // TODO: Liquid/FRB - Address BigInt & Int changes
         return InputState.invoice(
@@ -140,9 +140,9 @@ class InputBloc extends Cubit<InputState> {
     return result;
   }
 
-  Future<InputType> parseInput({required String input}) async {
-    _log.info("parseInput: $input");
-    return await _breezSDK.parseInput(input: input);
+  liquid_sdk.LNInvoice parseInvoice({required String input}) {
+    _log.info("parseInvoice: $input");
+    return liquid_sdk.parseInvoice(input: input);
   }
 
   // TODO: Liquid - Wait for GetInfoResponse

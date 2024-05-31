@@ -26,7 +26,7 @@ class Config {
     _log.info("Getting Config instance");
     if (_instance == null) {
       _log.info("Creating Config instance");
-      _instance = Config._(workingDir: await _workingDir(), network: Network.liquid);
+      _instance = Config._(workingDir: await _workingDir(), network: Network.mainnet);
     }
     return _instance!;
   }
