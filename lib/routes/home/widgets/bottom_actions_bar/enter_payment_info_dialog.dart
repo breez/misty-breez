@@ -1,5 +1,5 @@
-import 'package:breez_sdk/sdk.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/input/input_bloc.dart';
 import 'package:l_breez/bloc/input/input_source.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
@@ -208,15 +208,13 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
     try {
       _setValidatorErrorMessage("");
-      final inputType = await context.read<InputBloc>().parseInput(input: input);
+      // TODO: Liquid - Previously parseInput, parseInvoice only parses LNInvoice's.
+      final inputType = context.read<InputBloc>().parseInvoice(input: input);
       _log.info("Parsed input type: '${inputType.runtimeType.toString()}");
       // Can't compare against a list of InputType as runtime type comparison is a bit tricky with binding generated enums
-      if (!(inputType is InputType_Bolt11 ||
-          inputType is InputType_LnUrlPay ||
-          inputType is InputType_LnUrlWithdraw ||
-          inputType is InputType_LnUrlAuth ||
-          inputType is InputType_LnUrlError ||
-          inputType is InputType_NodeId)) {
+      // TODO: Liquid - Add other supported InputType's once parse_invoice has evolved into parse_input.
+      // ignore: unnecessary_type_check
+      if (inputType is! LNInvoice) {
         _setValidatorErrorMessage(texts.payment_info_dialog_error_unsupported_input);
       }
     } catch (e) {
