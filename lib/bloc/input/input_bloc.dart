@@ -103,7 +103,7 @@ class InputBloc extends Cubit<InputState> {
           input.source,
         );
       } catch (e) {
-        _log.severe("Failed to parse input", e);
+        _log.severe("Failed to prepare Send Payment", e);
         return const InputState.empty();
       }
     });
