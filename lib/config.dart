@@ -66,3 +66,21 @@ class Config {
     return path;
   }
 }
+
+extension ConfigCopyWith on liquid_sdk.Config {
+  liquid_sdk.Config copyWith({
+    String? boltzUrl,
+    String? electrumUrl,
+    String? workingDir,
+    liquid_sdk.Network? network,
+    BigInt? paymentTimeoutSec,
+  }) {
+    return liquid_sdk.Config(
+      boltzUrl: boltzUrl ?? this.boltzUrl,
+      electrumUrl: electrumUrl ?? this.electrumUrl,
+      workingDir: workingDir ?? this.workingDir,
+      network: network ?? this.network,
+      paymentTimeoutSec: paymentTimeoutSec ?? this.paymentTimeoutSec,
+    );
+  }
+}
