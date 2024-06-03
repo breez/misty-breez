@@ -103,6 +103,7 @@ class InputBloc extends Cubit<InputState> {
           input.source,
         );
       } catch (e) {
+        // TODO: Liquid - Revert back to "Failed to parse input" once InputParser is fully integrated into Liquid SDK
         _log.severe("Failed to prepare Send Payment", e);
         return const InputState.empty();
       }
