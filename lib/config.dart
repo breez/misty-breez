@@ -30,11 +30,11 @@ class Config {
     return _instance!;
   }
 
-  static Future<liquid_sdk.Config> _getDefaultConf({
+  static liquid_sdk.Config _getDefaultConf({
     liquid_sdk.Network network = liquid_sdk.Network.mainnet,
   }) async {
     _log.info("Getting default SDK config for network: $network");
-    return await liquid_sdk.defaultConfig(
+    return liquid_sdk.defaultConfig(
       network: network,
     );
   }
