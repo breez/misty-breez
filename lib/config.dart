@@ -22,7 +22,7 @@ class Config {
     _log.info("Getting Config instance");
     if (_instance == null) {
       _log.info("Creating Config instance");
-      final defaultConf = await _getDefaultConf();
+      final defaultConf = _getDefaultConf();
       final sdkConfig = await getSDKConfig(defaultConf);
 
       _instance = Config._(sdkConfig: sdkConfig);
