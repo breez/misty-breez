@@ -1,6 +1,6 @@
 import 'package:app_group_directory/app_group_directory.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:l_breez/services/injector.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,14 +10,10 @@ final _log = Logger("Config");
 class Config {
   static Config? _instance;
 
-  /// Directory in which all SDK files (DB, log) are stored. Defaults to ".", otherwise if it's customized,
-  /// the folder should exist before starting the SDK.
-  final String workingDir;
-  final Network network;
+  final liquid_sdk.Config sdkConfig;
 
   Config._({
-    required this.workingDir,
-    required this.network,
+    required this.sdkConfig,
   });
 
   static Future<Config> instance({
@@ -26,9 +22,30 @@ class Config {
     _log.info("Getting Config instance");
     if (_instance == null) {
       _log.info("Creating Config instance");
-      _instance = Config._(workingDir: await _workingDir(), network: Network.mainnet);
+      final defaultConf = _getDefaultConf();
+      final sdkConfig = await getSDKConfig(defaultConf);
+
+      _instance = Config._(sdkConfig: sdkConfig);
     }
     return _instance!;
+  }
+
+  static liquid_sdk.Config _getDefaultConf({
+    liquid_sdk.Network network = liquid_sdk.Network.mainnet,
+  }) {
+    _log.info("Getting default SDK config for network: $network");
+    return liquid_sdk.defaultConfig(
+      network: network,
+    );
+  }
+
+  static Future<liquid_sdk.Config> getSDKConfig(
+    liquid_sdk.Config defaultConf,
+  ) async {
+    _log.info("Getting SDK config");
+    return defaultConf.copyWith(
+      workingDir: await _workingDir(),
+    );
   }
 
   static Future<String> _workingDir() async {
@@ -47,5 +64,23 @@ class Config {
     }
     _log.info("Using workingDir: $path");
     return path;
+  }
+}
+
+extension ConfigCopyWith on liquid_sdk.Config {
+  liquid_sdk.Config copyWith({
+    String? boltzUrl,
+    String? electrumUrl,
+    String? workingDir,
+    liquid_sdk.Network? network,
+    BigInt? paymentTimeoutSec,
+  }) {
+    return liquid_sdk.Config(
+      boltzUrl: boltzUrl ?? this.boltzUrl,
+      electrumUrl: electrumUrl ?? this.electrumUrl,
+      workingDir: workingDir ?? this.workingDir,
+      network: network ?? this.network,
+      paymentTimeoutSec: paymentTimeoutSec ?? this.paymentTimeoutSec,
+    );
   }
 }

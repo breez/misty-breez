@@ -20,7 +20,7 @@ final _liquidSdkLog = Logger("BreezLiquidSdk");
 
 void shareLog() async {
   var config = await Config.instance();
-  final appDir = config.workingDir;
+  final appDir = config.sdkConfig.workingDir;
   final encoder = ZipFileEncoder();
   final zipFilePath = "$appDir/l-breez.logs.zip";
   encoder.create(zipFilePath);
@@ -44,7 +44,7 @@ class BreezLogger {
     }
 
     Config.instance().then((config) {
-      var appDir = Directory(config.workingDir);
+      var appDir = Directory(config.sdkConfig.workingDir);
       _pruneLogs(appDir);
       final file = File("${_logDir(appDir)}/${DateTime.now().millisecondsSinceEpoch}.app.log");
 
