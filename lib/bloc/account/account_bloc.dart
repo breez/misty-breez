@@ -134,9 +134,8 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
       final mnemonic = await _credentialsManager.restoreMnemonic();
       _log.info("connecting to breez lib");
       final req = liquid_sdk.ConnectRequest(
+        config: config.sdkConfig,
         mnemonic: mnemonic,
-        dataDir: config.workingDir,
-        network: config.network,
       );
       final liquidSDK = await liquid_sdk.connect(req: req);
       ServiceInjector().setLiquidSdk(liquidSDK);
