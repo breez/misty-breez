@@ -47,7 +47,7 @@ jobs:
           repository: 'breez/breez-sdk'
           ssh-key: ${{secrets.REPO_SSH_KEY}}
           path: 'breez-sdk'
-          ref: ${{ inputs.breez_sdk_ref }}
+          ref: ${{ inputs.breez_sdk_ref || 'flutter_rust_bridge_v2' }}
 
       - name: 🏗️ Setup breez-liquid-sdk repository
         uses: actions/checkout@v4
