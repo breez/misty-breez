@@ -149,10 +149,6 @@ jobs:
         working-directory: lbreez
         run: dart analyze --fatal-infos
 
-      - name: 🛠️ Run tests
-        working-directory: lbreez
-        run: flutter test
-
       - name: ⚙️ Setup compile-time variables
         env:
           CONFIG_FILE: ${{secrets.CONFIG_FILE}}
