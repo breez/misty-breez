@@ -17,6 +17,19 @@ on:
         required: false
         type: string
         default: 'flutter_rust_bridge_v2'
+  workflow_call:
+    inputs:
+      liquid_sdk_ref:
+        description: 'Liquid SDK commit/tag/branch reference'
+        required: false
+        type: string
+        default: 'main'
+      breez_sdk_ref:
+        description: 'Breez SDK commit/tag/branch reference'
+        required: false
+        type: string
+        default: 'flutter_rust_bridge_v2'
+
 jobs:
   build:
     runs-on: macOS-latest
