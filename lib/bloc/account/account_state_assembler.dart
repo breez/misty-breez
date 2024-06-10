@@ -10,21 +10,21 @@ import 'account_state.dart';
 AccountState? assembleAccountState(
   List<Payment>? payments,
   PaymentFilters paymentFilters,
-  GetInfoResponse? nodeState,
+  GetInfoResponse? walletInfo,
   AccountState state,
 ) {
-  if (nodeState == null) {
+  if (walletInfo == null) {
     return null;
   }
 
   final texts = getSystemAppLocalizations();
   // return the new account state
   return state.copyWith(
-    id: nodeState.pubkey,
+    id: walletInfo.pubkey,
     initial: false,
-    balance: nodeState.balanceSat.toInt(),
-    pendingReceive: nodeState.pendingReceiveSat.toInt(),
-    pendingSend: nodeState.pendingSendSat.toInt(),
+    balance: walletInfo.balanceSat.toInt(),
+    pendingReceive: walletInfo.pendingReceiveSat.toInt(),
+    pendingSend: walletInfo.pendingSendSat.toInt(),
     maxPaymentAmount: maxPaymentAmount,
     onChainFeeRate: 0,
     payments: payments?.map((e) => PaymentMinutiae.fromPayment(e, texts)).toList(),

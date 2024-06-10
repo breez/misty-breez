@@ -3,9 +3,8 @@ library breez.logger;
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:breez_sdk/breez_sdk.dart';
-import 'package:breez_sdk/generated/models.dart' as sdk_models;
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
+import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
 import 'package:l_breez/config.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -14,8 +13,6 @@ import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
 final _log = Logger("Logger");
-final _sdkLog = Logger("BreezSdk");
-// ignore: unused_element
 final _liquidSdkLog = Logger("BreezLiquidSdk");
 
 void shareLog() async {
@@ -83,17 +80,11 @@ class BreezLogger {
     });
   }
 
-  /// Log entries according to their severity
-  void registerBreezSdkLog(BreezSDK breezSDK) {
-    breezSDK.logStream.listen((e) => _logSdkEntries(e, _sdkLog));
+  void registerBreezLiquidSdkLogs(BreezLiquidSDK breezLiquidSDK) {
+    breezLiquidSDK.logStream.listen((e) => _logLiquidSdkEntries(e, _liquidSdkLog));
   }
 
-  // TODO: Liquid - Add Logger (log listener) similar to the breez sdk - https://github.com/breez/breez-liquid-sdk/issues/236
-  void registerBreezLiquidSdkLogs(liquid_sdk.BindingLiquidSdk liquidSDK) {
-    //liquidSDK.logStream.listen((e) => _logSdkEntries(e,_liquidSdkLog));
-  }
-
-  void _logSdkEntries(sdk_models.LogEntry log, Logger logger) {
+  void _logLiquidSdkEntries(liquid_sdk.LogEntry log, Logger logger) {
     switch (log.level) {
       case "ERROR":
         logger.severe(log.line);
