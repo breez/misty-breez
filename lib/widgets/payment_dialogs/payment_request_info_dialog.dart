@@ -194,6 +194,8 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     if (currencyState.fiatEnabled) {
       fiatConversion = FiatConversion(currencyState.fiatCurrency!, currencyState.fiatExchangeRate!);
     }
+    final totalAmount = (widget.invoice.amountMsat.toInt() ~/ 1000) + widget.invoice.lspFee;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onLongPressStart: (_) {
@@ -212,9 +214,8 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ),
         child: Text(
           _showFiatCurrency && fiatConversion != null
-              ? fiatConversion.format(widget.invoice.amountMsat.toInt() ~/ 1000)
-              : BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker)
-                  .format(widget.invoice.amountMsat.toInt() ~/ 1000),
+              ? fiatConversion.format(totalAmount)
+              : BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker).format(totalAmount),
           style: themeData.primaryTextTheme.headlineSmall,
           textAlign: TextAlign.center,
         ),
