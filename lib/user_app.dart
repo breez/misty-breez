@@ -67,9 +67,16 @@ class UserApp extends StatelessWidget {
       child: ThemeConsumer(
         child: BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state) {
-            SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-            ));
+            SystemChrome.setSystemUIOverlayStyle(
+              SystemUiOverlayStyle(
+                systemNavigationBarColor: ThemeProvider.themeOf(context).data.bottomAppBarTheme.color,
+                statusBarColor: Colors.transparent,
+                statusBarBrightness: Brightness.dark, // iOS
+                statusBarIconBrightness: Brightness.light, // Android
+                systemNavigationBarContrastEnforced: false,
+                systemStatusBarContrastEnforced: false,
+              ),
+            );
             return BlocBuilder2<AccountBloc, AccountState, SecurityBloc, SecurityState>(
                 builder: (context, accState, securityState) {
               return MaterialApp(

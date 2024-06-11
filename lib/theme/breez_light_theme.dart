@@ -1,8 +1,6 @@
-import 'package:l_breez/theme/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'breez_colors.dart';
+import 'package:l_breez/theme/theme_provider.dart';
 
 final ThemeData breezLightTheme = ThemeData(
   useMaterial3: false,
@@ -34,7 +32,14 @@ final ThemeData breezLightTheme = ThemeData(
     actionsIconTheme: const IconThemeData(
       color: Color.fromRGBO(0, 120, 253, 1.0),
     ),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark, // iOS
+      statusBarIconBrightness: Brightness.light, // Android
+      systemStatusBarContrastEnforced: false,
+      systemNavigationBarColor: BreezColors.blue[500],
+      systemNavigationBarContrastEnforced: false,
+    ),
   ),
   dialogTheme: DialogTheme(
     titleTextStyle: TextStyle(color: BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25),

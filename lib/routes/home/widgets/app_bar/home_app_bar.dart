@@ -1,7 +1,6 @@
-import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:l_breez/theme/theme_provider.dart' as theme;
 
 import 'account_required_actions.dart';
 
@@ -33,7 +32,7 @@ class HomeAppBar extends AppBar {
           title: IconButton(
             padding: EdgeInsets.zero,
             icon: SvgPicture.asset(
-              "src/images/cloud-logo-color.svg",
+              "src/images/liquid-logo-color.svg",
               colorFilter: ColorFilter.mode(
                 themeData.appBarTheme.actionsIconTheme!.color!,
                 BlendMode.srcATop,
@@ -46,6 +45,11 @@ class HomeAppBar extends AppBar {
             color: Color.fromARGB(255, 0, 133, 251),
           ),
           backgroundColor: themeData.customData.dashboardBgColor,
-          systemOverlayStyle: themeData.isLightTheme ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+          systemOverlayStyle: themeData.isLightTheme
+              ? themeData.appBarTheme.systemOverlayStyle!.copyWith(
+                  statusBarBrightness: Brightness.light, // iOS
+                  statusBarIconBrightness: Brightness.dark, // Android
+                )
+              : themeData.appBarTheme.systemOverlayStyle!,
         );
 }

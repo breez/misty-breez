@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:l_breez/theme/breez_light_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:l_breez/theme/theme_provider.dart';
 
 class SplashPage extends StatefulWidget {
   final bool isInitial;
@@ -34,7 +34,9 @@ class SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: themeData.appBarTheme.systemOverlayStyle!,
+      value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
+        systemNavigationBarColor: BreezColors.blue[500],
+      ),
       child: Theme(
         data: breezLightTheme,
         child: Scaffold(

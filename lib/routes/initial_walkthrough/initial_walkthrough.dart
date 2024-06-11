@@ -1,16 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
-import 'package:l_breez/routes/initial_walkthrough/beta_warning_dialog.dart';
-import 'package:l_breez/theme/breez_light_theme.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:l_breez/bloc/account/account_bloc.dart';
+import 'package:l_breez/routes/initial_walkthrough/beta_warning_dialog.dart';
+import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme_provider.dart';
+import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/widgets/flushbar.dart';
+import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -56,7 +56,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final themeData = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: themeData.appBarTheme.systemOverlayStyle!,
+      value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
+        systemNavigationBarColor: BreezColors.blue[500],
+      ),
       child: Theme(
         data: breezLightTheme,
         child: Scaffold(

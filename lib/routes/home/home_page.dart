@@ -4,6 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:l_breez/handlers/handler.dart';
 import 'package:l_breez/handlers/handler_context_provider.dart';
 import 'package:l_breez/handlers/input_handler.dart';
@@ -63,49 +64,54 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
     final themeData = Theme.of(context);
     final mediaSize = MediaQuery.of(context).size;
 
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (bool didPop) async {
-        if (didPop) {
-          return;
-        }
-        // Only close drawer if it's open
-        final NavigatorState navigator = Navigator.of(context);
-        if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
-          navigator.pop();
-          return;
-        }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
+            systemNavigationBarColor: Theme.of(context).bottomAppBarTheme.color,
+          ),
+      child: PopScope(
+        canPop: false,
+        onPopInvoked: (bool didPop) async {
+          if (didPop) {
+            return;
+          }
+          // Only close drawer if it's open
+          final NavigatorState navigator = Navigator.of(context);
+          if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+            navigator.pop();
+            return;
+          }
 
-        // If drawer is not open, prompt user to approve exiting the app
-        final texts = context.texts();
-        final bool? shouldPop = await promptAreYouSure(
-          context,
-          texts.close_popup_title,
-          Text(texts.close_popup_message),
-        );
-        if (shouldPop ?? false) {
-          exit(0);
-        }
-      },
-      child: SizedBox(
-        height: mediaSize.height,
-        width: mediaSize.width,
-        child: FadeInWidget(
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            key: _scaffoldKey,
-            appBar: HomeAppBar(
-              themeData: themeData,
-              scaffoldKey: _scaffoldKey,
+          // If drawer is not open, prompt user to approve exiting the app
+          final texts = context.texts();
+          final bool? shouldPop = await promptAreYouSure(
+            context,
+            texts.close_popup_title,
+            Text(texts.close_popup_message),
+          );
+          if (shouldPop ?? false) {
+            exit(0);
+          }
+        },
+        child: SizedBox(
+          height: mediaSize.height,
+          width: mediaSize.width,
+          child: FadeInWidget(
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              key: _scaffoldKey,
+              appBar: HomeAppBar(
+                themeData: themeData,
+                scaffoldKey: _scaffoldKey,
+              ),
+              drawerEnableOpenDragGesture: true,
+              drawerDragStartBehavior: DragStartBehavior.down,
+              drawerEdgeDragWidth: mediaSize.width,
+              drawer: HomeDrawer(key: _drawerKey),
+              bottomNavigationBar: BottomActionsBar(firstPaymentItemKey),
+              floatingActionButton: QrActionButton(firstPaymentItemKey),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+              body: _drawerKey.currentState?.screen() ?? AccountPage(firstPaymentItemKey, scrollController),
             ),
-            drawerEnableOpenDragGesture: true,
-            drawerDragStartBehavior: DragStartBehavior.down,
-            drawerEdgeDragWidth: mediaSize.width,
-            drawer: HomeDrawer(key: _drawerKey),
-            bottomNavigationBar: BottomActionsBar(firstPaymentItemKey),
-            floatingActionButton: QrActionButton(firstPaymentItemKey),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: _drawerKey.currentState?.screen() ?? AccountPage(firstPaymentItemKey, scrollController),
           ),
         ),
       ),
