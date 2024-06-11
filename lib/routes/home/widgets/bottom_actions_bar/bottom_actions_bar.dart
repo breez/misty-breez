@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/services.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/receive_options_bottom_sheet.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/send_options_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -59,9 +60,14 @@ class SendOptions extends StatelessWidget {
       onPress: () => showModalBottomSheet(
         context: context,
         builder: (context) {
-          return SafeArea(
-            child: SendOptionsBottomSheet(
-              firstPaymentItemKey: firstPaymentItemKey,
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
+                  systemNavigationBarColor: Theme.of(context).canvasColor,
+                ),
+            child: SafeArea(
+              child: SendOptionsBottomSheet(
+                firstPaymentItemKey: firstPaymentItemKey,
+              ),
             ),
           );
         },
@@ -90,9 +96,14 @@ class ReceiveOptions extends StatelessWidget {
       onPress: () => showModalBottomSheet(
         context: context,
         builder: (context) {
-          return SafeArea(
-            child: ReceiveOptionsBottomSheet(
-              firstPaymentItemKey: firstPaymentItemKey,
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
+                  systemNavigationBarColor: Theme.of(context).canvasColor,
+                ),
+            child: SafeArea(
+              child: ReceiveOptionsBottomSheet(
+                firstPaymentItemKey: firstPaymentItemKey,
+              ),
             ),
           );
         },

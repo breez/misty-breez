@@ -33,7 +33,14 @@ final ThemeData breezDarkTheme = ThemeData(
     titleTextStyle: titleTextStyle,
     elevation: 0.0,
     actionsIconTheme: const IconThemeData(color: Colors.white),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    systemOverlayStyle: const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark, // iOS
+      statusBarIconBrightness: Brightness.light, // Android
+      systemStatusBarContrastEnforced: false,
+      systemNavigationBarColor: Color(0xFF0c2031),
+      systemNavigationBarContrastEnforced: false,
+    ),
   ),
   dialogTheme: const DialogTheme(
     titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
