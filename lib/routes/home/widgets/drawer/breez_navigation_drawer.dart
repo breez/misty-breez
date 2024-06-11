@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
 import 'package:l_breez/models/user_profile.dart';
@@ -196,11 +197,15 @@ class NavigationDrawerFooter extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                "src/images/drawer_footer.png",
+              SvgPicture.asset(
+                "src/images/drawer_footer.svg",
+                colorFilter: ColorFilter.mode(
+                  theme.BreezColors.white[500]!,
+                  BlendMode.srcATop,
+                ),
                 height: 39,
                 width: 183,
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.scaleDown,
               )
             ],
           ),
