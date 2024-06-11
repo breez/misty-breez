@@ -23,9 +23,7 @@ class HomeAppBar extends AppBar {
               height: 24.0,
               width: 24.0,
               colorFilter: ColorFilter.mode(
-                themeData.isLightTheme
-                    ? const Color.fromRGBO(31, 52, 231, 1.0)
-                    : themeData.appBarTheme.actionsIconTheme!.color!,
+                themeData.appBarTheme.actionsIconTheme!.color!,
                 BlendMode.srcATop,
               ),
             ),
@@ -34,7 +32,7 @@ class HomeAppBar extends AppBar {
           title: IconButton(
             padding: EdgeInsets.zero,
             icon: SvgPicture.asset(
-              "src/images/cloud-logo-color.svg",
+              "src/images/liquid-logo-color.svg",
               colorFilter: ColorFilter.mode(
                 themeData.appBarTheme.actionsIconTheme!.color!,
                 BlendMode.srcATop,

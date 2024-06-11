@@ -5,7 +5,7 @@
 # l-Breez
 
 <img align="right" width="112" height="42" title="Breez logo"
-src="./src/images/logo-color.svg">
+src="./src/images/liquid-logo-color.svg">
 
 l-Breez is a migration of [Breez mobile app](https://github.com/breez/breezmobile) to
 the [Breez Liquid SDK](https://github.com/breez/breez-liquid-sdk) infrastructure.
