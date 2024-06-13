@@ -74,6 +74,7 @@ extension ConfigCopyWith on liquid_sdk.Config {
     String? workingDir,
     liquid_sdk.Network? network,
     BigInt? paymentTimeoutSec,
+    double? zeroConfMinFeeRate,
   }) {
     return liquid_sdk.Config(
       boltzUrl: boltzUrl ?? this.boltzUrl,
@@ -81,6 +82,7 @@ extension ConfigCopyWith on liquid_sdk.Config {
       workingDir: workingDir ?? this.workingDir,
       network: network ?? this.network,
       paymentTimeoutSec: paymentTimeoutSec ?? this.paymentTimeoutSec,
+      zeroConfMinFeeRate: zeroConfMinFeeRate ?? this.zeroConfMinFeeRate,
     );
   }
 }

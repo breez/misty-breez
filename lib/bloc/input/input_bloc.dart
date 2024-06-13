@@ -38,22 +38,12 @@ class InputBloc extends Cubit<InputState> {
     _decodeInvoiceController.add(InputData(data: bolt11, source: source));
   }
 
-  // TODO: Liquid - Remove once paymentStream is moved to plugin
-  Stream<List<liquid_sdk.Payment>?> paymentsStream() async* {
-    final liquidSDK = ServiceInjector().liquidSDK;
-    yield await liquidSDK?.listPayments();
-    while (true) {
-      await Future.delayed(const Duration(seconds: 10));
-      yield await liquidSDK?.listPayments();
-    }
-  }
-
   Future trackPayment(String? invoiceId) async {
-    _log.info("trackPayment: $invoiceId");
-    await paymentsStream().firstWhere(
+    _log.info("Tracking incoming payment: $invoiceId");
+    await ServiceInjector().liquidSDK.paymentsStream.firstWhere(
       (paymentList) {
-        if (paymentList != null && invoiceId != null && invoiceId.isNotEmpty) {
-          if (paymentList.any((e) => e.swapId == invoiceId)) {
+        if (paymentList.any((e) => e.swapId == invoiceId)) {
+          if (invoiceId != null && invoiceId.isNotEmpty) {
             _log.info("Payment Received! Id: $invoiceId");
             return true;
           }
@@ -78,8 +68,6 @@ class InputBloc extends Cubit<InputState> {
           .doOnData((event) => _log.info("clipboardStream: $event")),
     ]).asyncMap((input) async {
       _log.info("Incoming input: '$input'");
-      // wait for node state to be available
-      await _waitForNodeState();
       // Emit an empty InputState with isLoading to display a loader on UI layer
       emit(const InputState.loading());
       try {
@@ -89,7 +77,7 @@ class InputBloc extends Cubit<InputState> {
          */
         final parsedInput = parseInvoice(input: input.data);
         final req = liquid_sdk.PrepareSendRequest(invoice: parsedInput.bolt11);
-        final resp = await ServiceInjector().liquidSDK!.prepareSendPayment(req: req);
+        final resp = await ServiceInjector().liquidSDK.wallet!.prepareSendPayment(req: req);
         // TODO: Liquid/FRB - Address BigInt & Int changes
         return InputState.invoice(
           Invoice(
@@ -159,23 +147,5 @@ class InputBloc extends Cubit<InputState> {
   liquid_sdk.LNInvoice parseInvoice({required String input}) {
     _log.info("parseInvoice: $input");
     return liquid_sdk.parseInvoice(input: input);
-  }
-
-  // TODO: Liquid - Remove once walletInfoStream is moved to plugin
-  Stream<liquid_sdk.GetInfoResponse?> walletInfoStream() async* {
-    const req = liquid_sdk.GetInfoRequest(withScan: false);
-    final liquidSDK = ServiceInjector().liquidSDK;
-    yield await liquidSDK?.getInfo(req: req);
-    while (true) {
-      await Future.delayed(const Duration(seconds: 10));
-      yield await liquidSDK?.getInfo(req: req);
-    }
-  }
-
-  // ignore: unused_element
-  Future<void> _waitForNodeState() async {
-    _log.info("waitForNodeState");
-    await walletInfoStream().firstWhere((getInfoResp) => getInfoResp != null);
-    _log.info("waitForNodeState: done");
   }
 }

@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/sdk.dart';
-import 'package:l_breez/bloc/currency/currency_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:l_breez/bloc/currency/currency_state.dart';
+import 'package:l_breez/services/injector.dart';
 
 class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   final BreezSDK _breezSDK;
@@ -16,8 +17,9 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   void _initializeCurrencyBloc() {
     late final StreamSubscription streamSubscription;
     // TODO: Liquid - Listen to Liquid SDK's invoice paid stream
-    streamSubscription = _breezSDK.nodeStateStream.where((nodeState) => nodeState != null).listen(
-      (nodeState) {
+    final breezLiquidSdk = ServiceInjector().liquidSDK;
+    streamSubscription = breezLiquidSdk.walletInfoStream.listen(
+      (walletInfo) {
         listFiatCurrencies();
         fetchExchangeRates();
         streamSubscription.cancel();

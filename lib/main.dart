@@ -33,6 +33,8 @@ void main() async {
     SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
     );
+    // Initialize library
+    await liquid_sdk.initialize();
     //initializeDateFormatting(Platform.localeName, null);
     BreezDateUtils.setupLocales();
     //await Firebase.initializeApp();
@@ -42,9 +44,13 @@ void main() async {
     final breezSDK = injector.breezSDK;
     if (!await breezSDK.isInitialized()) {
       breezSDK.initialize();
-      breezLogger.registerBreezSdkLog(breezSDK);
     }
-    await liquid_sdk.initialize();
+
+    // Initialize Log Stream
+    if (injector.liquidSDK.wallet == null) {
+      injector.liquidSDK.initializeLogStream();
+      breezLogger.registerBreezLiquidSdkLogs(injector.liquidSDK);
+    }
 
     final appDir = await getApplicationDocumentsDirectory();
 
@@ -63,7 +69,7 @@ void main() async {
         providers: [
           BlocProvider<AccountBloc>(
             create: (BuildContext context) => AccountBloc(
-              breezSDK,
+              injector.liquidSDK,
               CredentialsManager(keyChain: injector.keychain),
             ),
           ),
@@ -82,7 +88,9 @@ void main() async {
           BlocProvider<SecurityBloc>(
             create: (BuildContext context) => SecurityBloc(),
           ),
-          BlocProvider<BackupBloc>(create: (BuildContext context) => BackupBloc(injector.liquidSDK)),
+          BlocProvider<BackupBloc>(
+            create: (BuildContext context) => BackupBloc(injector.liquidSDK),
+          ),
         ],
         child: UserApp(),
       ),
