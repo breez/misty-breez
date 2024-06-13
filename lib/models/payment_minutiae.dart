@@ -30,7 +30,7 @@ class PaymentMinutiae {
   factory PaymentMinutiae.fromPayment(Payment payment, BreezTranslations texts) {
     final factory = _PaymentMinutiaeFactory(payment, texts);
     return PaymentMinutiae(
-      id: payment.txId,
+      id: payment.txId ?? "",
       title: factory._title(),
       preimage: payment.preimage ?? "",
       swapId: payment.swapId ?? "",
