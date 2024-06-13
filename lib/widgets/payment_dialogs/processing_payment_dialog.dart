@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_request_dialog.dart';
@@ -105,7 +106,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       if (widget.isLnurlPayment) {
         navigator.pop(err);
       }
-      if (err is FrbException) {
+      if (err is FrbException || err is PaymentError_PaymentTimeout) {
         if (_currentRoute != null && _currentRoute!.isActive) {
           navigator.removeRoute(_currentRoute!);
         }
