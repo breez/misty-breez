@@ -70,7 +70,8 @@ class Config {
 extension ConfigCopyWith on liquid_sdk.Config {
   liquid_sdk.Config copyWith({
     String? boltzUrl,
-    String? electrumUrl,
+    String? liquidElectrumUrl,
+    String? bitcoinElectrumUrl,
     String? workingDir,
     liquid_sdk.Network? network,
     BigInt? paymentTimeoutSec,
@@ -78,7 +79,8 @@ extension ConfigCopyWith on liquid_sdk.Config {
   }) {
     return liquid_sdk.Config(
       boltzUrl: boltzUrl ?? this.boltzUrl,
-      electrumUrl: electrumUrl ?? this.electrumUrl,
+      liquidElectrumUrl: liquidElectrumUrl ?? this.liquidElectrumUrl,
+      bitcoinElectrumUrl: bitcoinElectrumUrl ?? this.bitcoinElectrumUrl,
       workingDir: workingDir ?? this.workingDir,
       network: network ?? this.network,
       paymentTimeoutSec: paymentTimeoutSec ?? this.paymentTimeoutSec,
