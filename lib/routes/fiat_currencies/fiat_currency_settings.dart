@@ -170,7 +170,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
   String _subtitle(BreezTranslations texts, FiatCurrency currencyData) {
     final localizedName = currencyData.info.localizedName;
-    if (localizedName != null) {
+    if (localizedName.isNotEmpty) {
       for (var localizedName in localizedName) {
         if (localizedName.locale == texts.locale) {
           return localizedName.name;

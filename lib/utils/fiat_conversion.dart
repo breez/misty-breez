@@ -80,7 +80,7 @@ class FiatConversion {
 
   LocaleOverrides? _localeOverride(String languageTag, String languageCode) {
     final localeOverrides = currencyData.info.localeOverrides;
-    if (localeOverrides == null || localeOverrides.isEmpty) return null;
+    if (localeOverrides.isEmpty) return null;
     if (localeOverrides.any((e) => e.locale == languageTag)) {
       return localeOverrides.firstWhere((e) => e.locale == languageTag);
     }
