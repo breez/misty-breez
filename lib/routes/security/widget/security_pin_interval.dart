@@ -61,9 +61,11 @@ class SecurityPinInterval extends StatelessWidget {
     if (seconds == 0) {
       return texts.security_and_backup_lock_automatically_option_immediate;
     }
+    // Duration plugin falsely treats country code "cz" as the Czech language code. Issue: https://github.com/desktop-dart/duration/issues/67
+    String languageCode = texts.locale == "cs" ? "cz" : texts.locale;
     return prettyDuration(
       Duration(seconds: seconds),
-      locale: DurationLocale.fromLanguageCode(texts.locale) ?? const EnglishDurationLocale(),
+      locale: DurationLocale.fromLanguageCode(languageCode) ?? const EnglishDurationLocale(),
     );
   }
 }
