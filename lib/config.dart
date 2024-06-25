@@ -31,7 +31,7 @@ class Config {
   }
 
   static liquid_sdk.Config _getDefaultConf({
-    liquid_sdk.Network network = liquid_sdk.Network.mainnet,
+    liquid_sdk.LiquidNetwork network = liquid_sdk.LiquidNetwork.mainnet,
   }) {
     _log.info("Getting default SDK config for network: $network");
     return liquid_sdk.defaultConfig(
@@ -73,7 +73,7 @@ extension ConfigCopyWith on liquid_sdk.Config {
     String? liquidElectrumUrl,
     String? bitcoinElectrumUrl,
     String? workingDir,
-    liquid_sdk.Network? network,
+    liquid_sdk.LiquidNetwork? network,
     BigInt? paymentTimeoutSec,
     double? zeroConfMinFeeRate,
   }) {
