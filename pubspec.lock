@@ -104,13 +104,6 @@ packages:
       relative: true
     source: path
     version: "0.1.0"
-  breez_sdk:
-    dependency: "direct main"
-    description:
-      path: "../breez-sdk/libs/sdk-flutter"
-      relative: true
-    source: path
-    version: "0.4.0"
   breez_translations:
     dependency: "direct main"
     description:

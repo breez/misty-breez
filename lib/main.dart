@@ -40,11 +40,6 @@ void main() async {
     //await Firebase.initializeApp();
     final injector = ServiceInjector();
     var breezLogger = injector.breezLogger;
-    // TODO: Liquid - Remove all BreezSDK logic - Requires FiatCurrency & InputParser to be extracted to a shared library among SDK's
-    final breezSDK = injector.breezSDK;
-    if (!await breezSDK.isInitialized()) {
-      breezSDK.initialize();
-    }
 
     // Initialize Log Stream
     if (injector.liquidSDK.wallet == null) {
@@ -83,7 +78,7 @@ void main() async {
             create: (BuildContext context) => UserProfileBloc(),
           ),
           BlocProvider<CurrencyBloc>(
-            create: (BuildContext context) => CurrencyBloc(breezSDK),
+            create: (BuildContext context) => CurrencyBloc(injector.liquidSDK),
           ),
           BlocProvider<SecurityBloc>(
             create: (BuildContext context) => SecurityBloc(),

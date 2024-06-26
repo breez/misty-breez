@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:breez_sdk/sdk.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:l_breez/bloc/input/input_data.dart';

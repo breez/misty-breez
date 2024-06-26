@@ -1,6 +1,6 @@
-import 'package:breez_sdk/sdk.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_state.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;

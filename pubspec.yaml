@@ -18,8 +18,6 @@ dependencies:
   archive: ^3.6.0
   auto_size_text: ^3.0.0
   bip39: ^1.0.6
-  breez_sdk:
-    path: ../breez-sdk/libs/sdk-flutter
   breez_liquid:
     path: ../breez-liquid-sdk/packages/dart
   flutter_breez_liquid:

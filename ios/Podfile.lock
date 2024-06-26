@@ -1,8 +1,6 @@
 PODS:
   - app_group_directory (1.0.0):
     - Flutter
-  - breez_sdk (0.4.0):
-    - Flutter
   - clipboard_watcher (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -182,7 +180,6 @@ PODS:
 
 DEPENDENCIES:
   - app_group_directory (from `.symlinks/plugins/app_group_directory/ios`)
-  - breez_sdk (from `.symlinks/plugins/breez_sdk/ios`)
   - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -236,8 +233,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_group_directory:
     :path: ".symlinks/plugins/app_group_directory/ios"
-  breez_sdk:
-    :path: ".symlinks/plugins/breez_sdk/ios"
   clipboard_watcher:
     :path: ".symlinks/plugins/clipboard_watcher/ios"
   connectivity_plus:
@@ -291,7 +286,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_group_directory: 7bf9f8f9819ead554de29da7c25fb7a680d6a9a0
-  breez_sdk: 503ffaabe90dafa43852d1c2927f7e246194d404
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
   connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
