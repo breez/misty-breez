@@ -28,7 +28,7 @@ dependencies:
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations
-      ref: 106e187b7290b4bb0ffe5d2e20e4110c893aaf63
+      ref: a564088448149e9c28b4a2eb82fa0a3536698d24
   clipboard_watcher: ^0.2.1
   csv: ^6.0.0
   connectivity_plus: ^6.0.3
@@ -81,7 +81,7 @@ dependencies:
   path_provider_platform_interface: ^2.1.2
   plugin_platform_interface: ^2.1.8
   qr_flutter: ^4.1.0
-  rxdart: ^0.27.7
+  rxdart: ^0.28.0
   share_plus: ^9.0.0
   shared_preferences: ^2.2.3
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences

@@ -180,6 +180,7 @@ extension ProfileColorExtension on ProfileColor {
 
 Map<String, Map<String, ProfileColor>> _colorsFromName = {
   "bg": _buildColorsFromName(BreezTranslationsBg()),
+  "cz": _buildColorsFromName(BreezTranslationsCs()),
   "cs": _buildColorsFromName(BreezTranslationsCs()),
   "de": _buildColorsFromName(BreezTranslationsDe()),
   "el": _buildColorsFromName(BreezTranslationsEl()),

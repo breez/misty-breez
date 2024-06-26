@@ -185,6 +185,7 @@ extension ProfileAnimalExtension on ProfileAnimal {
 
 Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
   "bg": _buildAnimalsFromName(BreezTranslationsBg()),
+  "cz": _buildAnimalsFromName(BreezTranslationsCs()),
   "cs": _buildAnimalsFromName(BreezTranslationsCs()),
   "de": _buildAnimalsFromName(BreezTranslationsDe()),
   "el": _buildAnimalsFromName(BreezTranslationsEl()),
