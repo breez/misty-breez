@@ -7,11 +7,6 @@ on:
         required: false
         type: string
         default: 'main'
-      breez_sdk_ref:
-        description: 'Breez SDK commit/tag/branch reference'
-        required: false
-        type: string
-        default: 'flutter_rust_bridge_v2'
 
 jobs:
   build-android:
@@ -72,15 +67,6 @@ jobs:
         env:
           GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES}}
         run: echo "$GOOGLE_SERVICES" > android/app/google-services.json
-
-      # TODO: Liquid - Revert once breez-sdk dependency is removed
-      - name: 🏗️ Setup breez-sdk repository
-        uses: actions/checkout@v4
-        with:
-          repository: 'breez/breez-sdk'
-          ssh-key: ${{secrets.REPO_SSH_KEY}}
-          path: 'breez-sdk'
-          ref: ${{ inputs.breez_sdk_ref }}
 
       - name: 🏗️ Setup breez-liquid-sdk repository
         uses: actions/checkout@v4
