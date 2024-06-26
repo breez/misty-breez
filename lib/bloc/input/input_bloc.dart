@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/input/input_data.dart';
 import 'package:l_breez/bloc/input/input_printer.dart';
 import 'package:l_breez/bloc/input/input_source.dart';
@@ -70,28 +70,10 @@ class InputBloc extends Cubit<InputState> {
       // Emit an empty InputState with isLoading to display a loader on UI layer
       emit(const InputState.loading());
       try {
-        /*
-        final parsedInput = await parseInput(input: input.data);
+        final parsedInput = await parse(input: input.data);
         return await _handleParsedInput(parsedInput, input.source);
-         */
-        final parsedInput = parseInvoice(input: input.data);
-        final req = liquid_sdk.PrepareSendRequest(invoice: parsedInput.bolt11);
-        final resp = await ServiceInjector().liquidSDK.wallet!.prepareSendPayment(req: req);
-        // TODO: Liquid/FRB - Address BigInt & Int changes
-        return InputState.invoice(
-          Invoice(
-            bolt11: resp.invoice,
-            paymentHash: parsedInput.paymentHash,
-            description: parsedInput.description ?? "",
-            amountMsat: parsedInput.amountMsat ?? BigInt.zero,
-            expiry: parsedInput.expiry,
-            lspFee: resp.feesSat.toInt(),
-          ),
-          input.source,
-        );
       } catch (e) {
-        // TODO: Liquid - Revert back to "Failed to parse input" once InputParser is fully integrated into Liquid SDK
-        _log.severe("Failed to prepare Send Payment", e);
+        _log.severe("Failed to parse input", e);
         return const InputState.empty();
       }
     });
@@ -101,10 +83,6 @@ class InputBloc extends Cubit<InputState> {
     _log.info("handlePaymentRequest: $inputData source: $source");
     final LNInvoice lnInvoice = inputData.invoice;
 
-    /*NodeState? nodeState = await _breezSDK.nodeInfo();
-    if (nodeState == null || nodeState.id == lnInvoice.payeePubkey) {
-      return const InputState.empty();
-    }*/
     final invoice = Invoice(
       bolt11: lnInvoice.bolt11,
       paymentHash: lnInvoice.paymentHash,
@@ -115,8 +93,6 @@ class InputBloc extends Cubit<InputState> {
     return InputState.invoice(invoice, source);
   }
 
-  // TODO: Liquid - Implement input parser to parse bolt11 invoice - https://github.com/breez/breez-liquid-sdk/issues/232
-  // ignore: unused_element
   Future<InputState> _handleParsedInput(InputType parsedInput, InputSource source) async {
     _log.info("handleParsedInput: $source => ${inputTypeToString(parsedInput)}");
     InputState result;
@@ -143,8 +119,8 @@ class InputBloc extends Cubit<InputState> {
     return result;
   }
 
-  liquid_sdk.LNInvoice parseInvoice({required String input}) {
-    _log.info("parseInvoice: $input");
-    return liquid_sdk.parseInvoice(input: input);
+  Future<InputType> parseInput({required String input}) async {
+    _log.info("parseInput: $input");
+    return await parse(input: input);
   }
 }
