@@ -4,8 +4,8 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
-  flutter: ">=3.19.0"
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: ">=3.22.0"
 
 dependencies:
   flutter:
@@ -24,7 +24,7 @@ dependencies:
     path: ../breez-liquid-sdk/packages/dart
   flutter_breez_liquid:
     path: ../breez-liquid-sdk/packages/flutter
-  flutter_rust_bridge: ">=2.0.0-dev.38"
+  flutter_rust_bridge: ^2.0.0
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations
@@ -108,9 +108,7 @@ dev_dependencies:
 dependency_overrides:
   test_api: <0.7.1 # test_api >=0.7.1 is incompatible with flutter_test from the flutter SDK
   intl: ^0.19.0 # intl is pinned to version 0.18.1 by flutter_localizations from the flutter SDK.
-  # Comment-out to work with breez-sdk from git repository
-  breez_sdk:
-    path: ../breez-sdk/libs/sdk-flutter
+  # Comment-out to work with liquid-sdk from git repository
   breez_liquid:
     path: ../breez-liquid-sdk/packages/dart
   flutter_breez_liquid:
