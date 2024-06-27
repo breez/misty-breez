@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:breez_sdk/breez_sdk.dart';
 import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
 import 'package:l_breez/logger.dart';
 import 'package:l_breez/services/deep_links.dart';
@@ -19,7 +18,6 @@ class ServiceInjector {
   DeepLinksService? _deepLinksService;
 
   // breez sdk
-  BreezSDK? _breezSDK;
   BreezLiquidSDK? _liquidSDK;
   LightningLinksService? _lightningLinksService;
 
@@ -36,8 +34,6 @@ class ServiceInjector {
   static void configure(ServiceInjector injector) => _injector = injector;
 
   Notifications get notifications => _notifications ??= FirebaseNotifications();
-
-  BreezSDK get breezSDK => _breezSDK ??= BreezSDK();
 
   Device get device => _device ??= Device();
 

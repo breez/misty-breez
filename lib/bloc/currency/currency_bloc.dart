@@ -1,24 +1,21 @@
 import 'dart:async';
 
-import 'package:breez_sdk/breez_sdk.dart';
-import 'package:breez_sdk/sdk.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
 import 'package:l_breez/bloc/currency/currency_state.dart';
-import 'package:l_breez/services/injector.dart';
 
 class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
-  final BreezSDK _breezSDK;
+  final BreezLiquidSDK liquidSdk;
 
-  CurrencyBloc(this._breezSDK) : super(CurrencyState.initial()) {
+  CurrencyBloc(this.liquidSdk) : super(CurrencyState.initial()) {
     hydrate();
     _initializeCurrencyBloc();
   }
 
   void _initializeCurrencyBloc() {
     late final StreamSubscription streamSubscription;
-    // TODO: Liquid - Listen to Liquid SDK's invoice paid stream
-    final breezLiquidSdk = ServiceInjector().liquidSDK;
-    streamSubscription = breezLiquidSdk.walletInfoStream.listen(
+    streamSubscription = liquidSdk.walletInfoStream.listen(
       (walletInfo) {
         listFiatCurrencies();
         fetchExchangeRates();
@@ -28,7 +25,7 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   void listFiatCurrencies() {
-    _breezSDK.listFiatCurrencies().then((fiatCurrencies) {
+    liquidSdk.wallet!.listFiatCurrencies().then((fiatCurrencies) {
       emit(state.copyWith(
           fiatCurrenciesData: _sortedFiatCurrenciesList(
         fiatCurrencies,
@@ -59,7 +56,11 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   Future<Map<String, Rate>> fetchExchangeRates() async {
-    var exchangeRates = await _breezSDK.fetchFiatRates();
+    final List<Rate> rates = await liquidSdk.wallet!.fetchFiatRates();
+    final exchangeRates = rates.fold<Map<String, Rate>>({}, (map, rate) {
+      map[rate.coin] = rate;
+      return map;
+    });
     emit(state.copyWith(exchangeRates: exchangeRates));
     return exchangeRates;
   }

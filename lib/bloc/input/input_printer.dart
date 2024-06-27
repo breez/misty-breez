@@ -1,4 +1,4 @@
-import 'package:breez_sdk/sdk.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
 String inputTypeToString(InputType inputType) {
   if (inputType is InputType_BitcoinAddress) {
