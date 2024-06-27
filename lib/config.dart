@@ -69,7 +69,6 @@ class Config {
 
 extension ConfigCopyWith on liquid_sdk.Config {
   liquid_sdk.Config copyWith({
-    String? boltzUrl,
     String? liquidElectrumUrl,
     String? bitcoinElectrumUrl,
     String? workingDir,
@@ -78,7 +77,6 @@ extension ConfigCopyWith on liquid_sdk.Config {
     double? zeroConfMinFeeRate,
   }) {
     return liquid_sdk.Config(
-      boltzUrl: boltzUrl ?? this.boltzUrl,
       liquidElectrumUrl: liquidElectrumUrl ?? this.liquidElectrumUrl,
       bitcoinElectrumUrl: bitcoinElectrumUrl ?? this.bitcoinElectrumUrl,
       workingDir: workingDir ?? this.workingDir,
