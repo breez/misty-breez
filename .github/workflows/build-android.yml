@@ -87,6 +87,7 @@ jobs:
         run: |
           just clean
           just init
+          just init-sdk
 
       - name: Install flutter_rust_bridge_codegen dependencies
         working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
