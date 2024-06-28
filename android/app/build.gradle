@@ -96,11 +96,23 @@ android {
     buildTypes {
         debug {
             signingConfig = signingConfigs.debug
+            minifyEnabled = false
+            shrinkResources = false
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
         }
         release {
             signingConfig = signingConfigs.release
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type. Make sure to use a build
+            // variant with `debuggable false`.
+            minifyEnabled = true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources = true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
     }
 }
