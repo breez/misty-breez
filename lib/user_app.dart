@@ -81,7 +81,7 @@ class UserApp extends StatelessWidget {
                 builder: (context, accState, securityState) {
               return MaterialApp(
                 key: _appKey,
-                title: "${getSystemAppLocalizations().app_name} Liquid",
+                title: "Misty ${getSystemAppLocalizations().app_name}",
                 theme: ThemeProvider.themeOf(context).data,
                 localizationsDelegates: localizationsDelegates(),
                 supportedLocales: supportedLocales(),

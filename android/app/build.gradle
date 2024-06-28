@@ -96,6 +96,7 @@ android {
     buildTypes {
         debug {
             signingConfig = signingConfigs.debug
+            manifestPlaceholders = [appName: "Misty Breez - Debug"]
             minifyEnabled = false
             shrinkResources = false
             applicationIdSuffix = ".debug"
@@ -103,6 +104,7 @@ android {
         }
         release {
             signingConfig = signingConfigs.release
+            manifestPlaceholders = [appName: "Misty Breez"]
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type. Make sure to use a build
             // variant with `debuggable false`.
