@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.USE_BIOMETRIC" /> <!-- Android 9+ -->
     <uses-permission android:name="android.permission.NFC"/>  <!-- Deep links -->
     <application
-        android:label="Misty Breez"
+        android:label="${appName}"
         android:name="${applicationName}"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:icon="@mipmap/ic_launcher_round">
