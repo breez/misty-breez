@@ -15,7 +15,7 @@ dependencies:
 
   another_flushbar: ^1.12.30
   app_group_directory: ^2.0.0
-  archive: ^3.6.0
+  archive: ^3.6.1
   auto_size_text: ^3.0.0
   bip39: ^1.0.6
   breez_liquid:
@@ -36,13 +36,13 @@ dependencies:
       url: https://github.com/breez/DragAndDropLists
       ref: 38cc3155a6161730b4ec476d781873afb7ec4846
   duration: ^3.0.13
-  email_validator: ^2.1.17
-  extended_image: ^8.2.0
+  email_validator: ^3.0.0
+  extended_image: ^8.2.1
   ffi: ^2.1.2
   firebase_core: ^2.32.0
   firebase_dynamic_links: ^5.5.7
   firebase_messaging: ^14.9.4
-  flutter_bloc: ^8.1.5
+  flutter_bloc: ^8.1.6
   flutter_fgbg:
     git:
       url: https://github.com/breez/flutter_fgbg.git
@@ -60,14 +60,14 @@ dependencies:
   hydrated_bloc: ^9.1.5
   image: ^4.2.0
   # Doesn't support: Linux Mac Windows
-  image_cropper: <6.0.0 # flutter_secure_storage 9.2.2 depends on flutter_secure_storage_web ^1.2.1 and no versions of flutter_secure_storage match >9.2.2 <10.0.0, image_cropper >=6.0.0
+  image_cropper: ^7.0.5
   # Doesn't support: Linux Mac Windows
-  image_picker: ^1.1.1
+  image_picker: ^1.1.2
   ini: ^2.1.0
   intl: ^0.19.0
   # Doesn't support: Linux Mac
   local_auth: ^2.2.0
-  local_auth_android: ^1.0.39
+  local_auth_android: ^1.0.40
   local_auth_darwin: ^1.3.1
   logging: ^1.2.0
   mockito: ^5.4.4
@@ -85,13 +85,13 @@ dependencies:
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
   simple_animations: ^5.0.2
   sqflite_common_ffi: ^2.3.3
-  sqlite3_flutter_libs: ^0.5.22
+  sqlite3_flutter_libs: ^0.5.24
   synchronized: ^3.1.0+1
   theme_provider: ^0.6.0
   timeago: ^3.6.1
   # Doesn't support: Linux Mac Windows
   uni_links: ^0.5.1
-  url_launcher: ^6.2.6
+  url_launcher: ^6.3.0
   vector_math: ^2.1.4
 
 dev_dependencies:
@@ -99,9 +99,9 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.10
+  build_runner: ^2.4.11
   flutter_lints: ^4.0.0
-  test: ^1.25.5
+  test: ^1.25.7
 
 dependency_overrides:
   test_api: <0.7.1 # test_api >=0.7.1 is incompatible with flutter_test from the flutter SDK
