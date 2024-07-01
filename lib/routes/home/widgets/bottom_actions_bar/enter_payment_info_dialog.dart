@@ -215,8 +215,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
           inputType is InputType_LnUrlPay ||
           inputType is InputType_LnUrlWithdraw ||
           inputType is InputType_LnUrlAuth ||
-          inputType is InputType_LnUrlError ||
-          inputType is InputType_NodeId)) {
+          inputType is InputType_LnUrlError)) {
         _setValidatorErrorMessage(texts.payment_info_dialog_error_unsupported_input);
       }
     } catch (e) {
