@@ -10,6 +10,7 @@ import 'package:l_breez/handlers/handler.dart';
 import 'package:l_breez/handlers/handler_context_provider.dart';
 import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_handler.dart';
+import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_handler.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
@@ -88,6 +89,8 @@ class InputHandler extends Handler {
       return handleInvoice(context, inputState.invoice);
     } else if (inputState is LnUrlPayInputState) {
       handlePayRequest(context, firstPaymentItemKey, inputState.data);
+    } else if (inputState is LnUrlWithdrawInputState) {
+      handleWithdrawRequest(context, inputState.data);
     } else if (inputState is LnUrlErrorInputState) {
       throw inputState.data.reason;
     } else if (inputState is BitcoinAddressInputState) {

@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_state.dart';
 import 'package:l_breez/routes/create_invoice/qr_code_dialog.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
+import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
+import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
@@ -21,7 +24,14 @@ import 'package:logging/logging.dart';
 final _log = Logger("CreateInvoicePage");
 
 class CreateInvoicePage extends StatefulWidget {
-  const CreateInvoicePage({super.key});
+  final Function(LNURLPageResult? result)? onFinish;
+  final LnUrlWithdrawRequestData? requestData;
+
+  const CreateInvoicePage({super.key, this.onFinish, this.requestData})
+      : assert(
+          requestData == null || (onFinish != null),
+          "If you are using LNURL withdraw, you must provide an onFinish callback.",
+        );
 
   @override
   State<StatefulWidget> createState() {
@@ -41,6 +51,20 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   void initState() {
     super.initState();
     _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        final data = widget.requestData;
+        if (data != null) {
+          final currencyState = context.read<CurrencyBloc>().state;
+          _amountController.text = currencyState.bitcoinCurrency.format(
+            data.maxWithdrawable.toInt() ~/ 1000,
+            includeDisplayName: false,
+          );
+          _descriptionController.text = data.defaultDescription;
+        }
+      },
+    );
   }
 
   @override
@@ -102,12 +126,41 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       ),
       bottomNavigationBar: SingleButtonBottomBar(
         stickToBottom: true,
-        text: texts.invoice_action_create,
+        text: widget.requestData != null ? texts.invoice_action_redeem : texts.invoice_action_create,
         onPressed: () {
           if (_formKey.currentState?.validate() ?? false) {
-            _createInvoice();
+            final data = widget.requestData;
+            if (data != null) {
+              _withdraw(data);
+            } else {
+              _createInvoice();
+            }
           }
         },
+      ),
+    );
+  }
+
+  Future<void> _withdraw(
+    LnUrlWithdrawRequestData data,
+  ) async {
+    _log.info("Withdraw request: description=${data.defaultDescription}, k1=${data.k1}, "
+        "min=${data.minWithdrawable}, max=${data.maxWithdrawable}");
+    final CurrencyBloc currencyBloc = context.read<CurrencyBloc>();
+
+    final navigator = Navigator.of(context);
+    navigator.pop();
+
+    showDialog(
+      useRootNavigator: false,
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => LNURLWithdrawDialog(
+        requestData: data,
+        amountSats: currencyBloc.state.bitcoinCurrency.parse(
+          _amountController.text,
+        ),
+        onFinish: widget.onFinish!,
       ),
     );
   }
