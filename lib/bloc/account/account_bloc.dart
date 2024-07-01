@@ -334,4 +334,16 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     }
     return filteredPayments;
   }
+
+  Future<liquid_sdk.LnUrlPayResult> lnurlPay({
+    required liquid_sdk.LnUrlPayRequest req,
+  }) async {
+    try {
+      return await _liquidSdk.instance!.lnurlPay(req: req);
+    } catch (e) {
+      _log.severe("lnurlPay error", e);
+      rethrow;
+    }
+  }
+
 }
