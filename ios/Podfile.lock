@@ -299,7 +299,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 60c1d3bc1beef809fd1ad1189a8057a040c59f2e
   FirebaseMessaging: 585984d0a1df120617eb10b44cad8968b859815e
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_breez_liquid: 90494dd8df26d6258f0d2a90663204ee6257ede2
+  flutter_breez_liquid: fff5f2d9bc7c3b396a87ab41540a223e06de694b
   flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
