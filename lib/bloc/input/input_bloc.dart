@@ -39,10 +39,11 @@ class InputBloc extends Cubit<InputState> {
 
   Future trackPayment(String? invoiceId) async {
     _log.info("Tracking incoming payment: $invoiceId");
-    await ServiceInjector().liquidSDK.paymentsStream.firstWhere(
-      (paymentList) {
-        if (paymentList.any((e) => e.swapId == invoiceId)) {
-          if (invoiceId != null && invoiceId.isNotEmpty) {
+    await ServiceInjector().liquidSDK.paymentResultStream.firstWhere(
+      (payment) {
+        if (invoiceId != null && invoiceId.isNotEmpty) {
+          if (payment.swapId == invoiceId &&
+              (payment.status == PaymentState.pending || payment.status == PaymentState.complete)) {
             _log.info("Payment Received! Id: $invoiceId");
             return true;
           }

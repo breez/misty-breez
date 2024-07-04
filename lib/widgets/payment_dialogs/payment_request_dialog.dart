@@ -79,8 +79,12 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         firstPaymentItemKey: widget.firstPaymentItemKey,
         minHeight: minHeight,
         paymentFunc: () async {
-          final resp = await accountBloc.prepareSendPayment(widget.invoice.bolt11);
-          return accountBloc.sendPayment(resp);
+          try {
+            final prepareSendResponse = await accountBloc.prepareSendPayment(widget.invoice.bolt11);
+            return await accountBloc.sendPayment(prepareSendResponse);
+          } catch (e) {
+            rethrow;
+          }
         },
         onStateChange: (state) => _onStateChange(state),
       );
