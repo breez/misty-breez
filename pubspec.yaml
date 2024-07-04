@@ -19,9 +19,11 @@ dependencies:
   auto_size_text: ^3.0.0
   bip39: ^1.0.6
   breez_liquid:
-    path: ../breez-liquid-sdk/packages/dart
+    git:
+      url: https://github.com/breez/breez-liquid-sdk-dart
   flutter_breez_liquid:
-    path: ../breez-liquid-sdk/packages/flutter
+    git:
+      url: https://github.com/breez/breez-liquid-sdk-flutter
   flutter_rust_bridge: ^2.0.0
   breez_translations:
     git:
