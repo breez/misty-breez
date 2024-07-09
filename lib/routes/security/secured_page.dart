@@ -1,9 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/bloc/security/security_bloc.dart';
 import 'package:l_breez/bloc/security/security_state.dart';
 import 'package:l_breez/routes/security/widget/pin_code_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("SecuredPage");

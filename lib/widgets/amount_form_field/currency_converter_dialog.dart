@@ -1,5 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_state.dart';
@@ -8,9 +11,6 @@ import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CurrencyConverterDialog extends StatefulWidget {
   final Function(String string) _onConvert;

@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_request_dialog.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment/processing_payment_animated_content.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment/processing_payment_content.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 
 const _kPaymentListItemHeight = 72.0;
 

@@ -1,5 +1,5 @@
-import 'package:l_breez/routes/create_invoice/widgets/compact_qr_image.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/routes/create_invoice/widgets/compact_qr_image.dart';
 
 class InvoiceQR extends StatelessWidget {
   final String bolt11;

@@ -1,9 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/routes/create_invoice/widgets/compact_qr_image.dart';
 import 'package:l_breez/services/injector.dart';
 import 'package:l_breez/widgets/address_widget.dart';
 import 'package:l_breez/widgets/flushbar.dart';
-import 'package:flutter/material.dart';
 
 class AddressQRWidget extends StatelessWidget {
   final String address;

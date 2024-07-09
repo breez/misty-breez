@@ -2,6 +2,11 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image/image.dart' as dart_image;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:l_breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
@@ -9,11 +14,6 @@ import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/widgets/breez_avatar.dart';
 import 'package:l_breez/widgets/flushbar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image/image.dart' as dart_image;
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("BreezAvatarDialog");

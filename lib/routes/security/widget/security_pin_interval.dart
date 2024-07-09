@@ -1,11 +1,11 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
-import 'package:l_breez/bloc/security/security_bloc.dart';
-import 'package:l_breez/widgets/preview/preview.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:l_breez/bloc/security/security_bloc.dart';
+import 'package:l_breez/widgets/preview/preview.dart';
 
 class SecurityPinInterval extends StatelessWidget {
   final Duration interval;

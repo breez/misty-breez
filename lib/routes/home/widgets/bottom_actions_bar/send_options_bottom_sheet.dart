@@ -1,8 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_action_item_image.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:flutter/material.dart';
 
 class SendOptionsBottomSheet extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;

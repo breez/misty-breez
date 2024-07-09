@@ -1,5 +1,5 @@
-import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:flutter/material.dart';
+import 'package:l_breez/theme/theme_provider.dart' as theme;
 
 class ProcessingPaymentAnimatedContent extends StatelessWidget {
   final Color color;

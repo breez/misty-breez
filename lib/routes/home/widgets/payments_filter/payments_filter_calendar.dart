@@ -1,12 +1,12 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/calendar_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 
 class PaymentsFilterCalendar extends StatelessWidget {
   final List<PaymentType> filter;

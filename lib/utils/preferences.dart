@@ -1,5 +1,5 @@
-import 'package:l_breez/models/bug_report_behavior.dart';
 import 'package:flutter/foundation.dart';
+import 'package:l_breez/models/bug_report_behavior.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preference_app_group/shared_preference_app_group.dart';
 import 'package:shared_preferences/shared_preferences.dart';

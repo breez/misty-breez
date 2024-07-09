@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/bloc/input/input_bloc.dart';
 import 'package:l_breez/bloc/input/input_source.dart';
 import 'package:l_breez/bloc/input/input_state.dart';
@@ -11,8 +13,6 @@ import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_request_dialog.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("InputHandler");

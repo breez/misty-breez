@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_page.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/route.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 
 class MnemonicsConfirmationPage extends StatefulWidget {
   final String mnemonics;

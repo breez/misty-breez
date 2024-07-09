@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:l_breez/routes/create_invoice/widgets/particle_model.dart';
 import 'package:l_breez/routes/create_invoice/widgets/particle_painter.dart';
-import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class Particles extends StatefulWidget {

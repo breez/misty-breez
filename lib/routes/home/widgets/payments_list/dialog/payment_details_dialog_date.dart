@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/utils/date.dart';
-import 'package:flutter/material.dart';
 
 class PaymentDetailsDialogDate extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;

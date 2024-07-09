@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/credentials_manager.dart';
@@ -22,7 +23,6 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preference_app_group/shared_preference_app_group.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 
 final _log = Logger("Main");
 
@@ -42,7 +42,7 @@ void main() async {
     var breezLogger = injector.breezLogger;
 
     // Initialize Log Stream
-    if (injector.liquidSDK.wallet == null) {
+    if (injector.liquidSDK.instance == null) {
       injector.liquidSDK.initializeLogStream();
       breezLogger.registerBreezLiquidSdkLogs(injector.liquidSDK);
     }

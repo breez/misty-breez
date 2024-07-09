@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_amount.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_content_title.dart';
@@ -6,7 +7,6 @@ import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_destination_pubkey.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_preimage.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_title.dart';
-import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();

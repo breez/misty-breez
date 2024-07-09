@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/widgets/breez_avatar.dart';
-import 'package:flutter/material.dart';
 
 class PaymentItemAvatar extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;

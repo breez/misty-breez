@@ -25,7 +25,7 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   void listFiatCurrencies() {
-    liquidSdk.wallet!.listFiatCurrencies().then((fiatCurrencies) {
+    liquidSdk.instance!.listFiatCurrencies().then((fiatCurrencies) {
       emit(state.copyWith(
           fiatCurrenciesData: _sortedFiatCurrenciesList(
         fiatCurrencies,
@@ -56,7 +56,7 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   Future<Map<String, Rate>> fetchExchangeRates() async {
-    final List<Rate> rates = await liquidSdk.wallet!.fetchFiatRates();
+    final List<Rate> rates = await liquidSdk.instance!.fetchFiatRates();
     final exchangeRates = rates.fold<Map<String, Rate>>({}, (map, rate) {
       map[rate.coin] = rate;
       return map;

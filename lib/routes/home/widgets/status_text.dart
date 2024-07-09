@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
 import 'package:l_breez/theme/theme_provider.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/widgets/loading_animated_text.dart';
-import 'package:flutter/material.dart';
 
 class StatusText extends StatelessWidget {
   final AccountState accountState;

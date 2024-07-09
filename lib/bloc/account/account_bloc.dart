@@ -136,7 +136,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     var lastSync = DateTime.fromMillisecondsSinceEpoch(0);
     FGBGEvents.stream.listen((event) async {
       if (event == FGBGType.foreground && DateTime.now().difference(lastSync).inSeconds > nodeSyncInterval) {
-        _breezLiquidSdk.wallet?.sync();
+        _breezLiquidSdk.instance?.sync();
         lastSync = DateTime.now();
       }
     });
@@ -146,7 +146,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     _log.info("prepareSendPayment: $invoice");
     try {
       final req = liquid_sdk.PrepareSendRequest(invoice: invoice);
-      return await _breezLiquidSdk.wallet!.prepareSendPayment(req: req);
+      return await _breezLiquidSdk.instance!.prepareSendPayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);
@@ -156,7 +156,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Future<liquid_sdk.SendPaymentResponse> sendPayment(liquid_sdk.PrepareSendResponse req) async {
     _log.info("sendPayment: $req");
     try {
-      return await _breezLiquidSdk.wallet!.sendPayment(req: req);
+      return await _breezLiquidSdk.instance!.sendPayment(req: req);
     } catch (e) {
       _log.severe("sendPayment error", e);
       return Future.error(e);
@@ -167,7 +167,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     _log.info("prepareReceivePayment: $payerAmountSat");
     try {
       final req = liquid_sdk.PrepareReceiveRequest(payerAmountSat: BigInt.from(payerAmountSat));
-      return _breezLiquidSdk.wallet!.prepareReceivePayment(req: req);
+      return _breezLiquidSdk.instance!.prepareReceivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);
@@ -177,7 +177,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Future<liquid_sdk.ReceivePaymentResponse> receivePayment(liquid_sdk.PrepareReceiveResponse req) async {
     _log.info("receivePayment: ${req.payerAmountSat}, fees: ${req.feesSat}");
     try {
-      return _breezLiquidSdk.wallet!.receivePayment(req: req);
+      return _breezLiquidSdk.instance!.receivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);

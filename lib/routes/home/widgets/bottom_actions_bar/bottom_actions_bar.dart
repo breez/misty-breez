@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/receive_options_bottom_sheet.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/send_options_bottom_sheet.dart';
-import 'package:flutter/material.dart';
 
 import 'bottom_action_item.dart';
 

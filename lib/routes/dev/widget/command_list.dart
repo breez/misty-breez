@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:l_breez/routes/dev/widget/command.dart';
 import 'package:l_breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
 
 class CommandList extends StatelessWidget {
   final bool loading;

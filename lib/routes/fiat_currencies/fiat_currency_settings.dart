@@ -1,15 +1,15 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_state.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/loader.dart';
-import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 const double ITEM_HEIGHT = 72.0;
 

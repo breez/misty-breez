@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/wordlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/utils/wordlist.dart';
 
 class RestoreForm extends StatefulWidget {
   final GlobalKey formKey;

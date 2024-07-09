@@ -1,13 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/bloc/security/security_state.dart';
 import 'package:l_breez/routes/security/widget/digit_masked_widget.dart';
 import 'package:l_breez/routes/security/widget/num_pad_widget.dart';
 import 'package:l_breez/widgets/preview/preview.dart';
 import 'package:l_breez/widgets/shake_widget.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class PinCodeWidget extends StatefulWidget {
   final int pinLength;
