@@ -22,7 +22,7 @@ class BackupBloc extends Cubit<BackupState?> {
   Future<void> backup() async {
     try {
       emit(BackupState(status: BackupStatus.INPROGRESS));
-      _liquidSDK.wallet?.backup(req: const BackupRequest());
+      _liquidSDK.instance?.backup(req: const BackupRequest());
       emit(BackupState(status: BackupStatus.SUCCESS));
     } catch (e) {
       _log.info("Failed to backup");

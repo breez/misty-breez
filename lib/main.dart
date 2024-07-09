@@ -42,7 +42,7 @@ void main() async {
     var breezLogger = injector.breezLogger;
 
     // Initialize Log Stream
-    if (injector.liquidSDK.wallet == null) {
+    if (injector.liquidSDK.instance == null) {
       injector.liquidSDK.initializeLogStream();
       breezLogger.registerBreezLiquidSdkLogs(injector.liquidSDK);
     }
