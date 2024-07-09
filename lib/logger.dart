@@ -3,12 +3,12 @@ library breez.logger;
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
-import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
-import 'package:l_breez/config.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:git_info/git_info.dart';
+import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
+import 'package:l_breez/config.dart';
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 

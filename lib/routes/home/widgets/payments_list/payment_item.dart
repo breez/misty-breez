@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/flip_transition.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/payment_details_dialog.dart';
@@ -7,7 +8,6 @@ import 'package:l_breez/routes/home/widgets/payments_list/payment_item_subtitle.
 import 'package:l_breez/routes/home/widgets/payments_list/payment_item_title.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/success_avatar.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:flutter/material.dart';
 
 class PaymentItem extends StatefulWidget {
   final PaymentMinutiae _paymentMinutiae;

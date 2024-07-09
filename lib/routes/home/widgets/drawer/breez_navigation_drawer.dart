@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
@@ -11,8 +13,6 @@ import 'package:l_breez/routes/home/widgets/drawer/breez_avatar_dialog.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_drawer_header.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/breez_avatar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 const double _kBreezBottomSheetHeight = 60.0;

@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:l_breez/routes/create_invoice/widgets/particles_animations.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment_dialog.dart';
-import 'package:flutter/material.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
   final Function()? onPrint;

@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/widgets/restore_form_page.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:flutter/material.dart';
 
 class EnterMnemonicsPage extends StatefulWidget {
   final List<String> initialWords;

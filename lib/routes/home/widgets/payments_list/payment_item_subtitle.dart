@@ -1,9 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/utils/date.dart';
-import 'package:flutter/material.dart';
 
 class PaymentItemSubtitle extends StatelessWidget {
   final PaymentMinutiae _paymentMinutiae;

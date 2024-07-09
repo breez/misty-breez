@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/services/injector.dart';
 import 'package:l_breez/utils/external_browser.dart';
 import 'package:l_breez/widgets/flushbar.dart';
-import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareablePaymentRow extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:l_breez/services/injector.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/address_qr_widget.dart';
 import 'package:l_breez/widgets/flushbar.dart';
-import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 enum AddressWidgetType {

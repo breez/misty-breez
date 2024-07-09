@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
 import 'package:l_breez/handlers/handler.dart';
 import 'package:l_breez/handlers/handler_context_provider.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("NodeConnectivityHandler");

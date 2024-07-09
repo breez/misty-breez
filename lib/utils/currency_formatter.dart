@@ -1,7 +1,7 @@
-import 'package:l_breez/models/currency.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols.dart';
 import 'package:intl/number_symbols_data.dart';
+import 'package:l_breez/models/currency.dart';
 
 class CurrencyFormatter {
   final NumberFormat formatter = _defineFormatter();

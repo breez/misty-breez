@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
@@ -12,8 +14,6 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/breez_avatar.dart';
 import 'package:l_breez/widgets/keyboard_done_action.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentRequestInfoDialog extends StatefulWidget {
   final Invoice invoice;

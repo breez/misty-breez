@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
@@ -12,8 +14,6 @@ import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_sliv
 import 'package:l_breez/routes/home/widgets/payments_list/payments_list.dart';
 import 'package:l_breez/routes/home/widgets/status_text.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 const _kFilterMaxSize = 64.0;

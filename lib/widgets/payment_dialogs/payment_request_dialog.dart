@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_confirmation_dialog.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_request_info_dialog.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum PaymentRequestState {
   PAYMENT_REQUEST,

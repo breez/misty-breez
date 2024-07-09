@@ -1,7 +1,7 @@
 // Color(0xFF121212) values are tbd
-import 'package:l_breez/theme/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:l_breez/theme/theme_extensions.dart';
 
 import 'breez_colors.dart';
 

@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/payment_item_avatar.dart';
 import 'package:l_breez/theme/theme_extensions.dart';
-import 'package:flutter/material.dart';
 
 class PaymentDetailsDialogTitle extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;

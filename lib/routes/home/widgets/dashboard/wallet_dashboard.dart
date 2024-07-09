@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
@@ -7,8 +9,6 @@ import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/home/widgets/dashboard/fiat_balance_text.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'balance_text.dart';
 

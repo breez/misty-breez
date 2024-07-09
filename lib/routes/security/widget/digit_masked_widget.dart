@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:l_breez/widgets/preview/preview.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/widgets/preview/preview.dart';
 
 class DigitMaskedWidget extends StatelessWidget {
   final double size;

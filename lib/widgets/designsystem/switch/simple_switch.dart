@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:l_breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/utils/min_font_size.dart';
 
 class SimpleSwitch extends StatelessWidget {
   final String text;
