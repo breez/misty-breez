@@ -20,10 +20,10 @@ dependencies:
   bip39: ^1.0.6
   breez_liquid:
     git:
-      url: https://github.com/breez/breez-liquid-sdk-dart
+      url: https://github.com/breez/breez-sdk-liquid-dart
   flutter_breez_liquid:
     git:
-      url: https://github.com/breez/breez-liquid-sdk-flutter
+      url: https://github.com/breez/breez-sdk-liquid-flutter
   flutter_rust_bridge: 2.0.0
   breez_translations:
     git:
@@ -110,9 +110,9 @@ dependency_overrides:
   intl: ^0.19.0 # intl is pinned to version 0.18.1 by flutter_localizations from the flutter SDK.
   # Comment-out to work with liquid-sdk from git repository
   breez_liquid:
-    path: ../breez-liquid-sdk/packages/dart
+    path: ../breez-sdk-liquid/packages/dart
   flutter_breez_liquid:
-    path: ../breez-liquid-sdk/packages/flutter
+    path: ../breez-sdk-liquid/packages/flutter
 
 flutter:
   uses-material-design: true

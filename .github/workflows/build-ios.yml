@@ -74,37 +74,37 @@ jobs:
         working-directory: lbreez
         run: echo "$GOOGLE_SERVICES_IOS" > ios/Runner/GoogleService-Info.plist
 
-      - name: 🏗️ Setup breez-liquid-sdk repository
+      - name: 🏗️ Setup breez-sdk-liquid repository
         uses: actions/checkout@v4
         with:
-          repository: 'breez/breez-liquid-sdk'
+          repository: 'breez/breez-sdk-liquid'
           ssh-key: ${{secrets.REPO_SSH_KEY}}
-          path: 'breez-liquid-sdk'
+          path: 'breez-sdk-liquid'
           ref: ${{ inputs.liquid_sdk_ref }}
 
       - name: 🏗️ Rust cache
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: breez-liquid-sdk/lib/
+          workspaces: breez-sdk-liquid/lib/
           cache-all-crates: true
 
       - name: 📦 Install Breez Liquid SDK dependencies
-        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just clean
           just init
 
       - name: Install flutter_rust_bridge_codegen dependencies
-        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just frb
 
       - name: Generate Dart/Flutter bindings
-        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just codegen
 
       - name: Generate FFI bindings
-        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just ffigen
 
@@ -118,13 +118,13 @@ jobs:
           ssh-add ~/.ssh/id_rsa
 
       - name: 🔨 Build Breez Liquid SDK
-        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           rm -rf ../../../target
           just build
 
       - name: 🔨 Build iOS binaries
-        working-directory: breez-liquid-sdk/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just build-apple
           just link

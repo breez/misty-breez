@@ -44,7 +44,7 @@ void main() async {
     // Initialize Log Stream
     if (injector.liquidSDK.instance == null) {
       injector.liquidSDK.initializeLogStream();
-      breezLogger.registerBreezLiquidSdkLogs(injector.liquidSDK);
+      breezLogger.registerBreezSdkLiquidLogs(injector.liquidSDK);
     }
 
     final appDir = await getApplicationDocumentsDirectory();

@@ -35,12 +35,12 @@ jobs:
         with: 
           path: 'lbreez'
 
-      - name: 🏗️ Setup breez-liquid-sdk repository
+      - name: 🏗️ Setup breez-sdk-liquid repository
         uses: actions/checkout@v4
         with:
-          repository: 'breez/breez-liquid-sdk'
+          repository: 'breez/breez-sdk-liquid'
           ssh-key: ${{secrets.REPO_SSH_KEY}}
-          path: 'breez-liquid-sdk'
+          path: 'breez-sdk-liquid'
           ref: ${{ inputs.liquid_sdk_ref }}
 
       - name: 🏗️ Setup Java

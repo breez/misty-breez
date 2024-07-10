@@ -7,13 +7,13 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:git_info/git_info.dart';
-import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
+import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
 import 'package:l_breez/config.dart';
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
 final _log = Logger("Logger");
-final _liquidSdkLog = Logger("BreezLiquidSdk");
+final _liquidSdkLog = Logger("BreezSdkLiquid");
 
 void shareLog() async {
   var config = await Config.instance();
@@ -80,8 +80,8 @@ class BreezLogger {
     });
   }
 
-  void registerBreezLiquidSdkLogs(BreezLiquidSDK breezLiquidSDK) {
-    breezLiquidSDK.logStream.listen((e) => _logLiquidSdkEntries(e, _liquidSdkLog));
+  void registerBreezSdkLiquidLogs(BreezSDKLiquid liquidSdk) {
+    liquidSdk.logStream.listen((e) => _logLiquidSdkEntries(e, _liquidSdkLog));
   }
 
   void _logLiquidSdkEntries(liquid_sdk.LogEntry log, Logger logger) {
