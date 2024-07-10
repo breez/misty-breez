@@ -7,7 +7,7 @@ import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
 import 'package:l_breez/bloc/account/account_state_assembler.dart';
-import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
+import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
 import 'package:l_breez/bloc/account/credentials_manager.dart';
 import 'package:l_breez/bloc/account/payment_filters.dart';
 import 'package:l_breez/bloc/account/payment_result.dart';
@@ -39,10 +39,10 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Stream<PaymentFilters> get paymentFiltersStream => _paymentFiltersStreamController.stream;
 
   final CredentialsManager _credentialsManager;
-  final BreezLiquidSDK _breezLiquidSdk;
+  final BreezSDKLiquid _liquidSdk;
 
   AccountBloc(
-    this._breezLiquidSdk,
+    this._liquidSdk,
     this._credentialsManager,
   ) : super(AccountState.initial()) {
     hydrate();
@@ -57,9 +57,9 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Stream<AccountState> _watchAccountChanges() {
     return Rx.combineLatest3<List<liquid_sdk.Payment>?, PaymentFilters, liquid_sdk.GetInfoResponse?,
         AccountState>(
-      _breezLiquidSdk.paymentsStream,
+      _liquidSdk.paymentsStream,
       paymentFiltersStream,
-      _breezLiquidSdk.walletInfoStream,
+      _liquidSdk.walletInfoStream,
       (payments, paymentFilters, walletInfo) {
         return assembleAccountState(payments, paymentFilters, walletInfo, state) ?? state;
       },
@@ -116,7 +116,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
         config: config.sdkConfig,
         mnemonic: mnemonic,
       );
-      await _breezLiquidSdk.connect(req: req);
+      await _liquidSdk.connect(req: req);
       _log.info("connected to breez lib");
       emit(state.copyWith(connectionStatus: ConnectionStatus.CONNECTED));
       _watchAccountChanges().listen((acc) {
@@ -136,7 +136,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     var lastSync = DateTime.fromMillisecondsSinceEpoch(0);
     FGBGEvents.stream.listen((event) async {
       if (event == FGBGType.foreground && DateTime.now().difference(lastSync).inSeconds > nodeSyncInterval) {
-        _breezLiquidSdk.instance?.sync();
+        _liquidSdk.instance?.sync();
         lastSync = DateTime.now();
       }
     });
@@ -146,7 +146,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     _log.info("prepareSendPayment: $invoice");
     try {
       final req = liquid_sdk.PrepareSendRequest(invoice: invoice);
-      return await _breezLiquidSdk.instance!.prepareSendPayment(req: req);
+      return await _liquidSdk.instance!.prepareSendPayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);
@@ -156,7 +156,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Future<liquid_sdk.SendPaymentResponse> sendPayment(liquid_sdk.PrepareSendResponse req) async {
     _log.info("sendPayment: $req");
     try {
-      return await _breezLiquidSdk.instance!.sendPayment(req: req);
+      return await _liquidSdk.instance!.sendPayment(req: req);
     } catch (e) {
       _log.severe("sendPayment error", e);
       return Future.error(e);
@@ -167,7 +167,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     _log.info("prepareReceivePayment: $payerAmountSat");
     try {
       final req = liquid_sdk.PrepareReceiveRequest(payerAmountSat: BigInt.from(payerAmountSat));
-      return _breezLiquidSdk.instance!.prepareReceivePayment(req: req);
+      return _liquidSdk.instance!.prepareReceivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);
@@ -177,7 +177,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   Future<liquid_sdk.ReceivePaymentResponse> receivePayment(liquid_sdk.PrepareReceiveResponse req) async {
     _log.info("receivePayment: ${req.payerAmountSat}, fees: ${req.feesSat}");
     try {
-      return _breezLiquidSdk.instance!.receivePayment(req: req);
+      return _liquidSdk.instance!.receivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
       return Future.error(e);
@@ -278,7 +278,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   void _listenPaymentResultEvents() {
     _log.info("_listenPaymentResultEvents");
     // TODO: Liquid - Listen to Liquid SDK's payment result stream
-    _breezLiquidSdk.paymentResultStream.listen((paymentInfo) {
+    _liquidSdk.paymentResultStream.listen((paymentInfo) {
       _paymentResultStreamController.add(
         PaymentResult(paymentInfo: paymentInfo),
       );

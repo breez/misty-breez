@@ -8,20 +8,20 @@
 src="./src/images/liquid-logo-color.svg">
 
 l-Breez is a migration of [Breez mobile app](https://github.com/breez/breezmobile) to
-the [Breez Liquid SDK](https://github.com/breez/breez-liquid-sdk) infrastructure.
+the [Breez Liquid SDK](https://github.com/breez/breez-sdk-liquid) infrastructure.
 
 ## Build
 
 ### Build the lightning_tookit plugin
 
-l-Breez depends on Breez Liquid SDK's [breez_liquid](https://github.com/breez/breez-liquid-sdk/tree/main/packages/dart) & [flutter_breez_liquid](https://github.com/breez/breez-liquid-sdk/tree/main/packages/flutter) plugin,
+l-Breez depends on Breez Liquid SDK's [breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/dart) & [flutter_breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/flutter) plugin,
 so be sure to follow those instructions first.
 
-After successfully having build the `breez_liquid` & `flutter_breez_liquid` make sure that [breez-liquid-sdk](https://github.com/breez/breez-liquid-sdk)
+After successfully having build the `breez_liquid` & `flutter_breez_liquid` make sure that [breez-sdk-liquid](https://github.com/breez/breez-sdk-liquid)
 and l-breez are side by side like so:
 
 ```
-breez-liquid-sdk/
+breez-sdk-liquid/
 ├─ lib/
 │  ├─ bindings/
 │  ├─ core/

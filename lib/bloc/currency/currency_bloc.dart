@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/bloc/account/breez_liquid_sdk.dart';
+import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
 import 'package:l_breez/bloc/currency/currency_state.dart';
 
 class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
-  final BreezLiquidSDK liquidSdk;
+  final BreezSDKLiquid liquidSdk;
 
   CurrencyBloc(this.liquidSdk) : super(CurrencyState.initial()) {
     hydrate();
