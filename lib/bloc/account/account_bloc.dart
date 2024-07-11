@@ -332,7 +332,6 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
         );
       }).toList();
     }
-    // TODO: Liquid - Return chronologically sorted list
-    return filteredPayments.reversed.toList();
+    return filteredPayments;
   }
 }
