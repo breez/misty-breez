@@ -23,7 +23,7 @@ class BreezSDKLiquid {
 
   Future _fetchWalletData(liquid_sdk.BindingLiquidSdk sdk) async {
     await _getInfo(sdk);
-    await _listPayments(sdk: sdk, req: const liquid_sdk.ListPaymentsRequest());
+    await _listPayments(sdk: sdk);
   }
 
   Future<liquid_sdk.GetInfoResponse> _getInfo(liquid_sdk.BindingLiquidSdk sdk) async {
@@ -34,8 +34,8 @@ class BreezSDKLiquid {
 
   Future<List<liquid_sdk.Payment>> _listPayments({
     required liquid_sdk.BindingLiquidSdk sdk,
-    required liquid_sdk.ListPaymentsRequest req,
   }) async {
+    final req = const liquid_sdk.ListPaymentsRequest();
     final paymentsList = await sdk.listPayments(req: req);
     _paymentsController.add(paymentsList);
     return paymentsList;
