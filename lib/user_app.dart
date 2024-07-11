@@ -9,6 +9,7 @@ import 'package:l_breez/bloc/security/security_bloc.dart';
 import 'package:l_breez/bloc/security/security_state.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
+import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
 import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/routes/dev/developers_view.dart';
 import 'package:l_breez/routes/fiat_currencies/fiat_currency_settings.dart';
@@ -137,6 +138,11 @@ class UserApp extends StatelessWidget {
                                 case '/create_invoice':
                                   return FadeInRoute(
                                     builder: (_) => const CreateInvoicePage(),
+                                    settings: settings,
+                                  );
+                                case '/receive_chainswap':
+                                  return FadeInRoute(
+                                    builder: (_) => const ReceiveChainSwapPage(),
                                     settings: settings,
                                   );
                                 case '/fiat_currency':
