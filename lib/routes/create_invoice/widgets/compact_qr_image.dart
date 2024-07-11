@@ -47,8 +47,9 @@ var _versionsToMaxCharacters = [
 class CompactQRImage extends StatelessWidget {
   final String data;
   final double? size;
+  final bool bip21;
 
-  const CompactQRImage({super.key, required this.data, this.size});
+  const CompactQRImage({super.key, required this.data, this.size, this.bip21 = false});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,7 @@ class CompactQRImage extends StatelessWidget {
          we will not change the case of the parameters because BIP21 parameters are case sensitive.
          Ref. https://bitcoinops.org/en/bech32-sending-support/#creating-more-efficient-qr-codes-with-bech32-addresses
       */
-      data: data.toUpperCase(),
+      data: bip21 ? data : data.toUpperCase(),
       size: size,
     );
   }
