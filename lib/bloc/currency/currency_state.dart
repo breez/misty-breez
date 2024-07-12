@@ -9,27 +9,30 @@ class CurrencyState {
   final Map<String, Rate> exchangeRates;
   final List<FiatCurrency> fiatCurrenciesData;
 
-  CurrencyState(
-      {this.fiatCurrenciesData = const [],
-      this.exchangeRates = const {},
-      this.preferredCurrencies = const ["USD", "EUR", "GBP", "JPY"],
-      this.fiatId = "USD",
-      this.bitcoinTicker = "SAT"});
+  CurrencyState({
+    this.fiatCurrenciesData = const [],
+    this.exchangeRates = const {},
+    this.preferredCurrencies = const ["USD", "EUR", "GBP", "JPY"],
+    this.fiatId = "USD",
+    this.bitcoinTicker = "SAT",
+  });
 
   CurrencyState.initial() : this();
 
-  CurrencyState copyWith(
-      {List<FiatCurrency>? fiatCurrenciesData,
-      Map<String, Rate>? exchangeRates,
-      String? fiatId,
-      String? bitcoinTicker,
-      List<String>? preferredCurrencies}) {
+  CurrencyState copyWith({
+    List<FiatCurrency>? fiatCurrenciesData,
+    Map<String, Rate>? exchangeRates,
+    String? fiatId,
+    String? bitcoinTicker,
+    List<String>? preferredCurrencies,
+  }) {
     return CurrencyState(
-        fiatCurrenciesData: fiatCurrenciesData ?? this.fiatCurrenciesData,
-        exchangeRates: exchangeRates ?? this.exchangeRates,
-        preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
-        fiatId: fiatId ?? this.fiatId,
-        bitcoinTicker: bitcoinTicker ?? this.bitcoinTicker);
+      fiatCurrenciesData: fiatCurrenciesData ?? this.fiatCurrenciesData,
+      exchangeRates: exchangeRates ?? this.exchangeRates,
+      preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
+      fiatId: fiatId ?? this.fiatId,
+      bitcoinTicker: bitcoinTicker ?? this.bitcoinTicker,
+    );
   }
 
   BitcoinCurrency get bitcoinCurrency => BitcoinCurrency.fromTickerSymbol(bitcoinTicker);
@@ -66,6 +69,9 @@ class CurrencyState {
         fiatId = json['fiatId'],
         bitcoinTicker = json['bitcoinTicker'];
 
-  Map<String, dynamic> toJson() =>
-      {'preferredCurrencies': preferredCurrencies, 'fiatId': fiatId, 'bitcoinTicker': bitcoinTicker};
+  Map<String, dynamic> toJson() => {
+        'preferredCurrencies': preferredCurrencies,
+        'fiatId': fiatId,
+        'bitcoinTicker': bitcoinTicker,
+      };
 }

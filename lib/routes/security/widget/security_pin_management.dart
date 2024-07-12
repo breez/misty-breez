@@ -16,9 +16,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SecurityPinManagement extends StatelessWidget {
-  const SecurityPinManagement({
-    super.key,
-  });
+  const SecurityPinManagement({super.key});
 
   @override
   Widget build(BuildContext context) {

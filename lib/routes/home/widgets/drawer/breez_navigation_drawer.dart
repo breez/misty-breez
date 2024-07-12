@@ -70,45 +70,49 @@ class BreezNavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    return BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, userSettings) {
-      List<Widget> children = [
-        _breezDrawerHeader(context, userSettings.profileSettings),
-        const Padding(padding: EdgeInsets.only(top: 16)),
-      ];
-      for (var groupItems in _drawerGroupedItems) {
-        children.addAll(_createDrawerGroupWidgets(
-          groupItems,
-          context,
-          _drawerGroupedItems.indexOf(groupItems),
-          withDivider: children.isNotEmpty && groupItems.withDivider,
-        ));
-      }
+    return BlocBuilder<UserProfileBloc, UserProfileState>(
+      builder: (context, userSettings) {
+        List<Widget> children = [
+          _breezDrawerHeader(context, userSettings.profileSettings),
+          const Padding(padding: EdgeInsets.only(top: 16)),
+        ];
+        for (var groupItems in _drawerGroupedItems) {
+          children.addAll(
+            _createDrawerGroupWidgets(
+              groupItems,
+              context,
+              _drawerGroupedItems.indexOf(groupItems),
+              withDivider: children.isNotEmpty && groupItems.withDivider,
+            ),
+          );
+        }
 
-      return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
-              systemNavigationBarColor: themeData.customData.navigationDrawerBgColor,
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
+                systemNavigationBarColor: themeData.customData.navigationDrawerBgColor,
+              ),
+          child: Theme(
+            data: themeData.copyWith(
+              canvasColor: themeData.customData.navigationDrawerBgColor,
             ),
-        child: Theme(
-          data: themeData.copyWith(
-            canvasColor: themeData.customData.navigationDrawerBgColor,
-          ),
-          child: Drawer(
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(0.0),
-                    children: children,
+            child: Drawer(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(0.0),
+                      children: children,
+                    ),
                   ),
-                ),
-                const NavigationDrawerFooter(),
-              ],
+                  const NavigationDrawerFooter(),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   List<Widget> _createDrawerGroupWidgets(
@@ -118,20 +122,24 @@ class BreezNavigationDrawer extends StatelessWidget {
     bool withDivider = false,
   }) {
     List<Widget> groupItems = group.items
-        .map((action) => _actionTile(
-              action,
-              context,
-              action.onItemSelected ?? _onItemSelected,
-            ))
+        .map(
+          (action) => _actionTile(
+            action,
+            context,
+            action.onItemSelected ?? _onItemSelected,
+          ),
+        )
         .toList();
     if (group.groupTitle != null && groupItems.isNotEmpty) {
       groupItems = group.items
-          .map((action) => _actionTile(
-                action,
-                context,
-                action.onItemSelected ?? _onItemSelected,
-                subTile: true,
-              ))
+          .map(
+            (action) => _actionTile(
+              action,
+              context,
+              action.onItemSelected ?? _onItemSelected,
+              subTile: true,
+            ),
+          )
           .toList();
       groupItems = [
         _ExpansionTile(
@@ -187,9 +195,7 @@ class BreezNavigationDrawer extends StatelessWidget {
 }
 
 class NavigationDrawerFooter extends StatelessWidget {
-  const NavigationDrawerFooter({
-    super.key,
-  });
+  const NavigationDrawerFooter({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -433,13 +439,16 @@ class _ExpansionTile extends StatelessWidget {
                 ),
         ),
         children: items
-            .map((item) => Padding(
-                  padding: const EdgeInsets.only(left: 0.0),
-                  child: item,
-                ))
+            .map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(left: 0.0),
+                child: item,
+              ),
+            )
             .toList(),
         onExpansionChanged: (isExpanded) {
-          context.read<UserProfileBloc>().updateProfile(expandPreferences: isExpanded);
+          var userProfileBloc = context.read<UserProfileBloc>();
+          userProfileBloc.updateProfile(expandPreferences: isExpanded);
           if (isExpanded) {
             Timer(
               const Duration(milliseconds: 200),

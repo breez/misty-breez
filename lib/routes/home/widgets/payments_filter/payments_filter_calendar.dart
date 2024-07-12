@@ -11,10 +11,7 @@ import 'package:l_breez/theme/theme_provider.dart' as theme;
 class PaymentsFilterCalendar extends StatelessWidget {
   final List<PaymentType> filter;
 
-  const PaymentsFilterCalendar(
-    this.filter, {
-    super.key,
-  });
+  const PaymentsFilterCalendar(this.filter, {super.key});
 
   @override
   Widget build(BuildContext context) {

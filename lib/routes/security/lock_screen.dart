@@ -15,10 +15,7 @@ import 'package:path_provider/path_provider.dart';
 class LockScreen extends StatelessWidget {
   final AuthorizedAction authorizedAction;
 
-  const LockScreen({
-    super.key,
-    required this.authorizedAction,
-  });
+  const LockScreen({super.key, required this.authorizedAction});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +33,8 @@ class LockScreen extends StatelessWidget {
               testPinCodeFunction: (pin) async {
                 bool pinMatches = false;
                 try {
-                  pinMatches = await context.read<SecurityBloc>().testPin(pin);
+                  var securityBloc = context.read<SecurityBloc>();
+                  pinMatches = await securityBloc.testPin(pin);
                 } catch (e) {
                   return TestPinResult(
                     false,
@@ -54,9 +52,10 @@ class LockScreen extends StatelessWidget {
                 }
               },
               testBiometricsFunction: () async {
-                bool pinMatches = await context.read<SecurityBloc>().localAuthentication(
-                      texts.security_and_backup_validate_biometrics_reason,
-                    );
+                var securityBloc = context.read<SecurityBloc>();
+                bool pinMatches = await securityBloc.localAuthentication(
+                  texts.security_and_backup_validate_biometrics_reason,
+                );
                 if (pinMatches) {
                   _authorized(navigator);
                   return const TestPinResult(true);

@@ -101,31 +101,32 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.only(top: 24.0, bottom: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: isUploading ? null : () => navigator.pop(),
-                        child: Text(
-                          texts.breez_avatar_dialog_action_cancel,
-                          style: themeData.primaryTextTheme.labelLarge,
-                        ),
+                padding: const EdgeInsets.only(top: 24.0, bottom: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: isUploading ? null : () => navigator.pop(),
+                      child: Text(
+                        texts.breez_avatar_dialog_action_cancel,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
-                      TextButton(
-                        onPressed: isUploading
-                            ? null
-                            : () async {
-                                await saveAvatarChanges();
-                              },
-                        child: Text(
-                          texts.breez_avatar_dialog_action_save,
-                          style: themeData.primaryTextTheme.labelLarge,
-                        ),
+                    ),
+                    TextButton(
+                      onPressed: isUploading
+                          ? null
+                          : () async {
+                              await saveAvatarChanges();
+                            },
+                      child: Text(
+                        texts.breez_avatar_dialog_action_save,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         },
@@ -239,9 +240,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
 }
 
 class TitleBackground extends StatelessWidget {
-  const TitleBackground({
-    super.key,
-  });
+  const TitleBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -311,7 +310,9 @@ class AvatarPreview extends StatelessWidget {
       builder: (context, userModel) {
         return Stack(
           children: [
-            isUploading ? const AvatarSpinner() : const SizedBox(),
+            if (isUploading) ...[
+              const AvatarSpinner(),
+            ],
             Padding(
               padding: const EdgeInsets.only(top: 26.0),
               child: AspectRatio(
@@ -330,9 +331,7 @@ class AvatarPreview extends StatelessWidget {
 }
 
 class AvatarSpinner extends StatelessWidget {
-  const AvatarSpinner({
-    super.key,
-  });
+  const AvatarSpinner({super.key});
 
   @override
   Widget build(BuildContext context) {

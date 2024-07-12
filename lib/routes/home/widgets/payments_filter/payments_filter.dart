@@ -9,14 +9,10 @@ import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_cale
 import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_dropdown.dart';
 
 class PaymentsFilters extends StatefulWidget {
-  const PaymentsFilters({
-    super.key,
-  });
+  const PaymentsFilters({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return PaymentsFilterState();
-  }
+  State<StatefulWidget> createState() => PaymentsFilterState();
 }
 
 class PaymentsFilterState extends State<PaymentsFilters> {

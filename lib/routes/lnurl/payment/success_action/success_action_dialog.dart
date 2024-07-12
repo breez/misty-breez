@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/shareable_payment_row.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/dialog/shareable_payment_row.dart';
 
 class SuccessActionDialog extends StatefulWidget {
   final String message;
@@ -10,9 +10,7 @@ class SuccessActionDialog extends StatefulWidget {
   const SuccessActionDialog({super.key, required this.message, this.url});
 
   @override
-  State<StatefulWidget> createState() {
-    return SuccessActionDialogState();
-  }
+  State<StatefulWidget> createState() => SuccessActionDialogState();
 }
 
 class SuccessActionDialogState extends State<SuccessActionDialog> {

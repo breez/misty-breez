@@ -7,10 +7,7 @@ import 'package:l_breez/theme/theme_provider.dart' as theme;
 class SendOptionsBottomSheet extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
 
-  const SendOptionsBottomSheet({
-    super.key,
-    required this.firstPaymentItemKey,
-  });
+  const SendOptionsBottomSheet({super.key, required this.firstPaymentItemKey});
 
   @override
   State<SendOptionsBottomSheet> createState() => _SendOptionsBottomSheetState();

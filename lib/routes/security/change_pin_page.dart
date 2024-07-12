@@ -12,9 +12,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ChangePinPage extends StatefulWidget {
-  const ChangePinPage({
-    super.key,
-  });
+  const ChangePinPage({super.key});
 
   @override
   State<ChangePinPage> createState() => _ChangePinPageState();
@@ -44,8 +42,9 @@ class _ChangePinPageState extends State<ChangePinPage> {
             return const TestPinResult(true, clearOnSuccess: true);
           } else {
             if (pin == _firstPinCode) {
-              context.read<SecurityBloc>().setPin(pin);
-              Navigator.pop(context);
+              var securityBloc = context.read<SecurityBloc>();
+              await securityBloc.setPin(pin);
+              if (context.mounted) Navigator.pop(context);
               return const TestPinResult(true);
             } else {
               setState(() {

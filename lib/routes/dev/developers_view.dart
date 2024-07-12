@@ -33,9 +33,7 @@ class Choice {
 }
 
 class DevelopersView extends StatefulWidget {
-  const DevelopersView({
-    super.key,
-  });
+  const DevelopersView({super.key});
 
   @override
   State<DevelopersView> createState() => _DevelopersViewState();
@@ -99,13 +97,15 @@ class _DevelopersViewState extends State<DevelopersView> {
                   },
                 ),
             ]
-                .map((choice) => PopupMenuItem<Choice>(
-                      value: choice,
-                      child: Text(
-                        choice.title,
-                        style: themeData.textTheme.labelLarge,
-                      ),
-                    ))
+                .map(
+                  (choice) => PopupMenuItem<Choice>(
+                    value: choice,
+                    child: Text(
+                      choice.title,
+                      style: themeData.textTheme.labelLarge,
+                    ),
+                  ),
+                )
                 .toList(),
           ),
         ],

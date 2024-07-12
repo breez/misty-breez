@@ -7,10 +7,7 @@ import 'bottom_action_item_image.dart';
 class ReceiveOptionsBottomSheet extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
 
-  const ReceiveOptionsBottomSheet({
-    super.key,
-    required this.firstPaymentItemKey,
-  });
+  const ReceiveOptionsBottomSheet({super.key, required this.firstPaymentItemKey});
 
   @override
   Widget build(BuildContext context) {

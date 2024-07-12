@@ -16,10 +16,7 @@ class PaymentFilterExporter extends StatelessWidget {
   final _log = Logger("PaymentmentFilterExporter");
   final List<PaymentType>? filter;
 
-  PaymentFilterExporter(
-    this.filter, {
-    super.key,
-  });
+  PaymentFilterExporter(this.filter, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,27 +26,28 @@ class PaymentFilterExporter extends StatelessWidget {
     return BlocBuilder<AccountBloc, AccountState>(
       builder: (context, account) {
         return Padding(
-            padding: const EdgeInsets.only(right: 0.0),
-            child: PopupMenuButton(
-              color: themeData.colorScheme.surface,
-              icon: Icon(
-                Icons.more_vert,
-                color: themeData.paymentItemTitleTextStyle.color,
-              ),
-              padding: EdgeInsets.zero,
-              offset: const Offset(12, 24),
-              onSelected: _select,
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  height: 36,
-                  value: Choice(() => _exportPayments(context)),
-                  child: Text(
-                    texts.payments_filter_action_export,
-                    style: themeData.textTheme.labelLarge,
-                  ),
+          padding: const EdgeInsets.only(right: 0.0),
+          child: PopupMenuButton(
+            color: themeData.colorScheme.surface,
+            icon: Icon(
+              Icons.more_vert,
+              color: themeData.paymentItemTitleTextStyle.color,
+            ),
+            padding: EdgeInsets.zero,
+            offset: const Offset(12, 24),
+            onSelected: _select,
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                height: 36,
+                value: Choice(() => _exportPayments(context)),
+                child: Text(
+                  texts.payments_filter_action_export,
+                  style: themeData.textTheme.labelLarge,
                 ),
-              ],
-            ));
+              ),
+            ],
+          ),
+        );
       },
     );
   }

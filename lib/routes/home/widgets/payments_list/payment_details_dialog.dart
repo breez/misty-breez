@@ -17,10 +17,7 @@ final _log = Logger("PaymentDetailsDialog");
 class PaymentDetailsDialog extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;
 
-  PaymentDetailsDialog({
-    super.key,
-    required this.paymentMinutiae,
-  }) {
+  PaymentDetailsDialog({super.key, required this.paymentMinutiae}) {
     _log.info("PaymentDetailsDialog for payment: ${paymentMinutiae.id}");
   }
 

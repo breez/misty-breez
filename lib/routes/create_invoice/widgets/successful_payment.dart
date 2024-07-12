@@ -5,15 +5,10 @@ import 'package:l_breez/routes/create_invoice/widgets/successful_payment_dialog.
 class SuccessfulPaymentRoute extends StatefulWidget {
   final Function()? onPrint;
 
-  const SuccessfulPaymentRoute({
-    super.key,
-    this.onPrint,
-  });
+  const SuccessfulPaymentRoute({super.key, this.onPrint});
 
   @override
-  State<StatefulWidget> createState() {
-    return SuccessfulPaymentRouteState();
-  }
+  State<StatefulWidget> createState() => SuccessfulPaymentRouteState();
 }
 
 class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute> with WidgetsBindingObserver {

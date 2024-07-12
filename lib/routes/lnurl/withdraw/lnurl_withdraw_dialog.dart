@@ -42,10 +42,12 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     _opacityAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: controller,
-      curve: Curves.ease,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Curves.ease,
+      ),
+    );
     controller.value = 1.0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {

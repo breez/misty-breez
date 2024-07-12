@@ -12,10 +12,7 @@ final log = Logger("ExpiryAndFeeMessage");
 class ExpiryAndFeeMessage extends StatelessWidget {
   final int feesSat;
 
-  const ExpiryAndFeeMessage({
-    super.key,
-    required this.feesSat,
-  });
+  const ExpiryAndFeeMessage({super.key, required this.feesSat});
 
   @override
   Widget build(BuildContext context) {

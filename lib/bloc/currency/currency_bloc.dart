@@ -25,13 +25,16 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   void listFiatCurrencies() {
-    liquidSdk.instance!.listFiatCurrencies().then((fiatCurrencies) {
-      emit(state.copyWith(
+    liquidSdk.instance!.listFiatCurrencies().then(
+      (fiatCurrencies) {
+        emit(state.copyWith(
           fiatCurrenciesData: _sortedFiatCurrenciesList(
-        fiatCurrencies,
-        state.preferredCurrencies,
-      )));
-    });
+            fiatCurrencies,
+            state.preferredCurrencies,
+          ),
+        ));
+      },
+    );
   }
 
   List<FiatCurrency> _sortedFiatCurrenciesList(

@@ -46,9 +46,7 @@ class LNURLPaymentPage extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return LNURLPaymentPageState();
-  }
+  State<StatefulWidget> createState() => LNURLPaymentPageState();
 }
 
 class LNURLPaymentPageState extends State<LNURLPaymentPage> {
@@ -131,44 +129,45 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
               ),
               if (!fixedAmount) ...[
                 Padding(
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                        style: theme.FieldTextStyle.labelStyle,
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: texts.lnurl_fetch_invoice_min(
-                              currencyState.bitcoinCurrency.format(
-                                (widget.data.minSendable.toInt() ~/ 1000),
-                              ),
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      style: theme.FieldTextStyle.labelStyle,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: texts.lnurl_fetch_invoice_min(
+                            currencyState.bitcoinCurrency.format(
+                              (widget.data.minSendable.toInt() ~/ 1000),
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                _amountController.text = currencyState.bitcoinCurrency.format(
-                                  (widget.data.minSendable.toInt() ~/ 1000),
-                                  includeDisplayName: false,
-                                );
-                              },
                           ),
-                          TextSpan(
-                            text: texts.lnurl_fetch_invoice_and(
-                              currencyState.bitcoinCurrency.format(
-                                (widget.data.maxSendable.toInt() ~/ 1000),
-                              ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _amountController.text = currencyState.bitcoinCurrency.format(
+                                (widget.data.minSendable.toInt() ~/ 1000),
+                                includeDisplayName: false,
+                              );
+                            },
+                        ),
+                        TextSpan(
+                          text: texts.lnurl_fetch_invoice_and(
+                            currencyState.bitcoinCurrency.format(
+                              (widget.data.maxSendable.toInt() ~/ 1000),
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                _amountController.text = currencyState.bitcoinCurrency.format(
-                                  (widget.data.maxSendable.toInt() ~/ 1000),
-                                  includeDisplayName: false,
-                                );
-                              },
-                          )
-                        ],
-                      ),
-                    )),
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _amountController.text = currencyState.bitcoinCurrency.format(
+                                (widget.data.maxSendable.toInt() ~/ 1000),
+                                includeDisplayName: false,
+                              );
+                            },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ],
               /*
               if (widget.name?.mandatory == true) ...[

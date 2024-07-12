@@ -17,9 +17,7 @@ class EnterPaymentInfoDialog extends StatefulWidget {
   const EnterPaymentInfoDialog({super.key, required this.paymentItemKey});
 
   @override
-  State<StatefulWidget> createState() {
-    return EnterPaymentInfoDialogState();
-  }
+  State<StatefulWidget> createState() => EnterPaymentInfoDialogState();
 }
 
 class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
@@ -107,15 +105,15 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   return null;
                 },
               ),
-              _scannerErrorMessage.isNotEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        _scannerErrorMessage,
-                        style: theme.validatorStyle,
-                      ),
-                    )
-                  : const SizedBox(),
+              if (_scannerErrorMessage.isNotEmpty) ...[
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    _scannerErrorMessage,
+                    style: theme.validatorStyle,
+                  ),
+                ),
+              ],
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
@@ -208,7 +206,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
     try {
       _setValidatorErrorMessage("");
-      final inputType = await context.read<InputBloc>().parseInput(input: input);
+      var inputBloc = context.read<InputBloc>();
+      final inputType = await inputBloc.parseInput(input: input);
       _log.info("Parsed input type: '${inputType.runtimeType.toString()}");
       // Can't compare against a list of InputType as runtime type comparison is a bit tricky with binding generated enums
       if (!(inputType is InputType_Bolt11 ||

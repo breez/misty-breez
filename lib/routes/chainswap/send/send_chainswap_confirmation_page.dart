@@ -89,10 +89,10 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
       req: preparePayOnchainRequest,
     );
     _preparePayOnchainResponseFuture.then((feeOption) {
-      final account = context.read<AccountBloc>().state;
+      final accountState = context.read<AccountBloc>().state;
       setState(() {
         this.feeOption = feeOption;
-        isAffordable = feeOption.isAffordable(balance: account.balance);
+        isAffordable = feeOption.isAffordable(balance: accountState.balance);
       });
     }, onError: (error, stackTrace) {
       setState(() {

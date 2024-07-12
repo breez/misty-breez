@@ -10,10 +10,7 @@ import 'package:l_breez/widgets/preview/preview.dart';
 class SecurityPinInterval extends StatelessWidget {
   final Duration interval;
 
-  const SecurityPinInterval({
-    super.key,
-    required this.interval,
-  });
+  const SecurityPinInterval({super.key, required this.interval});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +32,10 @@ class SecurityPinInterval extends StatelessWidget {
           iconEnabledColor: Colors.white,
           value: interval.inSeconds,
           isDense: true,
-          onChanged: (interval) {
+          onChanged: (interval) async {
             if (interval != null) {
-              context.read<SecurityBloc>().setLockInterval(Duration(seconds: interval));
+              var securityBloc = context.read<SecurityBloc>();
+              await securityBloc.setLockInterval(Duration(seconds: interval));
             }
           },
           items: options.map((int seconds) {

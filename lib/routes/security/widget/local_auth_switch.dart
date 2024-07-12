@@ -6,9 +6,7 @@ import 'package:l_breez/bloc/security/security_state.dart';
 import 'package:l_breez/widgets/designsystem/switch/simple_switch.dart';
 
 class LocalAuthSwitch extends StatelessWidget {
-  const LocalAuthSwitch({
-    super.key,
-  });
+  const LocalAuthSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {

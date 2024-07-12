@@ -13,10 +13,7 @@ final _log = Logger("QrActionButton");
 class QrActionButton extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
 
-  const QrActionButton(
-    this.firstPaymentItemKey, {
-    super.key,
-  });
+  const QrActionButton(this.firstPaymentItemKey, {super.key});
 
   @override
   Widget build(BuildContext context) {

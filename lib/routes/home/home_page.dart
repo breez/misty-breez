@@ -19,14 +19,10 @@ import 'package:l_breez/routes/security/auto_lock_mixin.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 
 class Home extends StatefulWidget {
-  const Home({
-    super.key,
-  });
+  const Home({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return HomeState();
-  }
+  State<StatefulWidget> createState() => HomeState();
 }
 
 class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {

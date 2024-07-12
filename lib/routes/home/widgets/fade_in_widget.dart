@@ -6,9 +6,7 @@ class FadeInWidget extends StatefulWidget {
   const FadeInWidget({super.key, required this.child});
 
   @override
-  State<StatefulWidget> createState() {
-    return FadeInWidgetState();
-  }
+  State<StatefulWidget> createState() => FadeInWidgetState();
 }
 
 class FadeInWidgetState extends State<FadeInWidget> with SingleTickerProviderStateMixin {

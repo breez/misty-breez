@@ -10,12 +10,16 @@ mixin AutoLockMixin<T extends StatefulWidget> on State<T> {
   void initState() {
     super.initState();
     final securityBloc = context.read<SecurityBloc>();
-    securityBloc.stream.distinct().where((state) => state.lockState == security.LockState.locked).listen((_) {
-      Navigator.of(context, rootNavigator: true).push(FadeInRoute(
-        builder: (_) => const LockScreen(
-          authorizedAction: AuthorizedAction.popPage,
-        ),
-      ));
-    });
+    securityBloc.stream.distinct().where((state) => state.lockState == security.LockState.locked).listen(
+      (_) {
+        Navigator.of(context, rootNavigator: true).push(
+          FadeInRoute(
+            builder: (_) => const LockScreen(
+              authorizedAction: AuthorizedAction.popPage,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

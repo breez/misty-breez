@@ -59,7 +59,8 @@ class AccountPage extends StatelessWidget {
   ) {
     final nonFilteredPayments = accountState.payments;
     final paymentFilters = accountState.paymentFilters;
-    final filteredPayments = context.read<AccountBloc>().filterPaymentList();
+    var accountBloc = context.read<AccountBloc>();
+    final filteredPayments = accountBloc.filterPaymentList();
 
     List<Widget> slivers = [];
 
@@ -132,7 +133,9 @@ class AccountPage extends StatelessWidget {
       key: const Key("account_sliver"),
       fit: StackFit.expand,
       children: [
-        !showSliver ? CustomPaint(painter: BubblePainter(context)) : const SizedBox(),
+        if (!showSliver) ...[
+          CustomPaint(painter: BubblePainter(context)),
+        ],
         CustomScrollView(
           controller: scrollController,
           slivers: slivers,

@@ -9,9 +9,7 @@ import 'package:l_breez/services/injector.dart';
 import 'package:l_breez/widgets/route.dart';
 
 class SecurityMnemonicsManagement extends StatelessWidget {
-  const SecurityMnemonicsManagement({
-    super.key,
-  });
+  const SecurityMnemonicsManagement({super.key});
 
   @override
   Widget build(BuildContext context) {

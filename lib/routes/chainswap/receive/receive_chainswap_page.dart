@@ -162,10 +162,12 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
     final currencyBloc = context.read<CurrencyBloc>();
 
     final amountMsat = currencyBloc.state.bitcoinCurrency.parse(_amountController.text);
-    final prepareReceiveOnchainRequest =
-        PrepareReceiveOnchainRequest(payerAmountSat: BigInt.from(amountMsat));
-    final prepareReceiveOnchainResponse =
-        await chainSwapBloc.prepareReceiveOnchain(req: prepareReceiveOnchainRequest);
+    final prepareReceiveOnchainRequest = PrepareReceiveOnchainRequest(
+      payerAmountSat: BigInt.from(amountMsat),
+    );
+    final prepareReceiveOnchainResponse = await chainSwapBloc.prepareReceiveOnchain(
+      req: prepareReceiveOnchainRequest,
+    );
     final receiveOnchainResponse = chainSwapBloc.receiveOnchain(req: prepareReceiveOnchainResponse);
 
     navigator.pop();
@@ -211,9 +213,10 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   }
 
   String? validatePayment(int amount) {
+    var currencyBloc = context.read<CurrencyBloc>();
     return PaymentValidator(
       validatePayment: _validateSwap,
-      currency: context.read<CurrencyBloc>().state.bitcoinCurrency,
+      currency: currencyBloc.state.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }

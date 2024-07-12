@@ -34,9 +34,7 @@ class CreateInvoicePage extends StatefulWidget {
         );
 
   @override
-  State<StatefulWidget> createState() {
-    return CreateInvoicePageState();
-  }
+  State<StatefulWidget> createState() => CreateInvoicePageState();
 }
 
 class CreateInvoicePageState extends State<CreateInvoicePage> {
@@ -221,14 +219,16 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String? validatePayment(int amount) {
+    var currencyBloc = context.read<CurrencyBloc>();
     return PaymentValidator(
       validatePayment: _validatePayment,
-      currency: context.read<CurrencyBloc>().state.bitcoinCurrency,
+      currency: currencyBloc.state.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }
 
   void _validatePayment(int amount, bool outgoing) {
-    return context.read<AccountBloc>().validatePayment(amount, outgoing);
+    var accountBloc = context.read<AccountBloc>();
+    return accountBloc.validatePayment(amount, outgoing);
   }
 }

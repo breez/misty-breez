@@ -14,14 +14,10 @@ import 'package:l_breez/widgets/loader.dart';
 const double ITEM_HEIGHT = 72.0;
 
 class FiatCurrencySettings extends StatefulWidget {
-  const FiatCurrencySettings({
-    super.key,
-  });
+  const FiatCurrencySettings({super.key});
 
   @override
-  FiatCurrencySettingsState createState() {
-    return FiatCurrencySettingsState();
-  }
+  FiatCurrencySettingsState createState() => FiatCurrencySettingsState();
 }
 
 class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
@@ -97,7 +93,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     CurrencyState currencyState,
   ) {
     return DragAndDropList(
-      header: const SizedBox(),
+      header: const SizedBox.shrink(),
       canDrag: false,
       children: List.generate(currencyState.fiatCurrenciesData.length, (index) {
         return DragAndDropItem(
@@ -202,7 +198,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     CurrencyState currencyState,
     List<String> preferredFiatCurrencies,
   ) {
-    context.read<CurrencyBloc>().setPreferredCurrencies(preferredFiatCurrencies);
+    var currencyBloc = context.read<CurrencyBloc>();
+    currencyBloc.setPreferredCurrencies(preferredFiatCurrencies);
   }
 
   /// DragAndDropLists has a performance issue with displaying a big list

@@ -33,9 +33,7 @@ class QrCodeDialog extends StatefulWidget {
   );
 
   @override
-  State<StatefulWidget> createState() {
-    return QrCodeDialogState();
-  }
+  State<StatefulWidget> createState() => QrCodeDialogState();
 }
 
 class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderStateMixin {
@@ -46,8 +44,9 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller!, curve: Curves.ease));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller!, curve: Curves.ease),
+    );
     _controller!.value = 1.0;
     _controller!.addStatusListener((status) async {
       if (status == AnimationStatus.dismissed && mounted) {
@@ -67,7 +66,8 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
   void didUpdateWidget(covariant QrCodeDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.receivePaymentResponse?.id != oldWidget.receivePaymentResponse?.id) {
-      context.read<InputBloc>().trackPayment(widget.receivePaymentResponse!.id).then((value) {
+      var inputBloc = context.read<InputBloc>();
+      inputBloc.trackPayment(widget.receivePaymentResponse!.id).then((value) {
         Timer(const Duration(milliseconds: 1000), () {
           if (mounted) {
             _controller!.reverse();

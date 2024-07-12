@@ -29,7 +29,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
         if (accState.verificationStatus == VerificationStatus.UNVERIFIED) {
           warnings.add(
             WarningAction(
-              () async {
+              onTap: () async {
                 await ServiceInjector().keychain.read(CredentialsManager.accountMnemonic).then(
                       (accountMnemonic) => Navigator.pushNamed(
                         context,
@@ -45,7 +45,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
         if (backupState != null && backupState.status == BackupStatus.INPROGRESS) {
           warnings.add(
             WarningAction(
-              () {
+              onTap: () {
                 showDialog(
                   useRootNavigator: false,
                   useSafeArea: false,
@@ -66,7 +66,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
         if (backupState?.status == BackupStatus.FAILED) {
           warnings.add(
             WarningAction(
-              () {
+              onTap: () {
                 showDialog(
                   useRootNavigator: false,
                   useSafeArea: false,

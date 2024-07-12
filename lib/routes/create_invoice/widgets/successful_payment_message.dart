@@ -2,9 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class SuccessfulPaymentMessage extends StatelessWidget {
-  const SuccessfulPaymentMessage({
-    super.key,
-  });
+  const SuccessfulPaymentMessage({super.key});
 
   @override
   Widget build(BuildContext context) {

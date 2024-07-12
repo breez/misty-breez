@@ -6,16 +6,10 @@ class WarningAction extends StatefulWidget {
   final void Function() onTap;
   final Widget? iconWidget;
 
-  const WarningAction(
-    this.onTap, {
-    super.key,
-    this.iconWidget,
-  });
+  const WarningAction({super.key, required this.onTap, this.iconWidget});
 
   @override
-  State<StatefulWidget> createState() {
-    return WarningActionState();
-  }
+  State<StatefulWidget> createState() => WarningActionState();
 }
 
 class WarningActionState extends State<WarningAction> with SingleTickerProviderStateMixin {

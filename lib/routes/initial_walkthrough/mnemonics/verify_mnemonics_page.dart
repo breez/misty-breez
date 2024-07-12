@@ -80,7 +80,7 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                           fontSize: 12,
                         ),
                       )
-                    : const SizedBox(),
+                    : const SizedBox.shrink(),
               ),
               Text(
                 texts.backup_phrase_generation_type_words(

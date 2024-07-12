@@ -8,7 +8,7 @@ import 'package:l_breez/bloc/currency/currency_state.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/utils/fiat_conversion.dart';
 
-class FiatBalanceText extends StatefulWidget {
+class FiatBalanceText extends StatelessWidget {
   final CurrencyState currencyState;
   final AccountState accountState;
   final double offsetFactor;
@@ -21,64 +21,58 @@ class FiatBalanceText extends StatefulWidget {
   });
 
   @override
-  State<FiatBalanceText> createState() => _FiatBalanceTextState();
-}
-
-class _FiatBalanceTextState extends State<FiatBalanceText> {
-  @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
+    if (accountState.balance <= 0) {
+      return const SizedBox.shrink();
+    }
+
     return TextButton(
       style: ButtonStyle(
-        overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
-          if (states.contains(WidgetState.focused)) {
-            return themeData.customData.paymentListBgColor;
-          }
-          if (states.contains(WidgetState.hovered)) {
-            return themeData.customData.paymentListBgColor;
-          }
-          return null;
-        }),
+        overlayColor: WidgetStateProperty.resolveWith<Color?>(
+          (states) {
+            if (states.contains(WidgetState.focused) || states.contains(WidgetState.hovered)) {
+              return themeData.customData.paymentListBgColor;
+            }
+            return null;
+          },
+        ),
       ),
-      onPressed: () {
-        final newFiatConversion = nextValidFiatConversion(
-          widget.currencyState,
-          widget.accountState,
-        );
-        if (newFiatConversion != null) {
-          context.read<CurrencyBloc>().setFiatId(
-                newFiatConversion.currencyData.id,
-              );
-        }
-      },
-      child: widget.accountState.balance > 0
-          ? Text(
-              widget.currencyState.fiatConversion()?.format(widget.accountState.balance) ?? "",
-              style: theme.balanceFiatConversionTextStyle.copyWith(
-                color: themeData.colorScheme.onSecondary.withOpacity(
-                  pow(1.00 - widget.offsetFactor, 2).toDouble(),
-                ),
-              ),
-            )
-          : Container(),
+      onPressed: () => _changeFiatCurrency(context),
+      child: Text(
+        currencyState.fiatConversion()?.format(accountState.balance) ?? "",
+        style: theme.balanceFiatConversionTextStyle.copyWith(
+          color: themeData.colorScheme.onSecondary.withOpacity(pow(1.00 - offsetFactor, 2).toDouble()),
+        ),
+      ),
     );
+  }
+
+  void _changeFiatCurrency(BuildContext context) {
+    final newFiatConversion = nextValidFiatConversion(currencyState, accountState);
+    if (newFiatConversion != null) {
+      final currencyBloc = context.read<CurrencyBloc>();
+      currencyBloc.setFiatId(newFiatConversion.currencyData.id);
+    }
   }
 
   FiatConversion? nextValidFiatConversion(
     CurrencyState currencyState,
     AccountState accountState,
   ) {
+    final exchangeRate = currencyState.fiatExchangeRate;
+    if (exchangeRate == null) return null;
+
     final currencies = currencyState.preferredCurrencies;
     final currentIndex = currencies.indexOf(currencyState.fiatId);
-    for (var i = 1; i < currencies.length; i++) {
-      final nextIndex = (i + currentIndex) % currencies.length;
-      if (isAboveMinAmount(currencyState, accountState)) {
-        final conversion = currencyState.fiatById(currencies[nextIndex]);
-        final exchangeRate = currencyState.fiatExchangeRate;
-        if (conversion != null && exchangeRate != null) {
-          return FiatConversion(conversion, exchangeRate);
-        }
+
+    final length = currencies.length;
+    for (var i = 1; i < length; i++) {
+      final nextIndex = (i + currentIndex) % length;
+      final conversion = currencyState.fiatById(currencies[nextIndex]);
+      if (conversion != null && isAboveMinAmount(currencyState, accountState)) {
+        return FiatConversion(conversion, exchangeRate);
       }
     }
     return null;
@@ -93,7 +87,7 @@ class _FiatBalanceTextState extends State<FiatBalanceText> {
 
     double fiatValue = fiatConversion.satToFiat(accountState.balance);
     int fractionSize = fiatConversion.currencyData.info.fractionSize;
-    double minimumAmount = 1 / (pow(10, fractionSize));
+    double minimumAmount = 1 / pow(10, fractionSize);
 
     return fiatValue > minimumAmount;
   }
