@@ -56,7 +56,6 @@ dependencies:
     git:
       url: https://github.com/breez/flutter_typeahead.git
       ref: 4a494322762af9f30820f3c63aba784d46b86b69
-  git_info: ^1.1.2
   hex: ^0.2.0
   http: ^1.2.1
   hydrated_bloc: ^9.1.5
@@ -126,8 +125,6 @@ flutter:
     - src/animations/welcome/
     - assets/images/
     - assets/icons/
-    - .git/
-    - .git/refs/heads/
   fonts:
     - family: IBMPlexSans
       fonts:
