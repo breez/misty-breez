@@ -1,6 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/address_qr_widget.dart';
 import 'package:l_breez/widgets/flushbar.dart';
@@ -112,7 +112,7 @@ class _CopyIcon extends StatelessWidget {
     return IconButton(
       icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
       onPressed: () {
-        ServiceInjector().device.setClipboardText(address);
+        ServiceInjector().deviceClient.setClipboardText(address);
         showFlushbar(
           context,
           message: texts.invoice_btc_address_deposit_address_copied,

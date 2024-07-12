@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/utils/date.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;

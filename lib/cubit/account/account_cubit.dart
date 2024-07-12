@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/config.dart';
 import 'package:l_breez/cubit/account/account_state.dart';
 import 'package:l_breez/cubit/account/account_state_assembler.dart';
-import 'package:l_breez/cubit/account/breez_sdk_liquid.dart';
-import 'package:l_breez/cubit/account/credentials_manager.dart';
 import 'package:l_breez/cubit/account/payment_filters.dart';
 import 'package:l_breez/cubit/account/payment_result.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
@@ -107,7 +106,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
 
   Future _startSdkOnce({bool isRestore = true}) async {
     _log.info("starting sdk once");
-    var config = await Config.instance();
+    var config = await AppConfig.instance();
     try {
       emit(state.copyWith(connectionStatus: ConnectionStatus.connecting));
       final mnemonic = await _credentialsManager.restoreMnemonic();

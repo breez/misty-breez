@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/dev/widget/command_list.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
@@ -105,7 +105,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                               tooltip: 'Copy to Clipboard',
                               iconSize: 19.0,
                               onPressed: () {
-                                ServiceInjector().device.setClipboardText(_cliText);
+                                ServiceInjector().deviceClient.setClipboardText(_cliText);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(

@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/create_invoice/widgets/compact_qr_image.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/widgets/address_widget.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 
@@ -42,7 +42,7 @@ class AddressQRWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 16.0, left: 24, right: 24),
             child: GestureDetector(
               onTap: () {
-                ServiceInjector().device.setClipboardText(address);
+                ServiceInjector().deviceClient.setClipboardText(address);
                 showFlushbar(
                   context,
                   message: texts.invoice_btc_address_deposit_address_copied,

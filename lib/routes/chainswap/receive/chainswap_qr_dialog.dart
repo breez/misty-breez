@@ -11,7 +11,7 @@ import 'package:l_breez/cubit/input/input_state.dart';
 import 'package:l_breez/routes/create_invoice/widgets/expiry_and_fee_message.dart';
 import 'package:l_breez/routes/create_invoice/widgets/invoice_qr.dart';
 import 'package:l_breez/routes/create_invoice/widgets/loading_or_error.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
@@ -120,7 +120,9 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
                         icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
                         color: themeData.primaryTextTheme.labelLarge!.color!,
                         onPressed: () {
-                          ServiceInjector().device.setClipboardText(widget.receiveOnchainResponse!.bip21);
+                          ServiceInjector()
+                              .deviceClient
+                              .setClipboardText(widget.receiveOnchainResponse!.bip21);
                           showFlushbar(
                             context,
                             message: texts.qr_code_dialog_copied,

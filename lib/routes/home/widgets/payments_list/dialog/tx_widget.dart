@@ -1,6 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/link_launcher.dart';
 
@@ -39,7 +39,7 @@ class TxWidget extends StatelessWidget {
             linkName: txID,
             linkAddress: txURL,
             onCopy: () {
-              ServiceInjector().device.setClipboardText(txID);
+              ServiceInjector().deviceClient.setClipboardText(txID);
               showFlushbar(
                 context,
                 message: texts.payment_details_dialog_transaction_id_copied,

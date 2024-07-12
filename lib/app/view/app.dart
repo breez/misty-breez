@@ -1,11 +1,11 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/app/app_theme_manager/app_theme_manager.dart';
 import 'package:l_breez/app/routes/routes.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/cubit/account/account_state.dart';
-import 'package:l_breez/cubit/account/credentials_manager.dart';
 import 'package:l_breez/cubit/backup/backup_cubit.dart';
 import 'package:l_breez/cubit/chainswap/chainswap_cubit.dart';
 import 'package:l_breez/cubit/currency/currency_cubit.dart';
@@ -15,7 +15,7 @@ import 'package:l_breez/cubit/lnurl/lnurl_cubit.dart';
 import 'package:l_breez/cubit/security/security_cubit.dart';
 import 'package:l_breez/cubit/security/security_state.dart';
 import 'package:l_breez/cubit/user_profile/user_profile_cubit.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class App extends StatelessWidget {
@@ -35,7 +35,7 @@ class App extends StatelessWidget {
         BlocProvider<InputCubit>(
           create: (BuildContext context) => InputCubit(
             injector.lightningLinks,
-            injector.device,
+            injector.deviceClient,
           ),
         ),
         BlocProvider<UserProfileCubit>(

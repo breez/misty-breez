@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/cubit/account/breez_sdk_liquid.dart';
 import 'package:l_breez/cubit/currency/currency_state.dart';
 
 class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin {

@@ -1,0 +1,11 @@
+name: credentials_manager
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  keychain:
+    path: ../keychain
+  logging: ^1.2.0
+  path_provider: ^2.1.3

@@ -1,11 +1,11 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/cubit/account/account_state.dart';
-import 'package:l_breez/cubit/account/credentials_manager.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_page.dart';
-import 'package:l_breez/services/injector.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/widgets/route.dart';
 
 class SecurityMnemonicsManagement extends StatelessWidget {

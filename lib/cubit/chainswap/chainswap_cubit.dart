@@ -1,6 +1,6 @@
+import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/account/breez_sdk_liquid.dart';
 import 'package:l_breez/cubit/account/payment_error.dart';
 import 'package:l_breez/cubit/chainswap/chainswap_state.dart';
 

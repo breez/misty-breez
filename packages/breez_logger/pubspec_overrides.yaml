@@ -1,0 +1,24 @@
+# melos_managed_dependency_overrides: breez_preferences,breez_sdk_liquid,credentials_manager,deep_link_client,device_client,firebase_notifications_client,keychain,lightning_links,service_injector,breez_liquid,flutter_breez_liquid
+dependency_overrides:
+  breez_preferences:
+    path: ../breez_preferences
+  breez_sdk_liquid:
+    path: ../breez_sdk_liquid
+  credentials_manager:
+    path: ../credentials_manager
+  deep_link_client:
+    path: ../deep_link_client
+  device_client:
+    path: ../device_client
+  firebase_notifications_client:
+    path: ../notifications_client/firebase_notifications_client
+  keychain:
+    path: ../keychain
+  lightning_links:
+    path: ../lightning_links
+  service_injector:
+    path: ../service_injector
+  breez_liquid:
+    path: ../../../breez-sdk-liquid/packages/dart
+  flutter_breez_liquid:
+    path: ../../../breez-sdk-liquid/packages/flutter

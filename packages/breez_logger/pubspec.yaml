@@ -1,0 +1,27 @@
+name: breez_logger
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  breez_sdk_liquid:
+    path: ../breez_sdk_liquid
+  breez_liquid:
+    git:
+      url: https://github.com/breez/breez-sdk-liquid-dart
+  flutter_breez_liquid:
+    git:
+      url: https://github.com/breez/breez-sdk-liquid-flutter
+  archive: ^3.6.1
+  device_info_plus: ^10.1.0
+  share_plus: ^9.0.0
+  logging: ^1.2.0
+  rxdart: ^0.28.0
+
+dependency_overrides:
+  # Comment-out to work with breez-sdk-liquid from git repository
+  breez_liquid:
+    path: ../../../breez-sdk-liquid/packages/dart
+  flutter_breez_liquid:
+    path: ../../../breez-sdk-liquid/packages/flutter
