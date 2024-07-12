@@ -42,10 +42,12 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     _opacityAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: controller,
-      curve: Curves.ease,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Curves.ease,
+      ),
+    );
     controller.value = 1.0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -136,7 +138,7 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
   Future<LNURLPageResult> _withdraw(BuildContext context) async {
     _log.info("Withdraw ${widget.amountSats} sats");
     final texts = context.texts();
-    final lnurlBloc = context.read<LnUrlBloc>();
+    final lnurlCubit = context.read<LnUrlCubit>();
     final description = widget.requestData.defaultDescription;
 
     try {
@@ -148,28 +150,28 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
         data: widget.requestData,
         description: description,
       );
-      final resp = await lnurlBloc.lnurlWithdraw(req: req);
+      final resp = await lnurlCubit.lnurlWithdraw(req: req);
       if (resp is LnUrlWithdrawResult_Ok) {
         final paymentHash = resp.data.invoice.paymentHash;
         _log.info("LNURL withdraw success for $paymentHash");
-        return const LNURLPageResult(protocol: LnUrlProtocol.Withdraw);
+        return const LNURLPageResult(protocol: LnUrlProtocol.withdraw);
       } else if (resp is LnUrlWithdrawResult_ErrorStatus) {
         final reason = resp.data.reason;
         _log.info("LNURL withdraw failed: $reason");
         return LNURLPageResult(
-          protocol: LnUrlProtocol.Withdraw,
+          protocol: LnUrlProtocol.withdraw,
           error: reason,
         );
       } else {
         _log.warning("Unknown response from lnurlWithdraw: $resp");
         return LNURLPageResult(
-          protocol: LnUrlProtocol.Withdraw,
+          protocol: LnUrlProtocol.withdraw,
           error: texts.lnurl_payment_page_unknown_error,
         );
       }
     } catch (e) {
       _log.warning("Error withdrawing LNURL payment", e);
-      return LNURLPageResult(protocol: LnUrlProtocol.Withdraw, error: e);
+      return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: e);
     }
   }
 

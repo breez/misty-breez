@@ -118,7 +118,7 @@ class RestoreFormPageState extends State<RestoreForm> {
     if (text.isEmpty) {
       return texts.enter_backup_phrase_missing_word;
     }
-    if (!WORDLIST.contains(text.toLowerCase().trim())) {
+    if (!wordlist.contains(text.toLowerCase().trim())) {
       return texts.enter_backup_phrase_invalid_word;
     }
     return null;
@@ -128,7 +128,7 @@ class RestoreFormPageState extends State<RestoreForm> {
     if (pattern.toString().isEmpty) {
       return List.empty();
     } else {
-      var suggestionList = WORDLIST.where((item) => item.startsWith(pattern)).toList();
+      var suggestionList = wordlist.where((item) => item.startsWith(pattern)).toList();
       return suggestionList.isNotEmpty ? suggestionList : List.empty();
     }
   }

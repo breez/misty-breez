@@ -7,11 +7,11 @@ import 'package:l_breez/widgets/payment_dialogs/payment_request_info_dialog.dart
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
 
 enum PaymentRequestState {
-  PAYMENT_REQUEST,
-  WAITING_FOR_CONFIRMATION,
-  PROCESSING_PAYMENT,
-  USER_CANCELLED,
-  PAYMENT_COMPLETED
+  paymentRequest,
+  waitingForConfirmation,
+  processingPayment,
+  userCancelled,
+  paymentCompleted
 }
 
 class PaymentRequestDialog extends StatefulWidget {
@@ -31,7 +31,7 @@ class PaymentRequestDialog extends StatefulWidget {
 }
 
 class PaymentRequestDialogState extends State<PaymentRequestDialog> {
-  late AccountBloc accountBloc;
+  late AccountCubit accountCubit;
   PaymentRequestState? _state;
   String? _amountToPayStr;
   int? _amountToPay;
@@ -41,8 +41,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   @override
   void initState() {
     super.initState();
-    accountBloc = context.read<AccountBloc>();
-    _state = PaymentRequestState.PAYMENT_REQUEST;
+    accountCubit = context.read<AccountCubit>();
+    _state = PaymentRequestState.paymentRequest;
   }
 
   @override
@@ -56,11 +56,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     return PopScope(
       canPop: false,
       onPopInvoked: (_) async {
-        if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
+        if (_state == PaymentRequestState.processingPayment) {
           return;
         } else {
           final NavigatorState navigator = Navigator.of(context);
-          accountBloc.cancelPayment(widget.invoice.bolt11);
+          accountCubit.cancelPayment(widget.invoice.bolt11);
           if (_currentRoute != null && _currentRoute!.isActive) {
             navigator.removeRoute(_currentRoute!);
           }
@@ -74,40 +74,40 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   Widget showPaymentRequestDialog() {
     const double minHeight = 220;
 
-    if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
+    if (_state == PaymentRequestState.processingPayment) {
       return ProcessingPaymentDialog(
         firstPaymentItemKey: widget.firstPaymentItemKey,
         minHeight: minHeight,
         paymentFunc: () async {
           try {
-            final prepareSendResponse = await accountBloc.prepareSendPayment(widget.invoice.bolt11);
-            return await accountBloc.sendPayment(prepareSendResponse);
+            final prepareSendResponse = await accountCubit.prepareSendPayment(widget.invoice.bolt11);
+            return await accountCubit.sendPayment(prepareSendResponse);
           } catch (e) {
             rethrow;
           }
         },
         onStateChange: (state) => _onStateChange(state),
       );
-    } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
+    } else if (_state == PaymentRequestState.waitingForConfirmation) {
       return PaymentConfirmationDialog(
         widget.invoice.bolt11,
         _amountToPay!,
         _amountToPayStr!,
-        () => _onStateChange(PaymentRequestState.USER_CANCELLED),
+        () => _onStateChange(PaymentRequestState.userCancelled),
         (bolt11, amount) => setState(() {
           _amountToPay = amount + widget.invoice.lspFee;
-          _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
+          _onStateChange(PaymentRequestState.processingPayment);
         }),
         minHeight,
       );
     } else {
       return PaymentRequestInfoDialog(
         widget.invoice,
-        () => _onStateChange(PaymentRequestState.USER_CANCELLED),
-        () => _onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION),
+        () => _onStateChange(PaymentRequestState.userCancelled),
+        () => _onStateChange(PaymentRequestState.waitingForConfirmation),
         (bolt11, amount) {
           _amountToPay = amount + widget.invoice.lspFee;
-          _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
+          _onStateChange(PaymentRequestState.processingPayment);
         },
         (map) => _setAmountToPay(map),
         minHeight,
@@ -116,13 +116,13 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   void _onStateChange(PaymentRequestState state) {
-    if (state == PaymentRequestState.PAYMENT_COMPLETED) {
+    if (state == PaymentRequestState.paymentCompleted) {
       Navigator.of(context).pop();
       return;
     }
-    if (state == PaymentRequestState.USER_CANCELLED) {
+    if (state == PaymentRequestState.userCancelled) {
       Navigator.of(context).pop();
-      accountBloc.cancelPayment(widget.invoice.bolt11);
+      accountCubit.cancelPayment(widget.invoice.bolt11);
       return;
     }
     setState(() {

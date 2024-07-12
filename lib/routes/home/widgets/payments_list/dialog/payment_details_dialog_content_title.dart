@@ -5,10 +5,7 @@ import 'package:l_breez/models/payment_minutiae.dart';
 class PaymentDetailsDialogContentTitle extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;
 
-  const PaymentDetailsDialogContentTitle({
-    super.key,
-    required this.paymentMinutiae,
-  });
+  const PaymentDetailsDialogContentTitle({super.key, required this.paymentMinutiae});
 
   @override
   Widget build(BuildContext context) {

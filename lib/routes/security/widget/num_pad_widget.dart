@@ -10,8 +10,8 @@ class NumPadWidget extends StatelessWidget {
 
   const NumPadWidget({
     super.key,
-    this.lhsActionKey = ActionKey.Clear,
-    this.rhsActionKey = ActionKey.Backspace,
+    this.lhsActionKey = ActionKey.clear,
+    this.rhsActionKey = ActionKey.backspace,
     required this.onDigitPressed,
     required this.onActionKeyPressed,
   });
@@ -67,22 +67,22 @@ class NumPadWidget extends StatelessWidget {
 }
 
 enum ActionKey {
-  Fingerprint,
-  FaceId,
-  Backspace,
-  Clear,
+  fingerprint,
+  faceId,
+  backspace,
+  clear,
 }
 
 extension _ActionKeyIconExtension on ActionKey {
   IconData get icon {
     switch (this) {
-      case ActionKey.Fingerprint:
+      case ActionKey.fingerprint:
         return Icons.fingerprint;
-      case ActionKey.FaceId:
+      case ActionKey.faceId:
         return Icons.face;
-      case ActionKey.Backspace:
+      case ActionKey.backspace:
         return Icons.backspace;
-      case ActionKey.Clear:
+      case ActionKey.clear:
         return Icons.delete_forever;
     }
   }
@@ -113,7 +113,7 @@ void main() {
         SizedBox(
           height: 400,
           child: NumPadWidget(
-            rhsActionKey: ActionKey.FaceId,
+            rhsActionKey: ActionKey.faceId,
             onDigitPressed: digitFun,
             onActionKeyPressed: actionKeyFun,
           ),
@@ -125,7 +125,7 @@ void main() {
         SizedBox(
           height: 600,
           child: NumPadWidget(
-            rhsActionKey: ActionKey.Fingerprint,
+            rhsActionKey: ActionKey.fingerprint,
             onDigitPressed: digitFun,
             onActionKeyPressed: actionKeyFun,
           ),

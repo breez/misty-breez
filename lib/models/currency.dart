@@ -1,12 +1,10 @@
 import 'package:l_breez/utils/currency_formatter.dart';
 
-enum CurrencyID { BTC, SAT }
-
 class BitcoinCurrency extends Object {
   final String tickerSymbol;
-  static const BitcoinCurrency BTC = BitcoinCurrency._internal("BTC");
-  static const BitcoinCurrency SAT = BitcoinCurrency._internal("SAT");
-  static final List<BitcoinCurrency> currencies = List.unmodifiable([BTC, SAT]);
+  static const BitcoinCurrency btc = BitcoinCurrency._internal("BTC");
+  static const BitcoinCurrency sat = BitcoinCurrency._internal("SAT");
+  static final List<BitcoinCurrency> currencies = List.unmodifiable([btc, sat]);
 
   const BitcoinCurrency._internal(this.tickerSymbol);
 
@@ -70,5 +68,5 @@ class BitcoinCurrency extends Object {
     }
   }
 
-  double get satConversionRate => this == SAT ? 1.0 : 100000000;
+  double get satConversionRate => this == sat ? 1.0 : 100000000;
 }

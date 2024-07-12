@@ -40,4 +40,4 @@ class LNURLPageResult {
 }
 
 // Supported LNURL specs
-enum LnUrlProtocol { Auth, Pay, Withdraw }
+enum LnUrlProtocol { auth, pay, withdraw }

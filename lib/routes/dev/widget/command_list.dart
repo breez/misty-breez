@@ -11,13 +11,13 @@ class CommandList extends StatelessWidget {
   final FocusNode focusNode;
 
   const CommandList({
+    super.key,
     this.loading = false,
     this.defaults = false,
     this.fallback = const [],
     this.fallbackTextStyle = const TextStyle(),
     required this.inputController,
     required this.focusNode,
-    super.key,
   });
 
   @override

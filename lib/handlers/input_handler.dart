@@ -36,7 +36,7 @@ class InputHandler extends Handler {
   @override
   void init(HandlerContextProvider<StatefulWidget> contextProvider) {
     super.init(contextProvider);
-    _subscription = contextProvider.getBuildContext()!.read<InputBloc>().stream.listen(
+    _subscription = contextProvider.getBuildContext()!.read<InputCubit>().stream.listen(
       _listen,
       onError: (error) {
         _handlingRequest = false;
@@ -116,7 +116,7 @@ class InputHandler extends Handler {
 
   Future handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
     _log.fine("handle bitcoin address $inputState");
-    if (inputState.source == InputSource.qrcode_reader) {
+    if (inputState.source == InputSource.qrcodeReader) {
       return await Navigator.of(context).pushNamed("/reverse_swap", arguments: inputState.data);
     }
   }

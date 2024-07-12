@@ -13,10 +13,7 @@ final _log = Logger("QrActionButton");
 class QrActionButton extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
 
-  const QrActionButton(
-    this.firstPaymentItemKey, {
-    super.key,
-  });
+  const QrActionButton(this.firstPaymentItemKey, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +37,7 @@ class QrActionButton extends StatelessWidget {
 
   void _scanBarcode(BuildContext context) {
     final texts = context.texts();
-    InputBloc inputBloc = context.read<InputBloc>();
+    InputCubit inputCubit = context.read<InputCubit>();
 
     _log.info("Start qr code scan");
     Navigator.pushNamed<String>(context, "/qr_scan").then(
@@ -54,7 +51,7 @@ class QrActionButton extends StatelessWidget {
           );
           return;
         }
-        inputBloc.addIncomingInput(barcode, InputSource.qrcode_reader);
+        inputCubit.addIncomingInput(barcode, InputSource.qrcodeReader);
       },
     );
   }

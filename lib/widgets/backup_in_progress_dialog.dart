@@ -16,9 +16,9 @@ class BackupInProgressDialogState extends State<BackupInProgressDialog> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    return BlocListener<BackupBloc, BackupState?>(
+    return BlocListener<BackupCubit, BackupState?>(
         listener: (context, state) {
-          if (state?.status != BackupStatus.INPROGRESS) {
+          if (state?.status != BackupStatus.inProgress) {
             Navigator.of(context).pop();
           }
         },

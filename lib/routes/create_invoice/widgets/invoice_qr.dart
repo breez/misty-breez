@@ -5,11 +5,7 @@ class InvoiceQR extends StatelessWidget {
   final String bolt11;
   final bool bip21;
 
-  const InvoiceQR({
-    super.key,
-    required this.bolt11,
-    this.bip21 = false,
-  });
+  const InvoiceQR({super.key, required this.bolt11, this.bip21 = false});
 
   @override
   Widget build(BuildContext context) {

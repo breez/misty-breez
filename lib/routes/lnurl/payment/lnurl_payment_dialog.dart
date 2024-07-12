@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("LNURLPaymentDialog");
@@ -15,15 +15,10 @@ final _log = Logger("LNURLPaymentDialog");
 class LNURLPaymentDialog extends StatefulWidget {
   final LnUrlPayRequestData data;
 
-  const LNURLPaymentDialog({
-    required this.data,
-    super.key,
-  });
+  const LNURLPaymentDialog({super.key, required this.data});
 
   @override
-  State<StatefulWidget> createState() {
-    return LNURLPaymentDialogState();
-  }
+  State<StatefulWidget> createState() => LNURLPaymentDialogState();
 }
 
 class LNURLPaymentDialogState extends State<LNURLPaymentDialog> {
@@ -38,7 +33,7 @@ class LNURLPaymentDialogState extends State<LNURLPaymentDialog> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final texts = context.texts();
-    final currencyState = context.read<CurrencyBloc>().state;
+    final currencyState = context.read<CurrencyCubit>().state;
     final metadataMap = {
       for (var v in json.decode(widget.data.metadataStr)) v[0] as String: v[1],
     };

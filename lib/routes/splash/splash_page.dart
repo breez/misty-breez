@@ -1,18 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:l_breez/routes/splash/splash_animation_widget.dart';
 import 'package:l_breez/theme/theme_provider.dart';
 
 class SplashPage extends StatefulWidget {
   final bool isInitial;
+
   const SplashPage({super.key, required this.isInitial});
 
   @override
-  SplashPageState createState() {
-    return SplashPageState();
-  }
+  SplashPageState createState() => SplashPageState();
 }
 
 class SplashPageState extends State<SplashPage> {
@@ -24,7 +23,7 @@ class SplashPageState extends State<SplashPage> {
         Navigator.of(context).pushReplacementNamed('/intro');
       });
     } else {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed('/');
       });
     }
@@ -40,16 +39,7 @@ class SplashPageState extends State<SplashPage> {
       child: Theme(
         data: breezLightTheme,
         child: Scaffold(
-          body: (widget.isInitial)
-              ? Center(
-                  child: Image.asset(
-                    'src/images/splash-animation.gif',
-                    fit: BoxFit.contain,
-                    gaplessPlayback: true,
-                    width: MediaQuery.of(context).size.width / 3,
-                  ),
-                )
-              : const SizedBox(),
+          body: widget.isInitial ? const SplashAnimationWidget() : const SizedBox.shrink(),
         ),
       ),
     );

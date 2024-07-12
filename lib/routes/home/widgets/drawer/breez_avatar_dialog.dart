@@ -26,7 +26,7 @@ class BreezAvatarDialog extends StatefulWidget {
 }
 
 class BreezAvatarDialogState extends State<BreezAvatarDialog> {
-  late UserProfileBloc userBloc;
+  late UserProfileCubit userProfileCubit;
   final nameInputController = TextEditingController();
   final AutoSizeGroup autoSizeGroup = AutoSizeGroup();
   CroppedFile? pickedImage;
@@ -36,8 +36,8 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   @override
   void initState() {
     super.initState();
-    userBloc = context.read<UserProfileBloc>();
-    nameInputController.text = userBloc.state.profileSettings.name ?? "";
+    userProfileCubit = context.read<UserProfileCubit>();
+    nameInputController.text = userProfileCubit.state.profileSettings.name ?? "";
   }
 
   @override
@@ -101,31 +101,32 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.only(top: 24.0, bottom: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: isUploading ? null : () => navigator.pop(),
-                        child: Text(
-                          texts.breez_avatar_dialog_action_cancel,
-                          style: themeData.primaryTextTheme.labelLarge,
-                        ),
+                padding: const EdgeInsets.only(top: 24.0, bottom: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: isUploading ? null : () => navigator.pop(),
+                      child: Text(
+                        texts.breez_avatar_dialog_action_cancel,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
-                      TextButton(
-                        onPressed: isUploading
-                            ? null
-                            : () async {
-                                await saveAvatarChanges();
-                              },
-                        child: Text(
-                          texts.breez_avatar_dialog_action_save,
-                          style: themeData.primaryTextTheme.labelLarge,
-                        ),
+                    ),
+                    TextButton(
+                      onPressed: isUploading
+                          ? null
+                          : () async {
+                              await saveAvatarChanges();
+                            },
+                      child: Text(
+                        texts.breez_avatar_dialog_action_save,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         },
@@ -144,8 +145,8 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
       await Future.delayed(const Duration(seconds: 15));
       var userName = nameInputController.text.isNotEmpty
           ? nameInputController.text
-          : userBloc.state.profileSettings.name;
-      userBloc.updateProfile(name: userName);
+          : userProfileCubit.state.profileSettings.name;
+      userProfileCubit.updateProfile(name: userName);
       await uploadAvatar();
       setState(() {
         isUploading = false;
@@ -214,10 +215,10 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   Future<void> uploadAvatar() async {
     _log.fine("uploadAvatar ${pickedImage?.path} $randomAvatarPath");
     if (pickedImage != null) {
-      String imageUrl = await userBloc.uploadImage(await scaleAndFormatPNG());
-      userBloc.updateProfile(image: imageUrl);
+      String imageUrl = await userProfileCubit.uploadImage(await scaleAndFormatPNG());
+      userProfileCubit.updateProfile(image: imageUrl);
     } else if (randomAvatarPath != null) {
-      userBloc.updateProfile(image: randomAvatarPath);
+      userProfileCubit.updateProfile(image: randomAvatarPath);
     }
   }
 
@@ -239,9 +240,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
 }
 
 class TitleBackground extends StatelessWidget {
-  const TitleBackground({
-    super.key,
-  });
+  const TitleBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -307,11 +306,13 @@ class AvatarPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
       builder: (context, userModel) {
         return Stack(
           children: [
-            isUploading ? const AvatarSpinner() : const SizedBox(),
+            if (isUploading) ...[
+              const AvatarSpinner(),
+            ],
             Padding(
               padding: const EdgeInsets.only(top: 26.0),
               child: AspectRatio(
@@ -330,9 +331,7 @@ class AvatarPreview extends StatelessWidget {
 }
 
 class AvatarSpinner extends StatelessWidget {
-  const AvatarSpinner({
-    super.key,
-  });
+  const AvatarSpinner({super.key});
 
   @override
   Widget build(BuildContext context) {

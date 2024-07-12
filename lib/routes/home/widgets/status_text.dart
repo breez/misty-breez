@@ -14,9 +14,9 @@ class StatusText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (accountState.connectionStatus) {
-      case ConnectionStatus.CONNECTING:
+      case ConnectionStatus.connecting:
         return const LoadingAnimatedText();
-      case ConnectionStatus.CONNECTED:
+      case ConnectionStatus.connected:
         final texts = context.texts();
         final themeData = Theme.of(context);
 
@@ -30,7 +30,7 @@ class StatusText extends StatelessWidget {
           stepGranularity: 0.1,
         );
       default:
-        return const SizedBox();
+        return const SizedBox.shrink();
     }
   }
 }

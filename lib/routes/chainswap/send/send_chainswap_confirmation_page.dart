@@ -81,18 +81,18 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
   }
 
   void _preparePayOnchainResponse() {
-    final chainSwapBloc = context.read<ChainSwapBloc>();
+    final chainSwapCubit = context.read<ChainSwapCubit>();
     final preparePayOnchainRequest = PreparePayOnchainRequest(
       receiverAmountSat: BigInt.from(widget.amountSat),
     );
-    _preparePayOnchainResponseFuture = chainSwapBloc.preparePayOnchain(
+    _preparePayOnchainResponseFuture = chainSwapCubit.preparePayOnchain(
       req: preparePayOnchainRequest,
     );
     _preparePayOnchainResponseFuture.then((feeOption) {
-      final account = context.read<AccountBloc>().state;
+      final accountState = context.read<AccountCubit>().state;
       setState(() {
         this.feeOption = feeOption;
-        isAffordable = feeOption.isAffordable(balance: account.balance);
+        isAffordable = feeOption.isAffordable(balance: accountState.balance);
       });
     }, onError: (error, stackTrace) {
       setState(() {

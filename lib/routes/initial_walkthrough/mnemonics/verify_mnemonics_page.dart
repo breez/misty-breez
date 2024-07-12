@@ -80,7 +80,7 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                           fontSize: 12,
                         ),
                       )
-                    : const SizedBox(),
+                    : const SizedBox.shrink(),
               ),
               Text(
                 texts.backup_phrase_generation_type_words(
@@ -100,8 +100,8 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                     _hasError = false;
                   });
                   if (_formKey.currentState!.validate() && !_hasError) {
-                    final AccountBloc accountBloc = context.read();
-                    accountBloc.mnemonicsValidated();
+                    final AccountCubit accountCubit = context.read();
+                    accountCubit.mnemonicsValidated();
                     Navigator.of(context).popUntil((route) {
                       bool shouldPop = false;
                       // Pop to where the verification flow has started from,

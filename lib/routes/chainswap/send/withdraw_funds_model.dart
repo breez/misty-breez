@@ -1,7 +1,4 @@
-enum WithdrawKind {
-  withdraw_funds,
-  unexpected_funds,
-}
+enum WithdrawKind { withdrawFunds, unexpectedFunds }
 
 class WithdrawFundsPolicy {
   final WithdrawKind withdrawKind;

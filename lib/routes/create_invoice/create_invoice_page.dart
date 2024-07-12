@@ -34,9 +34,7 @@ class CreateInvoicePage extends StatefulWidget {
         );
 
   @override
-  State<StatefulWidget> createState() {
-    return CreateInvoicePageState();
-  }
+  State<StatefulWidget> createState() => CreateInvoicePageState();
 }
 
 class CreateInvoicePageState extends State<CreateInvoicePage> {
@@ -56,7 +54,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       (_) {
         final data = widget.requestData;
         if (data != null) {
-          final currencyState = context.read<CurrencyBloc>().state;
+          final currencyState = context.read<CurrencyCubit>().state;
           _amountController.text = currencyState.bitcoinCurrency.format(
             data.maxWithdrawable.toInt() ~/ 1000,
             includeDisplayName: false,
@@ -105,7 +103,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     ),
                     style: theme.FieldTextStyle.textStyle,
                   ),
-                  BlocBuilder<CurrencyBloc, CurrencyState>(
+                  BlocBuilder<CurrencyCubit, CurrencyState>(
                     builder: (context, currencyState) {
                       return AmountFormField(
                         context: context,
@@ -146,7 +144,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   ) async {
     _log.info("Withdraw request: description=${data.defaultDescription}, k1=${data.k1}, "
         "min=${data.minWithdrawable}, max=${data.maxWithdrawable}");
-    final CurrencyBloc currencyBloc = context.read<CurrencyBloc>();
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
 
     final navigator = Navigator.of(context);
     navigator.pop();
@@ -157,7 +155,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       barrierDismissible: false,
       builder: (_) => LNURLWithdrawDialog(
         requestData: data,
-        amountSats: currencyBloc.state.bitcoinCurrency.parse(
+        amountSats: currencyCubit.state.bitcoinCurrency.parse(
           _amountController.text,
         ),
         onFinish: widget.onFinish!,
@@ -169,12 +167,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     _log.info("Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}");
     final navigator = Navigator.of(context);
     final currentRoute = ModalRoute.of(navigator.context)!;
-    final accountBloc = context.read<AccountBloc>();
-    final currencyBloc = context.read<CurrencyBloc>();
+    final accountCubit = context.read<AccountCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
 
-    final amountMsat = currencyBloc.state.bitcoinCurrency.parse(_amountController.text);
-    final prepareReceiveResponse = await accountBloc.prepareReceivePayment(amountMsat);
-    final receivePaymentResponse = accountBloc.receivePayment(prepareReceiveResponse);
+    final amountMsat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
+    final prepareReceiveResponse = await accountCubit.prepareReceivePayment(amountMsat);
+    final receivePaymentResponse = accountCubit.receivePayment(prepareReceiveResponse);
 
     navigator.pop();
     Widget dialog = FutureBuilder(
@@ -221,14 +219,16 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String? validatePayment(int amount) {
+    var currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: _validatePayment,
-      currency: context.read<CurrencyBloc>().state.bitcoinCurrency,
+      currency: currencyCubit.state.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }
 
   void _validatePayment(int amount, bool outgoing) {
-    return context.read<AccountBloc>().validatePayment(amount, outgoing);
+    var accountCubit = context.read<AccountCubit>();
+    return accountCubit.validatePayment(amount, outgoing);
   }
 }

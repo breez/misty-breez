@@ -14,17 +14,17 @@ class Device extends ClipboardListener {
   final _clipboardController = BehaviorSubject<String>();
   Stream<String> get clipboardStream => _clipboardController.stream.where((e) => e != _lastFromAppClip);
 
-  static const String LAST_CLIPPING_PREFERENCES_KEY = "lastClipping";
-  static const String LAST_FROM_APP_CLIPPING_PREFERENCES_KEY = "lastFromAppClipping";
+  static const String lastClippingPreferencesKey = "lastClipping";
+  static const String lastFromAppClippingPreferencesKey = "lastFromAppClipping";
 
   String? _lastFromAppClip;
 
   Device() {
-    _log.info("Initing Device");
+    _log.info("Initializing Device");
     var sharedPreferences = SharedPreferences.getInstance();
     sharedPreferences.then((preferences) {
-      _lastFromAppClip = preferences.getString(LAST_FROM_APP_CLIPPING_PREFERENCES_KEY);
-      _clipboardController.add(preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "");
+      _lastFromAppClip = preferences.getString(lastFromAppClippingPreferencesKey);
+      _clipboardController.add(preferences.getString(lastClippingPreferencesKey) ?? "");
       _log.info("Last clipping: $_lastFromAppClip");
       fetchClipboard(preferences);
     });
@@ -36,7 +36,7 @@ class Device extends ClipboardListener {
     _log.info("Setting clipboard text: $text");
     _lastFromAppClip = text;
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(LAST_FROM_APP_CLIPPING_PREFERENCES_KEY, text);
+    prefs.setString(lastFromAppClippingPreferencesKey, text);
     await Clipboard.setData(ClipboardData(text: text));
   }
 
@@ -52,7 +52,7 @@ class Device extends ClipboardListener {
       _log.info("Clipboard text: $text");
       if (text != null) {
         _clipboardController.add(text);
-        preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
+        preferences.setString(lastClippingPreferencesKey, text);
       }
     });
   }

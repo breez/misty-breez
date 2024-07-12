@@ -9,14 +9,10 @@ import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_cale
 import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_dropdown.dart';
 
 class PaymentsFilters extends StatefulWidget {
-  const PaymentsFilters({
-    super.key,
-  });
+  const PaymentsFilters({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return PaymentsFilterState();
-  }
+  State<StatefulWidget> createState() => PaymentsFilterState();
 }
 
 class PaymentsFilterState extends State<PaymentsFilters> {
@@ -33,7 +29,7 @@ class PaymentsFilterState extends State<PaymentsFilters> {
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, account) {
         if (_filter == null) {
           _filterMap = {
@@ -57,11 +53,11 @@ class PaymentsFilterState extends State<PaymentsFilters> {
                 setState(() {
                   _filter = value?.toString();
                 });
-                final accountBloc = context.read<AccountBloc>();
-                accountBloc.changePaymentFilter(
+                final accountCubit = context.read<AccountCubit>();
+                accountCubit.changePaymentFilter(
                   filters: _getFilterType(),
-                  fromTimestamp: accountBloc.state.paymentFilters.fromTimestamp,
-                  toTimestamp: accountBloc.state.paymentFilters.toTimestamp,
+                  fromTimestamp: accountCubit.state.paymentFilters.fromTimestamp,
+                  toTimestamp: accountCubit.state.paymentFilters.toTimestamp,
                 );
               },
             ),

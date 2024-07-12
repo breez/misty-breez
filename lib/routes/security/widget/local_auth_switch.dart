@@ -6,23 +6,21 @@ import 'package:l_breez/bloc/security/security_state.dart';
 import 'package:l_breez/widgets/designsystem/switch/simple_switch.dart';
 
 class LocalAuthSwitch extends StatelessWidget {
-  const LocalAuthSwitch({
-    super.key,
-  });
+  const LocalAuthSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final securityBloc = context.read<SecurityBloc>();
+    final securityCubit = context.read<SecurityCubit>();
 
     return FutureBuilder<LocalAuthenticationOption>(
-      future: securityBloc.localAuthenticationOption(),
+      future: securityCubit.localAuthenticationOption(),
       initialData: LocalAuthenticationOption.none,
       builder: (context, snapshot) {
         final availableOption = snapshot.data ?? LocalAuthenticationOption.none;
         if (availableOption == LocalAuthenticationOption.none) {
           return Container();
         } else {
-          return BlocBuilder<SecurityBloc, SecurityState>(
+          return BlocBuilder<SecurityCubit, SecurityState>(
             builder: (context, state) {
               final localAuthEnabled = state.localAuthenticationOption != LocalAuthenticationOption.none;
               return SimpleSwitch(
@@ -42,22 +40,22 @@ class LocalAuthSwitch extends StatelessWidget {
 
   void _localAuthenticationOptionChanged(BuildContext context, bool switchEnabled) {
     final texts = context.texts();
-    final securityBloc = context.read<SecurityBloc>();
+    final securityCubit = context.read<SecurityCubit>();
     if (switchEnabled) {
-      securityBloc.localAuthentication(texts.security_and_backup_validate_biometrics_reason).then(
+      securityCubit.localAuthentication(texts.security_and_backup_validate_biometrics_reason).then(
         (authenticated) {
           if (authenticated) {
-            securityBloc.enableLocalAuthentication();
+            securityCubit.enableLocalAuthentication();
           } else {
-            securityBloc.clearLocalAuthentication();
+            securityCubit.clearLocalAuthentication();
           }
         },
         onError: (error) {
-          securityBloc.clearLocalAuthentication();
+          securityCubit.clearLocalAuthentication();
         },
       );
     } else {
-      securityBloc.clearLocalAuthentication();
+      securityCubit.clearLocalAuthentication();
     }
   }
 

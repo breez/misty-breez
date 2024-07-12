@@ -15,15 +15,13 @@ class QRScan extends StatefulWidget {
   const QRScan({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return QRScanState();
-  }
+  State<StatefulWidget> createState() => QRScanState();
 }
 
 class QRScanState extends State<QRScan> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  var popped = false;
-  MobileScannerController cameraController = MobileScannerController(
+  bool popped = false;
+  final MobileScannerController cameraController = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates,
     facing: CameraFacing.back,
     torchEnabled: false,
@@ -37,16 +35,12 @@ class QRScanState extends State<QRScan> {
     _barcodeSubscription = cameraController.barcodes.listen(onDetect);
   }
 
-  void onDetect(capture) {
+  void onDetect(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
     for (final barcode in barcodes) {
       _log.info("Barcode detected. ${barcode.displayValue}");
-      if (popped) {
-        _log.info("Skipping, already popped");
-        return;
-      }
-      if (!mounted) {
-        _log.info("Skipping, not mounted");
+      if (popped || !mounted) {
+        _log.info("Skipping, already popped or not mounted");
         return;
       }
       final code = barcode.rawValue;
@@ -71,11 +65,7 @@ class QRScanState extends State<QRScan> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0.0,
-            top: 0.0,
+          Positioned.fill(
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -90,21 +80,14 @@ class QRScanState extends State<QRScan> {
           ),
           const ScanOverlay(),
           SafeArea(
-            child: Stack(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Positioned(
-                  right: 10,
-                  top: 5,
-                  child: ImagePickerButton(cameraController),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, right: 10),
+                  child: ImagePickerButton(cameraController: cameraController),
                 ),
-                Positioned(
-                  bottom: 30.0,
-                  right: 0,
-                  left: 0,
-                  child: defaultTargetPlatform == TargetPlatform.iOS
-                      ? const QRScanCancelButton()
-                      : const SizedBox(),
-                ),
+                if (defaultTargetPlatform == TargetPlatform.iOS) const QRScanCancelButton(),
               ],
             ),
           )
@@ -117,10 +100,7 @@ class QRScanState extends State<QRScan> {
 class ImagePickerButton extends StatelessWidget {
   final MobileScannerController cameraController;
 
-  const ImagePickerButton(
-    this.cameraController, {
-    super.key,
-  });
+  const ImagePickerButton({required this.cameraController, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -146,30 +126,21 @@ class ImagePickerButton extends StatelessWidget {
           return null;
         });
 
-        if (image == null) {
-          return;
-        }
+        if (image == null) return;
+
         var filePath = image.path;
         _log.info("Picked image: $filePath");
 
-        final BarcodeCapture? barcodes = await cameraController.analyzeImage(filePath).catchError((err) {
-          _log.warning("Failed to analyze image", err);
-          return null;
-        });
+        final BarcodeCapture? barcodes = await cameraController.analyzeImage(filePath).catchError(
+          (err) {
+            _log.warning("Failed to analyze image", err);
+            return null;
+          },
+        );
 
         if (barcodes == null) {
-          _log.info("QR code found in image");
-        } else {
-          if (!context.mounted) {
-            return;
-          }
-
           _log.info("No QR code found in image");
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(texts.qr_scan_gallery_failed),
-            ),
-          );
+          scaffoldMessenger.showSnackBar(SnackBar(content: Text(texts.qr_scan_gallery_failed)));
         }
       },
     );
@@ -177,9 +148,7 @@ class ImagePickerButton extends StatelessWidget {
 }
 
 class QRScanCancelButton extends StatelessWidget {
-  const QRScanCancelButton({
-    super.key,
-  });
+  const QRScanCancelButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -188,26 +157,17 @@ class QRScanCancelButton extends StatelessWidget {
     return Center(
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(12.0),
-          ),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.8),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          border: Border.all(color: Colors.white.withOpacity(0.8)),
         ),
         child: TextButton(
           style: TextButton.styleFrom(
-            padding: const EdgeInsets.only(
-              right: 35,
-              left: 35,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 35),
           ),
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
             texts.qr_scan_action_cancel,
-            style: const TextStyle(
-              color: Colors.white,
-            ),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       ),

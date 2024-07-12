@@ -6,10 +6,7 @@ import 'package:l_breez/routes/create_invoice/widgets/successful_payment_message
 class SuccessfulPaymentDialog extends StatelessWidget {
   final Function()? onPrint;
 
-  const SuccessfulPaymentDialog({
-    super.key,
-    this.onPrint,
-  });
+  const SuccessfulPaymentDialog({super.key, this.onPrint});
 
   @override
   Widget build(BuildContext context) {

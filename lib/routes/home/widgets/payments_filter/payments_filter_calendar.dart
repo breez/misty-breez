@@ -11,17 +11,14 @@ import 'package:l_breez/theme/theme_provider.dart' as theme;
 class PaymentsFilterCalendar extends StatelessWidget {
   final List<PaymentType> filter;
 
-  const PaymentsFilterCalendar(
-    this.filter, {
-    super.key,
-  });
+  const PaymentsFilterCalendar(this.filter, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, account) {
         DateTime? firstDate;
         if (account.payments.isNotEmpty) {
@@ -47,9 +44,9 @@ class PaymentsFilterCalendar extends StatelessWidget {
                     context: context,
                     builder: (_) => CalendarDialog(firstDate!),
                   ).then((result) {
-                    final accountBloc = context.read<AccountBloc>();
+                    final accountCubit = context.read<AccountCubit>();
                     if (result != null) {
-                      accountBloc.changePaymentFilter(
+                      accountCubit.changePaymentFilter(
                         filters: filter,
                         fromTimestamp: result[0].millisecondsSinceEpoch,
                         toTimestamp: result[1].millisecondsSinceEpoch,

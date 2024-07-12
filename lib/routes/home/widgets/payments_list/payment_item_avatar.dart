@@ -7,11 +7,7 @@ class PaymentItemAvatar extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;
   final double radius;
 
-  const PaymentItemAvatar(
-    this.paymentMinutiae, {
-    this.radius = 20.0,
-    super.key,
-  });
+  const PaymentItemAvatar(this.paymentMinutiae, {this.radius = 20.0, super.key});
 
   @override
   Widget build(BuildContext context) {

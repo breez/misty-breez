@@ -64,7 +64,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         if (widget.popOnCompletion) {
           Navigator.of(context).removeRoute(_currentRoute!);
         }
-        widget.onStateChange?.call(PaymentRequestState.PAYMENT_COMPLETED);
+        widget.onStateChange?.call(PaymentRequestState.paymentCompleted);
       }
     });
   }
@@ -102,7 +102,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       if (widget.popOnCompletion) {
         navigator.removeRoute(_currentRoute!);
       }
-      widget.onStateChange?.call(PaymentRequestState.PAYMENT_COMPLETED);
+      widget.onStateChange?.call(PaymentRequestState.paymentCompleted);
       if (widget.isLnUrlPayment) {
         navigator.pop(err);
       }

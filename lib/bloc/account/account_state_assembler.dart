@@ -29,7 +29,7 @@ AccountState? assembleAccountState(
     onChainFeeRate: 0,
     payments: payments?.map((e) => PaymentMinutiae.fromPayment(e, texts)).toList(),
     paymentFilters: paymentFilters,
-    connectionStatus: ConnectionStatus.CONNECTED,
+    connectionStatus: ConnectionStatus.connected,
     verificationStatus: state.verificationStatus,
   );
 }

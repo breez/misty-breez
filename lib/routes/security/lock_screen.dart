@@ -15,10 +15,7 @@ import 'package:path_provider/path_provider.dart';
 class LockScreen extends StatelessWidget {
   final AuthorizedAction authorizedAction;
 
-  const LockScreen({
-    super.key,
-    required this.authorizedAction,
-  });
+  const LockScreen({super.key, required this.authorizedAction});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +25,7 @@ class LockScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        body: BlocBuilder<SecurityBloc, SecurityState>(
+        body: BlocBuilder<SecurityCubit, SecurityState>(
           builder: (context, state) {
             return PinCodeWidget(
               label: texts.lock_screen_enter_pin,
@@ -36,7 +33,8 @@ class LockScreen extends StatelessWidget {
               testPinCodeFunction: (pin) async {
                 bool pinMatches = false;
                 try {
-                  pinMatches = await context.read<SecurityBloc>().testPin(pin);
+                  final securityCubit = context.read<SecurityCubit>();
+                  pinMatches = await securityCubit.testPin(pin);
                 } catch (e) {
                   return TestPinResult(
                     false,
@@ -54,9 +52,10 @@ class LockScreen extends StatelessWidget {
                 }
               },
               testBiometricsFunction: () async {
-                bool pinMatches = await context.read<SecurityBloc>().localAuthentication(
-                      texts.security_and_backup_validate_biometrics_reason,
-                    );
+                final securityCubit = context.read<SecurityCubit>();
+                bool pinMatches = await securityCubit.localAuthentication(
+                  texts.security_and_backup_validate_biometrics_reason,
+                );
                 if (pinMatches) {
                   _authorized(navigator);
                   return const TestPinResult(true);
@@ -101,8 +100,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<SecurityBloc>(
-          create: (BuildContext context) => SecurityBloc(),
+        BlocProvider<SecurityCubit>(
+          create: (BuildContext context) => SecurityCubit(),
         ),
       ],
       child: MaterialApp(

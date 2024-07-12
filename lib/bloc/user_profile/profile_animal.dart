@@ -14,32 +14,32 @@ import 'package:breez_translations/generated/breez_translations_sv.dart';
 import 'package:flutter/material.dart';
 
 enum ProfileAnimal {
-  BAT,
-  BEAR,
-  BOAR,
-  CAT,
-  CHICK,
-  COW,
-  DEER,
-  DOG,
-  EAGLE,
-  ELEPHANT,
-  FOX,
-  FROG,
-  HIPPO,
-  HUMMINGBIRD,
-  KOALA,
-  LION,
-  MONKEY,
-  MOUSE,
-  OWL,
-  OX,
-  PANDA,
-  PIG,
-  RABBIT,
-  SEAGULL,
-  SHEEP,
-  SNAKE,
+  bat,
+  bear,
+  boar,
+  cat,
+  chick,
+  cow,
+  deer,
+  dog,
+  eagle,
+  elephant,
+  fox,
+  frog,
+  hippo,
+  hummingbird,
+  koala,
+  lion,
+  monkey,
+  mouse,
+  owl,
+  ox,
+  panda,
+  pig,
+  rabbit,
+  seagull,
+  sheep,
+  snake,
 }
 
 ProfileAnimal? profileAnimalFromName(String? name, BreezTranslations texts) {
@@ -66,57 +66,57 @@ ProfileAnimal? profileAnimalFromName(String? name, BreezTranslations texts) {
 extension ProfileAnimalExtension on ProfileAnimal {
   String name(BreezTranslations texts) {
     switch (this) {
-      case ProfileAnimal.BAT:
+      case ProfileAnimal.bat:
         return texts.app_animal_bat;
-      case ProfileAnimal.BEAR:
+      case ProfileAnimal.bear:
         return texts.app_animal_bear;
-      case ProfileAnimal.BOAR:
+      case ProfileAnimal.boar:
         return texts.app_animal_boar;
-      case ProfileAnimal.CAT:
+      case ProfileAnimal.cat:
         return texts.app_animal_cat;
-      case ProfileAnimal.CHICK:
+      case ProfileAnimal.chick:
         return texts.app_animal_chick;
-      case ProfileAnimal.COW:
+      case ProfileAnimal.cow:
         return texts.app_animal_cow;
-      case ProfileAnimal.DEER:
+      case ProfileAnimal.deer:
         return texts.app_animal_deer;
-      case ProfileAnimal.DOG:
+      case ProfileAnimal.dog:
         return texts.app_animal_dog;
-      case ProfileAnimal.EAGLE:
+      case ProfileAnimal.eagle:
         return texts.app_animal_eagle;
-      case ProfileAnimal.ELEPHANT:
+      case ProfileAnimal.elephant:
         return texts.app_animal_elephant;
-      case ProfileAnimal.FOX:
+      case ProfileAnimal.fox:
         return texts.app_animal_fox;
-      case ProfileAnimal.FROG:
+      case ProfileAnimal.frog:
         return texts.app_animal_frog;
-      case ProfileAnimal.HIPPO:
+      case ProfileAnimal.hippo:
         return texts.app_animal_hippo;
-      case ProfileAnimal.HUMMINGBIRD:
+      case ProfileAnimal.hummingbird:
         return texts.app_animal_hummingbird;
-      case ProfileAnimal.KOALA:
+      case ProfileAnimal.koala:
         return texts.app_animal_koala;
-      case ProfileAnimal.LION:
+      case ProfileAnimal.lion:
         return texts.app_animal_lion;
-      case ProfileAnimal.MONKEY:
+      case ProfileAnimal.monkey:
         return texts.app_animal_monkey;
-      case ProfileAnimal.MOUSE:
+      case ProfileAnimal.mouse:
         return texts.app_animal_mouse;
-      case ProfileAnimal.OWL:
+      case ProfileAnimal.owl:
         return texts.app_animal_owl;
-      case ProfileAnimal.OX:
+      case ProfileAnimal.ox:
         return texts.app_animal_ox;
-      case ProfileAnimal.PANDA:
+      case ProfileAnimal.panda:
         return texts.app_animal_panda;
-      case ProfileAnimal.PIG:
+      case ProfileAnimal.pig:
         return texts.app_animal_pig;
-      case ProfileAnimal.RABBIT:
+      case ProfileAnimal.rabbit:
         return texts.app_animal_rabbit;
-      case ProfileAnimal.SEAGULL:
+      case ProfileAnimal.seagull:
         return texts.app_animal_seagull;
-      case ProfileAnimal.SHEEP:
+      case ProfileAnimal.sheep:
         return texts.app_animal_sheep;
-      case ProfileAnimal.SNAKE:
+      case ProfileAnimal.snake:
         return texts.app_animal_snake;
       default:
         return "";
@@ -125,57 +125,57 @@ extension ProfileAnimalExtension on ProfileAnimal {
 
   IconData get iconData {
     switch (this) {
-      case ProfileAnimal.BAT:
+      case ProfileAnimal.bat:
         return const IconData(0xe900, fontFamily: 'animals');
-      case ProfileAnimal.BEAR:
+      case ProfileAnimal.bear:
         return const IconData(0xe901, fontFamily: 'animals');
-      case ProfileAnimal.BOAR:
+      case ProfileAnimal.boar:
         return const IconData(0xe902, fontFamily: 'animals');
-      case ProfileAnimal.CAT:
+      case ProfileAnimal.cat:
         return const IconData(0xe903, fontFamily: 'animals');
-      case ProfileAnimal.CHICK:
+      case ProfileAnimal.chick:
         return const IconData(0xe904, fontFamily: 'animals');
-      case ProfileAnimal.COW:
+      case ProfileAnimal.cow:
         return const IconData(0xe905, fontFamily: 'animals');
-      case ProfileAnimal.DEER:
+      case ProfileAnimal.deer:
         return const IconData(0xe906, fontFamily: 'animals');
-      case ProfileAnimal.DOG:
+      case ProfileAnimal.dog:
         return const IconData(0xe907, fontFamily: 'animals');
-      case ProfileAnimal.EAGLE:
+      case ProfileAnimal.eagle:
         return const IconData(0xe908, fontFamily: 'animals');
-      case ProfileAnimal.ELEPHANT:
+      case ProfileAnimal.elephant:
         return const IconData(0xe909, fontFamily: 'animals');
-      case ProfileAnimal.FOX:
+      case ProfileAnimal.fox:
         return const IconData(0xe90a, fontFamily: 'animals');
-      case ProfileAnimal.FROG:
+      case ProfileAnimal.frog:
         return const IconData(0xe90b, fontFamily: 'animals');
-      case ProfileAnimal.HIPPO:
+      case ProfileAnimal.hippo:
         return const IconData(0xe90c, fontFamily: 'animals');
-      case ProfileAnimal.HUMMINGBIRD:
+      case ProfileAnimal.hummingbird:
         return const IconData(0xe90d, fontFamily: 'animals');
-      case ProfileAnimal.KOALA:
+      case ProfileAnimal.koala:
         return const IconData(0xe90e, fontFamily: 'animals');
-      case ProfileAnimal.LION:
+      case ProfileAnimal.lion:
         return const IconData(0xe90f, fontFamily: 'animals');
-      case ProfileAnimal.MONKEY:
+      case ProfileAnimal.monkey:
         return const IconData(0xe910, fontFamily: 'animals');
-      case ProfileAnimal.MOUSE:
+      case ProfileAnimal.mouse:
         return const IconData(0xe911, fontFamily: 'animals');
-      case ProfileAnimal.OWL:
+      case ProfileAnimal.owl:
         return const IconData(0xe912, fontFamily: 'animals');
-      case ProfileAnimal.OX:
+      case ProfileAnimal.ox:
         return const IconData(0xe913, fontFamily: 'animals');
-      case ProfileAnimal.PANDA:
+      case ProfileAnimal.panda:
         return const IconData(0xe914, fontFamily: 'animals');
-      case ProfileAnimal.PIG:
+      case ProfileAnimal.pig:
         return const IconData(0xe915, fontFamily: 'animals');
-      case ProfileAnimal.RABBIT:
+      case ProfileAnimal.rabbit:
         return const IconData(0xe916, fontFamily: 'animals');
-      case ProfileAnimal.SEAGULL:
+      case ProfileAnimal.seagull:
         return const IconData(0xe917, fontFamily: 'animals');
-      case ProfileAnimal.SHEEP:
+      case ProfileAnimal.sheep:
         return const IconData(0xe918, fontFamily: 'animals');
-      case ProfileAnimal.SNAKE:
+      case ProfileAnimal.snake:
         return const IconData(0xe919, fontFamily: 'animals');
       default:
         return Icons.bug_report;
@@ -200,30 +200,30 @@ Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
 };
 
 Map<String, ProfileAnimal> _buildAnimalsFromName(BreezTranslations local) => {
-      local.app_animal_bat.toLowerCase(): ProfileAnimal.BAT,
-      local.app_animal_bear.toLowerCase(): ProfileAnimal.BEAR,
-      local.app_animal_boar.toLowerCase(): ProfileAnimal.BOAR,
-      local.app_animal_cat.toLowerCase(): ProfileAnimal.CAT,
-      local.app_animal_chick.toLowerCase(): ProfileAnimal.CHICK,
-      local.app_animal_cow.toLowerCase(): ProfileAnimal.COW,
-      local.app_animal_deer.toLowerCase(): ProfileAnimal.DEER,
-      local.app_animal_dog.toLowerCase(): ProfileAnimal.DOG,
-      local.app_animal_eagle.toLowerCase(): ProfileAnimal.EAGLE,
-      local.app_animal_elephant.toLowerCase(): ProfileAnimal.ELEPHANT,
-      local.app_animal_fox.toLowerCase(): ProfileAnimal.FOX,
-      local.app_animal_frog.toLowerCase(): ProfileAnimal.FROG,
-      local.app_animal_hippo.toLowerCase(): ProfileAnimal.HIPPO,
-      local.app_animal_hummingbird.toLowerCase(): ProfileAnimal.HUMMINGBIRD,
-      local.app_animal_koala.toLowerCase(): ProfileAnimal.KOALA,
-      local.app_animal_lion.toLowerCase(): ProfileAnimal.LION,
-      local.app_animal_monkey.toLowerCase(): ProfileAnimal.MONKEY,
-      local.app_animal_mouse.toLowerCase(): ProfileAnimal.MOUSE,
-      local.app_animal_owl.toLowerCase(): ProfileAnimal.OWL,
-      local.app_animal_ox.toLowerCase(): ProfileAnimal.OX,
-      local.app_animal_panda.toLowerCase(): ProfileAnimal.PANDA,
-      local.app_animal_pig.toLowerCase(): ProfileAnimal.PIG,
-      local.app_animal_rabbit.toLowerCase(): ProfileAnimal.RABBIT,
-      local.app_animal_seagull.toLowerCase(): ProfileAnimal.SEAGULL,
-      local.app_animal_sheep.toLowerCase(): ProfileAnimal.SHEEP,
-      local.app_animal_snake.toLowerCase(): ProfileAnimal.SNAKE,
+      local.app_animal_bat.toLowerCase(): ProfileAnimal.bat,
+      local.app_animal_bear.toLowerCase(): ProfileAnimal.bear,
+      local.app_animal_boar.toLowerCase(): ProfileAnimal.boar,
+      local.app_animal_cat.toLowerCase(): ProfileAnimal.cat,
+      local.app_animal_chick.toLowerCase(): ProfileAnimal.chick,
+      local.app_animal_cow.toLowerCase(): ProfileAnimal.cow,
+      local.app_animal_deer.toLowerCase(): ProfileAnimal.deer,
+      local.app_animal_dog.toLowerCase(): ProfileAnimal.dog,
+      local.app_animal_eagle.toLowerCase(): ProfileAnimal.eagle,
+      local.app_animal_elephant.toLowerCase(): ProfileAnimal.elephant,
+      local.app_animal_fox.toLowerCase(): ProfileAnimal.fox,
+      local.app_animal_frog.toLowerCase(): ProfileAnimal.frog,
+      local.app_animal_hippo.toLowerCase(): ProfileAnimal.hippo,
+      local.app_animal_hummingbird.toLowerCase(): ProfileAnimal.hummingbird,
+      local.app_animal_koala.toLowerCase(): ProfileAnimal.koala,
+      local.app_animal_lion.toLowerCase(): ProfileAnimal.lion,
+      local.app_animal_monkey.toLowerCase(): ProfileAnimal.monkey,
+      local.app_animal_mouse.toLowerCase(): ProfileAnimal.mouse,
+      local.app_animal_owl.toLowerCase(): ProfileAnimal.owl,
+      local.app_animal_ox.toLowerCase(): ProfileAnimal.ox,
+      local.app_animal_panda.toLowerCase(): ProfileAnimal.panda,
+      local.app_animal_pig.toLowerCase(): ProfileAnimal.pig,
+      local.app_animal_rabbit.toLowerCase(): ProfileAnimal.rabbit,
+      local.app_animal_seagull.toLowerCase(): ProfileAnimal.seagull,
+      local.app_animal_sheep.toLowerCase(): ProfileAnimal.sheep,
+      local.app_animal_snake.toLowerCase(): ProfileAnimal.snake,
     };

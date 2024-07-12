@@ -86,7 +86,7 @@ class Preferences {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getInt(_kReportPrefKey);
     if (value == null || value < 0 || value >= BugReportBehavior.values.length) {
-      return BugReportBehavior.PROMPT;
+      return BugReportBehavior.prompt;
     }
     return BugReportBehavior.values[value];
   }

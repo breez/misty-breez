@@ -19,7 +19,7 @@ import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
-import 'package:l_breez/routes/qr_scan/widgets/qr_scan.dart';
+import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/routes/security/lock_screen.dart';
 import 'package:l_breez/routes/security/secured_page.dart';
 import 'package:l_breez/routes/security/security_page.dart';
@@ -30,7 +30,7 @@ import 'package:l_breez/widgets/route.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-const String THEME_ID_PREFERENCE_KEY = "themeID";
+const String themeIdPreferenceKey = "themeID";
 
 final _log = Logger("UserApp");
 
@@ -68,7 +68,7 @@ class UserApp extends StatelessWidget {
         ),
       ],
       child: ThemeConsumer(
-        child: BlocBuilder<UserProfileBloc, UserProfileState>(
+        child: BlocBuilder<UserProfileCubit, UserProfileState>(
           builder: (context, state) {
             SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(
@@ -80,7 +80,7 @@ class UserApp extends StatelessWidget {
                 systemStatusBarContrastEnforced: false,
               ),
             );
-            return BlocBuilder2<AccountBloc, AccountState, SecurityBloc, SecurityState>(
+            return BlocBuilder2<AccountCubit, AccountState, SecurityCubit, SecurityState>(
                 builder: (context, accState, securityState) {
               return MaterialApp(
                 key: _appKey,

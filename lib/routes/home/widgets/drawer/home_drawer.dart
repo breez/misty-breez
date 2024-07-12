@@ -15,8 +15,7 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class HomeDrawerState extends State<HomeDrawer> {
-  // TODO: Liquid - Hide Fiat Currency route until it's supported on Liquid SDK
-  final Set<String> _hiddenRoutes = {"/fiat_currency"};
+  final Set<String> _hiddenRoutes = {''};
   final List<DrawerItemConfig> _screens = [
     const DrawerItemConfig("breezHome", "Misty Breez", ""),
   ];
@@ -26,54 +25,64 @@ class HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
       builder: (context, user) {
         final settings = user.profileSettings;
 
         return BreezNavigationDrawer(
-          [
-            ...[
-              DrawerItemConfigGroup([
-                DrawerItemConfig(
-                  "",
-                  texts.home_drawer_item_title_balance,
-                  "src/icon/balance.png",
-                  isSelected: settings.appMode == AppMode.balance,
-                  onItemSelected: (_) {
-                    // TODO add protectAdminAction
-                  },
-                )
-              ]),
-            ],
-            DrawerItemConfigGroup(
-              _filterItems(_drawerConfigToFilter()),
-              groupTitle: texts.home_drawer_item_title_preferences,
-              groupAssetImage: "",
-              isExpanded: settings.expandPreferences,
-            ),
-          ],
-          (screenName) {
-            if (_screens.map((sc) => sc.name).contains(screenName)) {
-              setState(() {
-                _activeScreen = screenName;
-              });
-            } else {
-              Navigator.of(context).pushNamed(screenName).then((message) {
-                if (message != null && message is String) {
-                  showFlushbar(context, message: message);
-                }
-              });
-            }
-          },
+          _drawerGroupedItems(settings),
+          (screenName) => _handleNavigation(context, screenName),
         );
       },
     );
   }
 
+  List<DrawerItemConfigGroup> _drawerGroupedItems(UserProfileSettings settings) {
+    final texts = context.texts();
+
+    return [
+      ...[
+        DrawerItemConfigGroup([
+          DrawerItemConfig(
+            "",
+            texts.home_drawer_item_title_balance,
+            "src/icon/balance.png",
+            isSelected: settings.appMode == AppMode.balance,
+            onItemSelected: (_) {
+              // TODO add protectAdminAction
+            },
+          )
+        ]),
+      ],
+      DrawerItemConfigGroup(
+        _filterItems(_drawerConfigToFilter()),
+        groupTitle: texts.home_drawer_item_title_preferences,
+        groupAssetImage: "",
+        isExpanded: settings.expandPreferences,
+      ),
+    ];
+  }
+
+  void _handleNavigation(
+    BuildContext context,
+    String screenName,
+  ) {
+    if (_screens.map((sc) => sc.name).contains(screenName)) {
+      setState(() {
+        _activeScreen = screenName;
+      });
+    } else {
+      Navigator.of(context).pushNamed(screenName).then((message) {
+        if (message != null && message is String) {
+          showFlushbar(context, message: message);
+        }
+      });
+    }
+  }
+
   List<DrawerItemConfig> _drawerConfigToFilter() {
     final texts = context.texts();
+
     return [
       DrawerItemConfig(
         "/fiat_currency",
@@ -91,6 +100,7 @@ class HomeDrawerState extends State<HomeDrawer> {
 
   List<DrawerItemConfig> _drawerConfigAdvancedFlavorItems() {
     final texts = context.texts();
+
     return [
       DrawerItemConfig(
         "/developers",

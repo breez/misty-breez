@@ -10,10 +10,7 @@ import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 class MnemonicsConfirmationPage extends StatefulWidget {
   final String mnemonics;
 
-  const MnemonicsConfirmationPage({
-    super.key,
-    required this.mnemonics,
-  });
+  const MnemonicsConfirmationPage({super.key, required this.mnemonics});
 
   @override
   MnemonicsConfirmationPageState createState() => MnemonicsConfirmationPageState();
@@ -54,9 +51,7 @@ class MnemonicsConfirmationPageState extends State<MnemonicsConfirmationPage> {
 }
 
 class MnemonicsImage extends StatelessWidget {
-  const MnemonicsImage({
-    super.key,
-  });
+  const MnemonicsImage({super.key});
 
   @override
   Widget build(BuildContext context) {

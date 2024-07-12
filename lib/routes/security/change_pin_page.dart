@@ -12,9 +12,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ChangePinPage extends StatefulWidget {
-  const ChangePinPage({
-    super.key,
-  });
+  const ChangePinPage({super.key});
 
   @override
   State<ChangePinPage> createState() => _ChangePinPageState();
@@ -33,19 +31,20 @@ class _ChangePinPageState extends State<ChangePinPage> {
         leading: const back_button.BackButton(),
       ),
       body: PinCodeWidget(
-        label: _moment() == _Moment.typing_pin_first_time
+        label: _moment() == _Moment.firstTime
             ? texts.security_and_backup_new_pin
             : texts.security_and_backup_new_pin_second_time,
         testPinCodeFunction: (pin) async {
-          if (_moment() == _Moment.typing_pin_first_time) {
+          if (_moment() == _Moment.firstTime) {
             setState(() {
               _firstPinCode = pin;
             });
             return const TestPinResult(true, clearOnSuccess: true);
           } else {
             if (pin == _firstPinCode) {
-              context.read<SecurityBloc>().setPin(pin);
-              Navigator.pop(context);
+              final securityCubit = context.read<SecurityCubit>();
+              await securityCubit.setPin(pin);
+              if (context.mounted) Navigator.pop(context);
               return const TestPinResult(true);
             } else {
               setState(() {
@@ -59,12 +58,12 @@ class _ChangePinPageState extends State<ChangePinPage> {
     );
   }
 
-  _Moment _moment() => _firstPinCode.isEmpty ? _Moment.typing_pin_first_time : _Moment.confirming_pin;
+  _Moment _moment() => _firstPinCode.isEmpty ? _Moment.firstTime : _Moment.confirmingPin;
 }
 
 enum _Moment {
-  typing_pin_first_time,
-  confirming_pin,
+  firstTime,
+  confirmingPin,
 }
 
 void main() async {
@@ -77,8 +76,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<SecurityBloc>(
-          create: (BuildContext context) => SecurityBloc(),
+        BlocProvider<SecurityCubit>(
+          create: (BuildContext context) => SecurityCubit(),
         ),
       ],
       child: MaterialApp(

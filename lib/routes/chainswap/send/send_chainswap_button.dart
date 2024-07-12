@@ -31,14 +31,14 @@ class SendChainSwapButton extends StatelessWidget {
   Future _payOnchain(BuildContext context) async {
     final texts = context.texts();
     final themeData = Theme.of(context);
-    final chainSwapBloc = context.read<ChainSwapBloc>();
+    final chainSwapCubit = context.read<ChainSwapCubit>();
 
     final navigator = Navigator.of(context);
     var loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
     try {
       final req = PayOnchainRequest(address: recipientAddress, prepareRes: preparePayOnchainResponse);
-      await chainSwapBloc.payOnchain(req: req);
+      await chainSwapCubit.payOnchain(req: req);
       navigator.pushNamedAndRemoveUntil("/", (Route<dynamic> route) => false);
     } catch (e) {
       navigator.pop(loaderRoute);

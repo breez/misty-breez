@@ -25,7 +25,7 @@ class BoltzServiceFee extends StatelessWidget {
       ),
       trailing: AutoSizeText(
         texts.reverse_swap_confirmation_boltz_fee_value(
-          BitcoinCurrency.SAT.format(boltzServiceFee),
+          BitcoinCurrency.sat.format(boltzServiceFee),
         ),
         style: TextStyle(color: themeData.colorScheme.error.withOpacity(0.4)),
         maxLines: 1,

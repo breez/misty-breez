@@ -46,9 +46,7 @@ class LNURLPaymentPage extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return LNURLPaymentPageState();
-  }
+  State<StatefulWidget> createState() => LNURLPaymentPageState();
 }
 
 class LNURLPaymentPageState extends State<LNURLPaymentPage> {
@@ -71,14 +69,14 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         if (fixedAmount) {
-          final currencyState = context.read<CurrencyBloc>().state;
+          final currencyState = context.read<CurrencyCubit>().state;
           _amountController.text = currencyState.bitcoinCurrency.format(
             (widget.data.maxSendable.toInt() ~/ 1000),
             includeDisplayName: false,
           );
         }
-        final lnurlBloc = context.read<LnUrlBloc>();
-        await lnurlBloc.fetchLightningLimits();
+        final lnurlCubit = context.read<LnUrlCubit>();
+        await lnurlCubit.fetchLightningLimits();
       },
     );
   }
@@ -86,7 +84,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final currencyState = context.read<CurrencyBloc>().state;
+    final currencyState = context.read<CurrencyCubit>().state;
     final metadataMap = {
       for (var v in json.decode(widget.data.metadataStr)) v[0] as String: v[1],
     };
@@ -131,44 +129,45 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
               ),
               if (!fixedAmount) ...[
                 Padding(
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                        style: theme.FieldTextStyle.labelStyle,
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: texts.lnurl_fetch_invoice_min(
-                              currencyState.bitcoinCurrency.format(
-                                (widget.data.minSendable.toInt() ~/ 1000),
-                              ),
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      style: theme.FieldTextStyle.labelStyle,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: texts.lnurl_fetch_invoice_min(
+                            currencyState.bitcoinCurrency.format(
+                              (widget.data.minSendable.toInt() ~/ 1000),
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                _amountController.text = currencyState.bitcoinCurrency.format(
-                                  (widget.data.minSendable.toInt() ~/ 1000),
-                                  includeDisplayName: false,
-                                );
-                              },
                           ),
-                          TextSpan(
-                            text: texts.lnurl_fetch_invoice_and(
-                              currencyState.bitcoinCurrency.format(
-                                (widget.data.maxSendable.toInt() ~/ 1000),
-                              ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _amountController.text = currencyState.bitcoinCurrency.format(
+                                (widget.data.minSendable.toInt() ~/ 1000),
+                                includeDisplayName: false,
+                              );
+                            },
+                        ),
+                        TextSpan(
+                          text: texts.lnurl_fetch_invoice_and(
+                            currencyState.bitcoinCurrency.format(
+                              (widget.data.maxSendable.toInt() ~/ 1000),
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                _amountController.text = currencyState.bitcoinCurrency.format(
-                                  (widget.data.maxSendable.toInt() ~/ 1000),
-                                  includeDisplayName: false,
-                                );
-                              },
-                          )
-                        ],
-                      ),
-                    )),
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _amountController.text = currencyState.bitcoinCurrency.format(
+                                (widget.data.maxSendable.toInt() ~/ 1000),
+                                includeDisplayName: false,
+                              );
+                            },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ],
               /*
               if (widget.name?.mandatory == true) ...[
@@ -227,8 +226,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
         text: texts.lnurl_fetch_invoice_action_continue,
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
-            final currencyBloc = context.read<CurrencyBloc>();
-            final amount = currencyBloc.state.bitcoinCurrency.parse(_amountController.text);
+            final currencyCubit = context.read<CurrencyCubit>();
+            final amount = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
             final comment = _commentController.text;
             _log.info("LNURL payment of $amount sats where "
                 "min is ${widget.data.minSendable} msats "
@@ -243,9 +242,9 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
 
   String? validatePayment(int amount) {
     final texts = context.texts();
-    final accBloc = context.read<AccountBloc>();
-    final currencyState = context.read<CurrencyBloc>().state;
-    final lnurlState = context.read<LnUrlBloc>().state;
+    final accountCubit = context.read<AccountCubit>();
+    final currencyState = context.read<CurrencyCubit>().state;
+    final lnurlState = context.read<LnUrlCubit>().state;
     final limits = lnurlState.limits?.send;
 
     final maxSendable = (limits != null)
@@ -263,7 +262,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     }
 
     return PaymentValidator(
-      validatePayment: accBloc.validatePayment,
+      validatePayment: accountCubit.validatePayment,
       currency: currencyState.bitcoinCurrency,
       texts: context.texts(),
     ).validateOutgoing(amount);

@@ -96,15 +96,15 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
           Flexible(
             flex: 50,
             child: NumPadWidget(
-              lhsActionKey: ActionKey.Clear,
+              lhsActionKey: ActionKey.clear,
               rhsActionKey: pinCode.isNotEmpty
-                  ? ActionKey.Backspace
+                  ? ActionKey.backspace
                   : widget.localAuthenticationOption.isFacial
-                      ? ActionKey.FaceId
+                      ? ActionKey.faceId
                       : widget.localAuthenticationOption.isFingerprint ||
                               widget.localAuthenticationOption.isOtherBiometric
-                          ? ActionKey.Fingerprint
-                          : ActionKey.Backspace,
+                          ? ActionKey.fingerprint
+                          : ActionKey.backspace,
               onDigitPressed: (digit) {
                 setState(() {
                   if (pinCode.length < widget.pinLength) {
@@ -130,13 +130,13 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
               },
               onActionKeyPressed: (action) {
                 setState(() {
-                  if (action == ActionKey.Clear) {
+                  if (action == ActionKey.clear) {
                     pinCode = "";
                     errorMessage = "";
-                  } else if (action == ActionKey.Backspace && pinCode.isNotEmpty) {
+                  } else if (action == ActionKey.backspace && pinCode.isNotEmpty) {
                     pinCode = pinCode.substring(0, pinCode.length - 1);
                     errorMessage = "";
-                  } else if (action == ActionKey.Fingerprint || action == ActionKey.FaceId) {
+                  } else if (action == ActionKey.fingerprint || action == ActionKey.faceId) {
                     widget.testBiometricsFunction?.call().then((result) {
                       if (!result.success) {
                         pinCode = "";

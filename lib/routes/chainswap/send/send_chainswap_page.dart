@@ -11,6 +11,7 @@ import 'package:l_breez/widgets/loader.dart';
 
 class SendChainSwapPage extends StatefulWidget {
   final BitcoinAddressData? btcAddressData;
+
   const SendChainSwapPage({super.key, required this.btcAddressData});
 
   @override
@@ -34,9 +35,9 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
   }
 
   Future _fetchOnchainLimits() async {
-    final chainSwapBloc = context.read<ChainSwapBloc>();
+    final chainSwapCubit = context.read<ChainSwapCubit>();
     setState(() {
-      _onchainPaymentLimitsFuture = chainSwapBloc.fetchOnchainLimits();
+      _onchainPaymentLimitsFuture = chainSwapCubit.fetchOnchainLimits();
     });
   }
 
@@ -75,8 +76,9 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
             );
           }
 
+          var currencyState = context.read<CurrencyCubit>().state;
           return SendChainSwapFormPage(
-            bitcoinCurrency: context.read<CurrencyBloc>().state.bitcoinCurrency,
+            bitcoinCurrency: currencyState.bitcoinCurrency,
             btcAddressData: widget.btcAddressData,
             paymentLimits: snapshot.data!,
           );

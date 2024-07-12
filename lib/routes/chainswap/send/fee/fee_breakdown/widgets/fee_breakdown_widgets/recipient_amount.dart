@@ -26,16 +26,16 @@ class RecipientAmount extends StatelessWidget {
         minFontSize: minFont.minFontSize,
         stepGranularity: 0.1,
       ),
-      trailing: BlocBuilder<CurrencyBloc, CurrencyState>(builder: (context, currency) {
+      trailing: BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, currency) {
         final fiatConversion = currency.fiatConversion();
 
         return AutoSizeText(
           fiatConversion == null
               ? texts.sweep_all_coins_amount_no_fiat(
-                  BitcoinCurrency.SAT.format(amountSat),
+                  BitcoinCurrency.sat.format(amountSat),
                 )
               : texts.sweep_all_coins_amount_with_fiat(
-                  BitcoinCurrency.SAT.format(amountSat),
+                  BitcoinCurrency.sat.format(amountSat),
                   fiatConversion.format(amountSat),
                 ),
           style: TextStyle(color: themeData.colorScheme.error),

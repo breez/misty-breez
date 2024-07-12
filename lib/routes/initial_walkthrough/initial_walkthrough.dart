@@ -167,14 +167,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final isRestore = mnemonic != null;
     _log.info("${isRestore ? "Restore" : "Starting new"} node");
     final texts = context.texts();
-    final accountBloc = context.read<AccountBloc>();
+    final accountCubit = context.read<AccountCubit>();
     final navigator = Navigator.of(context);
     var loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
 
     final themeProvider = ThemeProvider.controllerOf(context);
     try {
-      await accountBloc.connect(
+      await accountCubit.connect(
         mnemonic: mnemonic ?? bip39.generateMnemonic(strength: 128),
         isRestore: isRestore,
       );

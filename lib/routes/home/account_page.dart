@@ -33,9 +33,9 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, accountState) {
-        return BlocBuilder<UserProfileBloc, UserProfileState>(
+        return BlocBuilder<UserProfileCubit, UserProfileState>(
           builder: (context, userModel) {
             _log.info("AccountPage build with ${accountState.payments.length} payments");
             return Container(
@@ -59,7 +59,8 @@ class AccountPage extends StatelessWidget {
   ) {
     final nonFilteredPayments = accountState.payments;
     final paymentFilters = accountState.paymentFilters;
-    final filteredPayments = context.read<AccountBloc>().filterPaymentList();
+    var accountCubit = context.read<AccountCubit>();
+    final filteredPayments = accountCubit.filterPaymentList();
 
     List<Widget> slivers = [];
 
@@ -132,7 +133,9 @@ class AccountPage extends StatelessWidget {
       key: const Key("account_sliver"),
       fit: StackFit.expand,
       children: [
-        !showSliver ? CustomPaint(painter: BubblePainter(context)) : const SizedBox(),
+        if (!showSliver) ...[
+          CustomPaint(painter: BubblePainter(context)),
+        ],
         CustomScrollView(
           controller: scrollController,
           slivers: slivers,

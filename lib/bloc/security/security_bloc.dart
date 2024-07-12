@@ -11,13 +11,13 @@ import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/types/auth_messages_ios.dart';
 import 'package:logging/logging.dart';
 
-class SecurityBloc extends Cubit<SecurityState> with HydratedMixin {
+class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
   final _log = Logger("LocalAuthenticationService");
   final _auth = LocalAuthentication();
   final _secureStorage = const FlutterSecureStorage();
   Timer? _autoLock;
 
-  SecurityBloc() : super(const SecurityState.initial()) {
+  SecurityCubit() : super(const SecurityState.initial()) {
     hydrate();
     FGBGEvents.stream.listen((event) {
       final lockInterval = state.lockInterval;

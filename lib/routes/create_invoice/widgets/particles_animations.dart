@@ -9,11 +9,7 @@ class Particles extends StatefulWidget {
   final int numberOfParticles;
   final Color color;
 
-  const Particles(
-    this.numberOfParticles, {
-    super.key,
-    this.color = Colors.white,
-  });
+  const Particles(this.numberOfParticles, {super.key, this.color = Colors.white});
 
   @override
   ParticlesState createState() => ParticlesState();

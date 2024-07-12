@@ -5,15 +5,15 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
 import 'package:l_breez/bloc/currency/currency_state.dart';
 
-class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
+class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin {
   final BreezSDKLiquid liquidSdk;
 
-  CurrencyBloc(this.liquidSdk) : super(CurrencyState.initial()) {
+  CurrencyCubit(this.liquidSdk) : super(CurrencyState.initial()) {
     hydrate();
-    _initializeCurrencyBloc();
+    _initializeCurrencyCubit();
   }
 
-  void _initializeCurrencyBloc() {
+  void _initializeCurrencyCubit() {
     late final StreamSubscription streamSubscription;
     streamSubscription = liquidSdk.walletInfoStream.listen(
       (walletInfo) {
@@ -25,13 +25,16 @@ class CurrencyBloc extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   void listFiatCurrencies() {
-    liquidSdk.instance!.listFiatCurrencies().then((fiatCurrencies) {
-      emit(state.copyWith(
+    liquidSdk.instance!.listFiatCurrencies().then(
+      (fiatCurrencies) {
+        emit(state.copyWith(
           fiatCurrenciesData: _sortedFiatCurrenciesList(
-        fiatCurrencies,
-        state.preferredCurrencies,
-      )));
-    });
+            fiatCurrencies,
+            state.preferredCurrencies,
+          ),
+        ));
+      },
+    );
   }
 
   List<FiatCurrency> _sortedFiatCurrenciesList(

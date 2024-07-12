@@ -63,9 +63,7 @@ class DigitMaskedWidget extends StatelessWidget {
 // Preview
 
 class DigitMaskedWidgetPreview extends StatefulWidget {
-  const DigitMaskedWidgetPreview({
-    super.key,
-  });
+  const DigitMaskedWidgetPreview({super.key});
 
   @override
   State<DigitMaskedWidgetPreview> createState() => _DigitMaskedWidgetPreviewState();

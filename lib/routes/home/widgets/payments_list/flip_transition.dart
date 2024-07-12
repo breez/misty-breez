@@ -18,9 +18,7 @@ class FlipTransition extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return FlipTransitionState();
-  }
+  State<StatefulWidget> createState() => FlipTransitionState();
 }
 
 class FlipTransitionState extends State<FlipTransition> with TickerProviderStateMixin {

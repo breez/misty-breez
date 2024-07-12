@@ -6,9 +6,7 @@ class Rotator extends StatefulWidget {
   const Rotator({super.key, required this.child});
 
   @override
-  State<StatefulWidget> createState() {
-    return _RotatorState();
-  }
+  State<StatefulWidget> createState() => _RotatorState();
 }
 
 class _RotatorState extends State<Rotator> with SingleTickerProviderStateMixin {

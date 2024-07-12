@@ -6,10 +6,7 @@ import 'package:l_breez/routes/home/widgets/payments_list/dialog/shareable_payme
 class PaymentDetailsPreimage extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;
 
-  const PaymentDetailsPreimage({
-    super.key,
-    required this.paymentMinutiae,
-  });
+  const PaymentDetailsPreimage({super.key, required this.paymentMinutiae});
 
   @override
   Widget build(BuildContext context) {

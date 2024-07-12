@@ -4,10 +4,10 @@ import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
 import 'package:l_breez/bloc/account/payment_error.dart';
 import 'package:l_breez/bloc/chainswap/chainswap_state.dart';
 
-class ChainSwapBloc extends Cubit<ChainSwapState> {
+class ChainSwapCubit extends Cubit<ChainSwapState> {
   final BreezSDKLiquid _liquidSdk;
 
-  ChainSwapBloc(this._liquidSdk) : super(ChainSwapState.initial());
+  ChainSwapCubit(this._liquidSdk) : super(ChainSwapState.initial());
 
   Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() async {
     return await _liquidSdk.instance!.fetchOnchainLimits();

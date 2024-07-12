@@ -22,11 +22,11 @@ class NodeConnectivityHandler extends Handler {
     super.init(contextProvider);
     _subscription = contextProvider
         .getBuildContext()!
-        .read<AccountBloc>()
+        .read<AccountCubit>()
         .stream
         .distinct((previous, next) =>
             previous.connectionStatus == next.connectionStatus ||
-            next.connectionStatus == ConnectionStatus.CONNECTING)
+            next.connectionStatus == ConnectionStatus.connecting)
         .listen((a) => _listen(a.connectionStatus));
   }
 
@@ -40,9 +40,9 @@ class NodeConnectivityHandler extends Handler {
 
   void _listen(ConnectionStatus? connectionStatus) async {
     _log.info("Received accountState $connectionStatus");
-    if (connectionStatus == ConnectionStatus.DISCONNECTED) {
+    if (connectionStatus == ConnectionStatus.disconnected) {
       showDisconnectedFlushbar();
-    } else if (connectionStatus == ConnectionStatus.CONNECTED) {
+    } else if (connectionStatus == ConnectionStatus.connected) {
       dismissFlushbarIfNeed();
     }
   }
@@ -90,10 +90,10 @@ class NodeConnectivityHandler extends Handler {
       mainButton: SizedBox(
         width: 64,
         child: StreamBuilder<AccountState>(
-          stream: context.read<AccountBloc>().stream,
+          stream: context.read<AccountCubit>().stream,
           builder: (context, snapshot) {
             var themeData = Theme.of(context);
-            if (snapshot.hasData && snapshot.data?.connectionStatus == ConnectionStatus.CONNECTING) {
+            if (snapshot.hasData && snapshot.data?.connectionStatus == ConnectionStatus.connecting) {
               return Center(
                 child: SizedBox(
                   height: 24.0,
@@ -106,10 +106,10 @@ class NodeConnectivityHandler extends Handler {
             }
             return TextButton(
               onPressed: () {
-                final accountBloc = context.read<AccountBloc>();
+                final accountCubit = context.read<AccountCubit>();
                 Future.delayed(const Duration(milliseconds: 500), () async {
                   try {
-                    await accountBloc.connect();
+                    await accountCubit.connect();
                   } catch (error) {
                     _log.severe("Failed to reconnect");
                     rethrow;

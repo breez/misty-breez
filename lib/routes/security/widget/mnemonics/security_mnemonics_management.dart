@@ -9,18 +9,16 @@ import 'package:l_breez/services/injector.dart';
 import 'package:l_breez/widgets/route.dart';
 
 class SecurityMnemonicsManagement extends StatelessWidget {
-  const SecurityMnemonicsManagement({
-    super.key,
-  });
+  const SecurityMnemonicsManagement({super.key});
 
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, account) {
-        final isVerified = (account.verificationStatus == VerificationStatus.VERIFIED);
+        final isVerified = (account.verificationStatus == VerificationStatus.verified);
 
         return ListTile(
           title: Text(
@@ -40,7 +38,7 @@ class SecurityMnemonicsManagement extends StatelessWidget {
           onTap: () async {
             await ServiceInjector().keychain.read(CredentialsManager.accountMnemonic).then(
               (accountMnemonic) {
-                if (account.verificationStatus == VerificationStatus.UNVERIFIED) {
+                if (account.verificationStatus == VerificationStatus.unverified) {
                   Navigator.pushNamed(
                     context,
                     '/mnemonics',

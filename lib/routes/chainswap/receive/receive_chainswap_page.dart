@@ -51,9 +51,9 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   }
 
   Future _fetchOnchainLimits() async {
-    final chainSwapBloc = context.read<ChainSwapBloc>();
+    final chainSwapCubit = context.read<ChainSwapCubit>();
     setState(() {
-      _onchainPaymentLimitsFuture = chainSwapBloc.fetchOnchainLimits();
+      _onchainPaymentLimitsFuture = chainSwapCubit.fetchOnchainLimits();
     });
   }
 
@@ -122,7 +122,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),
-                      BlocBuilder<CurrencyBloc, CurrencyState>(
+                      BlocBuilder<CurrencyCubit, CurrencyState>(
                         builder: (context, currencyState) {
                           return AmountFormField(
                             context: context,
@@ -158,15 +158,17 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   Future _createSwap() async {
     final navigator = Navigator.of(context);
     final currentRoute = ModalRoute.of(navigator.context)!;
-    final chainSwapBloc = context.read<ChainSwapBloc>();
-    final currencyBloc = context.read<CurrencyBloc>();
+    final chainSwapCubit = context.read<ChainSwapCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
 
-    final amountMsat = currencyBloc.state.bitcoinCurrency.parse(_amountController.text);
-    final prepareReceiveOnchainRequest =
-        PrepareReceiveOnchainRequest(payerAmountSat: BigInt.from(amountMsat));
-    final prepareReceiveOnchainResponse =
-        await chainSwapBloc.prepareReceiveOnchain(req: prepareReceiveOnchainRequest);
-    final receiveOnchainResponse = chainSwapBloc.receiveOnchain(req: prepareReceiveOnchainResponse);
+    final amountMsat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
+    final prepareReceiveOnchainRequest = PrepareReceiveOnchainRequest(
+      payerAmountSat: BigInt.from(amountMsat),
+    );
+    final prepareReceiveOnchainResponse = await chainSwapCubit.prepareReceiveOnchain(
+      req: prepareReceiveOnchainRequest,
+    );
+    final receiveOnchainResponse = chainSwapCubit.receiveOnchain(req: prepareReceiveOnchainResponse);
 
     navigator.pop();
     Widget dialog = FutureBuilder(
@@ -211,15 +213,16 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   }
 
   String? validatePayment(int amount) {
+    var currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: _validateSwap,
-      currency: context.read<CurrencyBloc>().state.bitcoinCurrency,
+      currency: currencyCubit.state.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }
 
   void _validateSwap(int amount, bool outgoing) {
-    final chainSwapBloc = context.read<ChainSwapBloc>();
-    return chainSwapBloc.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits);
+    final chainSwapCubit = context.read<ChainSwapCubit>();
+    return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits);
   }
 }

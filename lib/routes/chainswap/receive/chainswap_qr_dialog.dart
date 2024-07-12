@@ -33,9 +33,7 @@ class ChainSwapQrDialog extends StatefulWidget {
   );
 
   @override
-  State<StatefulWidget> createState() {
-    return ChainSwapQrDialogState();
-  }
+  State<StatefulWidget> createState() => ChainSwapQrDialogState();
 }
 
 class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerProviderStateMixin {
@@ -46,8 +44,9 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller!, curve: Curves.ease));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller!, curve: Curves.ease),
+    );
     _controller!.value = 1.0;
     _controller!.addStatusListener((status) async {
       if (status == AnimationStatus.dismissed && mounted) {
@@ -67,7 +66,8 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
   void didUpdateWidget(covariant ChainSwapQrDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.receiveOnchainResponse?.address != oldWidget.receiveOnchainResponse?.address) {
-      context.read<InputBloc>().trackPayment(widget.receiveOnchainResponse!.bip21).then((value) {
+      var inputCubit = context.read<InputCubit>();
+      inputCubit.trackPayment(widget.receiveOnchainResponse!.bip21).then((value) {
         Timer(const Duration(milliseconds: 1000), () {
           if (mounted) {
             _controller!.reverse();
@@ -87,7 +87,7 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
     final themeData = Theme.of(context);
     final error = widget.error;
 
-    return BlocBuilder<InputBloc, InputState>(
+    return BlocBuilder<InputCubit, InputState>(
       builder: (context, inputState) {
         return FadeTransition(
           opacity: _opacityAnimation!,

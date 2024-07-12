@@ -9,9 +9,7 @@ class EnableBackupDialog extends StatefulWidget {
   const EnableBackupDialog({super.key});
 
   @override
-  EnableBackupDialogState createState() {
-    return EnableBackupDialogState();
-  }
+  EnableBackupDialogState createState() => EnableBackupDialogState();
 }
 
 class EnableBackupDialogState extends State<EnableBackupDialog> {
@@ -61,10 +59,11 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             ),
           ),
           TextButton(
-            onPressed: (() {
+            onPressed: () async {
               Navigator.pop(context);
-              context.read<BackupBloc>().backup();
-            }),
+              var backupCubit = context.read<BackupCubit>();
+              await backupCubit.backup();
+            },
             child: Text(
               texts.backup_dialog_option_ok_default,
               style: themeData.primaryTextTheme.labelLarge,

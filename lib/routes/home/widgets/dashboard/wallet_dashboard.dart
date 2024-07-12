@@ -31,85 +31,84 @@ class WalletDashboard extends StatefulWidget {
 class _WalletDashboardState extends State<WalletDashboard> {
   @override
   Widget build(BuildContext context) {
-    final userProfileBloc = context.read<UserProfileBloc>();
-    final currencyBloc = context.read<CurrencyBloc>();
+    final userProfileCubit = context.read<UserProfileCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<CurrencyBloc, CurrencyState>(
+    return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, currencyState) {
-        return BlocBuilder<UserProfileBloc, UserProfileState>(
+        return BlocBuilder<UserProfileCubit, UserProfileState>(
           builder: (context, userProfileState) {
             final profileSettings = userProfileState.profileSettings;
 
-            return BlocBuilder<AccountBloc, AccountState>(
+            return BlocBuilder<AccountCubit, AccountState>(
               builder: (context, accountState) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Stack(
-                    alignment: AlignmentDirectional.topCenter,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: widget.height,
-                        decoration: BoxDecoration(
-                          color: themeData.customData.dashboardBgColor,
-                        ),
+                return Stack(
+                  alignment: AlignmentDirectional.topCenter,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: widget.height,
+                      decoration: BoxDecoration(
+                        color: themeData.customData.dashboardBgColor,
                       ),
+                    ),
+                    if (!accountState.initial) ...[
                       Positioned(
                         top: 60 - _kBalanceOffsetTransition * widget.offsetFactor,
                         child: Center(
-                          child: !accountState.initial
-                              ? TextButton(
-                                  style: ButtonStyle(
-                                    overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
-                                      if (states.contains(WidgetState.focused)) {
-                                        return themeData.customData.paymentListBgColor;
-                                      }
-                                      if (states.contains(WidgetState.hovered)) {
-                                        return themeData.customData.paymentListBgColor;
-                                      }
-                                      return null;
-                                    }),
-                                  ),
-                                  onPressed: () {
-                                    if (profileSettings.hideBalance == true) {
-                                      userProfileBloc.updateProfile(hideBalance: false);
-                                      return;
-                                    }
-                                    final list = BitcoinCurrency.currencies;
-                                    final index = list.indexOf(
-                                      BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker),
-                                    );
-                                    final nextCurrencyIndex = (index + 1) % list.length;
-                                    if (nextCurrencyIndex == 1) {
-                                      userProfileBloc.updateProfile(hideBalance: true);
-                                    }
-                                    currencyBloc.setBitcoinTicker(list[nextCurrencyIndex].tickerSymbol);
-                                  },
-                                  child: BalanceText(
-                                    userProfileState: userProfileState,
-                                    currencyState: currencyState,
-                                    accountState: accountState,
-                                    offsetFactor: widget.offsetFactor,
-                                  ),
-                                )
-                              : const SizedBox(),
-                        ),
-                      ),
-                      Positioned(
-                        top: 100 - _kBalanceOffsetTransition * widget.offsetFactor,
-                        child: Center(
-                          child: currencyState.fiatEnabled && !profileSettings.hideBalance
-                              ? FiatBalanceText(
-                                  currencyState: currencyState,
-                                  accountState: accountState,
-                                  offsetFactor: widget.offsetFactor,
-                                )
-                              : const SizedBox(),
+                          child: TextButton(
+                            style: ButtonStyle(
+                              overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                                (states) {
+                                  if (states.contains(WidgetState.focused)) {
+                                    return themeData.customData.paymentListBgColor;
+                                  }
+                                  if (states.contains(WidgetState.hovered)) {
+                                    return themeData.customData.paymentListBgColor;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            onPressed: () {
+                              if (profileSettings.hideBalance == true) {
+                                userProfileCubit.updateProfile(hideBalance: false);
+                                return;
+                              }
+                              final list = BitcoinCurrency.currencies;
+                              final index = list.indexOf(
+                                BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker),
+                              );
+                              final nextCurrencyIndex = (index + 1) % list.length;
+                              if (nextCurrencyIndex == 1) {
+                                userProfileCubit.updateProfile(hideBalance: true);
+                              }
+                              currencyCubit.setBitcoinTicker(list[nextCurrencyIndex].tickerSymbol);
+                            },
+                            child: BalanceText(
+                              userProfileState: userProfileState,
+                              currencyState: currencyState,
+                              accountState: accountState,
+                              offsetFactor: widget.offsetFactor,
+                            ),
+                          ),
                         ),
                       ),
                     ],
-                  ),
+                    if (currencyState.fiatEnabled && !profileSettings.hideBalance) ...[
+                      Positioned(
+                        top: 100 - _kBalanceOffsetTransition * widget.offsetFactor,
+                        child: Center(
+                          child: FiatBalanceText(
+                            currencyState: currencyState,
+                            accountState: accountState,
+                            offsetFactor: widget.offsetFactor,
+                          ),
+                        ),
+                      )
+                    ],
+                  ],
                 );
               },
             );

@@ -4,11 +4,7 @@ class LoadingOrError extends StatelessWidget {
   final Object? error;
   final String displayErrorMessage;
 
-  const LoadingOrError({
-    super.key,
-    this.error,
-    required this.displayErrorMessage,
-  });
+  const LoadingOrError({super.key, this.error, required this.displayErrorMessage});
 
   @override
   Widget build(BuildContext context) {

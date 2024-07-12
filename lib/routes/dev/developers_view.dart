@@ -33,9 +33,7 @@ class Choice {
 }
 
 class DevelopersView extends StatefulWidget {
-  const DevelopersView({
-    super.key,
-  });
+  const DevelopersView({super.key});
 
   @override
   State<DevelopersView> createState() => _DevelopersViewState();
@@ -43,7 +41,7 @@ class DevelopersView extends StatefulWidget {
 
 class _DevelopersViewState extends State<DevelopersView> {
   final _preferences = const Preferences();
-  var bugReportBehavior = BugReportBehavior.PROMPT;
+  var bugReportBehavior = BugReportBehavior.prompt;
 
   @override
   void initState() {
@@ -86,26 +84,30 @@ class _DevelopersViewState extends State<DevelopersView> {
                 icon: Icons.share,
                 function: (_) => shareLog(),
               ),
-              if (bugReportBehavior != BugReportBehavior.PROMPT)
+              if (bugReportBehavior != BugReportBehavior.prompt)
                 Choice(
                   title: "Enable Failure Prompt",
                   icon: Icons.bug_report,
                   function: (_) {
-                    _preferences.setBugReportBehavior(BugReportBehavior.PROMPT).then(
-                        (value) => setState(() {
-                              bugReportBehavior = BugReportBehavior.PROMPT;
-                            }),
+                    _preferences.setBugReportBehavior(BugReportBehavior.prompt).then(
+                        (value) => setState(
+                              () {
+                                bugReportBehavior = BugReportBehavior.prompt;
+                              },
+                            ),
                         onError: (e) => _log.warning(e));
                   },
                 ),
             ]
-                .map((choice) => PopupMenuItem<Choice>(
-                      value: choice,
-                      child: Text(
-                        choice.title,
-                        style: themeData.textTheme.labelLarge,
-                      ),
-                    ))
+                .map(
+                  (choice) => PopupMenuItem<Choice>(
+                    value: choice,
+                    child: Text(
+                      choice.title,
+                      style: themeData.textTheme.labelLarge,
+                    ),
+                  ),
+                )
                 .toList(),
           ),
         ],
@@ -122,12 +124,12 @@ class _DevelopersViewState extends State<DevelopersView> {
   }
 
   void _exportKeys(BuildContext context) async {
-    final accBloc = context.read<AccountBloc>();
+    final accountCubit = context.read<AccountCubit>();
     final appDir = await getApplicationDocumentsDirectory();
     final encoder = ZipFileEncoder();
     final zipFilePath = "${appDir.path}/l-breez-keys.zip";
     encoder.create(zipFilePath);
-    final List<File> credentialFiles = await accBloc.exportCredentialFiles();
+    final List<File> credentialFiles = await accountCubit.exportCredentialFiles();
     for (var credentialFile in credentialFiles) {
       final bytes = await credentialFile.readAsBytes();
       encoder.addArchiveFile(

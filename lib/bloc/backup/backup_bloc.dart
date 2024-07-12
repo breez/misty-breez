@@ -4,11 +4,11 @@ import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
 import 'package:l_breez/bloc/backup/backup_state.dart';
 import 'package:logging/logging.dart';
 
-class BackupBloc extends Cubit<BackupState?> {
-  final _log = Logger("BackupBloc");
+class BackupCubit extends Cubit<BackupState?> {
+  final _log = Logger("BackupCubit");
   final BreezSDKLiquid _liquidSDK;
 
-  BackupBloc(this._liquidSDK) : super(null);
+  BackupCubit(this._liquidSDK) : super(null);
 
   // TODO: Liquid - Listen to Backup events
   // ignore: unused_element
@@ -21,12 +21,12 @@ class BackupBloc extends Cubit<BackupState?> {
   /// Start the backup process
   Future<void> backup() async {
     try {
-      emit(BackupState(status: BackupStatus.INPROGRESS));
+      emit(BackupState(status: BackupStatus.inProgress));
       _liquidSDK.instance?.backup(req: const BackupRequest());
-      emit(BackupState(status: BackupStatus.SUCCESS));
+      emit(BackupState(status: BackupStatus.success));
     } catch (e) {
       _log.info("Failed to backup");
-      emit(BackupState(status: BackupStatus.FAILED));
+      emit(BackupState(status: BackupStatus.failed));
     }
   }
 }
