@@ -4,24 +4,41 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:rxdart/rxdart.dart';
 
 class BreezSDKLiquid {
-  liquid_sdk.BindingLiquidSdk? instance;
+  static final BreezSDKLiquid _singleton = BreezSDKLiquid._internal();
 
-  Future<liquid_sdk.BindingLiquidSdk> connect({
+  factory BreezSDKLiquid() => _singleton;
+
+  BreezSDKLiquid._internal();
+
+  liquid_sdk.BindingLiquidSdk? _instance;
+
+  liquid_sdk.BindingLiquidSdk? get instance => _instance;
+
+  Future<void> connect({
     required liquid_sdk.ConnectRequest req,
   }) async {
-    instance = await liquid_sdk.connect(req: req);
-    _initializeEventsStream(instance!);
-    _subscribeToSdkStreams(instance!);
-    await _fetchWalletData(instance!);
-    return instance!;
+    try {
+      _instance = await liquid_sdk.connect(req: req);
+      _initializeEventsStream(_instance!);
+      _subscribeToSdkStreams(_instance!);
+      await _fetchWalletData(_instance!);
+    } catch (e) {
+      _instance = null;
+      rethrow;
+    }
   }
 
-  void disconnect(liquid_sdk.BindingLiquidSdk sdk) {
-    sdk.disconnect();
+  void disconnect() {
+    if (_instance == null) {
+      throw Exception();
+    }
+
+    _instance!.disconnect();
     _unsubscribeFromSdkStreams();
+    _instance = null;
   }
 
-  Future _fetchWalletData(liquid_sdk.BindingLiquidSdk sdk) async {
+  Future<void> _fetchWalletData(liquid_sdk.BindingLiquidSdk sdk) async {
     await _getInfo(sdk);
     await _listPayments(sdk: sdk);
   }
