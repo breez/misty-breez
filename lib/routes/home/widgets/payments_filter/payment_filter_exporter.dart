@@ -23,7 +23,7 @@ class PaymentFilterExporter extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, account) {
         return Padding(
           padding: const EdgeInsets.only(right: 0.0),
@@ -59,9 +59,9 @@ class PaymentFilterExporter extends StatelessWidget {
   Future _exportPayments(BuildContext context) async {
     final texts = context.texts();
     final navigator = Navigator.of(context);
-    final currencyState = context.read<CurrencyBloc>().state;
-    final accountBloc = context.read<AccountBloc>();
-    final accountState = accountBloc.state;
+    final currencyState = context.read<CurrencyCubit>().state;
+    final accountCubit = context.read<AccountCubit>();
+    final accountState = accountCubit.state;
     var loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
     String filePath;
@@ -72,10 +72,10 @@ class PaymentFilterExporter extends StatelessWidget {
         final startDate = DateTime.fromMillisecondsSinceEpoch(accountState.paymentFilters.fromTimestamp!);
         final endDate = DateTime.fromMillisecondsSinceEpoch(accountState.paymentFilters.toTimestamp!);
         filePath =
-            await CsvExporter(currencyState.fiatId, accountBloc, startDate: startDate, endDate: endDate)
+            await CsvExporter(currencyState.fiatId, accountCubit, startDate: startDate, endDate: endDate)
                 .export();
       } else {
-        filePath = await CsvExporter(currencyState.fiatId, accountBloc).export();
+        filePath = await CsvExporter(currencyState.fiatId, accountCubit).export();
       }
       if (loaderRoute.isActive) {
         navigator.removeRoute(loaderRoute);

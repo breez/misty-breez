@@ -60,7 +60,7 @@ class AmountFormField extends TextFormField {
                       useRootNavigator: false,
                       context: context,
                       builder: (_) => CurrencyConverterDialog(
-                        context.read<CurrencyBloc>(),
+                        context.read<CurrencyCubit>(),
                         returnFN ??
                             (value) => controller!.text = bitcoinCurrency.format(
                                   bitcoinCurrency.parse(value),

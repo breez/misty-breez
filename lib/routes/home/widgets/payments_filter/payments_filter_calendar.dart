@@ -18,7 +18,7 @@ class PaymentsFilterCalendar extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, account) {
         DateTime? firstDate;
         if (account.payments.isNotEmpty) {
@@ -44,9 +44,9 @@ class PaymentsFilterCalendar extends StatelessWidget {
                     context: context,
                     builder: (_) => CalendarDialog(firstDate!),
                   ).then((result) {
-                    final accountBloc = context.read<AccountBloc>();
+                    final accountCubit = context.read<AccountCubit>();
                     if (result != null) {
-                      accountBloc.changePaymentFilter(
+                      accountCubit.changePaymentFilter(
                         filters: filter,
                         fromTimestamp: result[0].millisecondsSinceEpoch,
                         toTimestamp: result[1].millisecondsSinceEpoch,

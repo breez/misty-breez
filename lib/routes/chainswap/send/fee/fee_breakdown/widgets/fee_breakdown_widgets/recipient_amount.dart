@@ -26,7 +26,7 @@ class RecipientAmount extends StatelessWidget {
         minFontSize: minFont.minFontSize,
         stepGranularity: 0.1,
       ),
-      trailing: BlocBuilder<CurrencyBloc, CurrencyState>(builder: (context, currency) {
+      trailing: BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, currency) {
         final fiatConversion = currency.fiatConversion();
 
         return AutoSizeText(

@@ -34,7 +34,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         leading: const back_button.BackButton(),
         title: Text(texts.fiat_currencies_title),
       ),
-      body: BlocBuilder<CurrencyBloc, CurrencyState>(
+      body: BlocBuilder<CurrencyCubit, CurrencyState>(
         buildWhen: (s1, s2) => !listEquals(s1.preferredCurrencies, s2.preferredCurrencies),
         builder: (context, currencyState) {
           if (currencyState.fiatCurrenciesData.isEmpty || currencyState.fiatCurrency == null) {
@@ -198,8 +198,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     CurrencyState currencyState,
     List<String> preferredFiatCurrencies,
   ) {
-    var currencyBloc = context.read<CurrencyBloc>();
-    currencyBloc.setPreferredCurrencies(preferredFiatCurrencies);
+    var currencyCubit = context.read<CurrencyCubit>();
+    currencyCubit.setPreferredCurrencies(preferredFiatCurrencies);
   }
 
   /// DragAndDropLists has a performance issue with displaying a big list

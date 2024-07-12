@@ -20,7 +20,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    return BlocBuilder2<AccountBloc, AccountState, BackupBloc, BackupState?>(
+    return BlocBuilder2<AccountCubit, AccountState, BackupCubit, BackupState?>(
       builder: (context, accState, backupState) {
         _log.fine("Building with: accState: $accState backupState: $backupState");
 

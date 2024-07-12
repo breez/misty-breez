@@ -13,22 +13,22 @@ import 'package:l_breez/services/lightning_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
-class InputBloc extends Cubit<InputState> {
-  final _log = Logger("InputBloc");
+class InputCubit extends Cubit<InputState> {
+  final _log = Logger("InputCubit");
   final LightningLinksService _lightningLinks;
   final Device _device;
 
   final _decodeInvoiceController = StreamController<InputData>();
 
-  InputBloc(
+  InputCubit(
     this._lightningLinks,
     this._device,
   ) : super(const InputState.empty()) {
-    _initializeInputBloc();
+    _initializeInputCubit();
   }
 
-  void _initializeInputBloc() async {
-    _log.info("initializeInputBloc");
+  void _initializeInputCubit() async {
+    _log.info("initializeInputCubit");
     _watchIncomingInvoices().listen((inputState) => emit(inputState!));
   }
 

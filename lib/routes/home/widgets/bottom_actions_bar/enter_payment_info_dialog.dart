@@ -150,7 +150,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
       actions.add(
         SimpleDialogOption(
           onPressed: (() async {
-            final inputBloc = context.read<InputBloc>();
+            final inputCubit = context.read<InputCubit>();
             final navigator = Navigator.of(context);
             _setLoading(true);
 
@@ -159,7 +159,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
               if (_formKey.currentState!.validate()) {
                 _setLoading(false);
                 navigator.pop();
-                inputBloc.addIncomingInput(_paymentInfoController.text, InputSource.inputField);
+                inputCubit.addIncomingInput(_paymentInfoController.text, InputSource.inputField);
               }
             } catch (error) {
               _setLoading(false);
@@ -206,8 +206,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
     try {
       _setValidatorErrorMessage("");
-      var inputBloc = context.read<InputBloc>();
-      final inputType = await inputBloc.parseInput(input: input);
+      var inputCubit = context.read<InputCubit>();
+      final inputType = await inputCubit.parseInput(input: input);
       _log.info("Parsed input type: '${inputType.runtimeType.toString()}");
       // Can't compare against a list of InputType as runtime type comparison is a bit tricky with binding generated enums
       if (!(inputType is InputType_Bolt11 ||

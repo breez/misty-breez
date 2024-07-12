@@ -34,8 +34,8 @@ class SecurityPinInterval extends StatelessWidget {
           isDense: true,
           onChanged: (interval) async {
             if (interval != null) {
-              var securityBloc = context.read<SecurityBloc>();
-              await securityBloc.setLockInterval(Duration(seconds: interval));
+              final securityCubit = context.read<SecurityCubit>();
+              await securityCubit.setLockInterval(Duration(seconds: interval));
             }
           },
           items: options.map((int seconds) {

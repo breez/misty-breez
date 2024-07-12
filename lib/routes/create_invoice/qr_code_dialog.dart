@@ -66,8 +66,8 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
   void didUpdateWidget(covariant QrCodeDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.receivePaymentResponse?.id != oldWidget.receivePaymentResponse?.id) {
-      var inputBloc = context.read<InputBloc>();
-      inputBloc.trackPayment(widget.receivePaymentResponse!.id).then((value) {
+      final inputCubit = context.read<InputCubit>();
+      inputCubit.trackPayment(widget.receivePaymentResponse!.id).then((value) {
         Timer(const Duration(milliseconds: 1000), () {
           if (mounted) {
             _controller!.reverse();
@@ -87,7 +87,7 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
     final themeData = Theme.of(context);
     final error = widget.error;
 
-    return BlocBuilder<InputBloc, InputState>(
+    return BlocBuilder<InputCubit, InputState>(
       builder: (context, inputState) {
         return FadeTransition(
           opacity: _opacityAnimation!,

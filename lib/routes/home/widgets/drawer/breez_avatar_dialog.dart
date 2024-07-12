@@ -26,7 +26,7 @@ class BreezAvatarDialog extends StatefulWidget {
 }
 
 class BreezAvatarDialogState extends State<BreezAvatarDialog> {
-  late UserProfileBloc userBloc;
+  late UserProfileCubit userProfileCubit;
   final nameInputController = TextEditingController();
   final AutoSizeGroup autoSizeGroup = AutoSizeGroup();
   CroppedFile? pickedImage;
@@ -36,8 +36,8 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   @override
   void initState() {
     super.initState();
-    userBloc = context.read<UserProfileBloc>();
-    nameInputController.text = userBloc.state.profileSettings.name ?? "";
+    userProfileCubit = context.read<UserProfileCubit>();
+    nameInputController.text = userProfileCubit.state.profileSettings.name ?? "";
   }
 
   @override
@@ -145,8 +145,8 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
       await Future.delayed(const Duration(seconds: 15));
       var userName = nameInputController.text.isNotEmpty
           ? nameInputController.text
-          : userBloc.state.profileSettings.name;
-      userBloc.updateProfile(name: userName);
+          : userProfileCubit.state.profileSettings.name;
+      userProfileCubit.updateProfile(name: userName);
       await uploadAvatar();
       setState(() {
         isUploading = false;
@@ -215,10 +215,10 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   Future<void> uploadAvatar() async {
     _log.fine("uploadAvatar ${pickedImage?.path} $randomAvatarPath");
     if (pickedImage != null) {
-      String imageUrl = await userBloc.uploadImage(await scaleAndFormatPNG());
-      userBloc.updateProfile(image: imageUrl);
+      String imageUrl = await userProfileCubit.uploadImage(await scaleAndFormatPNG());
+      userProfileCubit.updateProfile(image: imageUrl);
     } else if (randomAvatarPath != null) {
-      userBloc.updateProfile(image: randomAvatarPath);
+      userProfileCubit.updateProfile(image: randomAvatarPath);
     }
   }
 
@@ -306,7 +306,7 @@ class AvatarPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
       builder: (context, userModel) {
         return Stack(
           children: [

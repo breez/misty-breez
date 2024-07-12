@@ -22,9 +22,9 @@ class PaymentItemAmount extends StatelessWidget {
 
     return SizedBox(
       height: 44,
-      child: BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, userModel) {
+      child: BlocBuilder<UserProfileCubit, UserProfileState>(builder: (context, userModel) {
         final bool hideBalance = userModel.profileSettings.hideBalance;
-        return BlocBuilder<CurrencyBloc, CurrencyState>(
+        return BlocBuilder<CurrencyCubit, CurrencyState>(
           builder: (context, currencyState) {
             final fee = _paymentMinutiae.feeSat;
             final amount = currencyState.bitcoinCurrency.format(

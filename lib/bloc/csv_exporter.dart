@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 final _log = Logger("CsvExporter");
 
 class CsvExporter {
-  final AccountBloc accountBloc;
+  final AccountCubit accountCubit;
   final bool usesUtcTime;
   final String fiatCurrency;
   final DateTime? startDate;
@@ -20,7 +20,7 @@ class CsvExporter {
 
   CsvExporter(
     this.fiatCurrency,
-    this.accountBloc, {
+    this.accountCubit, {
     this.usesUtcTime = false,
     this.startDate,
     this.endDate,
@@ -38,7 +38,7 @@ class CsvExporter {
     // Fetch CurrencyState map values accordingly
     _log.info("generating payment list started");
     final texts = getSystemAppLocalizations();
-    final filteredPayments = accountBloc.filterPaymentList();
+    final filteredPayments = accountCubit.filterPaymentList();
     List<List<String>> paymentList = List.generate(filteredPayments.length, (index) {
       List<String> paymentItem = [];
       final data = filteredPayments.elementAt(index);
@@ -84,7 +84,7 @@ class CsvExporter {
 
   String _appendFilterInformation(String filePath) {
     _log.info("add filter information to path started $filePath");
-    final paymentTypeFilters = accountBloc.state.paymentFilters.filters;
+    final paymentTypeFilters = accountCubit.state.paymentFilters.filters;
     if (paymentTypeFilters != null && paymentTypeFilters != PaymentType.values) {
       loop:
       for (var filter in paymentTypeFilters) {

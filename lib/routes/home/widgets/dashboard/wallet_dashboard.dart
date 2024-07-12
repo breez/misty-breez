@@ -31,17 +31,17 @@ class WalletDashboard extends StatefulWidget {
 class _WalletDashboardState extends State<WalletDashboard> {
   @override
   Widget build(BuildContext context) {
-    final userProfileBloc = context.read<UserProfileBloc>();
-    final currencyBloc = context.read<CurrencyBloc>();
+    final userProfileCubit = context.read<UserProfileCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<CurrencyBloc, CurrencyState>(
+    return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, currencyState) {
-        return BlocBuilder<UserProfileBloc, UserProfileState>(
+        return BlocBuilder<UserProfileCubit, UserProfileState>(
           builder: (context, userProfileState) {
             final profileSettings = userProfileState.profileSettings;
 
-            return BlocBuilder<AccountBloc, AccountState>(
+            return BlocBuilder<AccountCubit, AccountState>(
               builder: (context, accountState) {
                 return Stack(
                   alignment: AlignmentDirectional.topCenter,
@@ -73,7 +73,7 @@ class _WalletDashboardState extends State<WalletDashboard> {
                             ),
                             onPressed: () {
                               if (profileSettings.hideBalance == true) {
-                                userProfileBloc.updateProfile(hideBalance: false);
+                                userProfileCubit.updateProfile(hideBalance: false);
                                 return;
                               }
                               final list = BitcoinCurrency.currencies;
@@ -82,9 +82,9 @@ class _WalletDashboardState extends State<WalletDashboard> {
                               );
                               final nextCurrencyIndex = (index + 1) % list.length;
                               if (nextCurrencyIndex == 1) {
-                                userProfileBloc.updateProfile(hideBalance: true);
+                                userProfileCubit.updateProfile(hideBalance: true);
                               }
-                              currencyBloc.setBitcoinTicker(list[nextCurrencyIndex].tickerSymbol);
+                              currencyCubit.setBitcoinTicker(list[nextCurrencyIndex].tickerSymbol);
                             },
                             child: BalanceText(
                               userProfileState: userProfileState,

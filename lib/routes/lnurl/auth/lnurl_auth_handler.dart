@@ -23,8 +23,8 @@ Future<LNURLPageResult?> handleAuthRequest(
         final loaderRoute = createLoaderRoute(context);
         navigator.push(loaderRoute);
         try {
-          final lnurlBloc = context.read<LnUrlBloc>();
-          final resp = await lnurlBloc.lnurlAuth(reqData: reqData);
+          final lnurlCubit = context.read<LnUrlCubit>();
+          final resp = await lnurlCubit.lnurlAuth(reqData: reqData);
           if (resp is LnUrlCallbackStatus_Ok) {
             _log.info("LNURL auth success");
             return const LNURLPageResult(protocol: LnUrlProtocol.auth);

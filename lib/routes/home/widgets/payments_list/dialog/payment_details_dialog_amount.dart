@@ -45,7 +45,7 @@ class PaymentDetailsDialogAmount extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              child: BlocBuilder<CurrencyBloc, CurrencyState>(builder: (context, state) {
+              child: BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, state) {
                 final amountSats = BitcoinCurrency.fromTickerSymbol(
                   state.bitcoinTicker,
                 ).format(paymentMinutiae.amountSat);

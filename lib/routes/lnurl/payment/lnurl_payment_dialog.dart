@@ -33,7 +33,7 @@ class LNURLPaymentDialogState extends State<LNURLPaymentDialog> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final texts = context.texts();
-    final currencyState = context.read<CurrencyBloc>().state;
+    final currencyState = context.read<CurrencyCubit>().state;
     final metadataMap = {
       for (var v in json.decode(widget.data.metadataStr)) v[0] as String: v[1],
     };

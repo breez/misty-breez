@@ -23,9 +23,9 @@ class SecurityPinManagement extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
     final navigator = Navigator.of(context);
-    final securityBloc = context.read<SecurityBloc>();
+    final securityCubit = context.read<SecurityCubit>();
 
-    return BlocBuilder<SecurityBloc, SecurityState>(
+    return BlocBuilder<SecurityCubit, SecurityState>(
       builder: (context, state) {
         if (state.pinStatus == PinStatus.enabled) {
           return Column(
@@ -33,7 +33,7 @@ class SecurityPinManagement extends StatelessWidget {
               SimpleSwitch(
                 text: texts.security_and_backup_pin_option_deactivate,
                 switchValue: true,
-                onChanged: (_) => securityBloc.clearPin(),
+                onChanged: (_) => securityCubit.clearPin(),
               ),
               const Divider(),
               SecurityPinInterval(interval: state.lockInterval),
@@ -97,8 +97,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<SecurityBloc>(
-          create: (BuildContext context) => SecurityBloc(),
+        BlocProvider<SecurityCubit>(
+          create: (BuildContext context) => SecurityCubit(),
         ),
       ],
       child: const Preview(

@@ -52,8 +52,8 @@ class FiatBalanceText extends StatelessWidget {
   void _changeFiatCurrency(BuildContext context) {
     final newFiatConversion = nextValidFiatConversion(currencyState, accountState);
     if (newFiatConversion != null) {
-      final currencyBloc = context.read<CurrencyBloc>();
-      currencyBloc.setFiatId(newFiatConversion.currencyData.id);
+      final currencyCubit = context.read<CurrencyCubit>();
+      currencyCubit.setFiatId(newFiatConversion.currencyData.id);
     }
   }
 

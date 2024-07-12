@@ -70,7 +70,7 @@ class BreezNavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
       builder: (context, userSettings) {
         List<Widget> children = [
           _breezDrawerHeader(context, userSettings.profileSettings),
@@ -447,8 +447,8 @@ class _ExpansionTile extends StatelessWidget {
             )
             .toList(),
         onExpansionChanged: (isExpanded) {
-          var userProfileBloc = context.read<UserProfileBloc>();
-          userProfileBloc.updateProfile(expandPreferences: isExpanded);
+          var userProfileCubit = context.read<UserProfileCubit>();
+          userProfileCubit.updateProfile(expandPreferences: isExpanded);
           if (isExpanded) {
             Timer(
               const Duration(milliseconds: 200),

@@ -64,35 +64,35 @@ void main() async {
     runApp(
       MultiBlocProvider(
         providers: [
-          BlocProvider<AccountBloc>(
-            create: (BuildContext context) => AccountBloc(
+          BlocProvider<AccountCubit>(
+            create: (BuildContext context) => AccountCubit(
               injector.liquidSDK,
               CredentialsManager(keyChain: injector.keychain),
             ),
           ),
-          BlocProvider<InputBloc>(
-            create: (BuildContext context) => InputBloc(
+          BlocProvider<InputCubit>(
+            create: (BuildContext context) => InputCubit(
               injector.lightningLinks,
               injector.device,
             ),
           ),
-          BlocProvider<UserProfileBloc>(
-            create: (BuildContext context) => UserProfileBloc(),
+          BlocProvider<UserProfileCubit>(
+            create: (BuildContext context) => UserProfileCubit(),
           ),
-          BlocProvider<CurrencyBloc>(
-            create: (BuildContext context) => CurrencyBloc(injector.liquidSDK),
+          BlocProvider<CurrencyCubit>(
+            create: (BuildContext context) => CurrencyCubit(injector.liquidSDK),
           ),
-          BlocProvider<SecurityBloc>(
-            create: (BuildContext context) => SecurityBloc(),
+          BlocProvider<SecurityCubit>(
+            create: (BuildContext context) => SecurityCubit(),
           ),
-          BlocProvider<BackupBloc>(
-            create: (BuildContext context) => BackupBloc(injector.liquidSDK),
+          BlocProvider<BackupCubit>(
+            create: (BuildContext context) => BackupCubit(injector.liquidSDK),
           ),
-          BlocProvider<LnUrlBloc>(
-            create: (BuildContext context) => LnUrlBloc(injector.liquidSDK),
+          BlocProvider<LnUrlCubit>(
+            create: (BuildContext context) => LnUrlCubit(injector.liquidSDK),
           ),
-          BlocProvider<ChainSwapBloc>(
-            create: (BuildContext context) => ChainSwapBloc(injector.liquidSDK),
+          BlocProvider<ChainSwapCubit>(
+            create: (BuildContext context) => ChainSwapCubit(injector.liquidSDK),
           ),
         ],
         child: UserApp(),

@@ -42,8 +42,8 @@ class _ChangePinPageState extends State<ChangePinPage> {
             return const TestPinResult(true, clearOnSuccess: true);
           } else {
             if (pin == _firstPinCode) {
-              var securityBloc = context.read<SecurityBloc>();
-              await securityBloc.setPin(pin);
+              final securityCubit = context.read<SecurityCubit>();
+              await securityCubit.setPin(pin);
               if (context.mounted) Navigator.pop(context);
               return const TestPinResult(true);
             } else {
@@ -76,8 +76,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<SecurityBloc>(
-          create: (BuildContext context) => SecurityBloc(),
+        BlocProvider<SecurityCubit>(
+          create: (BuildContext context) => SecurityCubit(),
         ),
       ],
       child: MaterialApp(

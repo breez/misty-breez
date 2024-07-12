@@ -4,11 +4,11 @@ import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
 import 'package:l_breez/bloc/lnurl/lnurl_state.dart';
 import 'package:logging/logging.dart';
 
-class LnUrlBloc extends Cubit<LnUrlState> {
-  final _log = Logger("LnUrlBloc");
+class LnUrlCubit extends Cubit<LnUrlState> {
+  final _log = Logger("LnUrlCubit");
   final BreezSDKLiquid _liquidSdk;
 
-  LnUrlBloc(this._liquidSdk) : super(LnUrlState.initial());
+  LnUrlCubit(this._liquidSdk) : super(LnUrlState.initial());
 
   Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
     try {

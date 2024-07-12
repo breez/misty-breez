@@ -68,7 +68,7 @@ class UserApp extends StatelessWidget {
         ),
       ],
       child: ThemeConsumer(
-        child: BlocBuilder<UserProfileBloc, UserProfileState>(
+        child: BlocBuilder<UserProfileCubit, UserProfileState>(
           builder: (context, state) {
             SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(
@@ -80,7 +80,7 @@ class UserApp extends StatelessWidget {
                 systemStatusBarContrastEnforced: false,
               ),
             );
-            return BlocBuilder2<AccountBloc, AccountState, SecurityBloc, SecurityState>(
+            return BlocBuilder2<AccountCubit, AccountState, SecurityCubit, SecurityState>(
                 builder: (context, accState, securityState) {
               return MaterialApp(
                 key: _appKey,

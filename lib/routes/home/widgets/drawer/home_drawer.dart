@@ -25,7 +25,7 @@ class HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
       builder: (context, user) {
         final settings = user.profileSettings;
 

@@ -47,13 +47,13 @@ Future<LNURLPageResult?> handlePayRequest(
       isLnUrlPayment: true,
       firstPaymentItemKey: firstPaymentItemKey,
       paymentFunc: () {
-        final lnurlBloc = context.read<LnUrlBloc>();
+        final lnurlCubit = context.read<LnUrlCubit>();
         final req = LnUrlPayRequest(
           amountMsat: BigInt.from(paymentInfo!.amount * 1000),
           comment: paymentInfo.comment,
           data: data,
         );
-        return lnurlBloc.lnurlPay(req: req);
+        return lnurlCubit.lnurlPay(req: req);
       },
     ),
   ).then((result) {

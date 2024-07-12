@@ -19,7 +19,7 @@ class ExpiryAndFeeMessage extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<CurrencyBloc, CurrencyState>(
+    return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, currencyState) {
         return WarningBox(
           boxPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),

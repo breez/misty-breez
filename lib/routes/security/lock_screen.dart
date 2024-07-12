@@ -25,7 +25,7 @@ class LockScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        body: BlocBuilder<SecurityBloc, SecurityState>(
+        body: BlocBuilder<SecurityCubit, SecurityState>(
           builder: (context, state) {
             return PinCodeWidget(
               label: texts.lock_screen_enter_pin,
@@ -33,8 +33,8 @@ class LockScreen extends StatelessWidget {
               testPinCodeFunction: (pin) async {
                 bool pinMatches = false;
                 try {
-                  var securityBloc = context.read<SecurityBloc>();
-                  pinMatches = await securityBloc.testPin(pin);
+                  final securityCubit = context.read<SecurityCubit>();
+                  pinMatches = await securityCubit.testPin(pin);
                 } catch (e) {
                   return TestPinResult(
                     false,
@@ -52,8 +52,8 @@ class LockScreen extends StatelessWidget {
                 }
               },
               testBiometricsFunction: () async {
-                var securityBloc = context.read<SecurityBloc>();
-                bool pinMatches = await securityBloc.localAuthentication(
+                final securityCubit = context.read<SecurityCubit>();
+                bool pinMatches = await securityCubit.localAuthentication(
                   texts.security_and_backup_validate_biometrics_reason,
                 );
                 if (pinMatches) {
@@ -100,8 +100,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<SecurityBloc>(
-          create: (BuildContext context) => SecurityBloc(),
+        BlocProvider<SecurityCubit>(
+          create: (BuildContext context) => SecurityCubit(),
         ),
       ],
       child: MaterialApp(

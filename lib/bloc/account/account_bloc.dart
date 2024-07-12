@@ -20,13 +20,13 @@ import 'package:rxdart/rxdart.dart';
 const maxPaymentAmount = 4294967;
 const nodeSyncInterval = 60;
 
-final _log = Logger("AccountBloc");
+final _log = Logger("AccountCubit");
 
-// AccountBloc is the business logic unit that is responsible to communicating with the lightning service
+// AccountCubit is the business logic unit that is responsible to communicating with the lightning service
 // and reflect the node state. It is responsible for:
 // 1. Synchronizing with the node state.
 // 2. Abstracting actions exposed by the lightning service.
-class AccountBloc extends Cubit<AccountState> with HydratedMixin {
+class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   static const String paymentFilterSettingsKey = "payment_filter_settings";
   static const int defaultInvoiceExpiry = Duration.secondsPerHour;
 
@@ -41,7 +41,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
   final CredentialsManager _credentialsManager;
   final BreezSDKLiquid _liquidSdk;
 
-  AccountBloc(
+  AccountCubit(
     this._liquidSdk,
     this._credentialsManager,
   ) : super(AccountState.initial()) {

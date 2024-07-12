@@ -138,7 +138,7 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
   Future<LNURLPageResult> _withdraw(BuildContext context) async {
     _log.info("Withdraw ${widget.amountSats} sats");
     final texts = context.texts();
-    final lnurlBloc = context.read<LnUrlBloc>();
+    final lnurlCubit = context.read<LnUrlCubit>();
     final description = widget.requestData.defaultDescription;
 
     try {
@@ -150,7 +150,7 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
         data: widget.requestData,
         description: description,
       );
-      final resp = await lnurlBloc.lnurlWithdraw(req: req);
+      final resp = await lnurlCubit.lnurlWithdraw(req: req);
       if (resp is LnUrlWithdrawResult_Ok) {
         final paymentHash = resp.data.invoice.paymentHash;
         _log.info("LNURL withdraw success for $paymentHash");

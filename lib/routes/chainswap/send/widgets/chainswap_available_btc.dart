@@ -16,7 +16,7 @@ class WithdrawFundsAvailableBtc extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 36.0),
-      child: BlocBuilder<AccountBloc, AccountState>(builder: (context, account) {
+      child: BlocBuilder<AccountCubit, AccountState>(builder: (context, account) {
         return Row(
           children: [
             Text(
@@ -25,7 +25,7 @@ class WithdrawFundsAvailableBtc extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 3.0),
-              child: BlocBuilder<CurrencyBloc, CurrencyState>(
+              child: BlocBuilder<CurrencyCubit, CurrencyState>(
                 builder: (context, currencyState) {
                   return Text(
                     currencyState.bitcoinCurrency.format(account.balance),

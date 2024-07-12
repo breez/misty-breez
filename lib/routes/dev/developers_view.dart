@@ -124,12 +124,12 @@ class _DevelopersViewState extends State<DevelopersView> {
   }
 
   void _exportKeys(BuildContext context) async {
-    final accBloc = context.read<AccountBloc>();
+    final accountCubit = context.read<AccountCubit>();
     final appDir = await getApplicationDocumentsDirectory();
     final encoder = ZipFileEncoder();
     final zipFilePath = "${appDir.path}/l-breez-keys.zip";
     encoder.create(zipFilePath);
-    final List<File> credentialFiles = await accBloc.exportCredentialFiles();
+    final List<File> credentialFiles = await accountCubit.exportCredentialFiles();
     for (var credentialFile in credentialFiles) {
       final bytes = await credentialFile.readAsBytes();
       encoder.addArchiveFile(

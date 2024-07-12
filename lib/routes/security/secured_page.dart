@@ -32,7 +32,7 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
       },
       child: _allowed
           ? widget.securedWidget
-          : BlocBuilder<SecurityBloc, SecurityState>(
+          : BlocBuilder<SecurityCubit, SecurityState>(
               key: ValueKey(DateTime.now().millisecondsSinceEpoch),
               builder: (context, state) {
                 _log.info("Building with: $state");
@@ -48,8 +48,8 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
                         _log.info("Testing pin code");
                         bool pinMatches = false;
                         try {
-                          var securityBloc = context.read<SecurityBloc>();
-                          pinMatches = await securityBloc.testPin(pin);
+                          final securityCubit = context.read<SecurityCubit>();
+                          pinMatches = await securityCubit.testPin(pin);
                         } catch (e) {
                           _log.severe("Pin code test failed", e);
                           return TestPinResult(

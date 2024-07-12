@@ -9,8 +9,8 @@ mixin AutoLockMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     super.initState();
-    final securityBloc = context.read<SecurityBloc>();
-    securityBloc.stream.distinct().where((state) => state.lockState == security.LockState.locked).listen(
+    final securityCubit = context.read<SecurityCubit>();
+    securityCubit.stream.distinct().where((state) => state.lockState == security.LockState.locked).listen(
       (_) {
         Navigator.of(context, rootNavigator: true).push(
           FadeInRoute(

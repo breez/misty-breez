@@ -15,9 +15,9 @@ import 'package:l_breez/widgets/loader.dart';
 class CurrencyConverterDialog extends StatefulWidget {
   final Function(String string) _onConvert;
   final String? Function(int amount) validatorFn;
-  final CurrencyBloc _currencyBloc;
+  final CurrencyCubit _currencyCubit;
 
-  const CurrencyConverterDialog(this._currencyBloc, this._onConvert, this.validatorFn, {super.key});
+  const CurrencyConverterDialog(this._currencyCubit, this._onConvert, this.validatorFn, {super.key});
 
   @override
   CurrencyConverterDialogState createState() {
@@ -54,7 +54,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       }
     });
 
-    widget._currencyBloc.fetchExchangeRates().catchError((value) {
+    widget._currencyCubit.fetchExchangeRates().catchError((value) {
       final texts = context.texts();
       if (mounted) {
         setState(() {
@@ -78,7 +78,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CurrencyBloc, CurrencyState>(
+    return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, currencyState) {
         if (currencyState.preferredCurrencies.isEmpty || !currencyState.fiatEnabled) {
           return const Loader();
@@ -340,6 +340,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   }
 
   void _selectFiatCurrency(String fiatId) {
-    widget._currencyBloc.setFiatId(fiatId);
+    widget._currencyCubit.setFiatId(fiatId);
   }
 }

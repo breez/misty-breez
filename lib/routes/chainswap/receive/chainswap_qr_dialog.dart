@@ -66,8 +66,8 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
   void didUpdateWidget(covariant ChainSwapQrDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.receiveOnchainResponse?.address != oldWidget.receiveOnchainResponse?.address) {
-      var inputBloc = context.read<InputBloc>();
-      inputBloc.trackPayment(widget.receiveOnchainResponse!.bip21).then((value) {
+      var inputCubit = context.read<InputCubit>();
+      inputCubit.trackPayment(widget.receiveOnchainResponse!.bip21).then((value) {
         Timer(const Duration(milliseconds: 1000), () {
           if (mounted) {
             _controller!.reverse();
@@ -87,7 +87,7 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
     final themeData = Theme.of(context);
     final error = widget.error;
 
-    return BlocBuilder<InputBloc, InputState>(
+    return BlocBuilder<InputCubit, InputState>(
       builder: (context, inputState) {
         return FadeTransition(
           opacity: _opacityAnimation!,

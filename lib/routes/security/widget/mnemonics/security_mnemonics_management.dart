@@ -16,7 +16,7 @@ class SecurityMnemonicsManagement extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, account) {
         final isVerified = (account.verificationStatus == VerificationStatus.verified);
 

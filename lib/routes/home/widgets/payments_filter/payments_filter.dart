@@ -29,7 +29,7 @@ class PaymentsFilterState extends State<PaymentsFilters> {
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, account) {
         if (_filter == null) {
           _filterMap = {
@@ -53,11 +53,11 @@ class PaymentsFilterState extends State<PaymentsFilters> {
                 setState(() {
                   _filter = value?.toString();
                 });
-                final accountBloc = context.read<AccountBloc>();
-                accountBloc.changePaymentFilter(
+                final accountCubit = context.read<AccountCubit>();
+                accountCubit.changePaymentFilter(
                   filters: _getFilterType(),
-                  fromTimestamp: accountBloc.state.paymentFilters.fromTimestamp,
-                  toTimestamp: accountBloc.state.paymentFilters.toTimestamp,
+                  fromTimestamp: accountCubit.state.paymentFilters.fromTimestamp,
+                  toTimestamp: accountCubit.state.paymentFilters.toTimestamp,
                 );
               },
             ),

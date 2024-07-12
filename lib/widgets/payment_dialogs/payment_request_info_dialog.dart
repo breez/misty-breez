@@ -96,8 +96,8 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   Widget _buildPaymentRequestContent() {
-    return BlocBuilder<CurrencyBloc, CurrencyState>(builder: (c, currencyState) {
-      return BlocBuilder<AccountBloc, AccountState>(
+    return BlocBuilder<CurrencyCubit, CurrencyState>(builder: (c, currencyState) {
+      return BlocBuilder<AccountCubit, AccountState>(
         builder: (context, account) {
           List<Widget> children = [];
           _addIfNotNull(children, _buildPayeeNameWidget());
@@ -178,7 +178,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 focusNode: _amountFocusNode,
                 controller: _invoiceAmountController,
                 validatorFn: PaymentValidator(
-                  validatePayment: context.read<AccountBloc>().validatePayment,
+                  validatePayment: context.read<AccountCubit>().validatePayment,
                   currency: currencyState.bitcoinCurrency,
                   texts: context.texts(),
                 ).validateOutgoing,
@@ -253,7 +253,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
   Widget? _buildErrorMessage(CurrencyState currencyState) {
     final validationError = PaymentValidator(
-      validatePayment: context.read<AccountBloc>().validatePayment,
+      validatePayment: context.read<AccountCubit>().validatePayment,
       currency: currencyState.bitcoinCurrency,
       texts: context.texts(),
     ).validateOutgoing(

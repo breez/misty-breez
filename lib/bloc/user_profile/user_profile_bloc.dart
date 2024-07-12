@@ -11,10 +11,10 @@ import 'package:path_provider/path_provider.dart';
 
 const profileDataFolderPath = "profile";
 
-final _log = Logger("UserProfileBloc");
+final _log = Logger("UserProfileCubit");
 
-class UserProfileBloc extends Cubit<UserProfileState> with HydratedMixin {
-  UserProfileBloc() : super(UserProfileState.initial()) {
+class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
+  UserProfileCubit() : super(UserProfileState.initial()) {
     hydrate();
     var profile = state;
     _log.info("State: ${profile.profileSettings.toJson()}");
