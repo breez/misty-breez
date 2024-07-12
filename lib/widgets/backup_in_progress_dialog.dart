@@ -1,8 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/backup/backup_bloc.dart';
-import 'package:l_breez/bloc/backup/backup_state.dart';
+import 'package:l_breez/cubit/backup/backup_cubit.dart';
+import 'package:l_breez/cubit/backup/backup_state.dart';
 import 'package:l_breez/routes/home/widgets/animated_loader_dialog.dart';
 
 class BackupInProgressDialog extends StatefulWidget {

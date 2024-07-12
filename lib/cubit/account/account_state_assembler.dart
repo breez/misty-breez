@@ -1,9 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/account/payment_filters.dart';
+import 'package:l_breez/cubit/account/payment_filters.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 
-import 'account_bloc.dart';
+import 'account_cubit.dart';
 import 'account_state.dart';
 
 // assembleAccountState assembles the account state using the local synchronized data.

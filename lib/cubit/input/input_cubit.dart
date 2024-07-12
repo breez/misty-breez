@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/input/input_data.dart';
-import 'package:l_breez/bloc/input/input_printer.dart';
-import 'package:l_breez/bloc/input/input_source.dart';
-import 'package:l_breez/bloc/input/input_state.dart';
+import 'package:l_breez/cubit/input/input_data.dart';
+import 'package:l_breez/cubit/input/input_printer.dart';
+import 'package:l_breez/cubit/input/input_source.dart';
+import 'package:l_breez/cubit/input/input_state.dart';
 import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/services/device.dart';
 import 'package:l_breez/services/injector.dart';

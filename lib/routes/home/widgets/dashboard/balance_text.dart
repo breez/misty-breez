@@ -1,8 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/bloc/account/account_state.dart';
-import 'package:l_breez/bloc/currency/currency_state.dart';
-import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
+import 'package:l_breez/cubit/account/account_state.dart';
+import 'package:l_breez/cubit/currency/currency_state.dart';
+import 'package:l_breez/cubit/user_profile/user_profile_state.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 
 class BalanceText extends StatefulWidget {

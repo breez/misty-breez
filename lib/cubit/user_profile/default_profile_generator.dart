@@ -2,8 +2,8 @@ import "dart:math";
 import 'dart:ui';
 
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:l_breez/bloc/user_profile/profile_animal.dart';
-import 'package:l_breez/bloc/user_profile/profile_color.dart';
+import 'package:l_breez/cubit/user_profile/profile_animal.dart';
+import 'package:l_breez/cubit/user_profile/profile_color.dart';
 
 class DefaultProfile {
   final String color;

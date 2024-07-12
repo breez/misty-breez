@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/bloc/user_profile/default_profile_generator.dart';
-import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
+import 'package:l_breez/cubit/user_profile/default_profile_generator.dart';
+import 'package:l_breez/cubit/user_profile/user_profile_state.dart';
 import 'package:l_breez/models/user_profile.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';

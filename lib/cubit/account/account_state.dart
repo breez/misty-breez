@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:l_breez/bloc/account/payment_filters.dart';
+import 'package:l_breez/cubit/account/payment_filters.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 
 const initialInboundCapacity = 4000000;

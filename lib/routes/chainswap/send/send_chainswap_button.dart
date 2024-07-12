@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/chainswap/chainswap_bloc.dart';
+import 'package:l_breez/cubit/chainswap/chainswap_cubit.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/loader.dart';

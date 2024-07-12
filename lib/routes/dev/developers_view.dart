@@ -5,7 +5,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
+import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/logger.dart';
 import 'package:l_breez/models/bug_report_behavior.dart';
 import 'package:l_breez/routes/dev/command_line_interface.dart';

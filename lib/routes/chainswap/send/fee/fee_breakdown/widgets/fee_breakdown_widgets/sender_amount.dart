@@ -2,8 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/currency/currency_bloc.dart';
-import 'package:l_breez/bloc/currency/currency_state.dart';
+import 'package:l_breez/cubit/currency/currency_cubit.dart';
+import 'package:l_breez/cubit/currency/currency_state.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 

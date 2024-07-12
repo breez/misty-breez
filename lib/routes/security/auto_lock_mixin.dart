@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/security/security_bloc.dart';
-import 'package:l_breez/bloc/security/security_state.dart' as security;
+import 'package:l_breez/cubit/security/security_cubit.dart';
+import 'package:l_breez/cubit/security/security_state.dart' as security;
 import 'package:l_breez/routes/security/lock_screen.dart';
 import 'package:l_breez/widgets/route.dart';
 

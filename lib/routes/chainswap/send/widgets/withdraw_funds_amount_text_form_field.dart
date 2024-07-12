@@ -1,6 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/bloc/account/payment_error.dart';
+import 'package:l_breez/cubit/account/payment_error.dart';
 import 'package:l_breez/routes/chainswap/send/withdraw_funds_model.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
-import 'package:l_breez/bloc/account/account_state.dart';
-import 'package:l_breez/bloc/account/credentials_manager.dart';
-import 'package:l_breez/bloc/backup/backup_bloc.dart';
-import 'package:l_breez/bloc/backup/backup_state.dart';
-import 'package:l_breez/bloc/ext/block_builder_extensions.dart';
+import 'package:l_breez/cubit/account/account_cubit.dart';
+import 'package:l_breez/cubit/account/account_state.dart';
+import 'package:l_breez/cubit/account/credentials_manager.dart';
+import 'package:l_breez/cubit/backup/backup_cubit.dart';
+import 'package:l_breez/cubit/backup/backup_state.dart';
+import 'package:l_breez/cubit/ext/block_builder_extensions.dart';
 import 'package:l_breez/routes/home/widgets/app_bar/warning_action.dart';
 import 'package:l_breez/routes/home/widgets/enable_backup_dialog.dart';
 import 'package:l_breez/routes/home/widgets/rotator.dart';

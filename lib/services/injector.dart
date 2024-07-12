@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:l_breez/bloc/account/breez_sdk_liquid.dart';
+import 'package:l_breez/cubit/account/breez_sdk_liquid.dart';
 import 'package:l_breez/logger.dart';
 import 'package:l_breez/services/deep_links.dart';
 import 'package:l_breez/services/device.dart';
