@@ -1,5 +1,5 @@
 class PaymentExceededLimitError implements Exception {
-  final int limitSat;
+  final BigInt limitSat;
 
   const PaymentExceededLimitError(
     this.limitSat,
@@ -7,7 +7,7 @@ class PaymentExceededLimitError implements Exception {
 }
 
 class PaymentBelowLimitError implements Exception {
-  final int limitSat;
+  final BigInt limitSat;
 
   const PaymentBelowLimitError(
     this.limitSat,
@@ -35,7 +35,7 @@ class PaymentBelowSetupFeesError implements Exception {
 }
 
 class PaymentExceedLiquidityError implements Exception {
-  final int limitSat;
+  final BigInt limitSat;
 
   const PaymentExceedLiquidityError(
     this.limitSat,
@@ -43,7 +43,7 @@ class PaymentExceedLiquidityError implements Exception {
 }
 
 class PaymentExcededLiqudityChannelCreationNotPossibleError implements Exception {
-  final int limitSat;
+  final BigInt limitSat;
 
   const PaymentExcededLiqudityChannelCreationNotPossibleError(
     this.limitSat,

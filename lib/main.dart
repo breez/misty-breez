@@ -12,6 +12,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/credentials_manager.dart';
 import 'package:l_breez/bloc/backup/backup_bloc.dart';
+import 'package:l_breez/bloc/chainswap/chainswap_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
 import 'package:l_breez/bloc/input/input_bloc.dart';
 import 'package:l_breez/bloc/lnurl/lnurl_bloc.dart';
@@ -89,6 +90,9 @@ void main() async {
           ),
           BlocProvider<LnUrlBloc>(
             create: (BuildContext context) => LnUrlBloc(injector.liquidSDK),
+          ),
+          BlocProvider<ChainSwapBloc>(
+            create: (BuildContext context) => ChainSwapBloc(injector.liquidSDK),
           ),
         ],
         child: UserApp(),

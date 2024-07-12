@@ -32,12 +32,12 @@ class PaymentValidator {
     } on PaymentExceededLimitError catch (e) {
       _log.info("Got PaymentExceededLimitError", e);
       return texts.invoice_payment_validator_error_payment_exceeded_limit(
-        currency.format(e.limitSat),
+        currency.format(e.limitSat.toInt()),
       );
     } on PaymentBelowLimitError catch (e) {
       _log.info("Got PaymentBelowLimitError", e);
       return texts.invoice_payment_validator_error_payment_below_invoice_limit(
-        currency.format(e.limitSat),
+        currency.format(e.limitSat.toInt()),
       );
     } on PaymentBelowReserveError catch (e) {
       _log.info("Got PaymentBelowReserveError", e);
@@ -45,7 +45,7 @@ class PaymentValidator {
         currency.format(e.reserveAmount),
       );
     } on PaymentExceedLiquidityError catch (e) {
-      return "Insufficient inbound liquidity (${currency.format(e.limitSat)})";
+      return "Insufficient inbound liquidity (${currency.format(e.limitSat.toInt())})";
     } on InsufficientLocalBalanceError {
       return texts.invoice_payment_validator_error_insufficient_local_balance;
     } on PaymentBelowSetupFeesError catch (e) {
@@ -54,7 +54,7 @@ class PaymentValidator {
         currency.format(e.setupFees),
       );
     } on PaymentExcededLiqudityChannelCreationNotPossibleError catch (e) {
-      return texts.lnurl_fetch_invoice_error_max(currency.format(e.limitSat));
+      return texts.lnurl_fetch_invoice_error_max(currency.format(e.limitSat.toInt()));
     } on NoChannelCreationZeroLiqudityError {
       return texts.lsp_error_cannot_open_channel;
     } catch (e) {

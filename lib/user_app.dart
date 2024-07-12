@@ -2,6 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/account/account_state.dart';
 import 'package:l_breez/bloc/ext/block_builder_extensions.dart';
@@ -9,6 +10,8 @@ import 'package:l_breez/bloc/security/security_bloc.dart';
 import 'package:l_breez/bloc/security/security_state.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
+import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
+import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/routes/dev/developers_view.dart';
 import 'package:l_breez/routes/fiat_currencies/fiat_currency_settings.dart';
@@ -137,6 +140,18 @@ class UserApp extends StatelessWidget {
                                 case '/create_invoice':
                                   return FadeInRoute(
                                     builder: (_) => const CreateInvoicePage(),
+                                    settings: settings,
+                                  );
+                                case '/receive_chainswap':
+                                  return FadeInRoute(
+                                    builder: (_) => const ReceiveChainSwapPage(),
+                                    settings: settings,
+                                  );
+                                case '/send_chainswap':
+                                  return FadeInRoute(
+                                    builder: (_) => SendChainSwapPage(
+                                      btcAddressData: settings.arguments as BitcoinAddressData?,
+                                    ),
                                     settings: settings,
                                   );
                                 case '/fiat_currency':
