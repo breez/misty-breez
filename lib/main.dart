@@ -14,6 +14,7 @@ import 'package:l_breez/bloc/account/credentials_manager.dart';
 import 'package:l_breez/bloc/backup/backup_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
 import 'package:l_breez/bloc/input/input_bloc.dart';
+import 'package:l_breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:l_breez/bloc/security/security_bloc.dart';
 import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:l_breez/services/injector.dart';
@@ -85,6 +86,9 @@ void main() async {
           ),
           BlocProvider<BackupBloc>(
             create: (BuildContext context) => BackupBloc(injector.liquidSDK),
+          ),
+          BlocProvider<LnUrlBloc>(
+            create: (BuildContext context) => LnUrlBloc(injector.liquidSDK),
           ),
         ],
         child: UserApp(),

@@ -208,15 +208,14 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
     try {
       _setValidatorErrorMessage("");
-      final inputType = context.read<InputBloc>().parseInput(input: input);
+      final inputType = await context.read<InputBloc>().parseInput(input: input);
       _log.info("Parsed input type: '${inputType.runtimeType.toString()}");
       // Can't compare against a list of InputType as runtime type comparison is a bit tricky with binding generated enums
       if (!(inputType is InputType_Bolt11 ||
           inputType is InputType_LnUrlPay ||
           inputType is InputType_LnUrlWithdraw ||
           inputType is InputType_LnUrlAuth ||
-          inputType is InputType_LnUrlError ||
-          inputType is InputType_NodeId)) {
+          inputType is InputType_LnUrlError)) {
         _setValidatorErrorMessage(texts.payment_info_dialog_error_unsupported_input);
       }
     } catch (e) {
