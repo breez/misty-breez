@@ -1,8 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_navigation_drawer.dart';
 import 'package:l_breez/widgets/flushbar.dart';

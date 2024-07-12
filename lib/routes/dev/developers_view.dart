@@ -1,15 +1,14 @@
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
+import 'package:breez_logger/breez_logger.dart';
+import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
-import 'package:l_breez/logger.dart';
-import 'package:l_breez/models/bug_report_behavior.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/dev/command_line_interface.dart';
-import 'package:l_breez/utils/preferences.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
@@ -40,7 +39,7 @@ class DevelopersView extends StatefulWidget {
 }
 
 class _DevelopersViewState extends State<DevelopersView> {
-  final _preferences = const Preferences();
+  final _preferences = const BreezPreferences();
   var bugReportBehavior = BugReportBehavior.prompt;
 
   @override

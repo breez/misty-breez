@@ -4,7 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/initial_walkthrough/beta_warning_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/theme/theme_provider.dart';

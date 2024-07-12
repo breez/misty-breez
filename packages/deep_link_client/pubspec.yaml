@@ -1,0 +1,10 @@
+name: deep_link_client
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  firebase_dynamic_links: ^6.0.3
+  logging: ^1.2.0
+  rxdart: ^0.28.0

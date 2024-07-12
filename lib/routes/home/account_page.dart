@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
-import 'package:l_breez/bloc/account/account_state.dart';
-import 'package:l_breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:l_breez/bloc/user_profile/user_profile_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/routes/home/widgets/bubble_painter.dart';
 import 'package:l_breez/routes/home/widgets/dashboard/wallet_dashboard_header_delegate.dart';

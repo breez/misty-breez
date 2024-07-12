@@ -1,0 +1,29 @@
+name: service_injector
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  # Feature Packages
+  breez_preferences:
+      path: ../breez_preferences
+  deep_link_client:
+    path: ../deep_link_client
+  device_client:
+    path: ../device_client
+  firebase_notifications_client:
+    path: ../notifications_client/firebase_notifications_client
+  keychain:
+    path: ../keychain
+  lightning_links:
+    path: ../lightning_links
+  # Utility Packages
+  breez_logger:
+    path: ../breez_logger
+  breez_sdk_liquid:
+    path: ../breez_sdk_liquid
+  credentials_manager:
+    path: ../credentials_manager
+  logging: ^1.2.0
+  rxdart: ^0.28.0

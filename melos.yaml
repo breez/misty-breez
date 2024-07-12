@@ -1,0 +1,28 @@
+name: l_breez
+repository: https://github.com/breez/l-breez
+packages:
+  - packages/**
+ignore:
+  # e.g. ignore example apps of dependencies
+  - packages/**/example/**
+
+scripts:
+  analyze:
+    exec: flutter analyze --no-fatal-infos .
+    description: Analyze packages in this project.
+
+  check-format:
+    exec: dart format -o none --set-exit-if-changed -l 110 .
+    description: Check the format packages in this project.
+
+  format:
+    exec: dart format -l 110 .
+    description: Format a packages in this project.
+
+  pub-get:
+    exec: flutter pub get
+    description: Update all the dependencies to the latest compatible versions in this project.
+
+  pub-upgrade:
+    exec: flutter pub upgrade
+    description: Update all the dependencies to the latest compatible versions in this project.

@@ -4,8 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:l_breez/bloc/user_profile/profile_animal.dart';
-import 'package:l_breez/bloc/user_profile/profile_color.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 
 class BreezAvatar extends StatelessWidget {

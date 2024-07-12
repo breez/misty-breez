@@ -2,7 +2,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/bloc/currency/currency_bloc.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/theme/theme_provider.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';

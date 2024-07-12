@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_dialog.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_page.dart';

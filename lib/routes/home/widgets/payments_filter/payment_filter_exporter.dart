@@ -2,10 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
-import 'package:l_breez/bloc/account/account_state.dart';
-import 'package:l_breez/bloc/csv_exporter.dart';
-import 'package:l_breez/bloc/currency/currency_bloc.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme_provider.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
@@ -13,7 +10,7 @@ import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
 class PaymentFilterExporter extends StatelessWidget {
-  final _log = Logger("PaymentmentFilterExporter");
+  final _log = Logger("PaymentFilterExporter");
   final List<PaymentType>? filter;
 
   PaymentFilterExporter(this.filter, {super.key});

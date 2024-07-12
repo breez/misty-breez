@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.30"
+  ansi_styles:
+    dependency: transitive
+    description:
+      name: ansi_styles
+      sha256: "9c656cc12b3c27b17dd982b2cc5c0cfdfbdabd7bc8f3ae5e8542d9867b47ce8a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2+1"
   app_group_directory:
     dependency: "direct main"
     description:
@@ -104,6 +112,27 @@ packages:
       relative: true
     source: path
     version: "0.1.0"
+  breez_logger:
+    dependency: "direct main"
+    description:
+      path: "packages/breez_logger"
+      relative: true
+    source: path
+    version: "0.0.0"
+  breez_preferences:
+    dependency: "direct main"
+    description:
+      path: "packages/breez_preferences"
+      relative: true
+    source: path
+    version: "0.0.0"
+  breez_sdk_liquid:
+    dependency: "direct main"
+    description:
+      path: "packages/breez_sdk_liquid"
+      relative: true
+    source: path
+    version: "0.0.0"
   breez_translations:
     dependency: "direct main"
     description:
@@ -193,6 +222,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  charcode:
+    dependency: transitive
+    description:
+      name: charcode
+      sha256: fb98c0f6d12c920a02ee2d998da788bca066ca5f148492b7085ee23372b12306
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.1"
   checked_yaml:
     dependency: transitive
     description:
@@ -201,6 +238,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  cli_launcher:
+    dependency: transitive
+    description:
+      name: cli_launcher
+      sha256: "5e7e0282b79e8642edd6510ee468ae2976d847a0a29b3916e85f5fa1bfe24005"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   cli_util:
     dependency: transitive
     description:
@@ -257,6 +302,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  conventional_commit:
+    dependency: transitive
+    description:
+      name: conventional_commit
+      sha256: dec15ad1118f029c618651a4359eb9135d8b88f761aa24e4016d061cd45948f2
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0+1"
   convert:
     dependency: transitive
     description:
@@ -273,6 +326,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  credentials_manager:
+    dependency: "direct main"
+    description:
+      path: "packages/credentials_manager"
+      relative: true
+    source: path
+    version: "0.0.0"
   cross_file:
     dependency: transitive
     description:
@@ -313,6 +373,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
+  deep_link_client:
+    dependency: transitive
+    description:
+      path: "packages/deep_link_client"
+      relative: true
+    source: path
+    version: "0.0.0"
+  device_client:
+    dependency: "direct main"
+    description:
+      path: "packages/device_client"
+      relative: true
+    source: path
+    version: "0.0.0"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -390,18 +464,18 @@ packages:
     dependency: transitive
     description:
       name: ffigen
-      sha256: dead012f29db2be71ea152458f5eab600de98fbc244e01088ae6bf2616bceca7
+      sha256: d3e76c2ad48a4e7f93a29a162006f00eba46ce7c08194a77bb5c5e97d1b5ff0a
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.0"
+    version: "8.0.2"
   file:
     dependency: transitive
     description:
       name: file
-      sha256: "5fc22d7c25582e38ad9a8515372cd9a93834027aacf1801cf01164dac0ffa08c"
+      sha256: "1b92bec4fc2a72f59a8e15af5f52cd441e4a7860b49499d69dfa817af20e925d"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.0"
+    version: "6.1.4"
   file_selector_linux:
     dependency: transitive
     description:
@@ -459,7 +533,7 @@ packages:
     source: hosted
     version: "2.17.3"
   firebase_dynamic_links:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_dynamic_links
       sha256: beed25d57e0240728952c0ff540dde214b11b323ca09cb1ae5f71f30e5efc3b3
@@ -498,6 +572,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.8.11"
+  firebase_notifications_client:
+    dependency: transitive
+    description:
+      path: "packages/notifications_client/firebase_notifications_client"
+      relative: true
+    source: path
+    version: "0.0.0"
   fixnum:
     dependency: transitive
     description:
@@ -526,11 +607,6 @@ packages:
       relative: true
     source: path
     version: "0.1.0"
-  flutter_driver:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_fgbg:
     dependency: "direct main"
     description:
@@ -764,19 +840,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
-  fuchsia_remote_debug_protocol:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
-  git_info:
-    dependency: "direct main"
-    description:
-      name: git_info
-      sha256: f00efd20ff8f084e7910afa071606c025eb4848db40000256cc1996427cf798b
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.2"
   glob:
     dependency: transitive
     description:
@@ -953,11 +1016,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  integration_test:
-    dependency: "direct dev"
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   intl:
     dependency: "direct main"
     description:
@@ -990,6 +1048,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
+  keychain:
+    dependency: transitive
+    description:
+      path: "packages/keychain"
+      relative: true
+    source: path
+    version: "0.0.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -1014,6 +1079,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  lightning_links:
+    dependency: "direct main"
+    description:
+      path: "packages/lightning_links"
+      relative: true
+    source: path
+    version: "0.0.0"
   lints:
     dependency: transitive
     description:
@@ -1086,6 +1158,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.0"
+  melos:
+    dependency: "direct main"
+    description:
+      name: melos
+      sha256: "96e64bbade5712c3f010137e195bca9f1b351fac34ab1f322af492ae34032067"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
   meta:
     dependency: transitive
     description:
@@ -1118,6 +1198,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.4"
+  mustache_template:
+    dependency: transitive
+    description:
+      name: mustache_template
+      sha256: a46e26f91445bfb0b60519be280555b06792460b27b19e2b19ad5b9740df5d1c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   nested:
     dependency: transitive
     description:
@@ -1274,10 +1362,18 @@ packages:
     dependency: transitive
     description:
       name: process
-      sha256: "21e54fd2faf1b5bdd5102afd25012184a6793927648ea81eea80552ac9405b32"
+      sha256: "53fd8db9cec1d37b0574e12f07520d582019cb6c44abf5479a01505099a34a09"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "4.2.4"
+  prompts:
+    dependency: transitive
+    description:
+      name: prompts
+      sha256: "3773b845e85a849f01e793c4fc18a45d52d7783b4cb6c0569fad19f9d0a774a1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   provider:
     dependency: transitive
     description:
@@ -1294,6 +1390,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  pub_updater:
+    dependency: transitive
+    description:
+      name: pub_updater
+      sha256: b06600619c8c219065a548f8f7c192b3e080beff95488ed692780f48f69c0625
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
+  pubspec:
+    dependency: transitive
+    description:
+      name: pubspec
+      sha256: f534a50a2b4d48dc3bc0ec147c8bd7c304280fff23b153f3f11803c4d49d927e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   pubspec_parse:
     dependency: transitive
     description:
@@ -1334,6 +1446,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  service_injector:
+    dependency: "direct main"
+    description:
+      path: "packages/service_injector"
+      relative: true
+    source: path
+    version: "0.0.0"
   share_plus:
     dependency: "direct main"
     description:
@@ -1563,14 +1682,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  sync_http:
-    dependency: transitive
-    description:
-      name: sync_http
-      sha256: "7f0cd72eca000d2e026bcd6f990b81d0ca06022ef4e32fb257b30d3d1014a961"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   synchronized:
     dependency: "direct main"
     description:
@@ -1667,6 +1778,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0"
+  uri:
+    dependency: transitive
+    description:
+      name: uri
+      sha256: "889eea21e953187c6099802b7b4cf5219ba8f3518f604a1033064d45b1b8268a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   url_launcher:
     dependency: "direct main"
     description:
@@ -1811,14 +1930,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  webdriver:
-    dependency: transitive
-    description:
-      name: webdriver
-      sha256: "003d7da9519e1e5f329422b36c4dcdf18d7d2978d1ba099ea4e45ba490ed845e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.3"
   webkit_inspection_protocol:
     dependency: transitive
     description:
