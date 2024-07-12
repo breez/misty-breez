@@ -16,7 +16,7 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final GlobalKey? firstPaymentItemKey;
   final double minHeight;
   final bool popOnCompletion;
-  final bool isLnurlPayment;
+  final bool isLnUrlPayment;
   final Future Function() paymentFunc;
   final Function(PaymentRequestState state)? onStateChange;
 
@@ -24,7 +24,7 @@ class ProcessingPaymentDialog extends StatefulWidget {
     this.firstPaymentItemKey,
     this.minHeight = 220,
     this.popOnCompletion = false,
-    this.isLnurlPayment = false,
+    this.isLnUrlPayment = false,
     required this.paymentFunc,
     this.onStateChange,
     super.key,
@@ -95,7 +95,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     final texts = getSystemAppLocalizations();
     widget.paymentFunc().then((payResult) async {
       await _animateClose();
-      if (widget.isLnurlPayment) {
+      if (widget.isLnUrlPayment) {
         navigator.pop(payResult);
       }
     }).catchError((err) {
@@ -103,7 +103,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         navigator.removeRoute(_currentRoute!);
       }
       widget.onStateChange?.call(PaymentRequestState.PAYMENT_COMPLETED);
-      if (widget.isLnurlPayment) {
+      if (widget.isLnUrlPayment) {
         navigator.pop(err);
       }
       if (err is FrbException || err is PaymentError_PaymentTimeout) {

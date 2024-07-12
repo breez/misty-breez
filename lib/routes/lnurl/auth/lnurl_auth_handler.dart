@@ -1,12 +1,12 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
+import 'package:l_breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:l_breez/routes/lnurl/auth/login_text.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("HandleLNURLAuthRequest");
@@ -23,7 +23,8 @@ Future<LNURLPageResult?> handleAuthRequest(
         final loaderRoute = createLoaderRoute(context);
         navigator.push(loaderRoute);
         try {
-          final resp = await context.read<AccountBloc>().lnurlAuth(reqData: reqData);
+          final lnurlBloc = context.read<LnUrlBloc>();
+          final resp = await lnurlBloc.lnurlAuth(reqData: reqData);
           if (resp is LnUrlCallbackStatus_Ok) {
             _log.info("LNURL auth success");
             return const LNURLPageResult(protocol: LnUrlProtocol.Auth);

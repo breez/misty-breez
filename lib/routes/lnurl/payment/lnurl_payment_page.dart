@@ -1,9 +1,15 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/bloc/account/account_bloc.dart';
 import 'package:l_breez/bloc/currency/currency_bloc.dart';
+import 'package:l_breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
@@ -11,10 +17,6 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("LNURLPaymentPage");
@@ -67,7 +69,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     super.initState();
     fixedAmount = widget.data.minSendable == widget.data.maxSendable;
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
+      (_) async {
         if (fixedAmount) {
           final currencyState = context.read<CurrencyBloc>().state;
           _amountController.text = currencyState.bitcoinCurrency.format(
@@ -75,6 +77,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
             includeDisplayName: false,
           );
         }
+        final lnurlBloc = context.read<LnUrlBloc>();
+        await lnurlBloc.fetchLightningLimits();
       },
     );
   }
@@ -241,13 +245,19 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     final texts = context.texts();
     final accBloc = context.read<AccountBloc>();
     final currencyState = context.read<CurrencyBloc>().state;
+    final lnurlState = context.read<LnUrlBloc>().state;
+    final limits = lnurlState.limits?.send;
 
-    final maxSendable = widget.data.maxSendable.toInt() ~/ 1000;
+    final maxSendable = (limits != null)
+        ? min(limits.maxSat.toInt(), widget.data.maxSendable.toInt() ~/ 1000)
+        : widget.data.maxSendable.toInt() ~/ 1000;
     if (amount > maxSendable) {
       return texts.lnurl_payment_page_error_exceeds_limit(maxSendable);
     }
 
-    final minSendable = widget.data.minSendable.toInt() ~/ 1000;
+    final minSendable = (limits != null)
+        ? max(limits.maxSat.toInt(), widget.data.minSendable.toInt() ~/ 1000)
+        : widget.data.minSendable.toInt() ~/ 1000;
     if (amount < minSendable) {
       return texts.lnurl_payment_page_error_below_limit(minSendable);
     }

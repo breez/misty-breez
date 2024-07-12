@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
+import 'package:l_breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_dialog.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_page.dart';
@@ -7,8 +9,6 @@ import 'package:l_breez/routes/lnurl/payment/success_action/success_action_dialo
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
 import 'package:l_breez/widgets/route.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("HandleLNURLPayRequest");
@@ -44,16 +44,16 @@ Future<LNURLPageResult?> handlePayRequest(
     context: context,
     barrierDismissible: false,
     builder: (_) => ProcessingPaymentDialog(
-      isLnurlPayment: true,
+      isLnUrlPayment: true,
       firstPaymentItemKey: firstPaymentItemKey,
       paymentFunc: () {
-        final accBloc = context.read<AccountBloc>();
+        final lnurlBloc = context.read<LnUrlBloc>();
         final req = LnUrlPayRequest(
           amountMsat: BigInt.from(paymentInfo!.amount * 1000),
           comment: paymentInfo.comment,
           data: data,
         );
-        return accBloc.lnurlPay(req: req);
+        return lnurlBloc.lnurlPay(req: req);
       },
     ),
   ).then((result) {

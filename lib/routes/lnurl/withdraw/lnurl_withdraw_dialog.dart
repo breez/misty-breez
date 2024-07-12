@@ -1,12 +1,12 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/bloc/account/account_bloc.dart';
+import 'package:l_breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/loading_animated_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("LNURLWithdrawDialog");
@@ -136,7 +136,7 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
   Future<LNURLPageResult> _withdraw(BuildContext context) async {
     _log.info("Withdraw ${widget.amountSats} sats");
     final texts = context.texts();
-    final accountBloc = context.read<AccountBloc>();
+    final lnurlBloc = context.read<LnUrlBloc>();
     final description = widget.requestData.defaultDescription;
 
     try {
@@ -148,7 +148,7 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
         data: widget.requestData,
         description: description,
       );
-      final resp = await accountBloc.lnurlWithdraw(req: req);
+      final resp = await lnurlBloc.lnurlWithdraw(req: req);
       if (resp is LnUrlWithdrawResult_Ok) {
         final paymentHash = resp.data.invoice.paymentHash;
         _log.info("LNURL withdraw success for $paymentHash");
