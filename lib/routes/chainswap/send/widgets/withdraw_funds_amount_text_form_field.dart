@@ -19,7 +19,7 @@ class WithdrawFundsAmountTextFormField extends AmountFormField {
     required BigInt balance,
   }) : super(
           texts: context.texts(),
-          readOnly: policy.withdrawKind == WithdrawKind.unexpected_funds || withdrawMaxValue,
+          readOnly: policy.withdrawKind == WithdrawKind.unexpectedFunds || withdrawMaxValue,
           validatorFn: (amount) {
             _log.info("Validator called for $amount");
             return PaymentValidator(

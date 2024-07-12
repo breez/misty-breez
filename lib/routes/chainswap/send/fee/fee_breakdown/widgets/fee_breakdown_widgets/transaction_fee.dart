@@ -25,7 +25,7 @@ class TransactionFee extends StatelessWidget {
       ),
       trailing: AutoSizeText(
         texts.sweep_all_coins_fee(
-          BitcoinCurrency.SAT.format(txFeeSat),
+          BitcoinCurrency.sat.format(txFeeSat),
         ),
         style: TextStyle(color: themeData.colorScheme.error.withOpacity(0.4)),
         maxLines: 1,

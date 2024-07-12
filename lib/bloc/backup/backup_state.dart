@@ -1,4 +1,4 @@
-enum BackupStatus { FAILED, SUCCESS, INPROGRESS }
+enum BackupStatus { failed, success, inProgress }
 
 class BackupState {
   final BackupStatus status;

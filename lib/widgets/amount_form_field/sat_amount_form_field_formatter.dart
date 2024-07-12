@@ -24,7 +24,7 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
       value = 0;
     }
 
-    final formatted = BitcoinCurrency.SAT.format(
+    final formatted = BitcoinCurrency.sat.format(
       value,
       includeDisplayName: false,
       includeCurrencySymbol: false,

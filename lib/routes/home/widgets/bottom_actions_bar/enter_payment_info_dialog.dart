@@ -159,7 +159,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
               if (_formKey.currentState!.validate()) {
                 _setLoading(false);
                 navigator.pop();
-                inputBloc.addIncomingInput(_paymentInfoController.text, InputSource.input_field);
+                inputBloc.addIncomingInput(_paymentInfoController.text, InputSource.inputField);
               }
             } catch (error) {
               _setLoading(false);

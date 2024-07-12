@@ -116,7 +116,7 @@ class InputHandler extends Handler {
 
   Future handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
     _log.fine("handle bitcoin address $inputState");
-    if (inputState.source == InputSource.qrcode_reader) {
+    if (inputState.source == InputSource.qrcodeReader) {
       return await Navigator.of(context).pushNamed("/reverse_swap", arguments: inputState.data);
     }
   }

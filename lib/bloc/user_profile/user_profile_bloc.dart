@@ -9,7 +9,7 @@ import 'package:l_breez/models/user_profile.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 
-const PROFILE_DATA_FOLDER_PATH = "profile";
+const profileDataFolderPath = "profile";
 
 final _log = Logger("UserProfileBloc");
 
@@ -89,7 +89,9 @@ class UserProfileBloc extends Cubit<UserProfileState> with HydratedMixin {
   Future<String> _saveImage(List<int> logoBytes) {
     return getApplicationDocumentsDirectory()
         .then(
-          (docDir) => Directory([docDir.path, PROFILE_DATA_FOLDER_PATH].join("/")).create(recursive: true),
+          (docDir) => Directory(
+            [docDir.path, profileDataFolderPath].join("/"),
+          ).create(recursive: true),
         )
         .then(
           (profileDir) => File(

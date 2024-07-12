@@ -61,19 +61,19 @@ Future<LNURLPageResult?> handlePayRequest(
       if (result is LnUrlPayResult_EndpointSuccess) {
         _log.info("LNURL payment success, action: ${result.data}");
         return LNURLPageResult(
-          protocol: LnUrlProtocol.Pay,
+          protocol: LnUrlProtocol.pay,
           successAction: result.data.successAction,
         );
       } else if (result is LnUrlPayResult_PayError) {
         _log.info("LNURL payment for ${result.data.paymentHash} failed: ${result.data.reason}");
         return LNURLPageResult(
-          protocol: LnUrlProtocol.Pay,
+          protocol: LnUrlProtocol.pay,
           error: result.data.reason,
         );
       } else if (result is LnUrlPayResult_EndpointError) {
         _log.info("LNURL payment failed: ${result.data.reason}");
         return LNURLPageResult(
-          protocol: LnUrlProtocol.Pay,
+          protocol: LnUrlProtocol.pay,
           error: result.data.reason,
         );
       }

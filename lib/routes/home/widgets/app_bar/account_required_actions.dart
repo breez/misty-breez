@@ -26,7 +26,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
 
         List<Widget> warnings = [];
 
-        if (accState.verificationStatus == VerificationStatus.UNVERIFIED) {
+        if (accState.verificationStatus == VerificationStatus.unverified) {
           warnings.add(
             WarningAction(
               onTap: () async {
@@ -42,7 +42,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
           );
         }
 
-        if (backupState != null && backupState.status == BackupStatus.INPROGRESS) {
+        if (backupState != null && backupState.status == BackupStatus.inProgress) {
           warnings.add(
             WarningAction(
               onTap: () {
@@ -63,7 +63,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
           );
         }
 
-        if (backupState?.status == BackupStatus.FAILED) {
+        if (backupState?.status == BackupStatus.failed) {
           warnings.add(
             WarningAction(
               onTap: () {

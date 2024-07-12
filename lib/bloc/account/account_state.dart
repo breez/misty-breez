@@ -5,9 +5,9 @@ import 'package:l_breez/models/payment_minutiae.dart';
 
 const initialInboundCapacity = 4000000;
 
-enum ConnectionStatus { CONNECTING, CONNECTED, DISCONNECTED }
+enum ConnectionStatus { connecting, connected, disconnected }
 
-enum VerificationStatus { UNVERIFIED, VERIFIED }
+enum VerificationStatus { unverified, verified }
 
 // TODO: Liquid - Remove non-applicable fields for Liquid SDK
 class AccountState {
@@ -48,7 +48,7 @@ class AccountState {
     required this.payments,
     required this.paymentFilters,
     required this.connectionStatus,
-    this.verificationStatus = VerificationStatus.UNVERIFIED,
+    this.verificationStatus = VerificationStatus.unverified,
   });
 
   AccountState.initial()
@@ -70,7 +70,7 @@ class AccountState {
           payments: [],
           paymentFilters: PaymentFilters.initial(),
           connectionStatus: null,
-          verificationStatus: VerificationStatus.UNVERIFIED,
+          verificationStatus: VerificationStatus.unverified,
         );
 
   AccountState copyWith({
@@ -162,10 +162,10 @@ class AccountState {
       paymentFilters: PaymentFilters.fromJson(json["paymentFilters"]),
       connectionStatus: json["connectionStatus"] != null
           ? ConnectionStatus.values[json["connectionStatus"]]
-          : ConnectionStatus.CONNECTING,
+          : ConnectionStatus.connecting,
       verificationStatus: json["verificationStatus"] != null
           ? VerificationStatus.values[json["verificationStatus"]]
-          : VerificationStatus.UNVERIFIED,
+          : VerificationStatus.unverified,
     );
   }
 

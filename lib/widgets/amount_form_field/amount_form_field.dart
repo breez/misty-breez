@@ -39,7 +39,7 @@ class AmountFormField extends TextFormField {
     bool? readOnly,
   }) : super(
           keyboardType: TextInputType.numberWithOptions(
-            decimal: bitcoinCurrency != BitcoinCurrency.SAT,
+            decimal: bitcoinCurrency != BitcoinCurrency.sat,
           ),
           decoration: InputDecoration(
             labelText: texts.amount_form_denomination(
@@ -72,7 +72,7 @@ class AmountFormField extends TextFormField {
                     ),
                   ),
           ),
-          inputFormatters: bitcoinCurrency != BitcoinCurrency.SAT
+          inputFormatters: bitcoinCurrency != BitcoinCurrency.sat
               ? [
                   FilteringTextInputFormatter.allow(bitcoinCurrency.whitelistedPattern),
                   TextInputFormatter.withFunction(

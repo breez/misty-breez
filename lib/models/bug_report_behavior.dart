@@ -1,5 +1,5 @@
 enum BugReportBehavior {
-  PROMPT,
-  SEND_REPORT,
-  IGNORE,
+  prompt,
+  sendReport,
+  ignore,
 }

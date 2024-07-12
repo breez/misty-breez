@@ -32,10 +32,10 @@ class SenderAmount extends StatelessWidget {
           return AutoSizeText(
             fiatConversion == null
                 ? texts.sweep_all_coins_amount_no_fiat(
-                    BitcoinCurrency.SAT.format(amountSat),
+                    BitcoinCurrency.sat.format(amountSat),
                   )
                 : texts.sweep_all_coins_amount_with_fiat(
-                    BitcoinCurrency.SAT.format(amountSat),
+                    BitcoinCurrency.sat.format(amountSat),
                     fiatConversion.format(amountSat),
                   ),
             style: TextStyle(color: themeData.colorScheme.error),

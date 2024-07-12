@@ -33,14 +33,17 @@ class CurrencyFormatter {
 class BitcoinCurrencyFormatter {
   static final formatter = CurrencyFormatter().formatter;
 
-  String format(satoshies, BitcoinCurrency currency,
-      {bool addCurrencySuffix = true,
-      bool addCurrencySymbol = false,
-      removeTrailingZeros = false,
-      userInput = false}) {
+  String format(
+    satoshies,
+    BitcoinCurrency currency, {
+    bool addCurrencySuffix = true,
+    bool addCurrencySymbol = false,
+    removeTrailingZeros = false,
+    userInput = false,
+  }) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
-      case BitcoinCurrency.BTC:
+      case BitcoinCurrency.btc:
         double amountInBTC = (satoshies.toInt() / 100000000);
         formattedAmount = amountInBTC.toStringAsFixed(8);
         if (removeTrailingZeros) {
@@ -52,7 +55,7 @@ class BitcoinCurrencyFormatter {
           }
         }
         break;
-      case BitcoinCurrency.SAT:
+      case BitcoinCurrency.sat:
         formattedAmount = formatter.format(satoshies);
         break;
     }
@@ -71,9 +74,9 @@ class BitcoinCurrencyFormatter {
 
   int parse(String amount, BitcoinCurrency currency) {
     switch (currency) {
-      case BitcoinCurrency.BTC:
+      case BitcoinCurrency.btc:
         return (double.parse(amount) * 100000000).round();
-      case BitcoinCurrency.SAT:
+      case BitcoinCurrency.sat:
         return int.parse(amount.replaceAll(RegExp('\\s+'), ''));
       default:
         return (double.parse(amount) * 100000000).round();
@@ -82,9 +85,9 @@ class BitcoinCurrencyFormatter {
 
   int toSats(double amount, BitcoinCurrency currency) {
     switch (currency) {
-      case BitcoinCurrency.BTC:
+      case BitcoinCurrency.btc:
         return (amount * 100000000).round();
-      case BitcoinCurrency.SAT:
+      case BitcoinCurrency.sat:
         return amount.toInt();
       default:
         return (amount * 100000000).round();

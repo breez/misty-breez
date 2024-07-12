@@ -71,12 +71,12 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     bool isRestore = true,
   }) async {
     _log.info("connect new mnemonic: ${mnemonic != null}, restored: $isRestore");
-    emit(state.copyWith(connectionStatus: ConnectionStatus.CONNECTING));
+    emit(state.copyWith(connectionStatus: ConnectionStatus.connecting));
     if (mnemonic != null) {
       await _credentialsManager.storeMnemonic(mnemonic: mnemonic);
       emit(state.copyWith(
         initial: false,
-        verificationStatus: isRestore ? VerificationStatus.VERIFIED : null,
+        verificationStatus: isRestore ? VerificationStatus.verified : null,
       ));
     }
     await _startSdkForever(isRestore: isRestore);
@@ -87,14 +87,14 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     await _startSdkOnce(isRestore: isRestore);
 
     // in case we failed to start (lack of inet connection probably)
-    if (state.connectionStatus == ConnectionStatus.DISCONNECTED) {
+    if (state.connectionStatus == ConnectionStatus.disconnected) {
       StreamSubscription<List<ConnectivityResult>>? subscription;
       subscription = Connectivity().onConnectivityChanged.listen((event) async {
         // we should try fetch the selected lsp information when internet is back.
         if (event.contains(ConnectivityResult.none) &&
-            state.connectionStatus == ConnectionStatus.DISCONNECTED) {
+            state.connectionStatus == ConnectionStatus.disconnected) {
           await _startSdkOnce();
-          if (state.connectionStatus == ConnectionStatus.CONNECTED) {
+          if (state.connectionStatus == ConnectionStatus.connected) {
             subscription!.cancel();
             _onConnected();
           }
@@ -109,7 +109,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
     _log.info("starting sdk once");
     var config = await Config.instance();
     try {
-      emit(state.copyWith(connectionStatus: ConnectionStatus.CONNECTING));
+      emit(state.copyWith(connectionStatus: ConnectionStatus.connecting));
       final mnemonic = await _credentialsManager.restoreMnemonic();
       _log.info("connecting to breez lib");
       final req = liquid_sdk.ConnectRequest(
@@ -118,14 +118,14 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
       );
       await _liquidSdk.connect(req: req);
       _log.info("connected to breez lib");
-      emit(state.copyWith(connectionStatus: ConnectionStatus.CONNECTED));
+      emit(state.copyWith(connectionStatus: ConnectionStatus.connected));
       _watchAccountChanges().listen((acc) {
         _log.info("State changed: $acc");
         emit(acc);
       });
     } catch (e) {
       _log.warning("failed to connect to breez lib", e);
-      emit(state.copyWith(connectionStatus: ConnectionStatus.DISCONNECTED));
+      emit(state.copyWith(connectionStatus: ConnectionStatus.disconnected));
       rethrow;
     }
   }
@@ -299,7 +299,7 @@ class AccountBloc extends Cubit<AccountState> with HydratedMixin {
 
   void mnemonicsValidated() {
     _log.info("mnemonicsValidated");
-    emit(state.copyWith(verificationStatus: VerificationStatus.VERIFIED));
+    emit(state.copyWith(verificationStatus: VerificationStatus.verified));
   }
 
   List<PaymentMinutiae> filterPaymentList() {

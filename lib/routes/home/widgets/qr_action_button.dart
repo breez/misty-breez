@@ -51,7 +51,7 @@ class QrActionButton extends StatelessWidget {
           );
           return;
         }
-        inputBloc.addIncomingInput(barcode, InputSource.qrcode_reader);
+        inputBloc.addIncomingInput(barcode, InputSource.qrcodeReader);
       },
     );
   }

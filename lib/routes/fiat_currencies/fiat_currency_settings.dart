@@ -11,7 +11,7 @@ import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/loader.dart';
 
-const double ITEM_HEIGHT = 72.0;
+const double itemHeight = 72.0;
 
 class FiatCurrencySettings extends StatefulWidget {
   const FiatCurrencySettings({super.key});
@@ -128,9 +128,9 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           if (checked == true) {
             prefCurrencies.add(currencyData.id);
             // center item in viewport
-            if (_scrollController.offset >= (ITEM_HEIGHT * (prefCurrencies.length - 1))) {
+            if (_scrollController.offset >= (itemHeight * (prefCurrencies.length - 1))) {
               _scrollController.animateTo(
-                ((2 * prefCurrencies.length - 1) * ITEM_HEIGHT -
+                ((2 * prefCurrencies.length - 1) * itemHeight -
                         _scrollController.position.viewportDimension) /
                     2,
                 curve: Curves.easeOut,

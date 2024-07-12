@@ -14,31 +14,31 @@ import 'package:breez_translations/generated/breez_translations_sv.dart';
 import 'package:flutter/material.dart';
 
 enum ProfileColor {
-  SALMON,
-  BLUE,
-  TURQUOISE,
-  ORCHID,
-  PURPLE,
-  TOMATO,
-  CYAN,
-  CRIMSON,
-  ORANGE,
-  LIME,
-  PINK,
-  GREEN,
-  RED,
-  YELLOW,
-  AZURE,
-  SILVER,
-  MAGENTA,
-  OLIVE,
-  VIOLET,
-  ROSE,
-  WINE,
-  MINT,
-  INDIGO,
-  JADE,
-  CORAL,
+  salmon,
+  blue,
+  turquoise,
+  orchid,
+  purple,
+  tomato,
+  cyan,
+  crimson,
+  orange,
+  lime,
+  pink,
+  green,
+  red,
+  yellow,
+  azure,
+  silver,
+  magenta,
+  olive,
+  violet,
+  rose,
+  wine,
+  mint,
+  indigo,
+  jade,
+  coral,
 }
 
 ProfileColor? profileColorFromName(String? name, BreezTranslations texts) {
@@ -65,55 +65,55 @@ ProfileColor? profileColorFromName(String? name, BreezTranslations texts) {
 extension ProfileColorExtension on ProfileColor {
   String name(BreezTranslations texts) {
     switch (this) {
-      case ProfileColor.SALMON:
+      case ProfileColor.salmon:
         return texts.app_color_salmon;
-      case ProfileColor.BLUE:
+      case ProfileColor.blue:
         return texts.app_color_blue;
-      case ProfileColor.TURQUOISE:
+      case ProfileColor.turquoise:
         return texts.app_color_turquoise;
-      case ProfileColor.ORCHID:
+      case ProfileColor.orchid:
         return texts.app_color_orchid;
-      case ProfileColor.PURPLE:
+      case ProfileColor.purple:
         return texts.app_color_purple;
-      case ProfileColor.TOMATO:
+      case ProfileColor.tomato:
         return texts.app_color_tomato;
-      case ProfileColor.CYAN:
+      case ProfileColor.cyan:
         return texts.app_color_cyan;
-      case ProfileColor.CRIMSON:
+      case ProfileColor.crimson:
         return texts.app_color_crimson;
-      case ProfileColor.ORANGE:
+      case ProfileColor.orange:
         return texts.app_color_orange;
-      case ProfileColor.LIME:
+      case ProfileColor.lime:
         return texts.app_color_lime;
-      case ProfileColor.PINK:
+      case ProfileColor.pink:
         return texts.app_color_pink;
-      case ProfileColor.GREEN:
+      case ProfileColor.green:
         return texts.app_color_green;
-      case ProfileColor.RED:
+      case ProfileColor.red:
         return texts.app_color_red;
-      case ProfileColor.YELLOW:
+      case ProfileColor.yellow:
         return texts.app_color_yellow;
-      case ProfileColor.AZURE:
+      case ProfileColor.azure:
         return texts.app_color_azure;
-      case ProfileColor.SILVER:
+      case ProfileColor.silver:
         return texts.app_color_silver;
-      case ProfileColor.MAGENTA:
+      case ProfileColor.magenta:
         return texts.app_color_magenta;
-      case ProfileColor.OLIVE:
+      case ProfileColor.olive:
         return texts.app_color_olive;
-      case ProfileColor.VIOLET:
+      case ProfileColor.violet:
         return texts.app_color_violet;
-      case ProfileColor.ROSE:
+      case ProfileColor.rose:
         return texts.app_color_rose;
-      case ProfileColor.WINE:
+      case ProfileColor.wine:
         return texts.app_color_wine;
-      case ProfileColor.MINT:
+      case ProfileColor.mint:
         return texts.app_color_mint;
-      case ProfileColor.INDIGO:
+      case ProfileColor.indigo:
         return texts.app_color_indigo;
-      case ProfileColor.JADE:
+      case ProfileColor.jade:
         return texts.app_color_jade;
-      case ProfileColor.CORAL:
+      case ProfileColor.coral:
         return texts.app_color_coral;
       default:
         return "";
@@ -122,55 +122,55 @@ extension ProfileColorExtension on ProfileColor {
 
   Color get color {
     switch (this) {
-      case ProfileColor.SALMON:
+      case ProfileColor.salmon:
         return const Color(0xFFFA8072);
-      case ProfileColor.BLUE:
+      case ProfileColor.blue:
         return const Color(0xFF4169E1);
-      case ProfileColor.TURQUOISE:
+      case ProfileColor.turquoise:
         return const Color(0xFF00CED1);
-      case ProfileColor.ORCHID:
+      case ProfileColor.orchid:
         return const Color(0xFF9932CC);
-      case ProfileColor.PURPLE:
+      case ProfileColor.purple:
         return const Color(0xFF800080);
-      case ProfileColor.TOMATO:
+      case ProfileColor.tomato:
         return const Color(0xFFFF6347);
-      case ProfileColor.CYAN:
+      case ProfileColor.cyan:
         return const Color(0xFF008B8B);
-      case ProfileColor.CRIMSON:
+      case ProfileColor.crimson:
         return const Color(0xFFDC143C);
-      case ProfileColor.ORANGE:
+      case ProfileColor.orange:
         return const Color(0xFFFFA500);
-      case ProfileColor.LIME:
+      case ProfileColor.lime:
         return const Color(0xFF32CD32);
-      case ProfileColor.PINK:
+      case ProfileColor.pink:
         return const Color(0xFFFF69B4);
-      case ProfileColor.GREEN:
+      case ProfileColor.green:
         return const Color(0xFF00A644);
-      case ProfileColor.RED:
+      case ProfileColor.red:
         return const Color(0xFFFF2727);
-      case ProfileColor.YELLOW:
+      case ProfileColor.yellow:
         return const Color(0xFFEECA0C);
-      case ProfileColor.AZURE:
+      case ProfileColor.azure:
         return const Color(0xFF00C4FF);
-      case ProfileColor.SILVER:
+      case ProfileColor.silver:
         return const Color(0xFF53687F);
-      case ProfileColor.MAGENTA:
+      case ProfileColor.magenta:
         return const Color(0xFFFF00FF);
-      case ProfileColor.OLIVE:
+      case ProfileColor.olive:
         return const Color(0xFF808000);
-      case ProfileColor.VIOLET:
+      case ProfileColor.violet:
         return const Color(0xFF7F01FF);
-      case ProfileColor.ROSE:
+      case ProfileColor.rose:
         return const Color(0xFFFF0080);
-      case ProfileColor.WINE:
+      case ProfileColor.wine:
         return const Color(0xFF950347);
-      case ProfileColor.MINT:
+      case ProfileColor.mint:
         return const Color(0xFF7ADEB8);
-      case ProfileColor.INDIGO:
+      case ProfileColor.indigo:
         return const Color(0xFF4B0082);
-      case ProfileColor.JADE:
+      case ProfileColor.jade:
         return const Color(0xFF00B27A);
-      case ProfileColor.CORAL:
+      case ProfileColor.coral:
         return const Color(0xFFFF7F50);
       default:
         return Colors.white;
@@ -195,29 +195,29 @@ Map<String, Map<String, ProfileColor>> _colorsFromName = {
 };
 
 Map<String, ProfileColor> _buildColorsFromName(BreezTranslations local) => {
-      local.app_color_salmon.toLowerCase(): ProfileColor.SALMON,
-      local.app_color_blue.toLowerCase(): ProfileColor.BLUE,
-      local.app_color_turquoise.toLowerCase(): ProfileColor.TURQUOISE,
-      local.app_color_orchid.toLowerCase(): ProfileColor.ORCHID,
-      local.app_color_purple.toLowerCase(): ProfileColor.PURPLE,
-      local.app_color_tomato.toLowerCase(): ProfileColor.TOMATO,
-      local.app_color_cyan.toLowerCase(): ProfileColor.CYAN,
-      local.app_color_crimson.toLowerCase(): ProfileColor.CRIMSON,
-      local.app_color_orange.toLowerCase(): ProfileColor.ORANGE,
-      local.app_color_lime.toLowerCase(): ProfileColor.LIME,
-      local.app_color_pink.toLowerCase(): ProfileColor.PINK,
-      local.app_color_green.toLowerCase(): ProfileColor.GREEN,
-      local.app_color_red.toLowerCase(): ProfileColor.RED,
-      local.app_color_yellow.toLowerCase(): ProfileColor.YELLOW,
-      local.app_color_azure.toLowerCase(): ProfileColor.AZURE,
-      local.app_color_silver.toLowerCase(): ProfileColor.SILVER,
-      local.app_color_magenta.toLowerCase(): ProfileColor.MAGENTA,
-      local.app_color_olive.toLowerCase(): ProfileColor.OLIVE,
-      local.app_color_violet.toLowerCase(): ProfileColor.VIOLET,
-      local.app_color_rose.toLowerCase(): ProfileColor.ROSE,
-      local.app_color_wine.toLowerCase(): ProfileColor.WINE,
-      local.app_color_mint.toLowerCase(): ProfileColor.MINT,
-      local.app_color_indigo.toLowerCase(): ProfileColor.INDIGO,
-      local.app_color_jade.toLowerCase(): ProfileColor.JADE,
-      local.app_color_coral.toLowerCase(): ProfileColor.CORAL,
+      local.app_color_salmon.toLowerCase(): ProfileColor.salmon,
+      local.app_color_blue.toLowerCase(): ProfileColor.blue,
+      local.app_color_turquoise.toLowerCase(): ProfileColor.turquoise,
+      local.app_color_orchid.toLowerCase(): ProfileColor.orchid,
+      local.app_color_purple.toLowerCase(): ProfileColor.purple,
+      local.app_color_tomato.toLowerCase(): ProfileColor.tomato,
+      local.app_color_cyan.toLowerCase(): ProfileColor.cyan,
+      local.app_color_crimson.toLowerCase(): ProfileColor.crimson,
+      local.app_color_orange.toLowerCase(): ProfileColor.orange,
+      local.app_color_lime.toLowerCase(): ProfileColor.lime,
+      local.app_color_pink.toLowerCase(): ProfileColor.pink,
+      local.app_color_green.toLowerCase(): ProfileColor.green,
+      local.app_color_red.toLowerCase(): ProfileColor.red,
+      local.app_color_yellow.toLowerCase(): ProfileColor.yellow,
+      local.app_color_azure.toLowerCase(): ProfileColor.azure,
+      local.app_color_silver.toLowerCase(): ProfileColor.silver,
+      local.app_color_magenta.toLowerCase(): ProfileColor.magenta,
+      local.app_color_olive.toLowerCase(): ProfileColor.olive,
+      local.app_color_violet.toLowerCase(): ProfileColor.violet,
+      local.app_color_rose.toLowerCase(): ProfileColor.rose,
+      local.app_color_wine.toLowerCase(): ProfileColor.wine,
+      local.app_color_mint.toLowerCase(): ProfileColor.mint,
+      local.app_color_indigo.toLowerCase(): ProfileColor.indigo,
+      local.app_color_jade.toLowerCase(): ProfileColor.jade,
+      local.app_color_coral.toLowerCase(): ProfileColor.coral,
     };

@@ -18,7 +18,7 @@ class SecurityMnemonicsManagement extends StatelessWidget {
 
     return BlocBuilder<AccountBloc, AccountState>(
       builder: (context, account) {
-        final isVerified = (account.verificationStatus == VerificationStatus.VERIFIED);
+        final isVerified = (account.verificationStatus == VerificationStatus.verified);
 
         return ListTile(
           title: Text(
@@ -38,7 +38,7 @@ class SecurityMnemonicsManagement extends StatelessWidget {
           onTap: () async {
             await ServiceInjector().keychain.read(CredentialsManager.accountMnemonic).then(
               (accountMnemonic) {
-                if (account.verificationStatus == VerificationStatus.UNVERIFIED) {
+                if (account.verificationStatus == VerificationStatus.unverified) {
                   Navigator.pushNamed(
                     context,
                     '/mnemonics',

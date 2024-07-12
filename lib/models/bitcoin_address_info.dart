@@ -21,7 +21,7 @@ class BitcoinAddressInfo {
         if (amount != null) {
           final btcAmount = double.tryParse(amount);
           if (btcAmount != null) {
-            satAmount = BitcoinCurrency.BTC.toSats(btcAmount);
+            satAmount = BitcoinCurrency.btc.toSats(btcAmount);
           }
         }
       }

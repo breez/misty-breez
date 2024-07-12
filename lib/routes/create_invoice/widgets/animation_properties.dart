@@ -1,6 +1,1 @@
-enum AnimationProperties {
-  X,
-  Y,
-  COLOR1,
-  COLOR2,
-}
+enum AnimationProperties { X, Y }

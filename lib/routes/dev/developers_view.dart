@@ -41,7 +41,7 @@ class DevelopersView extends StatefulWidget {
 
 class _DevelopersViewState extends State<DevelopersView> {
   final _preferences = const Preferences();
-  var bugReportBehavior = BugReportBehavior.PROMPT;
+  var bugReportBehavior = BugReportBehavior.prompt;
 
   @override
   void initState() {
@@ -84,15 +84,17 @@ class _DevelopersViewState extends State<DevelopersView> {
                 icon: Icons.share,
                 function: (_) => shareLog(),
               ),
-              if (bugReportBehavior != BugReportBehavior.PROMPT)
+              if (bugReportBehavior != BugReportBehavior.prompt)
                 Choice(
                   title: "Enable Failure Prompt",
                   icon: Icons.bug_report,
                   function: (_) {
-                    _preferences.setBugReportBehavior(BugReportBehavior.PROMPT).then(
-                        (value) => setState(() {
-                              bugReportBehavior = BugReportBehavior.PROMPT;
-                            }),
+                    _preferences.setBugReportBehavior(BugReportBehavior.prompt).then(
+                        (value) => setState(
+                              () {
+                                bugReportBehavior = BugReportBehavior.prompt;
+                              },
+                            ),
                         onError: (e) => _log.warning(e));
                   },
                 ),

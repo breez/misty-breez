@@ -31,11 +31,11 @@ class _ChangePinPageState extends State<ChangePinPage> {
         leading: const back_button.BackButton(),
       ),
       body: PinCodeWidget(
-        label: _moment() == _Moment.typing_pin_first_time
+        label: _moment() == _Moment.firstTime
             ? texts.security_and_backup_new_pin
             : texts.security_and_backup_new_pin_second_time,
         testPinCodeFunction: (pin) async {
-          if (_moment() == _Moment.typing_pin_first_time) {
+          if (_moment() == _Moment.firstTime) {
             setState(() {
               _firstPinCode = pin;
             });
@@ -58,12 +58,12 @@ class _ChangePinPageState extends State<ChangePinPage> {
     );
   }
 
-  _Moment _moment() => _firstPinCode.isEmpty ? _Moment.typing_pin_first_time : _Moment.confirming_pin;
+  _Moment _moment() => _firstPinCode.isEmpty ? _Moment.firstTime : _Moment.confirmingPin;
 }
 
 enum _Moment {
-  typing_pin_first_time,
-  confirming_pin,
+  firstTime,
+  confirmingPin,
 }
 
 void main() async {

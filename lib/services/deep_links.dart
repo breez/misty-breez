@@ -6,9 +6,10 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
+final _log = Logger("DeepLinksService");
+
 class DeepLinksService {
-  static const SESSION_SECRET = "sessionSecret";
-  final _log = Logger("DeepLinksService");
+  static const sessionSecret = "sessionSecret";
 
   final StreamController<String> _linksNotificationsController = BehaviorSubject<String>();
   Stream<String> get linksNotifications => _linksNotificationsController.stream;

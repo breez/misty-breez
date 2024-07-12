@@ -1,6 +1,1 @@
-enum InputSource {
-  input_field,
-  qrcode_reader,
-  clipboard,
-  hyperlink,
-}
+enum InputSource { inputField, qrcodeReader, clipboard, hyperlink }

@@ -30,7 +30,7 @@ import 'package:l_breez/widgets/route.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-const String THEME_ID_PREFERENCE_KEY = "themeID";
+const String themeIdPreferenceKey = "themeID";
 
 final _log = Logger("UserApp");
 

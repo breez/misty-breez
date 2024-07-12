@@ -27,14 +27,14 @@ Future<LNURLPageResult?> handleAuthRequest(
           final resp = await lnurlBloc.lnurlAuth(reqData: reqData);
           if (resp is LnUrlCallbackStatus_Ok) {
             _log.info("LNURL auth success");
-            return const LNURLPageResult(protocol: LnUrlProtocol.Auth);
+            return const LNURLPageResult(protocol: LnUrlProtocol.auth);
           } else if (resp is LnUrlCallbackStatus_ErrorStatus) {
             _log.info("LNURL auth failed: ${resp.data.reason}");
-            return LNURLPageResult(protocol: LnUrlProtocol.Auth, error: resp.data.reason);
+            return LNURLPageResult(protocol: LnUrlProtocol.auth, error: resp.data.reason);
           } else {
             _log.warning("Unknown response from lnurlAuth: $resp");
             return LNURLPageResult(
-              protocol: LnUrlProtocol.Auth,
+              protocol: LnUrlProtocol.auth,
               error: texts.lnurl_payment_page_unknown_error,
             );
           }
@@ -43,7 +43,7 @@ Future<LNURLPageResult?> handleAuthRequest(
           if (loaderRoute.isActive) {
             navigator.removeRoute(loaderRoute);
           }
-          return LNURLPageResult(protocol: LnUrlProtocol.Auth, error: e);
+          return LNURLPageResult(protocol: LnUrlProtocol.auth, error: e);
         } finally {
           if (loaderRoute.isActive) {
             navigator.removeRoute(loaderRoute);

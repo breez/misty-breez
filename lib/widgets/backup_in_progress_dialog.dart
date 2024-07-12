@@ -18,7 +18,7 @@ class BackupInProgressDialogState extends State<BackupInProgressDialog> {
     final texts = context.texts();
     return BlocListener<BackupBloc, BackupState?>(
         listener: (context, state) {
-          if (state?.status != BackupStatus.INPROGRESS) {
+          if (state?.status != BackupStatus.inProgress) {
             Navigator.of(context).pop();
           }
         },

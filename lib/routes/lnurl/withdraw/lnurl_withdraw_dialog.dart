@@ -154,24 +154,24 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
       if (resp is LnUrlWithdrawResult_Ok) {
         final paymentHash = resp.data.invoice.paymentHash;
         _log.info("LNURL withdraw success for $paymentHash");
-        return const LNURLPageResult(protocol: LnUrlProtocol.Withdraw);
+        return const LNURLPageResult(protocol: LnUrlProtocol.withdraw);
       } else if (resp is LnUrlWithdrawResult_ErrorStatus) {
         final reason = resp.data.reason;
         _log.info("LNURL withdraw failed: $reason");
         return LNURLPageResult(
-          protocol: LnUrlProtocol.Withdraw,
+          protocol: LnUrlProtocol.withdraw,
           error: reason,
         );
       } else {
         _log.warning("Unknown response from lnurlWithdraw: $resp");
         return LNURLPageResult(
-          protocol: LnUrlProtocol.Withdraw,
+          protocol: LnUrlProtocol.withdraw,
           error: texts.lnurl_payment_page_unknown_error,
         );
       }
     } catch (e) {
       _log.warning("Error withdrawing LNURL payment", e);
-      return LNURLPageResult(protocol: LnUrlProtocol.Withdraw, error: e);
+      return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: e);
     }
   }
 
