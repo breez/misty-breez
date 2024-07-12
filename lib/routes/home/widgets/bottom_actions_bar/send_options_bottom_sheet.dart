@@ -35,6 +35,21 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
           ),
           onTap: () => _showEnterPaymentInfoDialog(context, widget.firstPaymentItemKey),
         ),
+        const SizedBox(height: 8.0),
+        ListTile(
+          leading: const BottomActionItemImage(
+            iconAssetPath: "src/icon/bitcoin.png",
+          ),
+          title: Text(
+            texts.bottom_action_bar_send_btc_address,
+            style: theme.bottomSheetTextStyle,
+          ),
+          onTap: () {
+            final navigatorState = Navigator.of(context);
+            navigatorState.pop();
+            navigatorState.pushNamed("/send_chainswap");
+          },
+        ),
       ],
     );
   }
