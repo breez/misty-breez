@@ -8,7 +8,9 @@ class BreezSDKLiquid {
 
   factory BreezSDKLiquid() => _singleton;
 
-  BreezSDKLiquid._internal();
+  BreezSDKLiquid._internal() {
+    initializeLogStream();
+  }
 
   liquid_sdk.BindingLiquidSdk? _instance;
 
