@@ -2,11 +2,14 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_amount.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_bolt11.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_content_title.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_date.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_destination_pubkey.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_preimage.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_refund_tx_fee_amount.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_swap_id.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_title.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_tx_id.dart';
 import 'package:logging/logging.dart';
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
@@ -36,10 +39,13 @@ class PaymentDetailsDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PaymentDetailsDialogContentTitle(
-                paymentMinutiae: paymentMinutiae,
-              ),
+              PaymentDetailsDialogContentTitle(paymentMinutiae: paymentMinutiae),
               PaymentDetailsDialogAmount(
+                paymentMinutiae: paymentMinutiae,
+                labelAutoSizeGroup: _labelGroup,
+                valueAutoSizeGroup: _valueGroup,
+              ),
+              PaymentDetailsDialogRefundTxAmount(
                 paymentMinutiae: paymentMinutiae,
                 labelAutoSizeGroup: _labelGroup,
                 valueAutoSizeGroup: _valueGroup,
@@ -49,12 +55,10 @@ class PaymentDetailsDialog extends StatelessWidget {
                 labelAutoSizeGroup: _labelGroup,
                 valueAutoSizeGroup: _valueGroup,
               ),
-              PaymentDetailsPreimage(
-                paymentMinutiae: paymentMinutiae,
-              ),
-              PaymentDetailsDestinationPubkey(
-                paymentMinutiae: paymentMinutiae,
-              ),
+              PaymentDetailsBolt11(paymentMinutiae: paymentMinutiae),
+              PaymentDetailsPreimage(paymentMinutiae: paymentMinutiae),
+              PaymentDetailsTxId(paymentMinutiae: paymentMinutiae),
+              PaymentDetailsSwapId(paymentMinutiae: paymentMinutiae),
             ],
           ),
         ),
