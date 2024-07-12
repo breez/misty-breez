@@ -4,10 +4,8 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/account/account_cubit.dart';
-import 'package:l_breez/cubit/account/account_state.dart';
-import 'package:l_breez/handlers/handler.dart';
-import 'package:l_breez/handlers/handler_context_provider.dart';
+import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/handlers/handler/handler.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:logging/logging.dart';
 

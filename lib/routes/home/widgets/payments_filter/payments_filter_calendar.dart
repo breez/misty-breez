@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:l_breez/cubit/account/account_cubit.dart';
-import 'package:l_breez/cubit/account/account_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/calendar_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 

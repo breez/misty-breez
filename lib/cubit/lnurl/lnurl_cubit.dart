@@ -1,8 +1,12 @@
+library lnurl_cubit;
+
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/lnurl/lnurl_state.dart';
 import 'package:logging/logging.dart';
+
+export 'lnurl_state.dart';
 
 class LnUrlCubit extends Cubit<LnUrlState> {
   final _log = Logger("LnUrlCubit");

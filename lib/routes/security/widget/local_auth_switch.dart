@@ -1,8 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/security/security_cubit.dart';
-import 'package:l_breez/cubit/security/security_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/widgets/designsystem/switch/simple_switch.dart';
 
 class LocalAuthSwitch extends StatelessWidget {

@@ -2,9 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/account/account_state.dart';
-import 'package:l_breez/cubit/currency/currency_cubit.dart';
-import 'package:l_breez/cubit/currency/currency_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/utils/fiat_conversion.dart';
 

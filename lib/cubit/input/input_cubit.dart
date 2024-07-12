@@ -1,17 +1,18 @@
+library input_bloc;
+
 import 'dart:async';
 
 import 'package:device_client/device_client.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/input/input_data.dart';
-import 'package:l_breez/cubit/input/input_printer.dart';
-import 'package:l_breez/cubit/input/input_source.dart';
-import 'package:l_breez/cubit/input/input_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/invoice.dart';
-import 'package:service_injector/service_injector.dart';
 import 'package:lightning_links/lightning_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:service_injector/service_injector.dart';
+
+export 'input_state.dart';
 
 class InputCubit extends Cubit<InputState> {
   final _log = Logger("InputCubit");

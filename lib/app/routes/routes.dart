@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/security/security_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';

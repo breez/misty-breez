@@ -4,17 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/app/app_theme_manager/app_theme_manager.dart';
 import 'package:l_breez/app/routes/routes.dart';
-import 'package:l_breez/cubit/account/account_cubit.dart';
-import 'package:l_breez/cubit/account/account_state.dart';
-import 'package:l_breez/cubit/backup/backup_cubit.dart';
-import 'package:l_breez/cubit/chainswap/chainswap_cubit.dart';
-import 'package:l_breez/cubit/currency/currency_cubit.dart';
-import 'package:l_breez/cubit/ext/block_builder_extensions.dart';
-import 'package:l_breez/cubit/input/input_cubit.dart';
-import 'package:l_breez/cubit/lnurl/lnurl_cubit.dart';
-import 'package:l_breez/cubit/security/security_cubit.dart';
-import 'package:l_breez/cubit/security/security_state.dart';
-import 'package:l_breez/cubit/user_profile/user_profile_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:theme_provider/theme_provider.dart';
 

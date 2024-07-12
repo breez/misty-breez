@@ -4,7 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/currency/currency_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';

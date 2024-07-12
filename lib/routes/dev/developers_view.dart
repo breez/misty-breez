@@ -7,7 +7,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/account/account_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/dev/command_line_interface.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:logging/logging.dart';

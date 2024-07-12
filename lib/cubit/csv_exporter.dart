@@ -4,7 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:intl/intl.dart';
-import 'package:l_breez/cubit/account/account_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/utils/date.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';

@@ -1,4 +1,4 @@
-import 'handler_context_provider.dart';
+import 'mixin/handler_context_provider.dart';
 
 abstract class Handler {
   HandlerContextProvider? contextProvider;

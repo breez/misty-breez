@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/account/account_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_confirmation_dialog.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_request_info_dialog.dart';

@@ -1,8 +1,12 @@
+library chain_swap_cubit;
+
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/account/payment_error.dart';
-import 'package:l_breez/cubit/chainswap/chainswap_state.dart';
+import 'package:l_breez/cubit/chain_swap/chain_swap_state.dart';
+import 'package:l_breez/cubit/model/src/payment/payment_error.dart';
+
+export 'chain_swap_state.dart';
 
 class ChainSwapCubit extends Cubit<ChainSwapState> {
   final BreezSDKLiquid _liquidSdk;
