@@ -1,14 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/utils/external_browser.dart';
 import 'package:l_breez/widgets/flushbar.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareablePaymentRow extends StatelessWidget {
   final String title;
   final String sharedValue;
+  final String? urlValue;
   final bool isURL;
   final bool isExpanded;
   final TextStyle? titleTextStyle;
@@ -23,6 +24,7 @@ class ShareablePaymentRow extends StatelessWidget {
     super.key,
     required this.title,
     required this.sharedValue,
+    this.urlValue,
     this.isURL = false,
     this.isExpanded = false,
     this.titleTextStyle,
@@ -64,8 +66,9 @@ class ShareablePaymentRow extends StatelessWidget {
                 child: Padding(
                   padding: childrenPadding ?? const EdgeInsets.only(left: 16.0, right: 0.0),
                   child: GestureDetector(
-                    onTap:
-                        isURL ? () => launchLinkOnExternalBrowser(context, linkAddress: sharedValue) : null,
+                    onTap: isURL
+                        ? () => launchLinkOnExternalBrowser(context, linkAddress: urlValue ?? sharedValue)
+                        : null,
                     child: Text(
                       sharedValue,
                       textAlign: TextAlign.left,

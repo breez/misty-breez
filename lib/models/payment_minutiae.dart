@@ -8,36 +8,49 @@ class PaymentMinutiae {
   final String id;
   final String title;
   final String preimage;
+  final String bolt11;
   final String swapId;
+  final String txId;
+  final String refundTxId;
   final PaymentType paymentType;
   final DateTime paymentTime;
   final int feeSat;
   final int amountSat;
+  final int refundTxAmountSat;
   final PaymentState status;
 
   const PaymentMinutiae({
     required this.id,
     required this.title,
     required this.preimage,
+    required this.bolt11,
     required this.swapId,
+    required this.txId,
+    required this.refundTxId,
     required this.paymentType,
     required this.paymentTime,
     required this.feeSat,
     required this.amountSat,
+    required this.refundTxAmountSat,
     required this.status,
   });
 
   factory PaymentMinutiae.fromPayment(Payment payment, BreezTranslations texts) {
     final factory = _PaymentMinutiaeFactory(payment, texts);
+
     return PaymentMinutiae(
       id: payment.txId ?? "",
       title: factory._title(),
       preimage: payment.preimage ?? "",
+      bolt11: payment.bolt11 ?? "",
       swapId: payment.swapId ?? "",
+      txId: payment.txId ?? "",
+      refundTxId: payment.refundTxId ?? "",
       paymentType: payment.paymentType,
       paymentTime: factory._paymentTime(),
       feeSat: payment.feesSat.toInt(),
       amountSat: payment.amountSat.toInt(),
+      refundTxAmountSat: payment.refundTxAmountSat?.toInt() ?? 0,
       status: payment.status,
     );
   }
@@ -50,7 +63,11 @@ class _PaymentMinutiaeFactory {
   _PaymentMinutiaeFactory(this._payment, this._texts);
 
   String _title() {
-    return _texts.wallet_dashboard_payment_item_no_title;
+    var title = "${_texts.wallet_dashboard_payment_item_no_title} Payment";
+    if (_payment.bolt11 != null) return "Lightning Payment";
+    if (_payment.refundTxId != null) return "Refund Transaction";
+    if (_payment.swapId != null) return "Chain Swap Transaction";
+    return title;
   }
 
   DateTime _paymentTime() {

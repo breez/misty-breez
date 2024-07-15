@@ -4,7 +4,12 @@ publish_to: none
 environment:
   sdk: '>=3.4.0 <4.0.0'
 
+  flutter: ">=3.22.0"
+
 dependencies:
+  flutter:
+    sdk: flutter
+
   clipboard_watcher: ^0.2.1
   logging: ^1.2.0
   package_info_plus: ^8.0.0
