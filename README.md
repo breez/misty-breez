@@ -48,19 +48,19 @@ configuration file for your platform:
 ### Android
 
 ```
-flutter build apk
+flutter build apk --target=lib/main/main.dart 
 ```
 
 ### iOS
 
 ```
-flutter build ios
+flutter build ios --target=lib/main/main.dart 
 ```
 
 ## Run
 
 ```
-flutter run
+flutter run --target=lib/main/main.dart 
 ```
 
 ___

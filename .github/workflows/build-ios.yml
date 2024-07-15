@@ -164,7 +164,7 @@ jobs:
 
       - name: 🚀 Build app
         working-directory: lbreez
-        run: flutter build ios --release --split-debug-info=./obsfucated/debug --obfuscate --config-only --no-pub --no-codesign --dart-define-from-file=config.json
+        run: flutter build ios --target=lib/main/main.dart --release --split-debug-info=./obsfucated/debug --obfuscate --config-only --no-pub --no-codesign --dart-define-from-file=config.json
 
       - name: 📦 Resolve Swift package dependencies
         working-directory: lbreez
