@@ -2,8 +2,18 @@ name: Build Android
 on:
   workflow_dispatch:
     inputs:
-      liquid_sdk_ref:
-        description: 'Liquid SDK commit/tag/branch reference'
+      use-published-plugins:
+        description: 'Boolean indicating whether to use a published plugin for the SDK. Default = false.'
+        required: false
+        type: boolean
+        default: false
+      liquid-sdk-plugin-version:
+        description: 'Version for the published Liquid SDK plugin (MAJOR.MINOR.BUILD). Default = "main"'
+        required: false
+        type: string
+        default: 'main'
+      liquid-sdk-ref:
+        description: 'Liquid SDK commit/tag/branch reference when not using a published plugin. Default = "main"'
         required: false
         type: string
         default: 'main'
@@ -18,6 +28,14 @@ jobs:
         with:
           path: 'lbreez'
 
+      - name: Set Liquid SDK plugin version
+        if: ${{ inputs.use-published-plugins != 'false' }}
+        working-directory: lbreez
+        run: |
+          mv pubspec_overrides.yaml.workflow pubspec_overrides.yaml
+          sed -i.bak -e 's/ref:.*/ref: v${{ inputs.liquid-sdk-plugin-version }}/' pubspec_overrides.yaml
+          rm pubspec_overrides.yaml.bak
+
       - name: Decode Keystore
         env:
             STORE_FILE_BASE64: ${{ secrets.STORE_FILE_BASE64 }}
@@ -31,6 +49,7 @@ jobs:
             echo "${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore"
 
       - name: Install rust
+        if: ${{ inputs.use-published-plugins == 'false' }}
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal
@@ -48,9 +67,11 @@ jobs:
           cache: true
 
       - name: Set up just
+        if: ${{ inputs.use-published-plugins == 'false' }}
         uses: extractions/setup-just@v2
 
       - name: Set up Melos
+        if: ${{ inputs.use-published-plugins == 'false' }}
         uses: bluefireteam/melos-action@v3
         with:
           run-bootstrap: false
@@ -65,24 +86,27 @@ jobs:
       - name: 🏗️ Copy Firebase configuration file
         working-directory: lbreez
         env:
-          GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES}}
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: echo "$GOOGLE_SERVICES" > android/app/google-services.json
 
       - name: 🏗️ Setup breez-sdk-liquid repository
+        if: ${{ inputs.use-published-plugins == 'false' }}
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid'
-          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          ssh-key: ${{ secrets.REPO_SSH_KEY }}
           path: 'breez-sdk-liquid'
-          ref: ${{ inputs.liquid_sdk_ref }}
+          ref: ${{ inputs.liquid-sdk-ref }}
 
       - name: 🏗️ Rust cache
+        if: ${{ inputs.use-published-plugins == 'false' }}
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: breez-sdk-liquid/lib/
           cache-all-crates: true
 
       - name: 📦 Install Breez Liquid SDK dependencies
+        if: ${{ inputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just clean
@@ -90,22 +114,25 @@ jobs:
           just init-sdk
 
       - name: Install flutter_rust_bridge_codegen dependencies
+        if: ${{ inputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just frb
 
       - name: Generate Dart/Flutter bindings
+        if: ${{ inputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just codegen
 
       - name: Generate FFI bindings
+        if: ${{ inputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just ffigen
 
       - name: 🔒 Install SSH Key
         env:
-          SSH_PRIVATE_KEY: ${{secrets.REPO_SSH_KEY}}
+          SSH_PRIVATE_KEY: ${{ secrets.REPO_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
@@ -113,12 +140,14 @@ jobs:
           ssh-add ~/.ssh/id_rsa
 
       - name: 🔨 Build Breez Liquid SDK
+        if: ${{ inputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           rm -rf ../../../target
           just build
 
       - name: 🔨 Build Android binaries
+        if: ${{ inputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just build-android
@@ -138,11 +167,11 @@ jobs:
 
       - name: ⚙️ Setup compile-time variables
         env:
-          CONFIG_FILE: ${{secrets.CONFIG_FILE}}
+          CONFIG_FILE: ${{ secrets.CONFIG_FILE }}
         run: echo "$CONFIG_FILE" > ./lbreez/config.json
 
       - name: 🚀 Build Release apk
-        env:          
+        env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
