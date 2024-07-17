@@ -86,11 +86,11 @@ class InputHandler extends Handler {
     if (inputState is InvoiceInputState) {
       return handleInvoice(context, inputState.invoice);
     } else if (inputState is LnUrlPayInputState) {
-      handlePayRequest(context, firstPaymentItemKey, inputState.data);
+      return handlePayRequest(context, firstPaymentItemKey, inputState.data);
     } else if (inputState is LnUrlWithdrawInputState) {
-      handleWithdrawRequest(context, inputState.data);
+      return handleWithdrawRequest(context, inputState.data);
     } else if (inputState is LnUrlAuthInputState) {
-      handleAuthRequest(context, inputState.data);
+      return handleAuthRequest(context, inputState.data);
     } else if (inputState is LnUrlErrorInputState) {
       throw inputState.data.reason;
     } else if (inputState is BitcoinAddressInputState) {
