@@ -1,9 +1,9 @@
-import 'package:breez_liquid/breez_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_breakdown/fee_breakdown.dart';
+import 'package:l_breez/routes/chainswap/send/fee/fee_chooser/fee_chooser.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_option.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_button.dart';
 import 'package:l_breez/widgets/loader.dart';
@@ -25,15 +25,15 @@ class SendChainSwapConfirmationPage extends StatefulWidget {
 }
 
 class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmationPage> {
-  bool isAffordable = false;
-  PreparePayOnchainResponse? feeOption;
+  List<SendChainSwapFeeOption> affordableFees = <SendChainSwapFeeOption>[];
+  int selectedFeeIndex = -1;
 
-  late Future<PreparePayOnchainResponse> _preparePayOnchainResponseFuture;
+  late Future<List<SendChainSwapFeeOption>> _fetchFeeOptionsFuture;
 
   @override
   void initState() {
     super.initState();
-    _preparePayOnchainResponse();
+    _fetchSendChainSwapFeeOptions();
   }
 
   @override
@@ -42,10 +42,10 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(texts.csv_exporter_fee),
+        title: Text(texts.sweep_all_coins_speed),
       ),
       body: FutureBuilder(
-        future: _preparePayOnchainResponseFuture,
+        future: _fetchFeeOptionsFuture,
         builder: (context, snapshot) {
           if (snapshot.error != null) {
             return _ErrorMessage(
@@ -58,45 +58,48 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
             return const Center(child: Loader());
           }
 
-          if (isAffordable) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
-              child: FeeBreakdown(feeOption: snapshot.data!),
+          if (affordableFees.isNotEmpty) {
+            return FeeChooser(
+              amountSat: widget.amountSat,
+              feeOptions: snapshot.data!,
+              selectedFeeIndex: selectedFeeIndex,
+              onSelect: (index) => setState(() {
+                selectedFeeIndex = index;
+              }),
             );
           } else {
             return _ErrorMessage(message: texts.reverse_swap_confirmation_error_funds_fee);
           }
         },
       ),
-      bottomNavigationBar: (isAffordable)
-          ? SafeArea(
-              child: SendChainSwapButton(
-                recipientAddress: widget.onchainRecipientAddress,
-                preparePayOnchainResponse: feeOption!,
-              ),
-            )
-          : null,
+      bottomNavigationBar:
+          (affordableFees.isNotEmpty && selectedFeeIndex >= 0 && selectedFeeIndex < affordableFees.length)
+              ? SafeArea(
+                  child: SendChainSwapButton(
+                    recipientAddress: widget.onchainRecipientAddress,
+                    preparePayOnchainResponse: affordableFees[selectedFeeIndex].pairInfo,
+                  ),
+                )
+              : null,
     );
   }
 
-  void _preparePayOnchainResponse() {
+  void _fetchSendChainSwapFeeOptions() {
     final chainSwapCubit = context.read<ChainSwapCubit>();
-    final preparePayOnchainRequest = PreparePayOnchainRequest(
-      receiverAmountSat: BigInt.from(widget.amountSat),
+    _fetchFeeOptionsFuture = chainSwapCubit.fetchSendChainSwapFeeOptions(
+      amountSat: widget.amountSat,
     );
-    _preparePayOnchainResponseFuture = chainSwapCubit.preparePayOnchain(
-      req: preparePayOnchainRequest,
-    );
-    _preparePayOnchainResponseFuture.then((feeOption) {
+    _fetchFeeOptionsFuture.then((feeOptions) {
       final accountState = context.read<AccountCubit>().state;
       setState(() {
-        this.feeOption = feeOption;
-        isAffordable = feeOption.isAffordable(balance: accountState.balance);
+        affordableFees = feeOptions
+            .where((f) => f.isAffordable(balanceSat: accountState.balance, amountSat: widget.amountSat))
+            .toList();
+        selectedFeeIndex = (affordableFees.length / 2).floor();
       });
     }, onError: (error, stackTrace) {
       setState(() {
-        isAffordable = false;
-        feeOption = null;
+        affordableFees = <SendChainSwapFeeOption>[];
       });
     });
   }
