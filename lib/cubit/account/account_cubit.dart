@@ -19,7 +19,6 @@ import 'package:rxdart/rxdart.dart';
 export 'account_state.dart';
 export 'account_state_assembler.dart';
 
-const maxPaymentAmount = 4294967;
 const nodeSyncInterval = 60;
 
 final _log = Logger("AccountCubit");
@@ -193,38 +192,19 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
 
   // validatePayment is used to validate that outgoing/incoming payments meet the liquidity
   // constraints.
-  void validatePayment(
-    int amount,
-    bool outgoing,
-  ) {
+  void validatePayment(int amount, bool outgoing) {
     _log.info("validatePayment: $amount, $outgoing");
-    /*
     var accState = state;
-    if (amount > accState.maxPaymentAmount) {
-      _log.info("Amount $amount is bigger than maxPaymentAmount ${accState.maxPaymentAmount}");
-      throw PaymentExceededLimitError(accState.maxPaymentAmount);
-    }
-
-    if (!outgoing) {
-      if (accState.maxInboundLiquidity == 0) {
-        throw NoChannelCreationZeroLiqudityError();
-      } else if (accState.maxInboundLiquidity < amount) {
-        throw PaymentExcededLiqudityChannelCreationNotPossibleError(accState.maxInboundLiquidity);
-      } else if (amount > accState.maxInboundLiquidity) {
-        throw PaymentExceedLiquidityError(accState.maxInboundLiquidity);
-      } else if (amount > accState.maxAllowedToReceive) {
-        throw PaymentExceededLimitError(accState.maxAllowedToReceive);
+    if (outgoing) {
+      if (amount > accState.balance) {
+        throw const InsufficientLocalBalanceError();
       }
     }
 
-    if (outgoing && amount > accState.maxAllowedToPay) {
-      _log.info("Outgoing but amount $amount is bigger than ${accState.maxAllowedToPay}");
-      if (accState.reserveAmount > 0) {
-        _log.info("Reserve amount ${accState.reserveAmount}");
-        throw PaymentBelowReserveError(accState.reserveAmount);
-      }
-      throw const InsufficientLocalBalanceError();
-    }*/
+    if (amount > accState.maxPaymentAmountSat) {
+      _log.info("Amount $amount is bigger than maxPaymentAmount ${accState.maxPaymentAmountSat}");
+      throw PaymentExceededLimitError(accState.maxPaymentAmountSat);
+    }
   }
 
   void changePaymentFilter({

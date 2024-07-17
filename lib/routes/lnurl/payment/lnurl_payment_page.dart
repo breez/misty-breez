@@ -11,7 +11,6 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -60,6 +59,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   final _identifierController = TextEditingController();
    */
   late final bool fixedAmount;
+  late LightningPaymentLimitsResponse _lightningLimits;
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
           );
         }
         final lnurlCubit = context.read<LnUrlCubit>();
-        await lnurlCubit.fetchLightningLimits();
+        _lightningLimits = await lnurlCubit.fetchLightningLimits();
       },
     );
   }
@@ -137,11 +137,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
                           text: texts.lnurl_fetch_invoice_min(
                             currencyState.bitcoinCurrency.format(
                               max(
-                                liquidMinimumPaymentAmountSat,
-                                max(
-                                  context.read<LnUrlCubit>().state.limits?.send.minSat.toInt() ?? 0,
-                                  widget.data.minSendable.toInt() ~/ 1000,
-                                ),
+                                _lightningLimits.send.minSat.toInt(),
+                                widget.data.minSendable.toInt() ~/ 1000,
                               ),
                             ),
                           ),
@@ -245,28 +242,25 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
 
   String? validatePayment(int amount) {
     final texts = context.texts();
-    final accountCubit = context.read<AccountCubit>();
+    final lnUrlCubit = context.read<LnUrlCubit>();
     final currencyState = context.read<CurrencyCubit>().state;
-    final lnurlState = context.read<LnUrlCubit>().state;
-    final limits = lnurlState.limits?.send;
 
-    final maxSendable = (limits != null)
-        ? min(limits.maxSat.toInt(), widget.data.maxSendable.toInt() ~/ 1000)
-        : widget.data.maxSendable.toInt() ~/ 1000;
+    final maxSendable = widget.data.maxSendable.toInt() ~/ 1000;
     if (amount > maxSendable) {
       return texts.lnurl_payment_page_error_exceeds_limit(maxSendable);
     }
 
-    final minSendable = (limits != null)
-        ? max(liquidMinimumPaymentAmountSat,
-            max(limits.minSat.toInt(), widget.data.minSendable.toInt() ~/ 1000))
-        : widget.data.minSendable.toInt() ~/ 1000;
+    final minSendable = widget.data.minSendable.toInt() ~/ 1000;
     if (amount < minSendable) {
       return texts.lnurl_payment_page_error_below_limit(minSendable);
     }
 
     return PaymentValidator(
-      validatePayment: accountCubit.validatePayment,
+      validatePayment: (amount, outgoing) => lnUrlCubit.validateLnUrlPayment(
+        BigInt.from(amount),
+        outgoing,
+        _lightningLimits,
+      ),
       currency: currencyState.bitcoinCurrency,
       texts: context.texts(),
     ).validateOutgoing(amount);

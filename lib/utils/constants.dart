@@ -1,1 +1,1 @@
-const liquidMinimumPaymentAmountSat = 1000;
+const maxPaymentAmountSat = 4294967;

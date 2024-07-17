@@ -1,6 +1,6 @@
+import 'package:breez_liquid/breez_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -10,11 +10,13 @@ import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/keyboard_done_action.dart';
+import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
@@ -45,6 +47,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();
 
+  Future<LightningPaymentLimitsResponse>? _lightningLimitsFuture;
+  late LightningPaymentLimitsResponse _lightningLimits;
+
   @override
   void initState() {
     super.initState();
@@ -63,6 +68,20 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         }
       },
     );
+    _fetchLightningLimits();
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _fetchLightningLimits();
+    }
+  }
+
+  Future _fetchLightningLimits() async {
+    final lnuUrlCubit = context.read<LnUrlCubit>();
+    setState(() {
+      _lightningLimitsFuture = lnuUrlCubit.fetchLightningLimits();
+    });
   }
 
   @override
@@ -74,6 +93,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
+    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -81,16 +101,43 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         leading: const back_button.BackButton(),
         title: Text(texts.invoice_title),
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
-          child: Scrollbar(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+      body: FutureBuilder<LightningPaymentLimitsResponse>(
+        future: _lightningLimitsFuture,
+        builder: (BuildContext context, AsyncSnapshot<LightningPaymentLimitsResponse> snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                child: Text(
+                  texts.reverse_swap_upstream_generic_error_message(
+                    extractExceptionMessage(snapshot.error!, texts),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+          if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+            return Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
+            );
+          }
+
+          _lightningLimits = snapshot.data!;
+
+          return Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /* TODO: Liquid - Disabled until description is passable to payment data
                   TextFormField(
                     controller: _descriptionController,
                     keyboardType: TextInputType.multiline,
@@ -102,25 +149,27 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       labelText: texts.invoice_description_label,
                     ),
                     style: theme.FieldTextStyle.textStyle,
+                  ),*/
+                      BlocBuilder<CurrencyCubit, CurrencyState>(
+                        builder: (context, currencyState) {
+                          return AmountFormField(
+                            context: context,
+                            texts: texts,
+                            bitcoinCurrency: currencyState.bitcoinCurrency,
+                            focusNode: _amountFocusNode,
+                            controller: _amountController,
+                            validatorFn: (v) => validatePayment(v),
+                            style: theme.FieldTextStyle.textStyle,
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  BlocBuilder<CurrencyCubit, CurrencyState>(
-                    builder: (context, currencyState) {
-                      return AmountFormField(
-                        context: context,
-                        texts: texts,
-                        bitcoinCurrency: currencyState.bitcoinCurrency,
-                        focusNode: _amountFocusNode,
-                        controller: _amountController,
-                        validatorFn: (v) => validatePayment(v),
-                        style: theme.FieldTextStyle.textStyle,
-                      );
-                    },
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
       bottomNavigationBar: SingleButtonBottomBar(
         stickToBottom: true,
@@ -230,7 +279,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   void _validatePayment(int amount, bool outgoing) {
-    var accountCubit = context.read<AccountCubit>();
-    return accountCubit.validatePayment(amount, outgoing);
+    final lnUrlCubit = context.read<LnUrlCubit>();
+    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits);
   }
 }

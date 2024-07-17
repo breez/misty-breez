@@ -1,6 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -30,7 +29,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final _descriptionController = TextEditingController();
+  //final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();
@@ -110,6 +109,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      /* TODO: Liquid - Disabled until description is passable to payment data
                       TextFormField(
                         controller: _descriptionController,
                         keyboardType: TextInputType.multiline,
@@ -121,7 +121,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                           labelText: texts.invoice_description_label,
                         ),
                         style: theme.FieldTextStyle.textStyle,
-                      ),
+                      ),*/
                       BlocBuilder<CurrencyCubit, CurrencyState>(
                         builder: (context, currencyState) {
                           return AmountFormField(

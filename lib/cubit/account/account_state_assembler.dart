@@ -3,6 +3,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/cubit/model/src/payment/payment_filters.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/utils/constants.dart';
 
 // assembleAccountState assembles the account state using the local synchronized data.
 AccountState? assembleAccountState(
@@ -23,7 +24,7 @@ AccountState? assembleAccountState(
     balance: walletInfo.balanceSat.toInt(),
     pendingReceive: walletInfo.pendingReceiveSat.toInt(),
     pendingSend: walletInfo.pendingSendSat.toInt(),
-    maxPaymentAmount: maxPaymentAmount,
+    maxPaymentAmountSat: maxPaymentAmountSat,
     onChainFeeRate: 0,
     payments: payments?.map((e) => PaymentMinutiae.fromPayment(e, texts)).toList(),
     paymentFilters: paymentFilters,

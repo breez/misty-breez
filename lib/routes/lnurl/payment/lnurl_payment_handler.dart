@@ -7,7 +7,6 @@ import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_page.dart';
 import 'package:l_breez/routes/lnurl/payment/success_action/success_action_dialog.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
-import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
 import 'package:l_breez/widgets/route.dart';
 import 'package:logging/logging.dart';
@@ -19,8 +18,10 @@ Future<LNURLPageResult?> handlePayRequest(
   GlobalKey firstPaymentItemKey,
   LnUrlPayRequestData data,
 ) async {
-  if (data.maxSendable.toInt() ~/ 1000 < liquidMinimumPaymentAmountSat) {
-    throw Exception("Payment is below network limit of $liquidMinimumPaymentAmountSat sats.");
+  final lnUrlState = context.read<LnUrlCubit>().state;
+  final minSat = lnUrlState.limits?.send.minSat.toInt();
+  if (minSat != null && data.maxSendable.toInt() ~/ 1000 < minSat) {
+    throw Exception("Payment is below network limit of $minSat sats.");
   }
 
   LNURLPaymentInfo? paymentInfo;

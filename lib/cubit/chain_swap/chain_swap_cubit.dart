@@ -115,10 +115,10 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
   ) {
     var limits = outgoing ? onchainLimits.send : onchainLimits.receive;
     if (amount > limits.maxSat) {
-      throw PaymentExceededLimitError(limits.maxSat);
+      throw PaymentExceededLimitError(limits.maxSat.toInt());
     }
     if (amount < limits.minSat) {
-      throw PaymentBelowLimitError(limits.minSat);
+      throw PaymentBelowLimitError(limits.minSat.toInt());
     }
   }
 }
