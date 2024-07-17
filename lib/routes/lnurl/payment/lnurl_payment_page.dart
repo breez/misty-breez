@@ -137,7 +137,13 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
                         TextSpan(
                           text: texts.lnurl_fetch_invoice_min(
                             currencyState.bitcoinCurrency.format(
-                              (widget.data.minSendable.toInt() ~/ 1000),
+                              max(
+                                liquidMinimumPaymentAmountSat,
+                                max(
+                                  context.read<LnUrlCubit>().state.limits?.send.minSat.toInt() ?? 0,
+                                  widget.data.minSendable.toInt() ~/ 1000,
+                                ),
+                              ),
                             ),
                           ),
                           recognizer: TapGestureRecognizer()
@@ -253,7 +259,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     }
 
     final minSendable = (limits != null)
-        ? max(limits.maxSat.toInt(), widget.data.minSendable.toInt() ~/ 1000)
+        ? max(liquidMinimumPaymentAmountSat,
+            max(limits.minSat.toInt(), widget.data.minSendable.toInt() ~/ 1000))
         : widget.data.minSendable.toInt() ~/ 1000;
     if (amount < minSendable) {
       return texts.lnurl_payment_page_error_below_limit(minSendable);
