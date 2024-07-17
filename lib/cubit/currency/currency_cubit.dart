@@ -19,12 +19,10 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   void _initializeCurrencyCubit() {
-    late final StreamSubscription streamSubscription;
-    streamSubscription = liquidSdk.walletInfoStream.listen(
+    liquidSdk.walletInfoStream.first.then(
       (walletInfo) {
         listFiatCurrencies();
         fetchExchangeRates();
-        streamSubscription.cancel();
       },
     );
   }
