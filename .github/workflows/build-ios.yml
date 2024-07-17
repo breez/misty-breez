@@ -149,18 +149,14 @@ jobs:
       - name: 📝 Install the Provisioning Profile
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
-          NOTIFICATION_PROVISIONING_PROFILE_BASE64: ${{ secrets.NOTIFICATION_PROVISIONING_PROFILE_BASE64 }}
         run: |
           # create variables
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          NOTIFICATIONS_PP_PATH=$RUNNER_TEMP/build_notifications_pp.mobileprovision
           # import provisioning profile from secrets
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-          echo -n "$NOTIFICATION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $NOTIFICATIONS_PP_PATH
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $NOTIFICATIONS_PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
       - name: 🚀 Build app
         working-directory: lbreez
