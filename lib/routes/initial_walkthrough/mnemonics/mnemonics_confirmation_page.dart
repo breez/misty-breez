@@ -10,6 +10,8 @@ import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 class MnemonicsConfirmationPage extends StatefulWidget {
   final String mnemonics;
 
+  static const routeName = "/mnemonics";
+
   const MnemonicsConfirmationPage({super.key, required this.mnemonics});
 
   @override

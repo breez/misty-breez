@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
@@ -182,7 +183,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
 
     FocusScope.of(context).requestFocus(FocusNode());
-    String? barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+    String? barcode = await Navigator.pushNamed<String>(context, QRScan.routeName);
     if (barcode == null) {
       return;
     }

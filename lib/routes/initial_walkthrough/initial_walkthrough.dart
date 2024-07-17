@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/initial_walkthrough/beta_warning_dialog.dart';
+import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/theme/theme_provider.dart';
 import 'package:l_breez/utils/exceptions.dart';
@@ -15,6 +16,8 @@ import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
+  static const routeName = "/intro";
+
   const InitialWalkthroughPage({super.key});
 
   @override
@@ -208,7 +211,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }) async {
     _log.info("Get mnemonic, initialWords: ${initialWords?.length}");
     return await Navigator.of(context).pushNamed<String>(
-      "/enter_mnemonics",
+      EnterMnemonicsPage.routeName,
       arguments: initialWords,
     );
   }

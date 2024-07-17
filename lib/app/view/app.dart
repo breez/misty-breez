@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/app/app_theme_manager/app_theme_manager.dart';
 import 'package:l_breez/app/routes/routes.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/security/lock_screen.dart';
+import 'package:l_breez/routes/splash/splash_page.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -82,7 +84,8 @@ class _AppViewState extends State<AppView> {
                 child: child!,
               );
             },
-            initialRoute: securityState.pinStatus == PinStatus.enabled ? "lockscreen" : "splash",
+            initialRoute:
+                securityState.pinStatus == PinStatus.enabled ? LockScreen.routeName : SplashPage.routeName,
             onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
               settings: settings,
               homeNavigatorKey: _homeNavigatorKey,

@@ -18,6 +18,8 @@ import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 
 class ReceiveChainSwapPage extends StatefulWidget {
+  static const routeName = "/receive_chainswap";
+
   const ReceiveChainSwapPage({super.key});
 
   @override

@@ -25,6 +25,8 @@ class CreateInvoicePage extends StatefulWidget {
   final Function(LNURLPageResult? result)? onFinish;
   final LnUrlWithdrawRequestData? requestData;
 
+  static const routeName = "/create_invoice";
+
   const CreateInvoicePage({super.key, this.onFinish, this.requestData})
       : assert(
           requestData == null || (onFinish != null),

@@ -16,6 +16,8 @@ import 'package:l_breez/routes/security/auto_lock_mixin.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 
 class Home extends StatefulWidget {
+  static const routeName = "/";
+
   const Home({super.key});
 
   @override

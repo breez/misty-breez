@@ -10,6 +10,8 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/loader.dart';
 
 class FiatCurrencySettings extends StatefulWidget {
+  static const routeName = "/fiat_currency";
+
   const FiatCurrencySettings({super.key});
 
   @override

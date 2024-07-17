@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/security/widget/pin_code_widget.dart';
 import 'package:l_breez/theme/breez_light_theme.dart';
 import 'package:l_breez/widgets/route.dart';
@@ -13,6 +14,8 @@ import 'package:path_provider/path_provider.dart';
 
 class LockScreen extends StatelessWidget {
   final AuthorizedAction authorizedAction;
+
+  static const routeName = "lockscreen";
 
   const LockScreen({super.key, required this.authorizedAction});
 
@@ -75,7 +78,7 @@ class LockScreen extends StatelessWidget {
   void _authorized(NavigatorState navigator) {
     switch (authorizedAction) {
       case AuthorizedAction.launchHome:
-        navigator.pushReplacementNamed("/");
+        navigator.pushReplacementNamed(Home.routeName);
         break;
       case AuthorizedAction.popPage:
         navigator.pop(true);

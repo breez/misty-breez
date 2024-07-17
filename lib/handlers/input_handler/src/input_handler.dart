@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/handlers/handler/handler.dart';
 import 'package:l_breez/models/invoice.dart';
+import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/lnurl/auth/lnurl_auth_handler.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_handler.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_handler.dart';
@@ -114,7 +115,7 @@ class InputHandler extends Handler {
   Future handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
     _log.fine("handle bitcoin address $inputState");
     if (inputState.source == InputSource.qrcodeReader) {
-      return await Navigator.of(context).pushNamed("/reverse_swap", arguments: inputState.data);
+      return await Navigator.of(context).pushNamed(SendChainSwapPage.routeName, arguments: inputState.data);
     }
   }
 

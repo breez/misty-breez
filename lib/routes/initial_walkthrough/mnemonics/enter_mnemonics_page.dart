@@ -6,6 +6,8 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 class EnterMnemonicsPage extends StatefulWidget {
   final List<String> initialWords;
 
+  static const routeName = "/enter_mnemonics";
+
   const EnterMnemonicsPage({super.key, required this.initialWords});
 
   @override

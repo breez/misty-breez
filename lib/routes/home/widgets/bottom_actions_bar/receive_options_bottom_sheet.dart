@@ -1,5 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
+import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 
 import 'bottom_action_item_image.dart';
@@ -28,7 +30,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
           onTap: () {
             final navigatorState = Navigator.of(context);
             navigatorState.pop();
-            navigatorState.pushNamed("/create_invoice");
+            navigatorState.pushNamed(CreateInvoicePage.routeName);
           },
         ),
         const SizedBox(height: 8.0),
@@ -43,7 +45,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
           onTap: () {
             final navigatorState = Navigator.of(context);
             navigatorState.pop();
-            navigatorState.pushNamed("/receive_chainswap");
+            navigatorState.pushNamed(ReceiveChainSwapPage.routeName);
           },
         ),
       ],
