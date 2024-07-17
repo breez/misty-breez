@@ -28,10 +28,10 @@ class WithdrawFundsAmountTextFormField extends AmountFormField {
               validatePayment: (amount, outgoing) {
                 _log.info("Validating $amount $policy");
                 if (amount < policy.minValue.toInt()) {
-                  throw PaymentBelowLimitError(policy.minValue);
+                  throw PaymentBelowLimitError(policy.minValue.toInt());
                 }
                 if (amount > policy.maxValue.toInt()) {
-                  throw PaymentExceededLimitError(policy.maxValue);
+                  throw PaymentExceededLimitError(policy.maxValue.toInt());
                 }
                 if (amount > balance.toInt()) {
                   throw const InsufficientLocalBalanceError();
