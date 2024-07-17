@@ -22,6 +22,8 @@ jobs:
   build-android:
     name: Build Android
     runs-on: macOS-latest
+    outputs:
+      use-published-plugins: ${{ inputs.use-published-plugins || 'false' }}
     steps:
       - name: 🏗️ Setup l-breez repository
         uses: actions/checkout@v4
@@ -29,7 +31,7 @@ jobs:
           path: 'lbreez'
 
       - name: Set Liquid SDK plugin version
-        if: ${{ inputs.use-published-plugins != 'false' }}
+        if: ${{ outputs.use-published-plugins == 'true' }}
         working-directory: lbreez
         run: |
           mv pubspec_overrides.yaml.workflow pubspec_overrides.yaml
@@ -49,7 +51,7 @@ jobs:
             echo "${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore"
 
       - name: Install rust
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal
@@ -67,11 +69,11 @@ jobs:
           cache: true
 
       - name: Set up just
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         uses: extractions/setup-just@v2
 
       - name: Set up Melos
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         uses: bluefireteam/melos-action@v3
         with:
           run-bootstrap: false
@@ -90,7 +92,7 @@ jobs:
         run: echo "$GOOGLE_SERVICES" > android/app/google-services.json
 
       - name: 🏗️ Setup breez-sdk-liquid repository
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid'
@@ -99,14 +101,14 @@ jobs:
           ref: ${{ inputs.liquid-sdk-ref }}
 
       - name: 🏗️ Rust cache
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: breez-sdk-liquid/lib/
           cache-all-crates: true
 
       - name: 📦 Install Breez Liquid SDK dependencies
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just clean
@@ -114,18 +116,18 @@ jobs:
           just init-sdk
 
       - name: Install flutter_rust_bridge_codegen dependencies
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just frb
 
       - name: Generate Dart/Flutter bindings
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just codegen
 
       - name: Generate FFI bindings
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just ffigen
@@ -140,14 +142,14 @@ jobs:
           ssh-add ~/.ssh/id_rsa
 
       - name: 🔨 Build Breez Liquid SDK
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           rm -rf ../../../target
           just build
 
       - name: 🔨 Build Android binaries
-        if: ${{ inputs.use-published-plugins == 'false' }}
+        if: ${{ outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just build-android
