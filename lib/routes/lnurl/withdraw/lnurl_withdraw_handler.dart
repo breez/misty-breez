@@ -19,7 +19,7 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   LnUrlWithdrawRequestData requestData,
 ) async {
   if (requestData.maxWithdrawable.toInt() ~/ 1000 < liquidMinimumPaymentAmountSat) {
-    throw Exception("Payment is below Liquid network limits, $liquidMinimumPaymentAmountSat sats.");
+    throw Exception("Payment is below network limit of $liquidMinimumPaymentAmountSat sats.");
   }
 
   Completer<LNURLPageResult?> completer = Completer();
