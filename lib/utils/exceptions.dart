@@ -1,4 +1,5 @@
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import "package:flutter_rust_bridge/flutter_rust_bridge.dart";
 import 'package:logging/logging.dart';
 
@@ -17,6 +18,12 @@ String extractExceptionMessage(
       message = _localizedExceptionMessage(texts, message);
       return message;
     }
+  }
+  if (exception is SdkError_Generic) {
+    var message = exception.err.replaceAll("\n", " ").trim();
+    message = _extractInnerErrorMessage(message)?.trim() ?? message;
+    message = _localizedExceptionMessage(texts, message);
+    return message;
   }
   return _extractInnerErrorMessage(exception.toString()) ?? defaultErrorMsg ?? exception.toString();
 }
@@ -58,7 +65,7 @@ String _localizedExceptionMessage(
     return texts.lsp_error_cannot_open_channel;
   } else if (messageToLower.contains("dns error") || messageToLower.contains("os error 104")) {
     return texts.generic_network_error;
-  } else if (messageToLower.contains("Recovery failed:")) {
+  } else if (messageToLower.contains("mnemonic has an invalid checksum")) {
     return texts.enter_backup_phrase_error;
   } else {
     return originalMessage;

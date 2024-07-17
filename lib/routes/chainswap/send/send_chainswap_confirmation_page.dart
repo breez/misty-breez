@@ -1,7 +1,7 @@
-import 'package:breez_liquid/breez_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_breakdown/fee_breakdown.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_option.dart';

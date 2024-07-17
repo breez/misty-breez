@@ -76,10 +76,6 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     emit(state.copyWith(connectionStatus: ConnectionStatus.connecting));
     if (mnemonic != null) {
       await _credentialsManager.storeMnemonic(mnemonic: mnemonic);
-      emit(state.copyWith(
-        initial: false,
-        verificationStatus: isRestore ? VerificationStatus.verified : null,
-      ));
     }
     await _startSdkForever(isRestore: isRestore);
   }
@@ -120,7 +116,11 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
       );
       await _liquidSdk.connect(req: req);
       _log.info("connected to breez lib");
-      emit(state.copyWith(connectionStatus: ConnectionStatus.connected));
+      emit(state.copyWith(
+        initial: false,
+        connectionStatus: ConnectionStatus.connected,
+        verificationStatus: isRestore ? VerificationStatus.verified : null,
+      ));
       _watchAccountChanges().listen((acc) {
         _log.info("State changed: $acc");
         emit(acc);
