@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -8,7 +6,6 @@ import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
 import 'package:l_breez/routes/chainswap/send/widgets/bitcoin_address_text_form_field.dart';
 import 'package:l_breez/routes/chainswap/send/widgets/withdraw_funds_amount_text_form_field.dart';
 import 'package:l_breez/routes/chainswap/send/withdraw_funds_model.dart';
-import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/widgets/amount_form_field/sat_amount_form_field_formatter.dart';
 import 'package:logging/logging.dart';
 
@@ -90,7 +87,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
               balance: widget.paymentLimits.send.maxSat,
               policy: WithdrawFundsPolicy(
                 WithdrawKind.withdrawFunds,
-                BigInt.from(max(minPaymentAmountSat, widget.paymentLimits.send.minSat.toInt())),
+                widget.paymentLimits.send.minSat,
                 widget.paymentLimits.send.maxSat,
               ),
             ),

@@ -27,7 +27,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final _descriptionController = TextEditingController();
+  //final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();

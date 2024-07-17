@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/cubit/lnurl/lnurl_cubit.dart';
 import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
-import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
@@ -17,8 +18,10 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   BuildContext context,
   LnUrlWithdrawRequestData requestData,
 ) async {
-  if (requestData.maxWithdrawable.toInt() ~/ 1000 < liquidMinimumPaymentAmountSat) {
-    throw Exception("Payment is below network limit of $liquidMinimumPaymentAmountSat sats.");
+  final lnUrlState = context.read<LnUrlCubit>().state;
+  final minSat = lnUrlState.limits?.send.minSat.toInt();
+  if (minSat != null && requestData.maxWithdrawable.toInt() ~/ 1000 < minSat) {
+    throw Exception("Payment is below network limit of $minSat sats.");
   }
 
   Completer<LNURLPageResult?> completer = Completer();

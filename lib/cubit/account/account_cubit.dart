@@ -12,7 +12,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/cubit/model/models.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
-import 'package:l_breez/utils/constants.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:rxdart/rxdart.dart';
@@ -193,10 +192,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
 
   // validatePayment is used to validate that outgoing/incoming payments meet the liquidity
   // constraints.
-  void validatePayment(
-    int amount,
-    bool outgoing,
-  ) {
+  void validatePayment(int amount, bool outgoing) {
     _log.info("validatePayment: $amount, $outgoing");
     var accState = state;
     if (outgoing) {
@@ -208,11 +204,6 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     if (amount > accState.maxPaymentAmountSat) {
       _log.info("Amount $amount is bigger than maxPaymentAmount ${accState.maxPaymentAmountSat}");
       throw PaymentExceededLimitError(accState.maxPaymentAmountSat);
-    }
-
-    if (amount < minPaymentAmountSat) {
-      _log.info("Amount $amount is smaller than minPaymentAmountSat $minPaymentAmountSat");
-      throw const PaymentBelowLimitError(minPaymentAmountSat);
     }
   }
 

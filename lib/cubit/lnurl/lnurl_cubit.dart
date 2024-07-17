@@ -6,6 +6,7 @@ import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/lnurl/lnurl_state.dart';
+import 'package:l_breez/cubit/model/src/payment/payment_error.dart';
 import 'package:logging/logging.dart';
 
 export 'lnurl_state.dart';
@@ -69,6 +70,20 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     } catch (e) {
       _log.severe("lnurlAuth error", e);
       rethrow;
+    }
+  }
+
+  void validateLnUrlPayment(
+    BigInt amount,
+    bool outgoing,
+    LightningPaymentLimitsResponse lightningLimits,
+  ) {
+    var limits = outgoing ? lightningLimits.send : lightningLimits.receive;
+    if (amount > limits.maxSat) {
+      throw PaymentExceededLimitError(limits.maxSat.toInt());
+    }
+    if (amount < limits.minSat) {
+      throw PaymentBelowLimitError(limits.minSat.toInt());
     }
   }
 }
