@@ -20,7 +20,7 @@ Future<LNURLPageResult?> handlePayRequest(
   LnUrlPayRequestData data,
 ) async {
   if (data.maxSendable.toInt() ~/ 1000 < liquidMinimumPaymentAmountSat) {
-    throw Exception("Payment is below Liquid network limits, $liquidMinimumPaymentAmountSat sats.");
+    throw Exception("Payment is below network limit of $liquidMinimumPaymentAmountSat sats.");
   }
 
   LNURLPaymentInfo? paymentInfo;
