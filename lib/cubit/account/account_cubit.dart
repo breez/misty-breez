@@ -192,6 +192,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
 
   // validatePayment is used to validate that outgoing/incoming payments meet the liquidity
   // constraints.
+  // TODO: NOT USED - Validate liquidity constraints & payment limits in the same place
   void validatePayment(int amount, bool outgoing) {
     _log.info("validatePayment: $amount, $outgoing");
     var accState = state;
