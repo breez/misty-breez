@@ -1,5 +1,7 @@
 library lnurl_cubit;
 
+import 'dart:async';
+
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -12,7 +14,19 @@ class LnUrlCubit extends Cubit<LnUrlState> {
   final _log = Logger("LnUrlCubit");
   final BreezSDKLiquid _liquidSdk;
 
-  LnUrlCubit(this._liquidSdk) : super(LnUrlState.initial());
+  LnUrlCubit(this._liquidSdk) : super(LnUrlState.initial()) {
+    _initializeLnUrlCubit();
+  }
+
+  void _initializeLnUrlCubit() {
+    late final StreamSubscription streamSubscription;
+    streamSubscription = _liquidSdk.walletInfoStream.listen(
+      (walletInfo) {
+        fetchLightningLimits();
+        streamSubscription.cancel();
+      },
+    );
+  }
 
   Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
     try {
