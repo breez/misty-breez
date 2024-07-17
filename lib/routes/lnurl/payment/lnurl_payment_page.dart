@@ -11,6 +11,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -127,9 +128,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
               ),
               if (!fixedAmount) ...[
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: 8,
-                  ),
+                  padding: const EdgeInsets.only(top: 8),
                   child: RichText(
                     text: TextSpan(
                       style: theme.FieldTextStyle.labelStyle,
@@ -234,8 +233,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
             final amount = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
             final comment = _commentController.text;
             _log.info("LNURL payment of $amount sats where "
-                "min is ${widget.data.minSendable} msats "
-                "and max is ${widget.data.maxSendable} msats."
+                "min is ${widget.data.minSendable.toInt() ~/ 1000} sats "
+                "and max is ${widget.data.maxSendable.toInt() ~/ 1000} sats."
                 "with comment $comment");
             Navigator.pop(context, LNURLPaymentInfo(amount: amount, comment: comment));
           }

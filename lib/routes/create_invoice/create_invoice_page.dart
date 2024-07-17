@@ -140,8 +140,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   Future<void> _withdraw(
     LnUrlWithdrawRequestData data,
   ) async {
-    _log.info("Withdraw request: description=${data.defaultDescription}, k1=${data.k1}, "
-        "min=${data.minWithdrawable}, max=${data.maxWithdrawable}");
+    _log.info(
+      "Withdraw request: description=${data.defaultDescription}, k1=${data.k1}, "
+      "min=${data.minWithdrawable}, max=${data.maxWithdrawable}",
+    );
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
 
     final navigator = Navigator.of(context);

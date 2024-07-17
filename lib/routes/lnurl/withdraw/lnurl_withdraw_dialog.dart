@@ -142,9 +142,11 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     final description = widget.requestData.defaultDescription;
 
     try {
-      _log.info("LNURL withdraw of ${widget.amountSats} sats where "
-          "min is ${widget.requestData.minWithdrawable} msats "
-          "and max is ${widget.requestData.maxWithdrawable} msats.");
+      _log.info(
+        "LNURL withdraw of ${widget.amountSats} sats where "
+        "min is ${widget.requestData.minWithdrawable.toInt() ~/ 1000} sats "
+        "and max is ${widget.requestData.maxWithdrawable.toInt() ~/ 1000} sats.",
+      );
       final req = LnUrlWithdrawRequest(
         amountMsat: BigInt.from(widget.amountSats * 1000),
         data: widget.requestData,
