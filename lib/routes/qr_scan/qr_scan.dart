@@ -14,6 +14,8 @@ final _log = Logger("QRScan");
 class QRScan extends StatefulWidget {
   const QRScan({super.key});
 
+  static const routeName = "/qr_scan";
+
   @override
   State<StatefulWidget> createState() => QRScanState();
 }

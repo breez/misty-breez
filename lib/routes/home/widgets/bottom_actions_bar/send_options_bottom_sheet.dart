@@ -1,5 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_action_item_image.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
@@ -44,7 +45,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
           onTap: () {
             final navigatorState = Navigator.of(context);
             navigatorState.pop();
-            navigatorState.pushNamed("/send_chainswap");
+            navigatorState.pushNamed(SendChainSwapPage.routeName);
           },
         ),
       ],

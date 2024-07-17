@@ -4,6 +4,8 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/home_page.dart';
+import 'package:l_breez/routes/security/security_page.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
@@ -107,7 +109,8 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                       // Pop to where the verification flow has started from,
                       // which is either from "Verify Backup Phrase" option on Security page
                       // or through WarningAction on Home page.
-                      if (route.settings.name == "/security" || route.settings.name == "/") {
+                      if (route.settings.name == SecurityPage.routeName ||
+                          route.settings.name == Home.routeName) {
                         shouldPop = true;
                       }
                       return shouldPop;

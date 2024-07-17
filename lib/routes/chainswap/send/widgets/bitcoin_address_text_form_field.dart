@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/bitcoin_address_info.dart';
 import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
+import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
@@ -29,7 +30,7 @@ class BitcoinAddressTextFormField extends TextFormField {
               ),
               tooltip: context.texts().withdraw_funds_scan_barcode,
               onPressed: () async {
-                Navigator.pushNamed<String>(context, "/qr_scan").then(
+                Navigator.pushNamed<String>(context, QRScan.routeName).then(
                   (barcode) {
                     _log.info("Scanned string: '$barcode'");
                     final address = BitcoinAddressInfo.fromScannedString(barcode).address;

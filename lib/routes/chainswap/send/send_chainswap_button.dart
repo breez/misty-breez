@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/loader.dart';
@@ -39,7 +40,7 @@ class SendChainSwapButton extends StatelessWidget {
     try {
       final req = PayOnchainRequest(address: recipientAddress, prepareRes: preparePayOnchainResponse);
       await chainSwapCubit.payOnchain(req: req);
-      navigator.pushNamedAndRemoveUntil("/", (Route<dynamic> route) => false);
+      navigator.pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
     } catch (e) {
       navigator.pop(loaderRoute);
       if (!context.mounted) return;

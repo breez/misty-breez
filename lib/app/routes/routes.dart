@@ -28,87 +28,87 @@ Route? onGenerateRoute({
 }) {
   _log.info("New route: ${settings.name}");
   switch (settings.name) {
-    case '/intro':
+    case InitialWalkthroughPage.routeName:
       return FadeInRoute(
         builder: (_) => const InitialWalkthroughPage(),
         settings: settings,
       );
-    case 'splash':
+    case SplashPage.routeName:
       return FadeInRoute(
         builder: (_) => SplashPage(isInitial: accountState.initial),
         settings: settings,
       );
-    case 'lockscreen':
+    case LockScreen.routeName:
       return NoTransitionRoute(
         builder: (_) => const LockScreen(
           authorizedAction: AuthorizedAction.launchHome,
         ),
         settings: settings,
       );
-    case '/enter_mnemonics':
+    case EnterMnemonicsPage.routeName:
       return FadeInRoute<String>(
         builder: (_) => EnterMnemonicsPage(
           initialWords: settings.arguments as List<String>? ?? [],
         ),
         settings: settings,
       );
-    case '/':
+    case Home.routeName:
       return FadeInRoute(
         builder: (_) => NavigatorPopHandler(
           onPop: () => homeNavigatorKey.currentState!.maybePop(),
           child: Navigator(
-            initialRoute: "/",
+            initialRoute: Home.routeName,
             key: homeNavigatorKey,
             onGenerateRoute: (RouteSettings settings) {
               _log.info("New inner route: ${settings.name}");
               switch (settings.name) {
-                case '/':
+                case Home.routeName:
                   return FadeInRoute(
                     builder: (_) => const Home(),
                     settings: settings,
                   );
-                case '/create_invoice':
+                case CreateInvoicePage.routeName:
                   return FadeInRoute(
                     builder: (_) => const CreateInvoicePage(),
                     settings: settings,
                   );
-                case '/receive_chainswap':
+                case ReceiveChainSwapPage.routeName:
                   return FadeInRoute(
                     builder: (_) => const ReceiveChainSwapPage(),
                     settings: settings,
                   );
-                case '/send_chainswap':
+                case SendChainSwapPage.routeName:
                   return FadeInRoute(
                     builder: (_) => SendChainSwapPage(
                       btcAddressData: settings.arguments as BitcoinAddressData?,
                     ),
                     settings: settings,
                   );
-                case '/fiat_currency':
+                case FiatCurrencySettings.routeName:
                   return FadeInRoute(
                     builder: (_) => const FiatCurrencySettings(),
                     settings: settings,
                   );
-                case '/security':
+                case SecurityPage.routeName:
                   return FadeInRoute(
                     builder: (_) => const SecuredPage(
                       securedWidget: SecurityPage(),
                     ),
                     settings: settings,
                   );
-                case '/mnemonics':
+                case MnemonicsConfirmationPage.routeName:
                   return FadeInRoute(
                     builder: (_) => MnemonicsConfirmationPage(
                       mnemonics: settings.arguments as String,
                     ),
                     settings: settings,
                   );
-                case '/developers':
+                case DevelopersView.routeName:
                   return FadeInRoute(
                     builder: (_) => const DevelopersView(),
                     settings: settings,
                   );
-                case '/qr_scan':
+                case QRScan.routeName:
                   return MaterialPageRoute<String>(
                     fullscreenDialog: true,
                     builder: (_) => const QRScan(),

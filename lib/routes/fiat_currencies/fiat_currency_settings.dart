@@ -13,6 +13,8 @@ import 'package:l_breez/widgets/loader.dart';
 const double itemHeight = 72.0;
 
 class FiatCurrencySettings extends StatefulWidget {
+  static const routeName = "/fiat_currency";
+
   const FiatCurrencySettings({super.key});
 
   @override

@@ -4,6 +4,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/home/widgets/app_bar/warning_action.dart';
 import 'package:l_breez/routes/home/widgets/enable_backup_dialog.dart';
 import 'package:l_breez/routes/home/widgets/rotator.dart';
+import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
 import 'package:l_breez/widgets/backup_in_progress_dialog.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
@@ -29,7 +30,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
                 await ServiceInjector().keychain.read(CredentialsManager.accountMnemonic).then(
                       (accountMnemonic) => Navigator.pushNamed(
                         context,
-                        '/mnemonics',
+                        MnemonicsConfirmationPage.routeName,
                         arguments: accountMnemonic,
                       ),
                     );

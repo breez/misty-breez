@@ -6,6 +6,8 @@ import 'package:l_breez/theme/breez_light_theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 
 class SecurityPage extends StatelessWidget {
+  static const routeName = "/security";
+
   const SecurityPage({super.key});
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
@@ -39,7 +40,7 @@ class QrActionButton extends StatelessWidget {
     InputCubit inputCubit = context.read<InputCubit>();
 
     _log.info("Start qr code scan");
-    Navigator.pushNamed<String>(context, "/qr_scan").then(
+    Navigator.pushNamed<String>(context, QRScan.routeName).then(
       (barcode) {
         _log.info("Scanned string: '$barcode'");
         if (barcode == null) return;

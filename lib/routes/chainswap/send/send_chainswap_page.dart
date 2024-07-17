@@ -11,6 +11,8 @@ import 'package:l_breez/widgets/loader.dart';
 class SendChainSwapPage extends StatefulWidget {
   final BitcoinAddressData? btcAddressData;
 
+  static const routeName = "/send_chainswap";
+
   const SendChainSwapPage({super.key, required this.btcAddressData});
 
   @override
