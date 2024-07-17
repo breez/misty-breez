@@ -290,32 +290,32 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       )
     ];
 
-    int toPay = amountToPay(currency);
-    //TODO: Liquid
-//    if (toPay > 0 && accState.maxAllowedToPay >= toPay) {
-    actions.add(SimpleDialogOption(
-      onPressed: (() async {
-        if (widget.invoice.amountMsat > BigInt.zero || _formKey.currentState!.validate()) {
-          if (widget.invoice.amountMsat == BigInt.zero) {
-            _amountToPayMap["_amountToPay"] = toPay;
-            _amountToPayMap["_amountToPayStr"] =
-                BitcoinCurrency.fromTickerSymbol(currency.bitcoinTicker).format(amountToPay(currency));
-            widget._setAmountToPay(_amountToPayMap);
-            widget._onWaitingConfirmation();
-          } else {
-            widget._onPaymentApproved(
-              widget.invoice.bolt11,
-              amountToPay(currency),
-            );
+    int toPaySat = amountToPay(currency);
+    actions.add(
+      SimpleDialogOption(
+        onPressed: (() async {
+          if (widget.invoice.amountMsat > BigInt.zero || _formKey.currentState!.validate()) {
+            if (widget.invoice.amountMsat == BigInt.zero) {
+              _amountToPayMap["_amountToPay"] = toPaySat;
+              _amountToPayMap["_amountToPayStr"] =
+                  BitcoinCurrency.fromTickerSymbol(currency.bitcoinTicker).format(amountToPay(currency));
+              widget._setAmountToPay(_amountToPayMap);
+              widget._onWaitingConfirmation();
+            } else {
+              widget._onPaymentApproved(
+                widget.invoice.bolt11,
+                amountToPay(currency),
+              );
+            }
           }
-        }
-      }),
-      child: Text(
-        texts.payment_request_dialog_action_approve,
-        style: themeData.primaryTextTheme.labelLarge,
+        }),
+        child: Text(
+          texts.payment_request_dialog_action_approve,
+          style: themeData.primaryTextTheme.labelLarge,
+        ),
       ),
-    ));
-    //}
+    );
+
     return Theme(
       data: themeData.copyWith(
         splashColor: Colors.transparent,

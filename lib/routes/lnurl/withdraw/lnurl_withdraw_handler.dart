@@ -7,6 +7,7 @@ import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
+import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
@@ -17,6 +18,10 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   BuildContext context,
   LnUrlWithdrawRequestData requestData,
 ) async {
+  if (requestData.maxWithdrawable.toInt() ~/ 1000 < liquidMinimumPaymentAmountSat) {
+    throw Exception("Payment is below Liquid network limits, $liquidMinimumPaymentAmountSat sats.");
+  }
+
   Completer<LNURLPageResult?> completer = Completer();
   Navigator.of(context).push(
     MaterialPageRoute(
