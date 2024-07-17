@@ -90,7 +90,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
               balance: widget.paymentLimits.send.maxSat,
               policy: WithdrawFundsPolicy(
                 WithdrawKind.withdrawFunds,
-                BigInt.from(max(liquidMinimumPaymentAmountSat, widget.paymentLimits.send.minSat.toInt())),
+                BigInt.from(max(minPaymentAmountSat, widget.paymentLimits.send.minSat.toInt())),
                 widget.paymentLimits.send.maxSat,
               ),
             ),

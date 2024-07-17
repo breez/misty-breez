@@ -19,7 +19,6 @@ import 'package:rxdart/rxdart.dart';
 export 'account_state.dart';
 export 'account_state_assembler.dart';
 
-const maxPaymentAmount = 4294967;
 const nodeSyncInterval = 60;
 
 final _log = Logger("AccountCubit");

@@ -20,7 +20,7 @@ class AccountState {
   final int walletBalance;
   final int maxAllowedToPay;
   final int maxAllowedToReceive;
-  final int maxPaymentAmount;
+  final int maxPaymentAmountSat;
   final int maxChanReserve;
   final List<String> connectedPeers;
   final int maxInboundLiquidity;
@@ -40,7 +40,7 @@ class AccountState {
     required this.walletBalance,
     required this.maxAllowedToPay,
     required this.maxAllowedToReceive,
-    required this.maxPaymentAmount,
+    required this.maxPaymentAmountSat,
     required this.maxChanReserve,
     required this.connectedPeers,
     required this.maxInboundLiquidity,
@@ -58,7 +58,7 @@ class AccountState {
           blockheight: 0,
           maxAllowedToPay: 0,
           maxAllowedToReceive: 0,
-          maxPaymentAmount: 0,
+          maxPaymentAmountSat: 0,
           maxChanReserve: 0,
           connectedPeers: List.empty(),
           maxInboundLiquidity: 0,
@@ -83,7 +83,7 @@ class AccountState {
     int? walletBalance,
     int? maxAllowedToPay,
     int? maxAllowedToReceive,
-    int? maxPaymentAmount,
+    int? maxPaymentAmountSat,
     int? maxChanReserve,
     List<String>? connectedPeers,
     int? maxInboundLiquidity,
@@ -102,7 +102,7 @@ class AccountState {
       walletBalance: walletBalance ?? this.walletBalance,
       maxAllowedToPay: maxAllowedToPay ?? this.maxAllowedToPay,
       maxAllowedToReceive: maxAllowedToReceive ?? this.maxAllowedToReceive,
-      maxPaymentAmount: maxPaymentAmount ?? this.maxPaymentAmount,
+      maxPaymentAmountSat: maxPaymentAmountSat ?? this.maxPaymentAmountSat,
       blockheight: blockheight ?? this.blockheight,
       maxChanReserve: maxChanReserve ?? this.maxChanReserve,
       connectedPeers: connectedPeers ?? this.connectedPeers,
@@ -131,7 +131,7 @@ class AccountState {
       "walletBalance": walletBalance,
       "maxAllowedToPay": maxAllowedToPay,
       "maxAllowedToReceive": maxAllowedToReceive,
-      "maxPaymentAmount": maxPaymentAmount,
+      "maxPaymentAmount": maxPaymentAmountSat,
       "maxChanReserve": maxChanReserve,
       "maxInboundLiquidity": maxInboundLiquidity,
       "onChainFeeRate": onChainFeeRate,
@@ -153,7 +153,7 @@ class AccountState {
       walletBalance: json["walletBalance"],
       maxAllowedToPay: json["maxAllowedToPay"],
       maxAllowedToReceive: json["maxAllowedToReceive"],
-      maxPaymentAmount: json["maxPaymentAmount"],
+      maxPaymentAmountSat: json["maxPaymentAmount"],
       maxChanReserve: json["maxChanReserve"],
       connectedPeers: <String>[],
       maxInboundLiquidity: json["maxInboundLiquidity"] ?? 0,
