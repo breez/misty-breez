@@ -12,6 +12,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/cubit/model/models.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/utils/constants.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:rxdart/rxdart.dart';
@@ -197,33 +198,22 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     bool outgoing,
   ) {
     _log.info("validatePayment: $amount, $outgoing");
-    /*
     var accState = state;
-    if (amount > accState.maxPaymentAmount) {
-      _log.info("Amount $amount is bigger than maxPaymentAmount ${accState.maxPaymentAmount}");
-      throw PaymentExceededLimitError(accState.maxPaymentAmount);
-    }
-
-    if (!outgoing) {
-      if (accState.maxInboundLiquidity == 0) {
-        throw NoChannelCreationZeroLiqudityError();
-      } else if (accState.maxInboundLiquidity < amount) {
-        throw PaymentExcededLiqudityChannelCreationNotPossibleError(accState.maxInboundLiquidity);
-      } else if (amount > accState.maxInboundLiquidity) {
-        throw PaymentExceedLiquidityError(accState.maxInboundLiquidity);
-      } else if (amount > accState.maxAllowedToReceive) {
-        throw PaymentExceededLimitError(accState.maxAllowedToReceive);
+    if (outgoing) {
+      if (amount > accState.balance) {
+        throw const InsufficientLocalBalanceError();
       }
     }
 
-    if (outgoing && amount > accState.maxAllowedToPay) {
-      _log.info("Outgoing but amount $amount is bigger than ${accState.maxAllowedToPay}");
-      if (accState.reserveAmount > 0) {
-        _log.info("Reserve amount ${accState.reserveAmount}");
-        throw PaymentBelowReserveError(accState.reserveAmount);
-      }
-      throw const InsufficientLocalBalanceError();
-    }*/
+    if (amount > accState.maxPaymentAmountSat) {
+      _log.info("Amount $amount is bigger than maxPaymentAmount ${accState.maxPaymentAmountSat}");
+      throw PaymentExceededLimitError(accState.maxPaymentAmountSat);
+    }
+
+    if (amount < minPaymentAmountSat) {
+      _log.info("Amount $amount is smaller than minPaymentAmountSat $minPaymentAmountSat");
+      throw const PaymentBelowLimitError(minPaymentAmountSat);
+    }
   }
 
   void changePaymentFilter({
