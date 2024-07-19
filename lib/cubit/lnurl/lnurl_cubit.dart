@@ -79,7 +79,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     LightningPaymentLimitsResponse lightningLimits,
     int balance,
   ) {
-    if (amount.toInt() > balance) {
+    if (outgoing && amount.toInt() > balance) {
       throw const InsufficientLocalBalanceError();
     }
     var limits = outgoing ? lightningLimits.send : lightningLimits.receive;

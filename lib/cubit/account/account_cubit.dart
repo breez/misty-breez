@@ -196,10 +196,8 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   void validatePayment(int amount, bool outgoing) {
     _log.info("validatePayment: $amount, $outgoing");
     var accState = state;
-    if (outgoing) {
-      if (amount > accState.balance) {
-        throw const InsufficientLocalBalanceError();
-      }
+    if (outgoing && amount > accState.balance) {
+      throw const InsufficientLocalBalanceError();
     }
 
     if (amount > accState.maxPaymentAmountSat) {
