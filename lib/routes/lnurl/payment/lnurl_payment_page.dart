@@ -242,7 +242,6 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
 
   String? validatePayment(int amount) {
     final texts = context.texts();
-    final lnUrlCubit = context.read<LnUrlCubit>();
     final currencyState = context.read<CurrencyCubit>().state;
 
     final maxSendable = widget.data.maxSendable.toInt() ~/ 1000;
@@ -256,13 +255,16 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     }
 
     return PaymentValidator(
-      validatePayment: (amount, outgoing) => lnUrlCubit.validateLnUrlPayment(
-        BigInt.from(amount),
-        outgoing,
-        _lightningLimits,
-      ),
+      validatePayment: _validatePayment,
       currency: currencyState.bitcoinCurrency,
       texts: context.texts(),
     ).validateOutgoing(amount);
+  }
+
+  void _validatePayment(int amount, bool outgoing) {
+    final accountState = context.read<AccountCubit>().state;
+    final balance = accountState.balance;
+    final lnUrlCubit = context.read<LnUrlCubit>();
+    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);
   }
 }

@@ -112,7 +112,11 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     BigInt amount,
     bool outgoing,
     OnchainPaymentLimitsResponse onchainLimits,
+    int balance,
   ) {
+    if (amount.toInt() > balance) {
+      throw const InsufficientLocalBalanceError();
+    }
     var limits = outgoing ? onchainLimits.send : onchainLimits.receive;
     if (amount > limits.maxSat) {
       throw PaymentExceededLimitError(limits.maxSat.toInt());

@@ -279,7 +279,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   void _validatePayment(int amount, bool outgoing) {
+    final accountState = context.read<AccountCubit>().state;
+    final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits);
+    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);
   }
 }

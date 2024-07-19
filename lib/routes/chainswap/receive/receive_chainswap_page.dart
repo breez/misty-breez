@@ -222,7 +222,9 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   }
 
   void _validateSwap(int amount, bool outgoing) {
+    final accountState = context.read<AccountCubit>().state;
+    final balance = accountState.balance;
     final chainSwapCubit = context.read<ChainSwapCubit>();
-    return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits);
+    return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits, balance);
   }
 }
