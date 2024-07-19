@@ -55,6 +55,6 @@ class SendChainSwapFeeOption extends FeeOption {
   bool isAffordable({int? balanceSat, int? walletBalanceSat, required int amountSat}) {
     assert(balanceSat != null);
 
-    return balanceSat! >= pairInfo.receiverAmountSat.toInt();
+    return pairInfo.isAffordable(balance: balanceSat!);
   }
 }
