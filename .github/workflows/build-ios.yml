@@ -2,14 +2,56 @@ name: Build iOS
 on:
   workflow_dispatch:
     inputs:
-      liquid_sdk_ref:
-        description: 'Liquid SDK commit/tag/branch reference'
+      use-published-plugins:
+        description: 'Boolean indicating whether to use a published plugin for the SDK. Default = false.'
+        required: false
+        type: boolean
+        default: false
+      liquid-sdk-plugin-version:
+        description: 'Version for the published Liquid SDK plugin (MAJOR.MINOR.BUILD). Default = "main"'
+        required: false
+        type: string
+        default: 'main'
+      liquid-sdk-ref:
+        description: 'Liquid SDK commit/tag/branch reference when not using a published plugin. Default = "main"'
         required: false
         type: string
         default: 'main'
 
 jobs:
+  pre-setup:
+    name: Pre-setup
+    runs-on: ubuntu-latest
+    outputs:
+      # These outputs mimic the inputs for the workflow.
+      # Their only purpose is to be able to test this workflow if you make
+      # changes that you won't want to commit to main yet.
+      # You can set these values manually, to test how the CI behaves with
+      # certain inputs.
+      use-published-plugins: ${{ inputs.use-published-plugins }}
+      liquid-sdk-plugin-version: ${{ inputs.liquid-sdk-plugin-version }}
+      liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
+    steps:
+      - run: echo "set pre-setup output variables"
+
+  setup:
+    name: Setup
+    needs: pre-setup
+    runs-on: ubuntu-latest
+    outputs:
+      # Careful, a boolean input is not a boolean output. A boolean input is
+      # actually a boolean, but these outputs are strings. All the boolean
+      # checks in this file have the format `boolean == 'true'`. So feel free
+      # to set these variables here to `true` or `false`
+      # (e.g. bindings-windows: true) if you want to test something.
+      use-published-plugins: ${{ needs.pre-setup.outputs.use-published-plugins }}
+      liquid-sdk-plugin-version: ${{ needs.pre-setup.outputs.liquid-sdk-plugin-version }}
+      liquid-sdk-ref: ${{ needs.pre-setup.outputs.liquid-sdk-ref }}
+    steps:
+      - run: echo "set setup output variables"
+
   build-ios:
+    needs: setup
     name: Build iOS
     runs-on: macOS-latest
     env:
@@ -27,7 +69,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: 'lbreez'
+
+      - name: Set Liquid SDK plugin version
+        if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
+        working-directory: lbreez
+        run: |
+          mv pubspec_overrides.yaml.workflow pubspec_overrides.yaml
+          sed -i.bak -e 's/ref:.*/ref: v${{ needs.setup.outputs.liquid-sdk-plugin-version }}/' pubspec_overrides.yaml
+          rm pubspec_overrides.yaml.bak
+
       - name: Install rust
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal
@@ -45,9 +97,11 @@ jobs:
           cache: true
 
       - name: Set up just
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         uses: extractions/setup-just@v2
 
       - name: Set up Melos
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         uses: bluefireteam/melos-action@v3
         with:
           run-bootstrap: false
@@ -75,35 +129,41 @@ jobs:
         run: echo "$GOOGLE_SERVICES_IOS" > ios/Runner/GoogleService-Info.plist
 
       - name: 🏗️ Setup breez-sdk-liquid repository
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid'
           ssh-key: ${{secrets.REPO_SSH_KEY}}
           path: 'breez-sdk-liquid'
-          ref: ${{ inputs.liquid_sdk_ref }}
+          ref: ${{ needs.setup.outputs.liquid-sdk-ref }}
 
       - name: 🏗️ Rust cache
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: breez-sdk-liquid/lib/
           cache-all-crates: true
 
       - name: 📦 Install Breez Liquid SDK dependencies
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just clean
           just init
 
       - name: Install flutter_rust_bridge_codegen dependencies
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just frb
 
       - name: Generate Dart/Flutter bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just codegen
 
       - name: Generate FFI bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
         run: just ffigen
@@ -118,12 +178,14 @@ jobs:
           ssh-add ~/.ssh/id_rsa
 
       - name: 🔨 Build Breez Liquid SDK
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           rm -rf ../../../target
           just build
 
       - name: 🔨 Build iOS binaries
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just build-apple
@@ -149,18 +211,14 @@ jobs:
       - name: 📝 Install the Provisioning Profile
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
-          NOTIFICATION_PROVISIONING_PROFILE_BASE64: ${{ secrets.NOTIFICATION_PROVISIONING_PROFILE_BASE64 }}
         run: |
           # create variables
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          NOTIFICATIONS_PP_PATH=$RUNNER_TEMP/build_notifications_pp.mobileprovision
           # import provisioning profile from secrets
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-          echo -n "$NOTIFICATION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $NOTIFICATIONS_PP_PATH
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $NOTIFICATIONS_PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
       - name: 🚀 Build app
         working-directory: lbreez
