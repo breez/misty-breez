@@ -208,6 +208,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 bitcoinCurrency: BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker),
                 iconColor: themeData.primaryIconTheme.color,
                 focusNode: _amountFocusNode,
+                autofocus: true,
                 controller: _invoiceAmountController,
                 validatorFn: PaymentValidator(
                   validatePayment: _validatePayment,

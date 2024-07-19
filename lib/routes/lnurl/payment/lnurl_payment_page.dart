@@ -147,6 +147,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
                     bitcoinCurrency: currencyState.bitcoinCurrency,
                     controller: _amountController,
                     validatorFn: validatePayment,
+                    autofocus: !fixedAmount,
                     enabled: !fixedAmount,
                     readOnly: fixedAmount,
                   ),

@@ -112,6 +112,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                             texts: texts,
                             bitcoinCurrency: currencyState.bitcoinCurrency,
                             focusNode: _amountFocusNode,
+                            autofocus: true,
                             controller: _amountController,
                             validatorFn: (v) => validatePayment(v),
                             style: theme.FieldTextStyle.textStyle,

@@ -139,6 +139,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             texts: texts,
                             bitcoinCurrency: currencyState.bitcoinCurrency,
                             focusNode: _amountFocusNode,
+                            autofocus: true,
                             controller: _amountController,
                             validatorFn: (v) => validatePayment(v),
                             style: theme.FieldTextStyle.textStyle,
