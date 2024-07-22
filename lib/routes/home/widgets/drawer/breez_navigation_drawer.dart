@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +9,6 @@ import 'package:l_breez/models/user_profile.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_avatar_dialog.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_drawer_header.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/widgets/breez_avatar.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 const double _kBreezBottomSheetHeight = 60.0;
@@ -176,9 +173,11 @@ class BreezNavigationDrawer extends StatelessWidget {
   ) {
     List<Widget> drawerHeaderContent = [];
     drawerHeaderContent.add(_buildThemeSwitch(context, user));
-    drawerHeaderContent
+    // TODO: Re-enable when UserProfile information is being used on payments
+    /*drawerHeaderContent
       ..add(_buildAvatarButton(user))
       ..add(_buildBottomRow(user, context));
+     */
     return GestureDetector(
       onTap: () {
         showDialog<bool>(
@@ -287,6 +286,7 @@ GestureDetector _buildThemeSwitch(
   );
 }
 
+/*
 Row _buildAvatarButton(UserProfileSettings user) {
   return Row(
     children: [
@@ -321,6 +321,7 @@ Padding _buildUsername(
     ),
   );
 }
+ */
 
 Widget _actionTile(
   DrawerItemConfig action,
