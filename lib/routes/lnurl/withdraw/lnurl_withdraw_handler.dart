@@ -12,6 +12,7 @@ import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
+import 'package:service_injector/service_injector.dart';
 
 final _log = Logger("HandleLNURLWithdrawPageResult");
 
@@ -24,16 +25,19 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   if (minSat != null && requestData.maxWithdrawable.toInt() ~/ 1000 < minSat) {
     throw Exception("Payment is below network limit of $minSat sats.");
   }
-
+  final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
   Completer<LNURLPageResult?> completer = Completer();
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => CreateInvoicePage(
-        requestData: requestData,
-        onFinish: (LNURLPageResult? response) {
-          completer.complete(response);
-          Navigator.of(context).popUntil((route) => route.settings.name == Home.routeName);
-        },
+      builder: (_) => BlocProvider(
+        create: (BuildContext context) => paymentLimitsCubit,
+        child: CreateInvoicePage(
+          requestData: requestData,
+          onFinish: (LNURLPageResult? response) {
+            completer.complete(response);
+            Navigator.of(context).popUntil((route) => route.settings.name == Home.routeName);
+          },
+        ),
       ),
     ),
   );

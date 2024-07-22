@@ -10,6 +10,7 @@ import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
 import 'package:l_breez/widgets/route.dart';
 import 'package:logging/logging.dart';
+import 'package:service_injector/service_injector.dart';
 
 final _log = Logger("HandleLNURLPayRequest");
 
@@ -26,18 +27,25 @@ Future<LNURLPageResult?> handlePayRequest(
 
   LNURLPaymentInfo? paymentInfo;
   bool fixedAmount = data.minSendable == data.maxSendable;
+  final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
   if (fixedAmount && !(data.commentAllowed > 0)) {
     // Show dialog if payment is of fixed amount with no payer comment allowed
     paymentInfo = await showDialog<LNURLPaymentInfo>(
       useRootNavigator: false,
       context: context,
       barrierDismissible: false,
-      builder: (_) => LNURLPaymentDialog(data: data),
+      builder: (_) => BlocProvider(
+        create: (BuildContext context) => paymentLimitsCubit,
+        child: LNURLPaymentDialog(data: data),
+      ),
     );
   } else {
     paymentInfo = await Navigator.of(context).push<LNURLPaymentInfo>(
       FadeInRoute(
-        builder: (_) => LNURLPaymentPage(data: data),
+        builder: (_) => BlocProvider(
+          create: (BuildContext context) => paymentLimitsCubit,
+          child: LNURLPaymentPage(data: data),
+        ),
       ),
     );
   }

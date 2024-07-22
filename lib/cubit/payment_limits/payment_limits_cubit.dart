@@ -38,12 +38,13 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
     try {
       final lightningPaymentLimits = await _liquidSdk.instance!.fetchLightningLimits();
-      emit(state.copyWith(lightningPaymentLimits: lightningPaymentLimits, errorMessage: ""));
+      _emitState(state.copyWith(lightningPaymentLimits: lightningPaymentLimits, errorMessage: ""));
       return lightningPaymentLimits;
     } catch (e) {
       _log.severe("fetchLightningLimits error", e);
       final texts = getSystemAppLocalizations();
-      emit(state.copyWith(lightningPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
+      _emitState(
+          state.copyWith(lightningPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
       rethrow;
     }
   }
@@ -51,13 +52,19 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() async {
     try {
       final onchainPaymentLimits = await _liquidSdk.instance!.fetchOnchainLimits();
-      emit(state.copyWith(onchainPaymentLimits: onchainPaymentLimits, errorMessage: ""));
+      _emitState(state.copyWith(onchainPaymentLimits: onchainPaymentLimits, errorMessage: ""));
       return onchainPaymentLimits;
     } catch (e) {
       _log.severe("fetchOnchainLimits error", e);
       final texts = getSystemAppLocalizations();
-      emit(state.copyWith(onchainPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
+      _emitState(state.copyWith(onchainPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
       rethrow;
+    }
+  }
+
+  void _emitState(PaymentLimitsState state) {
+    if (!isClosed) {
+      emit(state);
     }
   }
 }

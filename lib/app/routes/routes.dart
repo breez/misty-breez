@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
@@ -17,6 +18,7 @@ import 'package:l_breez/routes/security/security_page.dart';
 import 'package:l_breez/routes/splash/splash_page.dart';
 import 'package:l_breez/widgets/route.dart';
 import 'package:logging/logging.dart';
+import 'package:service_injector/service_injector.dart';
 
 final _log = Logger("Routes");
 
@@ -27,6 +29,8 @@ Route? onGenerateRoute({
   required SecurityState securityState,
 }) {
   _log.info("New route: ${settings.name}");
+  final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
+
   switch (settings.name) {
     case InitialWalkthroughPage.routeName:
       return FadeInRoute(
@@ -69,18 +73,27 @@ Route? onGenerateRoute({
                   );
                 case CreateInvoicePage.routeName:
                   return FadeInRoute(
-                    builder: (_) => const CreateInvoicePage(),
+                    builder: (_) => BlocProvider(
+                      create: (BuildContext context) => paymentLimitsCubit,
+                      child: const CreateInvoicePage(),
+                    ),
                     settings: settings,
                   );
                 case ReceiveChainSwapPage.routeName:
                   return FadeInRoute(
-                    builder: (_) => const ReceiveChainSwapPage(),
+                    builder: (_) => BlocProvider(
+                      create: (BuildContext context) => paymentLimitsCubit,
+                      child: const ReceiveChainSwapPage(),
+                    ),
                     settings: settings,
                   );
                 case SendChainSwapPage.routeName:
                   return FadeInRoute(
-                    builder: (_) => SendChainSwapPage(
-                      btcAddressData: settings.arguments as BitcoinAddressData?,
+                    builder: (_) => BlocProvider(
+                      create: (BuildContext context) => paymentLimitsCubit,
+                      child: SendChainSwapPage(
+                        btcAddressData: settings.arguments as BitcoinAddressData?,
+                      ),
                     ),
                     settings: settings,
                   );

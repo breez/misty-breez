@@ -5,6 +5,7 @@ import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_confirmation_dialog.dart';
 import 'package:l_breez/widgets/payment_dialogs/payment_request_info_dialog.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
+import 'package:service_injector/service_injector.dart';
 
 enum PaymentRequestState {
   paymentRequest,
@@ -101,16 +102,20 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         minHeight,
       );
     } else {
-      return PaymentRequestInfoDialog(
-        widget.invoice,
-        () => _onStateChange(PaymentRequestState.userCancelled),
-        () => _onStateChange(PaymentRequestState.waitingForConfirmation),
-        (bolt11, amount) {
-          _amountToPay = amount + widget.invoice.lspFee;
-          _onStateChange(PaymentRequestState.processingPayment);
-        },
-        (map) => _setAmountToPay(map),
-        minHeight,
+      final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
+      return BlocProvider(
+        create: (BuildContext context) => paymentLimitsCubit,
+        child: PaymentRequestInfoDialog(
+          widget.invoice,
+          () => _onStateChange(PaymentRequestState.userCancelled),
+          () => _onStateChange(PaymentRequestState.waitingForConfirmation),
+          (bolt11, amount) {
+            _amountToPay = amount + widget.invoice.lspFee;
+            _onStateChange(PaymentRequestState.processingPayment);
+          },
+          (map) => _setAmountToPay(map),
+          minHeight,
+        ),
       );
     }
   }
