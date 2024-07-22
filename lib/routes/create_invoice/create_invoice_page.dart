@@ -10,7 +10,6 @@ import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -68,20 +67,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         }
       },
     );
-    _fetchLightningLimits();
-  }
-
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _fetchLightningLimits();
-    }
-  }
-
-  Future _fetchLightningLimits() async {
-    final lnuUrlCubit = context.read<LnUrlCubit>();
-    setState(() {
-      _lightningLimitsFuture = lnuUrlCubit.fetchLightningLimits();
-    });
   }
 
   @override
@@ -101,23 +86,22 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         leading: const back_button.BackButton(),
         title: Text(texts.invoice_title),
       ),
-      body: FutureBuilder<LightningPaymentLimitsResponse>(
-        future: _lightningLimitsFuture,
-        builder: (BuildContext context, AsyncSnapshot<LightningPaymentLimitsResponse> snapshot) {
+      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                 child: Text(
-                  texts.reverse_swap_upstream_generic_error_message(
-                    extractExceptionMessage(snapshot.error!, texts),
-                  ),
+                  texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
                   textAlign: TextAlign.center,
                 ),
               ),
             );
           }
-          if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+          if (snapshot.lightningPaymentLimits == null) {
+            final themeData = Theme.of(context);
+
             return Center(
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
@@ -125,7 +109,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             );
           }
 
-          _lightningLimits = snapshot.data!;
+          _lightningLimits = snapshot.lightningPaymentLimits!;
 
           return Form(
             key: _formKey,

@@ -7,7 +7,6 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
@@ -49,7 +48,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   KeyboardDoneAction? _doneAction;
   bool _showFiatCurrency = false;
 
-  Future<LightningPaymentLimitsResponse>? _lightningLimitsFuture;
   late LightningPaymentLimitsResponse _lightningLimits;
 
   @override
@@ -59,20 +57,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       setState(() {});
     });
     _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
-    _fetchLightningLimits();
-  }
-
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _fetchLightningLimits();
-    }
-  }
-
-  Future _fetchLightningLimits() async {
-    final lnuUrlCubit = context.read<LnUrlCubit>();
-    setState(() {
-      _lightningLimitsFuture = lnuUrlCubit.fetchLightningLimits();
-    });
   }
 
   @override
@@ -118,25 +102,23 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         return BlocBuilder<AccountCubit, AccountState>(
           builder: (context, account) {
             final texts = context.texts();
-            final themeData = Theme.of(context);
 
-            return FutureBuilder<LightningPaymentLimitsResponse>(
-              future: _lightningLimitsFuture,
-              builder: (BuildContext context, AsyncSnapshot<LightningPaymentLimitsResponse> snapshot) {
+            return BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+              builder: (BuildContext context, PaymentLimitsState snapshot) {
                 if (snapshot.hasError) {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                       child: Text(
-                        texts.reverse_swap_upstream_generic_error_message(
-                          extractExceptionMessage(snapshot.error!, texts),
-                        ),
+                        texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   );
                 }
-                if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+                if (snapshot.lightningPaymentLimits == null) {
+                  final themeData = Theme.of(context);
+
                   return Center(
                     child: Loader(
                       color: themeData.primaryColor.withOpacity(0.5),
@@ -144,7 +126,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                   );
                 }
 
-                _lightningLimits = snapshot.data!;
+                _lightningLimits = snapshot.lightningPaymentLimits!;
 
                 List<Widget> children = [];
                 _addIfNotNull(children, _buildPayeeNameWidget());

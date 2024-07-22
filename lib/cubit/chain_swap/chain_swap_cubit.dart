@@ -16,10 +16,6 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
 
   ChainSwapCubit(this._liquidSdk) : super(ChainSwapState.initial());
 
-  Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() async {
-    return await _liquidSdk.instance!.fetchOnchainLimits();
-  }
-
   Future<RecommendedFees> recommendedFees() async {
     return await _liquidSdk.instance!.recommendedFees();
   }

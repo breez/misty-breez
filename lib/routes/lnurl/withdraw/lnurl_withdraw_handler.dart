@@ -4,7 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/lnurl/lnurl_cubit.dart';
+import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
 import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/home/home_page.dart';
@@ -19,8 +19,8 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   BuildContext context,
   LnUrlWithdrawRequestData requestData,
 ) async {
-  final lnUrlState = context.read<LnUrlCubit>().state;
-  final minSat = lnUrlState.limits?.send.minSat.toInt();
+  final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+  final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
   if (minSat != null && requestData.maxWithdrawable.toInt() ~/ 1000 < minSat) {
     throw Exception("Payment is below network limit of $minSat sats.");
   }

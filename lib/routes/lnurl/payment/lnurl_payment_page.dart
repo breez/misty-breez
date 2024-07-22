@@ -14,6 +14,7 @@ import 'package:l_breez/theme/theme_provider.dart' as theme;
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
+import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
@@ -74,8 +75,6 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
             includeDisplayName: false,
           );
         }
-        final lnurlCubit = context.read<LnUrlCubit>();
-        _lightningLimits = await lnurlCubit.fetchLightningLimits();
       },
     );
   }
@@ -96,130 +95,157 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
         // Todo: Use domain from request data
         title: Text(texts.lnurl_fetch_invoice_pay_to_payee(Uri.parse(widget.data.callback).host)),
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 0.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.data.commentAllowed > 0) ...[
-                TextFormField(
-                  controller: _commentController,
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.done,
-                  maxLines: null,
-                  maxLength: widget.data.commentAllowed.toInt(),
-                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                  decoration: InputDecoration(
-                    labelText: texts.lnurl_payment_page_comment,
-                  ),
-                )
-              ],
-              AmountFormField(
-                context: context,
-                texts: texts,
-                bitcoinCurrency: currencyState.bitcoinCurrency,
-                controller: _amountController,
-                validatorFn: validatePayment,
-                enabled: !fixedAmount,
-                readOnly: fixedAmount,
+      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                child: Text(
+                  texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              if (!fixedAmount) ...[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: RichText(
-                    text: TextSpan(
-                      style: theme.FieldTextStyle.labelStyle,
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: texts.lnurl_fetch_invoice_min(
-                            currencyState.bitcoinCurrency.format(
-                              max(
-                                _lightningLimits.send.minSat.toInt(),
-                                widget.data.minSendable.toInt() ~/ 1000,
+            );
+          }
+          if (snapshot.lightningPaymentLimits == null) {
+            final themeData = Theme.of(context);
+
+            return Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
+            );
+          }
+
+          _lightningLimits = snapshot.lightningPaymentLimits!;
+
+          return Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 0.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.data.commentAllowed > 0) ...[
+                    TextFormField(
+                      controller: _commentController,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.done,
+                      maxLines: null,
+                      maxLength: widget.data.commentAllowed.toInt(),
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      decoration: InputDecoration(
+                        labelText: texts.lnurl_payment_page_comment,
+                      ),
+                    )
+                  ],
+                  AmountFormField(
+                    context: context,
+                    texts: texts,
+                    bitcoinCurrency: currencyState.bitcoinCurrency,
+                    controller: _amountController,
+                    validatorFn: validatePayment,
+                    enabled: !fixedAmount,
+                    readOnly: fixedAmount,
+                  ),
+                  if (!fixedAmount) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: RichText(
+                        text: TextSpan(
+                          style: theme.FieldTextStyle.labelStyle,
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: texts.lnurl_fetch_invoice_min(
+                                currencyState.bitcoinCurrency.format(
+                                  max(
+                                    _lightningLimits.send.minSat.toInt(),
+                                    widget.data.minSendable.toInt() ~/ 1000,
+                                  ),
+                                ),
                               ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  _amountController.text = currencyState.bitcoinCurrency.format(
+                                    (widget.data.minSendable.toInt() ~/ 1000),
+                                    includeDisplayName: false,
+                                  );
+                                },
                             ),
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              _amountController.text = currencyState.bitcoinCurrency.format(
-                                (widget.data.minSendable.toInt() ~/ 1000),
-                                includeDisplayName: false,
-                              );
-                            },
+                            TextSpan(
+                              text: texts.lnurl_fetch_invoice_and(
+                                currencyState.bitcoinCurrency.format(
+                                  (widget.data.maxSendable.toInt() ~/ 1000),
+                                ),
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  _amountController.text = currencyState.bitcoinCurrency.format(
+                                    (widget.data.maxSendable.toInt() ~/ 1000),
+                                    includeDisplayName: false,
+                                  );
+                                },
+                            )
+                          ],
                         ),
-                        TextSpan(
-                          text: texts.lnurl_fetch_invoice_and(
-                            currencyState.bitcoinCurrency.format(
-                              (widget.data.maxSendable.toInt() ~/ 1000),
-                            ),
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              _amountController.text = currencyState.bitcoinCurrency.format(
-                                (widget.data.maxSendable.toInt() ~/ 1000),
-                                includeDisplayName: false,
-                              );
-                            },
-                        )
-                      ],
+                      ),
+                    ),
+                  ],
+                  /*
+                  if (widget.name?.mandatory == true) ...[
+                    TextFormField(
+                      controller: _nameController,
+                      keyboardType: TextInputType.name,
+                      validator: (value) => value != null ? null : texts.breez_avatar_dialog_your_name,
+                    )
+                  ],
+                  if (widget.auth?.mandatory == true) ...[
+                    TextFormField(
+                      controller: _k1Controller,
+                      keyboardType: TextInputType.text,
+                      validator: (value) => value != null ? null : texts.lnurl_payment_page_enter_k1,
+                    )
+                  ],
+                  if (widget.email?.mandatory == true) ...[
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) => value != null
+                          ? EmailValidator.validate(value)
+                              ? null
+                              : texts.order_card_country_email_invalid
+                          : texts.order_card_country_email_empty,
+                    )
+                  ],
+                  if (widget.identifier?.mandatory == true) ...[
+                    TextFormField(
+                      controller: _identifierController,
+                    )
+                  ],
+                   */
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 48,
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: LNURLMetadataText(metadataMap: metadataMap),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 22),
+                      child: Center(
+                        child: LNURLMetadataImage(
+                          base64String: base64String,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-              /*
-              if (widget.name?.mandatory == true) ...[
-                TextFormField(
-                  controller: _nameController,
-                  keyboardType: TextInputType.name,
-                  validator: (value) => value != null ? null : texts.breez_avatar_dialog_your_name,
-                )
-              ],
-              if (widget.auth?.mandatory == true) ...[
-                TextFormField(
-                  controller: _k1Controller,
-                  keyboardType: TextInputType.text,
-                  validator: (value) => value != null ? null : texts.lnurl_payment_page_enter_k1,
-                )
-              ],
-              if (widget.email?.mandatory == true) ...[
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) => value != null
-                      ? EmailValidator.validate(value)
-                          ? null
-                          : texts.order_card_country_email_invalid
-                      : texts.order_card_country_email_empty,
-                )
-              ],
-              if (widget.identifier?.mandatory == true) ...[
-                TextFormField(
-                  controller: _identifierController,
-                )
-              ],
-               */
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 48,
-                padding: const EdgeInsets.only(top: 16.0),
-                child: LNURLMetadataText(metadataMap: metadataMap),
+                ],
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 22),
-                  child: Center(
-                    child: LNURLMetadataImage(
-                      base64String: base64String,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: SingleButtonBottomBar(
         stickToBottom: true,

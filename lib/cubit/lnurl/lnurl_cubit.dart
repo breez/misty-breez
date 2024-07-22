@@ -15,30 +15,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
   final _log = Logger("LnUrlCubit");
   final BreezSDKLiquid _liquidSdk;
 
-  LnUrlCubit(this._liquidSdk) : super(LnUrlState.initial()) {
-    _initializeLnUrlCubit();
-  }
-
-  void _initializeLnUrlCubit() {
-    late final StreamSubscription streamSubscription;
-    streamSubscription = _liquidSdk.walletInfoStream.listen(
-      (walletInfo) {
-        fetchLightningLimits();
-        streamSubscription.cancel();
-      },
-    );
-  }
-
-  Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
-    try {
-      final limits = await _liquidSdk.instance!.fetchLightningLimits();
-      emit(state.copyWith(limits: limits));
-      return limits;
-    } catch (e) {
-      _log.severe("fetchLightningLimits error", e);
-      rethrow;
-    }
-  }
+  LnUrlCubit(this._liquidSdk) : super(LnUrlState.initial());
 
   Future<LnUrlWithdrawResult> lnurlWithdraw({
     required LnUrlWithdrawRequest req,

@@ -6,7 +6,6 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/receive/chainswap_qr_dialog.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -34,26 +33,12 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();
 
-  Future<OnchainPaymentLimitsResponse>? _onchainPaymentLimitsFuture;
   late OnchainPaymentLimitsResponse _onchainPaymentLimits;
+
   @override
   void initState() {
     super.initState();
     _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
-    _fetchOnchainLimits();
-  }
-
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _fetchOnchainLimits();
-    }
-  }
-
-  Future _fetchOnchainLimits() async {
-    final chainSwapCubit = context.read<ChainSwapCubit>();
-    setState(() {
-      _onchainPaymentLimitsFuture = chainSwapCubit.fetchOnchainLimits();
-    });
   }
 
   @override
@@ -65,7 +50,6 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -73,23 +57,22 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
         leading: const back_button.BackButton(),
         title: Text(texts.bottom_action_bar_receive_btc_address),
       ),
-      body: FutureBuilder<OnchainPaymentLimitsResponse>(
-        future: _onchainPaymentLimitsFuture,
-        builder: (BuildContext context, AsyncSnapshot<OnchainPaymentLimitsResponse> snapshot) {
+      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                 child: Text(
-                  texts.reverse_swap_upstream_generic_error_message(
-                    extractExceptionMessage(snapshot.error!, texts),
-                  ),
+                  texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
                   textAlign: TextAlign.center,
                 ),
               ),
             );
           }
-          if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+          if (snapshot.onchainPaymentLimits == null) {
+            final themeData = Theme.of(context);
+
             return Center(
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
@@ -97,7 +80,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
             );
           }
 
-          _onchainPaymentLimits = snapshot.data!;
+          _onchainPaymentLimits = snapshot.onchainPaymentLimits!;
 
           return Form(
             key: _formKey,
