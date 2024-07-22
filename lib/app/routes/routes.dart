@@ -28,8 +28,6 @@ Route? onGenerateRoute({
   required accountState,
 }) {
   _log.info("New route: ${settings.name}");
-  final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
-
   switch (settings.name) {
     case InitialWalkthroughPage.routeName:
       return FadeInRoute(
@@ -73,7 +71,7 @@ Route? onGenerateRoute({
                 case CreateInvoicePage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => paymentLimitsCubit,
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
                       child: const CreateInvoicePage(),
                     ),
                     settings: settings,
@@ -81,7 +79,7 @@ Route? onGenerateRoute({
                 case ReceiveChainSwapPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => paymentLimitsCubit,
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
                       child: const ReceiveChainSwapPage(),
                     ),
                     settings: settings,
@@ -89,7 +87,7 @@ Route? onGenerateRoute({
                 case SendChainSwapPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => paymentLimitsCubit,
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
                       child: SendChainSwapPage(
                         btcAddressData: settings.arguments as BitcoinAddressData?,
                       ),

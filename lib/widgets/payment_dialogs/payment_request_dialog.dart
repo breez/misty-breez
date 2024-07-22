@@ -102,9 +102,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         minHeight,
       );
     } else {
-      final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
       return BlocProvider(
-        create: (BuildContext context) => paymentLimitsCubit,
+        create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
         child: PaymentRequestInfoDialog(
           widget.invoice,
           () => _onStateChange(PaymentRequestState.userCancelled),

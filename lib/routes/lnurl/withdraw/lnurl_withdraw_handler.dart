@@ -25,12 +25,12 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   if (minSat != null && requestData.maxWithdrawable.toInt() ~/ 1000 < minSat) {
     throw Exception("Payment is below network limit of $minSat sats.");
   }
-  final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
+
   Completer<LNURLPageResult?> completer = Completer();
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (_) => BlocProvider(
-        create: (BuildContext context) => paymentLimitsCubit,
+        create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
         child: CreateInvoicePage(
           requestData: requestData,
           onFinish: (LNURLPageResult? response) {
