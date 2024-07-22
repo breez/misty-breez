@@ -26,7 +26,6 @@ Route? onGenerateRoute({
   required RouteSettings settings,
   required GlobalKey<NavigatorState> homeNavigatorKey,
   required accountState,
-  required SecurityState securityState,
 }) {
   _log.info("New route: ${settings.name}");
   final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);

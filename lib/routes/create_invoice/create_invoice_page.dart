@@ -46,7 +46,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();
 
-  Future<LightningPaymentLimitsResponse>? _lightningLimitsFuture;
   late LightningPaymentLimitsResponse _lightningLimits;
 
   @override
@@ -78,7 +77,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
