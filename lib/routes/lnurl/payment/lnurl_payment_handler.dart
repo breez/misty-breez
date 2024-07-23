@@ -19,12 +19,6 @@ Future<LNURLPageResult?> handlePayRequest(
   GlobalKey firstPaymentItemKey,
   LnUrlPayRequestData data,
 ) async {
-  final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
-  final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
-  if (minSat != null && data.maxSendable.toInt() ~/ 1000 < minSat) {
-    throw Exception("Payment is below network limit of $minSat sats.");
-  }
-
   LNURLPaymentInfo? paymentInfo;
   bool fixedAmount = data.minSendable == data.maxSendable;
   final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);

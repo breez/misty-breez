@@ -59,6 +59,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       (_) {
         final data = widget.requestData;
         if (data != null) {
+          final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+          final minSat = paymentLimitsState.lightningPaymentLimits?.receive.minSat.toInt();
+          if (minSat != null && data.maxWithdrawable.toInt() ~/ 1000 < minSat) {
+            throw Exception("Payment is below network limit of $minSat sats.");
+          }
+
           final currencyState = context.read<CurrencyCubit>().state;
           _amountController.text = currencyState.bitcoinCurrency.format(
             data.maxWithdrawable.toInt() ~/ 1000,

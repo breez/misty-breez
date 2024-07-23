@@ -65,6 +65,11 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   @override
   void initState() {
     super.initState();
+    final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+    final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
+    if (minSat != null && widget.data.maxSendable.toInt() ~/ 1000 < minSat) {
+      throw Exception("Payment is below network limit of $minSat sats.");
+    }
     fixedAmount = widget.data.minSendable == widget.data.maxSendable;
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {

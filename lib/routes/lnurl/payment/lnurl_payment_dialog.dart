@@ -27,6 +27,11 @@ class LNURLPaymentDialogState extends State<LNURLPaymentDialog> {
   @override
   void initState() {
     super.initState();
+    final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+    final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
+    if (minSat != null && widget.data.maxSendable.toInt() ~/ 1000 < minSat) {
+      throw Exception("Payment is below network limit of $minSat sats.");
+    }
   }
 
   @override
