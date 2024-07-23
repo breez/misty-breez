@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/receive/chainswap_qr_dialog.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -82,17 +84,19 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
 
           _onchainPaymentLimits = snapshot.onchainPaymentLimits!;
 
-          return Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
-              child: Scrollbar(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /* TODO: Liquid - Disabled until description is passable to payment data
+          return BlocBuilder<CurrencyCubit, CurrencyState>(
+            builder: (context, currencyState) {
+              return Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /* TODO: Liquid - Disabled until description is passable to payment data
                       TextFormField(
                         controller: _descriptionController,
                         keyboardType: TextInputType.multiline,
@@ -105,9 +109,8 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),*/
-                      BlocBuilder<CurrencyCubit, CurrencyState>(
-                        builder: (context, currencyState) {
-                          return AmountFormField(
+
+                          AmountFormField(
                             context: context,
                             texts: texts,
                             bitcoinCurrency: currencyState.bitcoinCurrency,
@@ -115,14 +118,46 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                             controller: _amountController,
                             validatorFn: (v) => validatePayment(v),
                             style: theme.FieldTextStyle.textStyle,
-                          );
-                        },
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 164,
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: GestureDetector(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AutoSizeText(
+                                    texts.invoice_receive_label(
+                                      currencyState.bitcoinCurrency.format(
+                                        _onchainPaymentLimits.receive.maxSat.toInt(),
+                                      ),
+                                    ),
+                                    style: theme.textStyle,
+                                    maxLines: 1,
+                                    minFontSize: MinFontSize(context).minFontSize,
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _amountController.text = currencyState.bitcoinCurrency.format(
+                                    _onchainPaymentLimits.receive.maxSat.toInt(),
+                                    includeDisplayName: false,
+                                    userInput: true,
+                                  );
+                                });
+                              },
+                            ),
+                          )
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
