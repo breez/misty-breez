@@ -104,7 +104,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
                 onChanged: (bool value) async {
                   setState(() {
                     widget.onChanged(value);
-                    if (widget.withdrawMaxValue) {
+                    if (value) {
                       _setAmount(widget.paymentLimits.send.maxSat.toInt());
                     } else {
                       widget.amountController.text = "";
