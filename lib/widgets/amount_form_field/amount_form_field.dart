@@ -37,10 +37,12 @@ class AmountFormField extends TextFormField {
     super.enabled,
     super.onChanged,
     bool? readOnly,
+    bool? autofocus,
   }) : super(
           keyboardType: TextInputType.numberWithOptions(
             decimal: bitcoinCurrency != BitcoinCurrency.sat,
           ),
+          autofocus: autofocus ?? false,
           decoration: InputDecoration(
             labelText: texts.amount_form_denomination(
               bitcoinCurrency.displayName,
