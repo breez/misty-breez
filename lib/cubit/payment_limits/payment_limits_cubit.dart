@@ -1,5 +1,7 @@
 library payment_limits_cubit;
 
+import 'dart:async';
+
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -20,8 +22,10 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
     _refreshPaymentLimitsOnResume();
   }
 
+  StreamSubscription<FGBGType>? fgBgEventsStreamSubscription;
+
   void _refreshPaymentLimitsOnResume() {
-    FGBGEvents.stream.listen((event) {
+    fgBgEventsStreamSubscription = FGBGEvents.stream.listen((event) {
       if (event == FGBGType.foreground) {
         _fetchPaymentLimits();
       }
@@ -33,6 +37,12 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
       fetchLightningLimits();
       fetchOnchainLimits();
     });
+  }
+
+  @override
+  Future<void> close() {
+    fgBgEventsStreamSubscription?.cancel();
+    return super.close();
   }
 
   Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
