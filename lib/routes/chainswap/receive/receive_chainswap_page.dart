@@ -1,13 +1,13 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/receive/chainswap_qr_dialog.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -30,31 +30,17 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final _descriptionController = TextEditingController();
+  //final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();
 
-  Future<OnchainPaymentLimitsResponse>? _onchainPaymentLimitsFuture;
   late OnchainPaymentLimitsResponse _onchainPaymentLimits;
+
   @override
   void initState() {
     super.initState();
     _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
-    _fetchOnchainLimits();
-  }
-
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _fetchOnchainLimits();
-    }
-  }
-
-  Future _fetchOnchainLimits() async {
-    final chainSwapCubit = context.read<ChainSwapCubit>();
-    setState(() {
-      _onchainPaymentLimitsFuture = chainSwapCubit.fetchOnchainLimits();
-    });
   }
 
   @override
@@ -66,7 +52,6 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -74,23 +59,22 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
         leading: const back_button.BackButton(),
         title: Text(texts.bottom_action_bar_receive_btc_address),
       ),
-      body: FutureBuilder<OnchainPaymentLimitsResponse>(
-        future: _onchainPaymentLimitsFuture,
-        builder: (BuildContext context, AsyncSnapshot<OnchainPaymentLimitsResponse> snapshot) {
+      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                 child: Text(
-                  texts.reverse_swap_upstream_generic_error_message(
-                    extractExceptionMessage(snapshot.error!, texts),
-                  ),
+                  texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
                   textAlign: TextAlign.center,
                 ),
               ),
             );
           }
-          if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+          if (snapshot.onchainPaymentLimits == null) {
+            final themeData = Theme.of(context);
+
             return Center(
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
@@ -98,18 +82,21 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
             );
           }
 
-          _onchainPaymentLimits = snapshot.data!;
+          _onchainPaymentLimits = snapshot.onchainPaymentLimits!;
 
-          return Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
-              child: Scrollbar(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+          return BlocBuilder<CurrencyCubit, CurrencyState>(
+            builder: (context, currencyState) {
+              return Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /* TODO: Liquid - Disabled until description is passable to payment data
                       TextFormField(
                         controller: _descriptionController,
                         keyboardType: TextInputType.multiline,
@@ -121,25 +108,57 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                           labelText: texts.invoice_description_label,
                         ),
                         style: theme.FieldTextStyle.textStyle,
-                      ),
-                      BlocBuilder<CurrencyCubit, CurrencyState>(
-                        builder: (context, currencyState) {
-                          return AmountFormField(
+                      ),*/
+
+                          AmountFormField(
                             context: context,
                             texts: texts,
                             bitcoinCurrency: currencyState.bitcoinCurrency,
                             focusNode: _amountFocusNode,
+                            autofocus: true,
                             controller: _amountController,
                             validatorFn: (v) => validatePayment(v),
                             style: theme.FieldTextStyle.textStyle,
-                          );
-                        },
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 164,
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: GestureDetector(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AutoSizeText(
+                                    texts.invoice_receive_label(
+                                      currencyState.bitcoinCurrency.format(
+                                        _onchainPaymentLimits.receive.maxSat.toInt(),
+                                      ),
+                                    ),
+                                    style: theme.textStyle,
+                                    maxLines: 1,
+                                    minFontSize: MinFontSize(context).minFontSize,
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _amountController.text = currencyState.bitcoinCurrency.format(
+                                    _onchainPaymentLimits.receive.maxSat.toInt(),
+                                    includeDisplayName: false,
+                                    userInput: true,
+                                  );
+                                });
+                              },
+                            ),
+                          )
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
@@ -222,7 +241,9 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   }
 
   void _validateSwap(int amount, bool outgoing) {
+    final accountState = context.read<AccountCubit>().state;
+    final balance = accountState.balance;
     final chainSwapCubit = context.read<ChainSwapCubit>();
-    return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits);
+    return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits, balance);
   }
 }

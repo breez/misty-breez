@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/models/invoice.dart';
@@ -11,6 +12,7 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/breez_avatar.dart';
 import 'package:l_breez/widgets/keyboard_done_action.dart';
+import 'package:l_breez/widgets/loader.dart';
 
 class PaymentRequestInfoDialog extends StatefulWidget {
   final Invoice invoice;
@@ -45,6 +47,8 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
   KeyboardDoneAction? _doneAction;
   bool _showFiatCurrency = false;
+
+  late LightningPaymentLimitsResponse _lightningLimits;
 
   @override
   void initState() {
@@ -93,24 +97,55 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   Widget _buildPaymentRequestContent() {
-    return BlocBuilder<CurrencyCubit, CurrencyState>(builder: (c, currencyState) {
-      return BlocBuilder<AccountCubit, AccountState>(
-        builder: (context, account) {
-          List<Widget> children = [];
-          _addIfNotNull(children, _buildPayeeNameWidget());
-          _addIfNotNull(children, _buildRequestPayTextWidget());
-          _addIfNotNull(children, _buildAmountWidget(account, currencyState));
-          _addIfNotNull(children, _buildDescriptionWidget());
-          _addIfNotNull(children, _buildErrorMessage(currencyState));
-          _addIfNotNull(children, _buildActions(currencyState, account));
+    return BlocBuilder<CurrencyCubit, CurrencyState>(
+      builder: (c, currencyState) {
+        return BlocBuilder<AccountCubit, AccountState>(
+          builder: (context, account) {
+            final texts = context.texts();
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(children: children),
-          );
-        },
-      );
-    });
+            return BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+              builder: (BuildContext context, PaymentLimitsState snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                      child: Text(
+                        texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.lightningPaymentLimits == null) {
+                  final themeData = Theme.of(context);
+
+                  return Center(
+                    child: Loader(
+                      color: themeData.primaryColor.withOpacity(0.5),
+                    ),
+                  );
+                }
+
+                _lightningLimits = snapshot.lightningPaymentLimits!;
+
+                List<Widget> children = [];
+                _addIfNotNull(children, _buildPayeeNameWidget());
+                _addIfNotNull(children, _buildRequestPayTextWidget());
+                _addIfNotNull(children, _buildAmountWidget(account, currencyState));
+                _addIfNotNull(children, _buildDescriptionWidget());
+                _addIfNotNull(children, _buildErrorMessage(currencyState));
+                _addIfNotNull(children, _buildActions(currencyState, account));
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(children: children),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   void _addIfNotNull(List<Widget> widgets, Widget? w) {
@@ -173,9 +208,10 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 bitcoinCurrency: BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker),
                 iconColor: themeData.primaryIconTheme.color,
                 focusNode: _amountFocusNode,
+                autofocus: true,
                 controller: _invoiceAmountController,
                 validatorFn: PaymentValidator(
-                  validatePayment: context.read<AccountCubit>().validatePayment,
+                  validatePayment: _validatePayment,
                   currency: currencyState.bitcoinCurrency,
                   texts: context.texts(),
                 ).validateOutgoing,
@@ -250,7 +286,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
   Widget? _buildErrorMessage(CurrencyState currencyState) {
     final validationError = PaymentValidator(
-      validatePayment: context.read<AccountCubit>().validatePayment,
+      validatePayment: _validatePayment,
       currency: currencyState.bitcoinCurrency,
       texts: context.texts(),
     ).validateOutgoing(
@@ -290,32 +326,34 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       )
     ];
 
-    int toPay = amountToPay(currency);
-    //TODO: Liquid
-//    if (toPay > 0 && accState.maxAllowedToPay >= toPay) {
-    actions.add(SimpleDialogOption(
-      onPressed: (() async {
-        if (widget.invoice.amountMsat > BigInt.zero || _formKey.currentState!.validate()) {
-          if (widget.invoice.amountMsat == BigInt.zero) {
-            _amountToPayMap["_amountToPay"] = toPay;
-            _amountToPayMap["_amountToPayStr"] =
-                BitcoinCurrency.fromTickerSymbol(currency.bitcoinTicker).format(amountToPay(currency));
-            widget._setAmountToPay(_amountToPayMap);
-            widget._onWaitingConfirmation();
-          } else {
-            widget._onPaymentApproved(
-              widget.invoice.bolt11,
-              amountToPay(currency),
-            );
-          }
-        }
-      }),
-      child: Text(
-        texts.payment_request_dialog_action_approve,
-        style: themeData.primaryTextTheme.labelLarge,
-      ),
-    ));
-    //}
+    int toPaySat = amountToPay(currency);
+    if (toPaySat >= _lightningLimits.send.minSat.toInt() && toPaySat <= accState.balance) {
+      actions.add(
+        SimpleDialogOption(
+          onPressed: (() async {
+            if (widget.invoice.amountMsat > BigInt.zero || _formKey.currentState!.validate()) {
+              if (widget.invoice.amountMsat == BigInt.zero) {
+                _amountToPayMap["_amountToPay"] = toPaySat;
+                _amountToPayMap["_amountToPayStr"] =
+                    BitcoinCurrency.fromTickerSymbol(currency.bitcoinTicker).format(amountToPay(currency));
+                widget._setAmountToPay(_amountToPayMap);
+                widget._onWaitingConfirmation();
+              } else {
+                widget._onPaymentApproved(
+                  widget.invoice.bolt11,
+                  amountToPay(currency),
+                );
+              }
+            }
+          }),
+          child: Text(
+            texts.payment_request_dialog_action_approve,
+            style: themeData.primaryTextTheme.labelLarge,
+          ),
+        ),
+      );
+    }
+
     return Theme(
       data: themeData.copyWith(
         splashColor: Colors.transparent,
@@ -340,5 +378,12 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       } catch (_) {}
     }
     return amount + widget.invoice.lspFee;
+  }
+
+  void _validatePayment(int amount, bool outgoing) {
+    final accountState = context.read<AccountCubit>().state;
+    final balance = accountState.balance;
+    final lnUrlCubit = context.read<LnUrlCubit>();
+    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);
   }
 }

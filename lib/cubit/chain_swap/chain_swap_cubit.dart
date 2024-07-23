@@ -16,10 +16,6 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
 
   ChainSwapCubit(this._liquidSdk) : super(ChainSwapState.initial());
 
-  Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() async {
-    return await _liquidSdk.instance!.fetchOnchainLimits();
-  }
-
   Future<RecommendedFees> recommendedFees() async {
     return await _liquidSdk.instance!.recommendedFees();
   }
@@ -112,13 +108,17 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     BigInt amount,
     bool outgoing,
     OnchainPaymentLimitsResponse onchainLimits,
+    int balance,
   ) {
+    if (outgoing && amount.toInt() > balance) {
+      throw const InsufficientLocalBalanceError();
+    }
     var limits = outgoing ? onchainLimits.send : onchainLimits.receive;
     if (amount > limits.maxSat) {
-      throw PaymentExceededLimitError(limits.maxSat);
+      throw PaymentExceededLimitError(limits.maxSat.toInt());
     }
     if (amount < limits.minSat) {
-      throw PaymentBelowLimitError(limits.minSat);
+      throw PaymentBelowLimitError(limits.minSat.toInt());
     }
   }
 }

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
 import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/home/home_page.dart';
@@ -10,6 +12,7 @@ import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
+import 'package:service_injector/service_injector.dart';
 
 final _log = Logger("HandleLNURLWithdrawPageResult");
 
@@ -17,15 +20,24 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   BuildContext context,
   LnUrlWithdrawRequestData requestData,
 ) async {
+  final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+  final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
+  if (minSat != null && requestData.maxWithdrawable.toInt() ~/ 1000 < minSat) {
+    throw Exception("Payment is below network limit of $minSat sats.");
+  }
+
   Completer<LNURLPageResult?> completer = Completer();
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => CreateInvoicePage(
-        requestData: requestData,
-        onFinish: (LNURLPageResult? response) {
-          completer.complete(response);
-          Navigator.of(context).popUntil((route) => route.settings.name == Home.routeName);
-        },
+      builder: (_) => BlocProvider(
+        create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+        child: CreateInvoicePage(
+          requestData: requestData,
+          onFinish: (LNURLPageResult? response) {
+            completer.complete(response);
+            Navigator.of(context).popUntil((route) => route.settings.name == Home.routeName);
+          },
+        ),
       ),
     ),
   );

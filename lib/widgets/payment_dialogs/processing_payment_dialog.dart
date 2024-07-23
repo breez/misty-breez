@@ -168,12 +168,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           )
         : Dialog(
             child: Container(
-              constraints: BoxConstraints(
-                minHeight: widget.minHeight,
-              ),
-              child: ProcessingPaymentContent(
-                dialogKey: _dialogKey,
-              ),
+              constraints: BoxConstraints(minHeight: widget.minHeight),
+              child: ProcessingPaymentContent(dialogKey: _dialogKey),
             ),
           );
   }

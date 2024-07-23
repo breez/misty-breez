@@ -90,7 +90,6 @@ class _AppViewState extends State<AppView> {
               settings: settings,
               homeNavigatorKey: _homeNavigatorKey,
               accountState: accountState,
-              securityState: securityState,
             ),
           );
         },

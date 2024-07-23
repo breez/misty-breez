@@ -15,15 +15,15 @@ import 'package:logging/logging.dart';
 final _log = Logger("SendChainSwapFormPage");
 
 class SendChainSwapFormPage extends StatefulWidget {
-  final BitcoinAddressData? btcAddressData;
   final BitcoinCurrency bitcoinCurrency;
   final OnchainPaymentLimitsResponse paymentLimits;
+  final BitcoinAddressData? btcAddressData;
 
   const SendChainSwapFormPage({
     super.key,
-    this.btcAddressData,
     required this.bitcoinCurrency,
     required this.paymentLimits,
+    this.btcAddressData,
   });
 
   @override

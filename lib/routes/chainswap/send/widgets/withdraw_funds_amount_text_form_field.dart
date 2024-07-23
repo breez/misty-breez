@@ -27,14 +27,14 @@ class WithdrawFundsAmountTextFormField extends AmountFormField {
               texts: context.texts(),
               validatePayment: (amount, outgoing) {
                 _log.info("Validating $amount $policy");
+                if (outgoing && amount > balance.toInt()) {
+                  throw const InsufficientLocalBalanceError();
+                }
                 if (amount < policy.minValue.toInt()) {
-                  throw PaymentBelowLimitError(policy.minValue);
+                  throw PaymentBelowLimitError(policy.minValue.toInt());
                 }
                 if (amount > policy.maxValue.toInt()) {
-                  throw PaymentExceededLimitError(policy.maxValue);
-                }
-                if (amount > balance.toInt()) {
-                  throw const InsufficientLocalBalanceError();
+                  throw PaymentExceededLimitError(policy.maxValue.toInt());
                 }
               },
             ).validateOutgoing(amount);

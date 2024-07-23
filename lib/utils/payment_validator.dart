@@ -44,7 +44,7 @@ class PaymentValidator {
       return texts.invoice_payment_validator_error_payment_below_limit(
         currency.format(e.reserveAmount),
       );
-    } on PaymentExceedLiquidityError catch (e) {
+    } on PaymentExceedededLiquidityError catch (e) {
       return "Insufficient inbound liquidity (${currency.format(e.limitSat.toInt())})";
     } on InsufficientLocalBalanceError {
       return texts.invoice_payment_validator_error_insufficient_local_balance;
@@ -53,9 +53,9 @@ class PaymentValidator {
       return texts.invoice_payment_validator_error_payment_below_setup_fees_error(
         currency.format(e.setupFees),
       );
-    } on PaymentExcededLiqudityChannelCreationNotPossibleError catch (e) {
+    } on PaymentExceededLiquidityChannelCreationNotPossibleError catch (e) {
       return texts.lnurl_fetch_invoice_error_max(currency.format(e.limitSat.toInt()));
-    } on NoChannelCreationZeroLiqudityError {
+    } on NoChannelCreationZeroLiquidityError {
       return texts.lsp_error_cannot_open_channel;
     } catch (e) {
       _log.info("Got Generic error", e);
