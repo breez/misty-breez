@@ -114,12 +114,9 @@ class _DevelopersViewState extends State<DevelopersView> {
         ],
       ),
       // TODO: Liquid - Remove Absorb Pointer once execute_command API is implemented
-      body: Container(
-        color: const Color(0xFF696969),
-        child: AbsorbPointer(
-          absorbing: true,
-          child: CommandLineInterface(scaffoldKey: scaffoldKey),
-        ),
+      body: AbsorbPointer(
+        absorbing: true,
+        child: CommandLineInterface(scaffoldKey: scaffoldKey),
       ),
     );
   }
