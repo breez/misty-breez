@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="breez_primary_color">#055deb</color>
-    <color name="breez_app_icon_color">#E7D21F</color>
+    <color name="breez_app_icon_start_gradient_color">#469df8</color>
+    <color name="breez_app_icon_end_gradient_color">#3070f6</color>
 </resources>
