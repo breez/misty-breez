@@ -8,7 +8,9 @@ class ConnectivityState {
   const ConnectivityState.initial() : connectivityResult = null;
 
   bool get hasNetworkConnection =>
-      connectivityResult != null && !connectivityResult!.contains(ConnectivityResult.none);
+      connectivityResult != null &&
+      (!connectivityResult!.contains(ConnectivityResult.none) ||
+          connectivityResult!.every((result) => result == ConnectivityResult.vpn));
 
   ConnectivityState copyWith({
     List<ConnectivityResult>? connectivityResult,
