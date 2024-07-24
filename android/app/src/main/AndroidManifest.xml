@@ -6,7 +6,8 @@
         android:label="${appName}"
         android:name="${applicationName}"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:icon="@mipmap/ic_launcher_round">
+        android:icon="@mipmap/ic_launcher_round"
+        android:allowBackup="false">
         <activity
             android:name=".MainActivity"
             android:exported="true"
