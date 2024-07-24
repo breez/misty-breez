@@ -5,7 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class BreezAvatar extends StatelessWidget {
   final String? avatarURL;
@@ -16,7 +16,7 @@ class BreezAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color avatarBgColor = backgroundColor ?? theme.sessionAvatarBackgroundColor;
+    Color avatarBgColor = backgroundColor ?? sessionAvatarBackgroundColor;
 
     if ((avatarURL ?? "").isNotEmpty) {
       if (avatarURL!.startsWith("breez://profile_image?")) {
@@ -76,7 +76,7 @@ class _GeneratedAvatar extends StatelessWidget {
     final texts = context.texts();
     return CircleAvatar(
       radius: radius,
-      backgroundColor: theme.sessionAvatarBackgroundColor,
+      backgroundColor: sessionAvatarBackgroundColor,
       child: Icon(
         profileAnimalFromName(animal, texts)!.iconData,
         size: radius * 2 * 0.75,
@@ -138,7 +138,7 @@ class _DataImageAvatar extends StatelessWidget {
     final uri = UriData.parse(avatarURL);
     final bytes = uri.contentAsBytes();
     return CircleAvatar(
-      backgroundColor: theme.sessionAvatarBackgroundColor,
+      backgroundColor: sessionAvatarBackgroundColor,
       radius: radius,
       child: ClipOval(
         child: Image.memory(bytes),

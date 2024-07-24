@@ -7,7 +7,7 @@ import 'package:l_breez/routes/home/widgets/payments_list/payment_item_avatar.da
 import 'package:l_breez/routes/home/widgets/payments_list/payment_item_subtitle.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/payment_item_title.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/success_avatar.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class PaymentItem extends StatefulWidget {
   final PaymentMinutiae _paymentMinutiae;

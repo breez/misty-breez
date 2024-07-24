@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class WithdrawFundsAvailableBtc extends StatelessWidget {
   const WithdrawFundsAvailableBtc({super.key});
@@ -18,7 +18,7 @@ class WithdrawFundsAvailableBtc extends StatelessWidget {
           children: [
             Text(
               texts.withdraw_funds_balance,
-              style: theme.textStyle,
+              style: textStyle,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 3.0),
@@ -26,7 +26,7 @@ class WithdrawFundsAvailableBtc extends StatelessWidget {
                 builder: (context, currencyState) {
                   return Text(
                     currencyState.bitcoinCurrency.format(account.balance),
-                    style: theme.textStyle,
+                    style: textStyle,
                   );
                 },
               ),

@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/security/widget/mnemonics/security_mnemonics_management.dart';
 import 'package:l_breez/routes/security/widget/security_pin_management.dart';
-import 'package:l_breez/theme/breez_light_theme.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 
 class SecurityPage extends StatelessWidget {

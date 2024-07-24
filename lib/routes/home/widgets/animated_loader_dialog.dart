@@ -1,6 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/loading_animated_text.dart';
 
 AlertDialog createAnimatedLoaderDialog(

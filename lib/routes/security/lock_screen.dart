@@ -7,7 +7,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/security/widget/pin_code_widget.dart';
-import 'package:l_breez/theme/breez_light_theme.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/route.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';

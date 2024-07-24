@@ -7,8 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/initial_walkthrough/beta_warning_dialog.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/theme/theme_provider.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
@@ -101,7 +100,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         child: AutoSizeText(
                           texts.initial_walk_through_welcome_message,
                           textAlign: TextAlign.center,
-                          style: theme.welcomeTextStyle,
+                          style: welcomeTextStyle,
                         ),
                       ),
                     ),
@@ -134,7 +133,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           onTap: () => _restoreNodeFromMnemonicSeed(),
                           child: Text(
                             texts.initial_walk_through_restore_from_backup,
-                            style: theme.restoreLinkStyle,
+                            style: restoreLinkStyle,
                           ),
                         ),
                       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:l_breez/theme/breez_dark_theme.dart';
-import 'package:l_breez/theme/breez_light_theme.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class AppThemeManager extends StatelessWidget {

@@ -10,7 +10,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -161,7 +161,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
                       padding: const EdgeInsets.only(top: 8),
                       child: RichText(
                         text: TextSpan(
-                          style: theme.FieldTextStyle.labelStyle,
+                          style: FieldTextStyle.labelStyle,
                           children: <TextSpan>[
                             TextSpan(
                               text: texts.lnurl_fetch_invoice_min(

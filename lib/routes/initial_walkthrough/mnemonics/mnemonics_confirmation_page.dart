@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_page.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/route.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
@@ -85,7 +85,7 @@ class MnemonicsInstructions extends StatelessWidget {
         ),
         child: Text(
           texts.mnemonics_confirmation_instructions,
-          style: theme.mnemonicSeedInformationTextStyle,
+          style: mnemonicSeedInformationTextStyle,
           textAlign: TextAlign.center,
         ),
       ),
@@ -125,7 +125,7 @@ class ConfirmationCheckbox extends StatelessWidget {
           ),
           Text(
             texts.backup_phrase_action_confirm,
-            style: theme.mnemonicSeedConfirmationTextStyle,
+            style: mnemonicSeedConfirmationTextStyle,
           ),
         ],
       ),

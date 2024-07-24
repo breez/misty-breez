@@ -5,7 +5,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/calendar_dialog.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class PaymentsFilterCalendar extends StatelessWidget {
   final List<PaymentType> filter;

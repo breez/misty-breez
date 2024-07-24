@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 
 class FiatBalanceText extends StatelessWidget {
@@ -40,7 +40,7 @@ class FiatBalanceText extends StatelessWidget {
       onPressed: () => _changeFiatCurrency(context),
       child: Text(
         currencyState.fiatConversion()?.format(accountState.balance) ?? "",
-        style: theme.balanceFiatConversionTextStyle.copyWith(
+        style: balanceFiatConversionTextStyle.copyWith(
           color: themeData.colorScheme.onSecondary.withOpacity(pow(1.00 - offsetFactor, 2).toDouble()),
         ),
       ),

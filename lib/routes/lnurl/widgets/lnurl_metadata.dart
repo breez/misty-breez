@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 
 class LNURLMetadataText extends StatelessWidget {
@@ -14,7 +14,7 @@ class LNURLMetadataText extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       metadataMap['text/long-desc'] ?? metadataMap['text/plain'],
-      style: theme.FieldTextStyle.textStyle,
+      style: FieldTextStyle.textStyle,
       maxLines: 1,
       minFontSize: MinFontSize(context).minFontSize,
     );

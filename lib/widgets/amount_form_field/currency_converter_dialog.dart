@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/widgets/flushbar.dart';
@@ -181,10 +181,10 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           child: TextFormField(
             decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
-                borderSide: theme.greyBorderSide,
+                borderSide: greyBorderSide,
               ),
               focusedBorder: UnderlineInputBorder(
-                borderSide: theme.greyBorderSide,
+                borderSide: greyBorderSide,
               ),
               errorBorder: UnderlineInputBorder(
                 borderSide: BorderSide(

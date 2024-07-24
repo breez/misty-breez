@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/security/security_page.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 
@@ -90,8 +90,8 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                   _randomlySelectedIndexes[1] + 1,
                   _randomlySelectedIndexes[2] + 1,
                 ),
-                style: theme.mnemonicSeedInformationTextStyle.copyWith(
-                  color: theme.BreezColors.white[300],
+                style: mnemonicSeedInformationTextStyle.copyWith(
+                  color: BreezColors.white[300],
                 ),
                 textAlign: TextAlign.center,
               ),

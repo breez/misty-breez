@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/fiat_currencies/fiat_currency_list_tile.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/loader.dart';
 
@@ -76,7 +76,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                     padding: const EdgeInsets.all(16.0),
                     child: Icon(
                       Icons.drag_handle,
-                      color: theme.BreezColors.white[200],
+                      color: BreezColors.white[200],
                     ),
                   ),
                 ),

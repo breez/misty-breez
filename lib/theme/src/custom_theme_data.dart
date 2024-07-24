@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'breez_colors.dart';
+import 'package:l_breez/theme/theme.dart';
 
 class CustomData {
   BlendMode loaderColorBlendMode;

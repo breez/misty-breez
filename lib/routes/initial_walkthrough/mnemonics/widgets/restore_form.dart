@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/wordlist.dart';
 
 class RestoreForm extends StatefulWidget {
@@ -65,7 +65,7 @@ class RestoreFormPageState extends State<RestoreForm> {
                 decoration: InputDecoration(
                   labelText: "${itemIndex + 1}",
                 ),
-                style: theme.FieldTextStyle.textStyle,
+                style: FieldTextStyle.textStyle,
               ),
               autovalidateMode: _autoValidateMode,
               validator: (text) => _onValidate(context, text!),
@@ -95,7 +95,7 @@ class RestoreFormPageState extends State<RestoreForm> {
                     title: Text(
                       suggestion,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.autoCompleteStyle,
+                      style: autoCompleteStyle,
                     ),
                   ),
                 );

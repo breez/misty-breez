@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 
 class Loader extends StatelessWidget {
@@ -20,7 +20,7 @@ class Loader extends StatelessWidget {
           semanticsLabel: label,
           strokeWidth: strokeWidth,
           valueColor: AlwaysStoppedAnimation<Color>(
-            color ?? theme.circularLoaderColor,
+            color ?? circularLoaderColor,
           ),
         ),
       ],

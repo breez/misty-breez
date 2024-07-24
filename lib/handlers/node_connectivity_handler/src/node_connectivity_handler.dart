@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/handlers/handler/handler.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("NodeConnectivityHandler");
@@ -82,7 +82,7 @@ class NodeConnectivityHandler extends Handler {
       ),
       messageText: Text(
         context.texts().handler_channel_connection_message,
-        style: theme.snackBarStyle,
+        style: snackBarStyle,
         textAlign: TextAlign.center,
       ),
       mainButton: SizedBox(
@@ -116,7 +116,7 @@ class NodeConnectivityHandler extends Handler {
               },
               child: Text(
                 context.texts().no_connection_flushbar_action_retry,
-                style: theme.snackBarStyle.copyWith(
+                style: snackBarStyle.copyWith(
                   color: themeData.colorScheme.error,
                 ),
               ),
@@ -124,7 +124,7 @@ class NodeConnectivityHandler extends Handler {
           },
         ),
       ),
-      backgroundColor: theme.snackBarBackgroundColor,
+      backgroundColor: snackBarBackgroundColor,
     );
   }
 }

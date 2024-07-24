@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class WarningBox extends StatelessWidget {
   final EdgeInsets boxPadding;
@@ -42,5 +42,5 @@ class WarningBox extends StatelessWidget {
     );
   }
 
-  Color _backgroundColor() => backgroundColor ?? theme.warningBoxColor;
+  Color _backgroundColor() => backgroundColor ?? warningBoxColor;
 }

@@ -43,7 +43,7 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
+    final themeData = Theme.of(context);
 
     return SafeArea(
       child: Column(
@@ -86,7 +86,7 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
                 Text(
                   errorMessage,
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.headlineMedium?.copyWith(
+                  style: themeData.textTheme.headlineMedium?.copyWith(
                     fontSize: 12,
                   ),
                 ),
