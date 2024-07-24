@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
-import 'package:l_breez/theme/theme_provider.dart';
+import 'package:l_breez/theme/theme.dart';
 
 class PaymentItemAmount extends StatelessWidget {
   final PaymentMinutiae _paymentMinutiae;

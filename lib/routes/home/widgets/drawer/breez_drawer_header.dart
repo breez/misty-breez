@@ -17,7 +17,7 @@ class BreezDrawerHeader extends DrawerHeader {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     assert(debugCheckHasMediaQuery(context));
-    final ThemeData theme = Theme.of(context);
+    final themeData = Theme.of(context);
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Container(
       height: statusBarHeight + _kBreezDrawerHeaderHeight,
@@ -28,7 +28,7 @@ class BreezDrawerHeader extends DrawerHeader {
         duration: duration,
         curve: curve,
         child: DefaultTextStyle(
-          style: theme.textTheme.headlineMedium!,
+          style: themeData.textTheme.headlineMedium!,
           child: MediaQuery.removePadding(
             context: context,
             removeTop: true,

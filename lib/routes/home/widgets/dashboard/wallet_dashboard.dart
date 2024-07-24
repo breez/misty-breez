@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/home/widgets/dashboard/fiat_balance_text.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 import 'balance_text.dart';
 

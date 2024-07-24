@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/fixed_sliver_delegate.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class PaymentsFilterSliver extends StatefulWidget {
   final double maxSize;

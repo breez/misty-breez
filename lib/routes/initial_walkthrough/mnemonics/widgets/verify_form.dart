@@ -1,6 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class VerifyForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -45,7 +45,7 @@ class VerifyFormPageState extends State<VerifyForm> {
                       widget.randomlySelectedIndexes[index] + 1,
                     ),
                   ),
-                  style: theme.FieldTextStyle.textStyle,
+                  style: FieldTextStyle.textStyle,
                   validator: (text) {
                     if (text!.isEmpty ||
                         text.toLowerCase().trim() !=

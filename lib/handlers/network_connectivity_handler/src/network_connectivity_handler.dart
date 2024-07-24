@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/connectivity/connectivity_cubit.dart';
 import 'package:l_breez/handlers/handler/src/handler.dart';
 import 'package:l_breez/handlers/handler/src/mixin/handler_context_provider.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("NetworkConnectivityHandler");
@@ -83,10 +83,10 @@ class NetworkConnectivityHandler extends Handler {
       ),
       messageText: Text(
         context.texts().no_connection_flushbar_title,
-        style: theme.snackBarStyle,
+        style: snackBarStyle,
         textAlign: TextAlign.center,
       ),
-      backgroundColor: theme.snackBarBackgroundColor,
+      backgroundColor: snackBarBackgroundColor,
     );
   }
 }

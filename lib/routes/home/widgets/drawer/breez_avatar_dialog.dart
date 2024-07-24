@@ -8,7 +8,7 @@ import 'package:image/image.dart' as dart_image;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/widgets/breez_avatar.dart';
 import 'package:l_breez/widgets/flushbar.dart';
@@ -279,7 +279,7 @@ class RandomButton extends StatelessWidget {
         onPressed: onPressed,
         child: AutoSizeText(
           texts.breez_avatar_dialog_random,
-          style: theme.whiteButtonStyle,
+          style: whiteButtonStyle,
           maxLines: 1,
           minFontSize: minFontSize.minFontSize,
           stepGranularity: 0.1,
@@ -371,7 +371,7 @@ class GalleryButton extends StatelessWidget {
         onPressed: onPressed,
         child: AutoSizeText(
           texts.breez_avatar_dialog_gallery,
-          style: theme.whiteButtonStyle,
+          style: whiteButtonStyle,
           maxLines: 1,
           minFontSize: minFontSize.minFontSize,
           stepGranularity: 0.1,

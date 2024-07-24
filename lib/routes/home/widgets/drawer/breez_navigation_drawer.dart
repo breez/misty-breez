@@ -8,7 +8,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_avatar_dialog.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_drawer_header.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 const double _kBreezBottomSheetHeight = 60.0;
@@ -210,7 +210,7 @@ class NavigationDrawerFooter extends StatelessWidget {
               SvgPicture.asset(
                 "src/images/drawer_footer.svg",
                 colorFilter: ColorFilter.mode(
-                  theme.BreezColors.white[500]!,
+                  BreezColors.white[500]!,
                   BlendMode.srcATop,
                 ),
                 height: 39,
@@ -255,7 +255,7 @@ GestureDetector _buildThemeSwitch(
             padding: const EdgeInsets.all(4),
             decoration: const ShapeDecoration(
               shape: StadiumBorder(),
-              color: theme.themeSwitchBgColor,
+              color: themeSwitchBgColor,
             ),
             child: Row(
               children: [
@@ -317,7 +317,7 @@ Padding _buildUsername(
     padding: const EdgeInsets.only(top: 8.0),
     child: AutoSizeText(
       user.name ?? texts.home_drawer_error_no_name,
-      style: theme.navigationDrawerHandleStyle,
+      style:navigationDrawerHandleStyle,
     ),
   );
 }
@@ -330,7 +330,7 @@ Widget _actionTile(
   bool? subTile,
 }) {
   final themeData = Theme.of(context);
-  TextStyle itemStyle = theme.drawerItemTextStyle;
+  TextStyle itemStyle = drawerItemTextStyle;
 
   Color? color;
   if (action.disabled) {
@@ -419,7 +419,7 @@ class _ExpansionTile extends StatelessWidget {
               ? null
               : Text(
                   title,
-                  style: theme.drawerItemTextStyle,
+                  style: drawerItemTextStyle,
                 ),
         ),
         initiallyExpanded: isExpanded,
@@ -428,7 +428,7 @@ class _ExpansionTile extends StatelessWidget {
           child: (icon?.assetName ?? "") == ""
               ? Text(
                   title,
-                  style: theme.drawerItemTextStyle.copyWith(
+                  style: drawerItemTextStyle.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 )

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
@@ -59,7 +59,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
       data: themeData.copyWith(
         inputDecorationTheme: InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
-            borderSide: theme.greyBorderSide,
+            borderSide: greyBorderSide,
           ),
         ),
         hintColor: themeData.dialogTheme.contentTextStyle!.color!,
@@ -110,7 +110,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
                     _scannerErrorMessage,
-                    style: theme.validatorStyle,
+                    style: validatorStyle,
                   ),
                 ),
               ],
@@ -118,10 +118,9 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   texts.payment_info_dialog_hint_expanded,
-                  style: theme.FieldTextStyle.labelStyle.copyWith(
+                  style: FieldTextStyle.labelStyle.copyWith(
                     fontSize: 13.0,
-                    color:
-                        themeData.isLightTheme ? theme.BreezColors.grey[500] : theme.BreezColors.white[200],
+                    color: themeData.isLightTheme ? BreezColors.grey[500] : BreezColors.white[200],
                   ),
                 ),
               ),

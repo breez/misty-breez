@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/dev/widget/command_list.dart';
-import 'package:service_injector/service_injector.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
 final _log = Logger("CommandsList");
@@ -28,7 +28,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
 
   String _cliText = '';
   String _lastCommand = '';
-  TextStyle _cliTextStyle = theme.smallTextStyle;
+  TextStyle _cliTextStyle = smallTextStyle;
   bool _showDefaultCommands = true;
   bool isLoading = false;
   var _richCliText = <TextSpan>[];
@@ -110,9 +110,9 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                                   SnackBar(
                                     content: Text(
                                       'Copied to clipboard.',
-                                      style: theme.snackBarStyle,
+                                      style: snackBarStyle,
                                     ),
-                                    backgroundColor: theme.snackBarBackgroundColor,
+                                    backgroundColor: snackBarBackgroundColor,
                                     duration: const Duration(seconds: 2),
                                   ),
                                 );
@@ -192,7 +192,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
         }
         setState(() {
           _showDefaultCommands = false;
-          _cliTextStyle = theme.smallTextStyle;
+          _cliTextStyle = smallTextStyle;
           _cliText = reply;
           _richCliText = <TextSpan>[TextSpan(text: _cliText)];
           isLoading = false;
@@ -202,7 +202,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
         setState(() {
           _showDefaultCommands = false;
           _cliText = error.toString();
-          _cliTextStyle = theme.warningStyle;
+          _cliTextStyle = warningStyle;
           _richCliText = <TextSpan>[TextSpan(text: _cliText)];
           isLoading = false;
         });

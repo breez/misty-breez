@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart';
+import 'package:l_breez/theme/theme.dart';
 
 class FieldTextStyle {
   FieldTextStyle._();

@@ -6,7 +6,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/receive/chainswap_qr_dialog.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
@@ -107,7 +107,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                         decoration: InputDecoration(
                           labelText: texts.invoice_description_label,
                         ),
-                        style: theme.FieldTextStyle.textStyle,
+                        style:FieldTextStyle.textStyle,
                       ),*/
 
                           AmountFormField(
@@ -118,7 +118,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                             autofocus: true,
                             controller: _amountController,
                             validatorFn: (v) => validatePayment(v),
-                            style: theme.FieldTextStyle.textStyle,
+                            style: FieldTextStyle.textStyle,
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width,
@@ -135,7 +135,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                                         _onchainPaymentLimits.receive.maxSat.toInt(),
                                       ),
                                     ),
-                                    style: theme.textStyle,
+                                    style: textStyle,
                                     maxLines: 1,
                                     minFontSize: MinFontSize(context).minFontSize,
                                   ),

@@ -10,7 +10,7 @@ import 'package:l_breez/routes/create_invoice/qr_code_dialog.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
@@ -140,7 +140,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     decoration: InputDecoration(
                       labelText: texts.invoice_description_label,
                     ),
-                    style: theme.FieldTextStyle.textStyle,
+                    style:FieldTextStyle.textStyle,
                   ),*/
                           AmountFormField(
                             context: context,
@@ -150,7 +150,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             autofocus: true,
                             controller: _amountController,
                             validatorFn: (v) => validatePayment(v),
-                            style: theme.FieldTextStyle.textStyle,
+                            style: FieldTextStyle.textStyle,
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width,
@@ -167,7 +167,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                         _lightningLimits.receive.maxSat.toInt(),
                                       ),
                                     ),
-                                    style: theme.textStyle,
+                                    style: textStyle,
                                     maxLines: 1,
                                     minFontSize: MinFontSize(context).minFontSize,
                                   ),

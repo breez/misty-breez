@@ -10,7 +10,7 @@ import 'package:l_breez/routes/home/widgets/payments_filter/header_filter_chip.d
 import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_sliver.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/payments_list.dart';
 import 'package:l_breez/routes/home/widgets/status_text.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
 const _kFilterMaxSize = 64.0;

@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class BalanceText extends StatefulWidget {
   final UserProfileState userProfileState;
@@ -22,7 +22,7 @@ class BalanceText extends StatefulWidget {
 }
 
 class _BalanceTextState extends State<BalanceText> {
-  double get startSize => theme.balanceAmountTextStyle.fontSize!;
+  double get startSize => balanceAmountTextStyle.fontSize!;
   double get endSize => startSize - 8.0;
 
   @override
@@ -33,14 +33,14 @@ class _BalanceTextState extends State<BalanceText> {
     return widget.userProfileState.profileSettings.hideBalance
         ? Text(
             texts.wallet_dashboard_balance_hide,
-            style: theme.balanceAmountTextStyle.copyWith(
+            style: balanceAmountTextStyle.copyWith(
               color: themeData.colorScheme.onSecondary,
               fontSize: startSize - (startSize - endSize) * widget.offsetFactor,
             ),
           )
         : RichText(
             text: TextSpan(
-              style: theme.balanceAmountTextStyle.copyWith(
+              style: balanceAmountTextStyle.copyWith(
                 color: themeData.colorScheme.onSecondary,
                 fontSize: startSize - (startSize - endSize) * widget.offsetFactor,
               ),
@@ -52,7 +52,7 @@ class _BalanceTextState extends State<BalanceText> {
               children: [
                 TextSpan(
                   text: " ${widget.currencyState.bitcoinCurrency.displayName}",
-                  style: theme.balanceCurrencyTextStyle.copyWith(
+                  style: balanceCurrencyTextStyle.copyWith(
                     color: themeData.colorScheme.onSecondary,
                     fontSize: startSize * 0.6 - (startSize * 0.6 - endSize) * widget.offsetFactor,
                   ),

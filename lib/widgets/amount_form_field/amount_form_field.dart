@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/theme/theme_provider.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/widgets/amount_form_field/currency_converter_dialog.dart';
 import 'package:l_breez/widgets/amount_form_field/sat_amount_form_field_formatter.dart';

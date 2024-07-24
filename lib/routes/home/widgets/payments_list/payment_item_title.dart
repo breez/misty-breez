@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class PaymentItemTitle extends StatelessWidget {
   final PaymentMinutiae _paymentMinutiae;

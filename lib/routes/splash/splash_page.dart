@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:l_breez/routes/splash/splash_animation_widget.dart';
-import 'package:l_breez/theme/theme_provider.dart';
+import 'package:l_breez/theme/theme.dart';
 
 class SplashPage extends StatefulWidget {
   final bool isInitial;

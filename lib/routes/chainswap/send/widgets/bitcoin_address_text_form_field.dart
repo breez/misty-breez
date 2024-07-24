@@ -4,7 +4,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/bitcoin_address_info.dart';
 import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
@@ -23,7 +23,7 @@ class BitcoinAddressTextFormField extends TextFormField {
               alignment: Alignment.bottomRight,
               icon: Image(
                 image: const AssetImage("src/icon/qr_scan.png"),
-                color: theme.BreezColors.white[500],
+                color: BreezColors.white[500],
                 fit: BoxFit.contain,
                 width: 24.0,
                 height: 24.0,
@@ -50,7 +50,7 @@ class BitcoinAddressTextFormField extends TextFormField {
               },
             ),
           ),
-          style: theme.FieldTextStyle.textStyle,
+          style: FieldTextStyle.textStyle,
           onChanged: (address) => _onAddressChanged(context, validatorHolder, address),
           validator: (address) {
             _log.info("validator called for $address, $validatorHolder");

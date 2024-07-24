@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
 import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 import 'bottom_action_item_image.dart';
 
@@ -25,7 +25,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
           ),
           title: Text(
             texts.bottom_action_bar_receive_invoice,
-            style: theme.bottomSheetTextStyle,
+            style: bottomSheetTextStyle,
           ),
           onTap: () {
             final navigatorState = Navigator.of(context);
@@ -40,7 +40,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
           ),
           title: Text(
             texts.bottom_action_bar_receive_btc_address,
-            style: theme.bottomSheetTextStyle,
+            style: bottomSheetTextStyle,
           ),
           onTap: () {
             final navigatorState = Navigator.of(context);

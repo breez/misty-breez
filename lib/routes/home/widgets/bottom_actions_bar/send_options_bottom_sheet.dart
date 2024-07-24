@@ -5,7 +5,7 @@ import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_action_item_image.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_dialog.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class SendOptionsBottomSheet extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
@@ -36,7 +36,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
               ),
               title: Text(
                 texts.bottom_action_bar_paste_invoice,
-                style: theme.bottomSheetTextStyle,
+                style: bottomSheetTextStyle,
               ),
               onTap: () => _showEnterPaymentInfoDialog(context, widget.firstPaymentItemKey),
             ),
@@ -49,7 +49,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
               ),
               title: Text(
                 texts.bottom_action_bar_send_btc_address,
-                style: theme.bottomSheetTextStyle,
+                style: bottomSheetTextStyle,
               ),
               onTap: () {
                 final navigatorState = Navigator.of(context);

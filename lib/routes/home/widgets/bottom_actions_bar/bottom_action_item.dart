@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 class BottomActionItem extends StatelessWidget {
   final String text;
@@ -29,7 +29,7 @@ class BottomActionItem extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: theme.bottomAppBarBtnStyle.copyWith(
+          style: bottomAppBarBtnStyle.copyWith(
             fontSize: MediaQuery.of(context).textScaler.scale(13.5),
           ),
           maxLines: 1,

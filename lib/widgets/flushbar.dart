@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 Flushbar showFlushbar(
   BuildContext context, {
@@ -34,10 +34,10 @@ Flushbar showFlushbar(
     messageText: messageWidget ??
         Text(
           message ?? texts.flushbar_default_message,
-          style: theme.snackBarStyle,
+          style: snackBarStyle,
           textAlign: TextAlign.left,
         ),
-    backgroundColor: theme.snackBarBackgroundColor,
+    backgroundColor: snackBarBackgroundColor,
     mainButton: !showMainButton
         ? null
         : TextButton(
@@ -49,7 +49,7 @@ Flushbar showFlushbar(
             },
             child: Text(
               buttonText ?? texts.flushbar_default_action,
-              style: theme.snackBarStyle.copyWith(
+              style: snackBarStyle.copyWith(
                 color: themeData.colorScheme.error,
               ),
             ),

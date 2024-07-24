@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 const double _kBarSize = 45.0;
 
@@ -59,7 +59,7 @@ class KeyboardDoneAction {
                     child: Text(
                       texts.keyboard_done_action,
                       style: TextStyle(
-                        color: theme.BreezColors.blue[500],
+                        color: BreezColors.blue[500],
                         fontWeight: FontWeight.bold,
                       ),
                     ),

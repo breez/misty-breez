@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 
 const double itemHeight = 72.0;
 
@@ -62,16 +62,16 @@ class FiatCurrencyListTile extends StatelessWidget {
       },
       subtitle: Text(
         subtitle,
-        style: theme.fiatConversionDescriptionStyle,
+        style: fiatConversionDescriptionStyle,
       ),
       title: RichText(
         text: TextSpan(
           text: currencyData.id,
-          style: theme.fiatConversionTitleStyle,
+          style: fiatConversionTitleStyle,
           children: [
             TextSpan(
               text: " (${currencyData.info.symbol?.grapheme ?? ""})",
-              style: theme.fiatConversionDescriptionStyle,
+              style: fiatConversionDescriptionStyle,
             ),
           ],
         ),

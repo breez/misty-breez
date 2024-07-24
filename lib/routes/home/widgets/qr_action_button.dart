@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
@@ -24,7 +24,7 @@ class QrActionButton extends StatelessWidget {
         child: SvgPicture.asset(
           "src/icon/qr_scan.svg",
           colorFilter: ColorFilter.mode(
-            theme.BreezColors.white[500]!,
+            BreezColors.white[500]!,
             BlendMode.srcATop,
           ),
           fit: BoxFit.contain,

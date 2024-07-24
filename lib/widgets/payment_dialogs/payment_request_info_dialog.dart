@@ -6,7 +6,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/models/invoice.dart';
-import 'package:l_breez/theme/theme_provider.dart' as theme;
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
@@ -185,7 +185,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         data: themeData.copyWith(
           inputDecorationTheme: InputDecorationTheme(
             enabledBorder: UnderlineInputBorder(
-              borderSide: theme.greyBorderSide,
+              borderSide: greyBorderSide,
             ),
           ),
           hintColor: themeData.dialogTheme.contentTextStyle!.color,
