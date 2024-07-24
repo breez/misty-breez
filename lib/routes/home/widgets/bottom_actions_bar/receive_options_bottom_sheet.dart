@@ -33,7 +33,11 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
             navigatorState.pushNamed(CreateInvoicePage.routeName);
           },
         ),
-        const SizedBox(height: 8.0),
+        Divider(
+          height: 0.0,
+          color: Colors.white.withOpacity(0.2),
+          indent: 72.0,
+        ),
         ListTile(
           leading: const BottomActionItemImage(
             iconAssetPath: "src/icon/bitcoin.png",

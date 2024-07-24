@@ -40,7 +40,11 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
               ),
               onTap: () => _showEnterPaymentInfoDialog(context, widget.firstPaymentItemKey),
             ),
-            const SizedBox(height: 8.0),
+            Divider(
+              height: 0.0,
+              color: Colors.white.withOpacity(0.2),
+              indent: 72.0,
+            ),
             ListTile(
               enabled: hasBalance,
               leading: BottomActionItemImage(
