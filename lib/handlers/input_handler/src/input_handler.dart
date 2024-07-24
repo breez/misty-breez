@@ -109,7 +109,11 @@ class InputHandler extends Handler {
         invoice,
         firstPaymentItemKey,
       ),
-    );
+    ).then((message) {
+      if (message != null) {
+        showFlushbar(context, message: message);
+      }
+    });
   }
 
   Future handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {

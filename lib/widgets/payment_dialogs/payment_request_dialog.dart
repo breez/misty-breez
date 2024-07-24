@@ -106,7 +106,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
         child: PaymentRequestInfoDialog(
           widget.invoice,
-          () => _onStateChange(PaymentRequestState.userCancelled),
+          (message) => _onStateChange(PaymentRequestState.userCancelled, message: message),
           () => _onStateChange(PaymentRequestState.waitingForConfirmation),
           (bolt11, amount) {
             _amountToPay = amount + widget.invoice.lspFee;
@@ -119,13 +119,16 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     }
   }
 
-  void _onStateChange(PaymentRequestState state) {
+  void _onStateChange(
+    PaymentRequestState state, {
+    String? message,
+  }) {
     if (state == PaymentRequestState.paymentCompleted) {
       Navigator.of(context).pop();
       return;
     }
     if (state == PaymentRequestState.userCancelled) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(message);
       accountCubit.cancelPayment(widget.invoice.bolt11);
       return;
     }
