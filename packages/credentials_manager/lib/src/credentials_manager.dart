@@ -34,6 +34,15 @@ class CredentialsManager {
     }
   }
 
+  Future<void> removeMnemonic() async {
+    try {
+      await keyChain.delete(accountMnemonic);
+      _log.info("Removed credentials successfully");
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
   // Helper methods
   Future<void> _storeMnemonic(String mnemonic) async {
     await keyChain.write(accountMnemonic, mnemonic);

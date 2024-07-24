@@ -126,6 +126,9 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
       });
     } catch (e) {
       _log.warning("failed to connect to breez lib", e);
+      if (!isRestore) {
+        await _credentialsManager.removeMnemonic();
+      }
       emit(state.copyWith(connectionStatus: ConnectionStatus.disconnected));
       rethrow;
     }
