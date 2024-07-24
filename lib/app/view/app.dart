@@ -24,6 +24,9 @@ class App extends StatelessWidget {
             CredentialsManager(keyChain: injector.keychain),
           ),
         ),
+        BlocProvider<ConnectivityCubit>(
+          create: (BuildContext context) => ConnectivityCubit(),
+        ),
         BlocProvider<InputCubit>(
           create: (BuildContext context) => InputCubit(
             injector.lightningLinks,
