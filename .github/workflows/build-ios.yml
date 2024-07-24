@@ -11,6 +11,7 @@ on:
         description: 'Version for the published Liquid SDK plugin "v(MAJOR.MINOR.BUILD)". Defaults to latest published version on "breez/breez-sdk-liquid-flutter"'
         required: false
         type: string
+        default: ''
       liquid-sdk-ref:
         description: 'Liquid SDK commit/tag/branch reference when not using a published plugin. Default = "main"'
         required: false
@@ -32,15 +33,13 @@ jobs:
       liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
     steps:
       - name: Checkout repository
+        if:  ${{ needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid-flutter'
 
-      - name: Fetch all tags
-        run: git fetch --tags
-
-      - name: Get the latest tag
-        id: get_latest_tag
+      - name: Get the latest tag and set 'liquid-sdk-plugin-version'
+        if:  ${{ needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "::set-output name=liquid-sdk-plugin-version::$latest_tag"
