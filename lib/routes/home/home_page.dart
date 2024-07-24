@@ -37,6 +37,7 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       handlers.addAll([
         InputHandler(firstPaymentItemKey, _scaffoldKey),
+        NetworkConnectivityHandler(),
         NodeConnectivityHandler(),
       ]);
       for (var handler in handlers) {
