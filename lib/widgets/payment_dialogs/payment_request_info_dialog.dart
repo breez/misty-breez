@@ -16,7 +16,7 @@ import 'package:l_breez/widgets/loader.dart';
 
 class PaymentRequestInfoDialog extends StatefulWidget {
   final Invoice invoice;
-  final Function() _onCancel;
+  final Function(String? message) _onCancel;
   final Function() _onWaitingConfirmation;
   final Function(String bot11, int amount) _onPaymentApproved;
   final Function(Map<String, dynamic> map) _setAmountToPay;
@@ -53,6 +53,10 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   @override
   void initState() {
     super.initState();
+    if (widget.invoice.amountMsat == BigInt.zero) {
+      // TODO: Breez-Translations - Add message to Breez-Translations
+      widget._onCancel("Zero-amount lightning payments are not supported.");
+    }
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
@@ -318,7 +322,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
     List<Widget> actions = [
       SimpleDialogOption(
-        onPressed: () => widget._onCancel(),
+        onPressed: () => widget._onCancel(null),
         child: Text(
           texts.payment_request_dialog_action_cancel,
           style: themeData.primaryTextTheme.labelLarge,
