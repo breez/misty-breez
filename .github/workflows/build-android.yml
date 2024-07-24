@@ -8,10 +8,9 @@ on:
         type: boolean
         default: false
       liquid-sdk-plugin-version:
-        description: 'Version for the published Liquid SDK plugin (MAJOR.MINOR.BUILD). Default = "main"'
+        description: 'Version for the published Liquid SDK plugin (MAJOR.MINOR.BUILD). Defaults to latest published version on "breez/breez-sdk-liquid-flutter"'
         required: false
         type: string
-        default: 'main'
       liquid-sdk-ref:
         description: 'Liquid SDK commit/tag/branch reference when not using a published plugin. Default = "main"'
         required: false
@@ -33,6 +32,20 @@ jobs:
       liquid-sdk-plugin-version: ${{ inputs.liquid-sdk-plugin-version }}
       liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'breez/breez-sdk-liquid-flutter'
+
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Get the latest tag
+        id: get_latest_tag
+        run: |
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "::set-output name=liquid-sdk-plugin-version::$latest_tag"
+
       - run: echo "set pre-setup output variables"
 
   setup:
@@ -66,7 +79,7 @@ jobs:
         working-directory: lbreez
         run: |
           mv pubspec_overrides.yaml.workflow pubspec_overrides.yaml
-          sed -i.bak -e 's/ref:.*/ref: v${{ needs.setup.outputs.liquid-sdk-plugin-version }}/' pubspec_overrides.yaml
+          sed -i.bak -e 's/ref:.*/ref: ${{ needs.setup.outputs.liquid-sdk-plugin-version }}/' pubspec_overrides.yaml
           rm pubspec_overrides.yaml.bak
 
       - name: Decode Keystore
