@@ -8,7 +8,7 @@ on:
         type: boolean
         default: false
       liquid-sdk-plugin-version:
-        description: 'Version for the published Liquid SDK plugin (MAJOR.MINOR.BUILD). Defaults to latest published version on "breez/breez-sdk-liquid-flutter"'
+        description: 'Version for the published Liquid SDK plugin "v(MAJOR.MINOR.BUILD)". Defaults to latest published version on "breez/breez-sdk-liquid-flutter"'
         required: false
         type: string
       liquid-sdk-ref:
