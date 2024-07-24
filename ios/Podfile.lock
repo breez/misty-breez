@@ -152,24 +152,6 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - "sqlite3 (3.46.0+1)":
-    - "sqlite3/common (= 3.46.0+1)"
-  - "sqlite3/common (3.46.0+1)"
-  - "sqlite3/dbstatvtab (3.46.0+1)":
-    - sqlite3/common
-  - "sqlite3/fts5 (3.46.0+1)":
-    - sqlite3/common
-  - "sqlite3/perf-threadsafe (3.46.0+1)":
-    - sqlite3/common
-  - "sqlite3/rtree (3.46.0+1)":
-    - sqlite3/common
-  - sqlite3_flutter_libs (0.0.1):
-    - Flutter
-    - "sqlite3 (~> 3.46.0+1)"
-    - sqlite3/dbstatvtab
-    - sqlite3/fts5
-    - sqlite3/perf-threadsafe
-    - sqlite3/rtree
   - TOCropViewController (2.7.4)
   - uni_links (0.0.1):
     - Flutter
@@ -199,7 +181,6 @@ DEPENDENCIES:
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preference_app_group (from `.symlinks/plugins/shared_preference_app_group/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
@@ -224,7 +205,6 @@ SPEC REPOS:
     - nanopb
     - OrderedSet
     - PromisesObjC
-    - sqlite3
     - TOCropViewController
 
 EXTERNAL SOURCES:
@@ -272,8 +252,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preference_app_group/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  sqlite3_flutter_libs:
-    :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   uni_links:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
@@ -321,8 +299,6 @@ SPEC CHECKSUMS:
   share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
   shared_preference_app_group: 46aee3873e1da581d4904bece9876596d7f66725
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sqlite3: 292c3e1bfe89f64e51ea7fc7dab9182a017c8630
-  sqlite3_flutter_libs: c00457ebd31e59fa6bb830380ddba24d44fbcd3b
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
