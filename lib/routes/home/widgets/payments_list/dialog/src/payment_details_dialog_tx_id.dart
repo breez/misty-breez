@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/shareable_payment_row.dart';
 import 'package:l_breez/utils/blockchain_explorer_utils.dart';
+import 'package:l_breez/widgets/shareable_payment_row.dart';
 
 class PaymentDetailsTxId extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;

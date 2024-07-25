@@ -1,15 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/models/payment_minutiae.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_amount.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_bolt11.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_content_title.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_date.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_preimage.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_refund_tx_fee_amount.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_swap_id.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_title.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_tx_id.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/dialog/payment_details_dialog.dart';
 import 'package:logging/logging.dart';
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
@@ -21,16 +13,14 @@ class PaymentDetailsDialog extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;
 
   PaymentDetailsDialog({super.key, required this.paymentMinutiae}) {
-    _log.info("PaymentDetailsDialog for payment: ${paymentMinutiae.id}");
+    _log.info("PaymentDetailsDialog for payment: $paymentMinutiae");
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
-      title: PaymentDetailsDialogTitle(
-        paymentMinutiae: paymentMinutiae,
-      ),
+      title: PaymentDetailsDialogTitle(paymentMinutiae: paymentMinutiae),
       contentPadding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
       content: SingleChildScrollView(
         child: SizedBox(
@@ -40,6 +30,7 @@ class PaymentDetailsDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PaymentDetailsDialogContentTitle(paymentMinutiae: paymentMinutiae),
+              PaymentDetailsDialogDescription(paymentMinutiae: paymentMinutiae),
               PaymentDetailsDialogAmount(
                 paymentMinutiae: paymentMinutiae,
                 labelAutoSizeGroup: _labelGroup,
