@@ -7,6 +7,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 class PaymentMinutiae {
   final String id;
   final String title;
+  final String description;
   final String preimage;
   final String bolt11;
   final String swapId;
@@ -22,6 +23,7 @@ class PaymentMinutiae {
   const PaymentMinutiae({
     required this.id,
     required this.title,
+    required this.description,
     required this.preimage,
     required this.bolt11,
     required this.swapId,
@@ -41,6 +43,7 @@ class PaymentMinutiae {
     return PaymentMinutiae(
       id: payment.txId ?? "",
       title: factory._title(),
+      description: payment.description,
       preimage: payment.preimage ?? "",
       bolt11: payment.bolt11 ?? "",
       swapId: payment.swapId ?? "",
@@ -54,6 +57,14 @@ class PaymentMinutiae {
       status: payment.status,
     );
   }
+
+  @override
+  String toString() {
+    return 'PaymentMinutiae(id: $id, title: $title, description: $description, preimage: $preimage,'
+        ' bolt11: $bolt11, swapId: $swapId, txId: $txId, refundTxId: $refundTxId, paymentType: $paymentType,'
+        ' paymentTime: $paymentTime, feeSat: $feeSat, amountSat: $amountSat, '
+        'refundTxAmountSat: $refundTxAmountSat, status: $status)';
+  }
 }
 
 class _PaymentMinutiaeFactory {
@@ -64,6 +75,8 @@ class _PaymentMinutiaeFactory {
 
   String _title() {
     var title = "${_texts.wallet_dashboard_payment_item_no_title} Payment";
+    if (_payment.description.isNotEmpty) return _payment.description;
+    // TODO: Liquid SDK - Following matchers are kind of made obsolete with description not being empty
     if (_payment.bolt11 != null) return "Lightning Payment";
     if (_payment.refundTxId != null) return "Refund Transaction";
     if (_payment.swapId != null) return "Chain Swap Transaction";

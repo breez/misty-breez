@@ -13,7 +13,7 @@ class PaymentDetailsDialog extends StatelessWidget {
   final PaymentMinutiae paymentMinutiae;
 
   PaymentDetailsDialog({super.key, required this.paymentMinutiae}) {
-    _log.info("PaymentDetailsDialog for payment: ${paymentMinutiae.id}");
+    _log.info("PaymentDetailsDialog for payment: $paymentMinutiae");
   }
 
   @override
