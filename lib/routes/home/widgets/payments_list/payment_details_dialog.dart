@@ -30,6 +30,7 @@ class PaymentDetailsDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PaymentDetailsDialogContentTitle(paymentMinutiae: paymentMinutiae),
+              PaymentDetailsDialogDescription(paymentMinutiae: paymentMinutiae),
               PaymentDetailsDialogAmount(
                 paymentMinutiae: paymentMinutiae,
                 labelAutoSizeGroup: _labelGroup,
