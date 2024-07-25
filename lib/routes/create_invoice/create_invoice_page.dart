@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_liquid/breez_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -129,19 +130,18 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /* TODO: Liquid - Disabled until description is passable to payment data
-                  TextFormField(
-                    controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.done,
-                    maxLines: null,
-                    maxLength: 90,
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    decoration: InputDecoration(
-                      labelText: texts.invoice_description_label,
-                    ),
-                    style:FieldTextStyle.textStyle,
-                  ),*/
+                          TextFormField(
+                            controller: _descriptionController,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.done,
+                            maxLines: null,
+                            maxLength: 90,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            decoration: InputDecoration(
+                              labelText: texts.invoice_description_label,
+                            ),
+                            style: FieldTextStyle.textStyle,
+                          ),
                           AmountFormField(
                             context: context,
                             texts: texts,
