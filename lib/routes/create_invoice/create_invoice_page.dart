@@ -246,7 +246,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
     final amountMsat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
     final prepareReceiveResponse = await accountCubit.prepareReceivePayment(amountMsat);
-    final receivePaymentResponse = accountCubit.receivePayment(prepareReceiveResponse);
+    final receivePaymentRequest = ReceivePaymentRequest(
+      prepareRes: prepareReceiveResponse,
+      description: _descriptionController.text,
+    );
+    final receivePaymentResponse = accountCubit.receivePayment(receivePaymentRequest);
 
     navigator.pop();
     Widget dialog = FutureBuilder(

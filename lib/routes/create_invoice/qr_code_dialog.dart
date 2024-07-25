@@ -19,13 +19,13 @@ import 'package:share_plus/share_plus.dart';
 final _log = Logger("QrCodeDialog");
 
 class QrCodeDialog extends StatefulWidget {
-  final PrepareReceiveResponse prepareReceiveResponse;
+  final PrepareReceivePaymentResponse prepareReceivePaymentResponse;
   final ReceivePaymentResponse? receivePaymentResponse;
   final Object? error;
   final Function(dynamic result) _onFinish;
 
   const QrCodeDialog(
-    this.prepareReceiveResponse,
+    this.prepareReceivePaymentResponse,
     this.receivePaymentResponse,
     this.error,
     this._onFinish,
@@ -153,7 +153,7 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: ExpiryAndFeeMessage(
-                              feesSat: widget.prepareReceiveResponse.feesSat.toInt(),
+                              feesSat: widget.prepareReceivePaymentResponse.feesSat.toInt(),
                             ),
                           ),
                           const Padding(padding: EdgeInsets.only(top: 16.0)),

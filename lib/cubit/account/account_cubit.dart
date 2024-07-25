@@ -164,10 +164,10 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     }
   }
 
-  Future<liquid_sdk.PrepareReceiveResponse> prepareReceivePayment(int payerAmountSat) async {
+  Future<liquid_sdk.PrepareReceivePaymentResponse> prepareReceivePayment(int payerAmountSat) async {
     _log.info("prepareReceivePayment: $payerAmountSat");
     try {
-      final req = liquid_sdk.PrepareReceiveRequest(payerAmountSat: BigInt.from(payerAmountSat));
+      final req = liquid_sdk.PrepareReceivePaymentRequest(payerAmountSat: BigInt.from(payerAmountSat));
       return _liquidSdk.instance!.prepareReceivePayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment error", e);
@@ -175,8 +175,10 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     }
   }
 
-  Future<liquid_sdk.ReceivePaymentResponse> receivePayment(liquid_sdk.PrepareReceiveResponse req) async {
-    _log.info("receivePayment: ${req.payerAmountSat}, fees: ${req.feesSat}");
+  Future<liquid_sdk.ReceivePaymentResponse> receivePayment(liquid_sdk.ReceivePaymentRequest req) async {
+    _log.info(
+      "receivePayment: ${req.prepareRes.payerAmountSat}, fees: ${req.prepareRes.feesSat}, description: ${req.description}",
+    );
     try {
       return _liquidSdk.instance!.receivePayment(req: req);
     } catch (e) {
