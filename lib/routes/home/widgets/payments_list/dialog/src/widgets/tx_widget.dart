@@ -1,8 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:service_injector/service_injector.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/link_launcher.dart';
+import 'package:service_injector/service_injector.dart';
 
 // TODO: Liquid - This file is unused - Re-add for swap tx's after input parser is implemented
 class TxWidget extends StatelessWidget {
