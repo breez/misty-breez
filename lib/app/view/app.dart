@@ -1,5 +1,4 @@
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/app/app_theme_manager/app_theme_manager.dart';
@@ -12,19 +11,21 @@ import 'package:theme_provider/theme_provider.dart';
 
 class App extends StatelessWidget {
   final ServiceInjector injector;
-  const App({super.key, required this.injector});
+  final SdkConnectivityCubit sdkConnectivityCubit;
+  const App({super.key, required this.injector, required this.sdkConnectivityCubit});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AccountCubit>(
-          create: (BuildContext context) => AccountCubit(
-            injector.liquidSDK,
-            CredentialsManager(keyChain: injector.keychain),
+          create: (BuildContext context) => AccountCubit(injector.liquidSDK),
         ),
         BlocProvider<PaymentsCubit>(
           create: (BuildContext context) => PaymentsCubit(injector.liquidSDK),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => sdkConnectivityCubit,
         ),
         BlocProvider<ConnectivityCubit>(
           create: (BuildContext context) => ConnectivityCubit(),
@@ -42,7 +43,7 @@ class App extends StatelessWidget {
           create: (BuildContext context) => CurrencyCubit(injector.liquidSDK),
         ),
         BlocProvider<SecurityCubit>(
-          create: (BuildContext context) => SecurityCubit(),
+          create: (BuildContext context) => SecurityCubit(injector.keychain),
         ),
         BlocProvider<BackupCubit>(
           create: (BuildContext context) => BackupCubit(injector.liquidSDK),

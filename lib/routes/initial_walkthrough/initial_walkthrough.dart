@@ -166,23 +166,24 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void connect({String? mnemonic}) async {
+    final connectionService = context.read<SdkConnectivityCubit>();
     final securityCubit = context.read<SecurityCubit>();
 
     final isRestore = mnemonic != null;
     _log.info("${isRestore ? "Restore" : "Starting new"} node");
     final texts = context.texts();
-    final accountCubit = context.read<AccountCubit>();
     final navigator = Navigator.of(context);
     var loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
 
     final themeProvider = ThemeProvider.controllerOf(context);
     try {
-      await accountCubit.connect(
-        mnemonic: mnemonic ?? bip39.generateMnemonic(strength: 128),
-        isRestore: isRestore,
-      );
+      if (isRestore) {
+        await connectionService.restore(mnemonic: mnemonic);
         securityCubit.mnemonicsValidated();
+      } else {
+        await connectionService.register();
+      }
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {
