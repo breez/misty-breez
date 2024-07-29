@@ -23,7 +23,6 @@ class BreezSDKLiquid {
       _instance = await liquid_sdk.connect(req: req);
       _initializeEventsStream(_instance!);
       _subscribeToSdkStreams(_instance!);
-      await _fetchWalletData(_instance!);
     } catch (e) {
       _instance = null;
       rethrow;
