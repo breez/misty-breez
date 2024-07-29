@@ -17,12 +17,12 @@ class PaymentsFilterCalendar extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<AccountCubit, AccountState>(
-      builder: (context, account) {
+    return BlocBuilder<PaymentsCubit, PaymentsState>(
+      builder: (context, paymentsState) {
         DateTime? firstDate;
-        if (account.payments.isNotEmpty) {
+        if (paymentsState.payments.isNotEmpty) {
           // The list is backwards so the last element is the first in chronological order.
-          firstDate = account.payments.last.paymentTime;
+          firstDate = paymentsState.payments.last.paymentTime;
         }
 
         return Padding(
@@ -43,9 +43,9 @@ class PaymentsFilterCalendar extends StatelessWidget {
                     context: context,
                     builder: (_) => CalendarDialog(firstDate!),
                   ).then((result) {
-                    final accountCubit = context.read<AccountCubit>();
+                    final paymentsCubit = context.read<PaymentsCubit>();
                     if (result != null) {
-                      accountCubit.changePaymentFilter(
+                      paymentsCubit.changePaymentFilter(
                         filters: filter,
                         fromTimestamp: result[0].millisecondsSinceEpoch,
                         toTimestamp: result[1].millisecondsSinceEpoch,

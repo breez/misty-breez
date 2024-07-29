@@ -5,7 +5,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/chain_swap/chain_swap_state.dart';
-import 'package:l_breez/cubit/model/src/payment/payment_error.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_option.dart';
 import 'package:l_breez/utils/exceptions.dart';
 

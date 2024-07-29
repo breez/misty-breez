@@ -32,7 +32,7 @@ class PaymentRequestDialog extends StatefulWidget {
 }
 
 class PaymentRequestDialogState extends State<PaymentRequestDialog> {
-  late AccountCubit accountCubit;
+  late PaymentsCubit paymentsCubit;
   PaymentRequestState? _state;
   String? _amountToPayStr;
   int? _amountToPay;
@@ -42,7 +42,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   @override
   void initState() {
     super.initState();
-    accountCubit = context.read<AccountCubit>();
+    paymentsCubit = context.read<PaymentsCubit>();
     _state = PaymentRequestState.paymentRequest;
   }
 
@@ -61,7 +61,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           return;
         } else {
           final NavigatorState navigator = Navigator.of(context);
-          accountCubit.cancelPayment(widget.invoice.bolt11);
+          paymentsCubit.cancelPayment(widget.invoice.bolt11);
           if (_currentRoute != null && _currentRoute!.isActive) {
             navigator.removeRoute(_currentRoute!);
           }
@@ -81,8 +81,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         minHeight: minHeight,
         paymentFunc: () async {
           try {
-            final prepareSendResponse = await accountCubit.prepareSendPayment(widget.invoice.bolt11);
-            return await accountCubit.sendPayment(prepareSendResponse);
+            final prepareSendResponse = await paymentsCubit.prepareSendPayment(widget.invoice.bolt11);
+            return await paymentsCubit.sendPayment(prepareSendResponse);
           } catch (e) {
             rethrow;
           }
@@ -129,7 +129,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     }
     if (state == PaymentRequestState.userCancelled) {
       Navigator.of(context).pop(message);
-      accountCubit.cancelPayment(widget.invoice.bolt11);
+      paymentsCubit.cancelPayment(widget.invoice.bolt11);
       return;
     }
     setState(() {

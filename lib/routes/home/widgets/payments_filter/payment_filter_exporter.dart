@@ -9,11 +9,12 @@ import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
+final _log = Logger("PaymentFilterExporter");
+
 class PaymentFilterExporter extends StatelessWidget {
-  final _log = Logger("PaymentFilterExporter");
   final List<PaymentType>? filter;
 
-  PaymentFilterExporter(this.filter, {super.key});
+  const PaymentFilterExporter(this.filter, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +58,22 @@ class PaymentFilterExporter extends StatelessWidget {
     final texts = context.texts();
     final navigator = Navigator.of(context);
     final currencyState = context.read<CurrencyCubit>().state;
-    final accountCubit = context.read<AccountCubit>();
-    final accountState = accountCubit.state;
+    final paymentsCubit = context.read<PaymentsCubit>();
+    final paymentsState = paymentsCubit.state;
     var loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
     String filePath;
 
     try {
-      if (accountState.paymentFilters.fromTimestamp != null ||
-          accountState.paymentFilters.toTimestamp != null) {
-        final startDate = DateTime.fromMillisecondsSinceEpoch(accountState.paymentFilters.fromTimestamp!);
-        final endDate = DateTime.fromMillisecondsSinceEpoch(accountState.paymentFilters.toTimestamp!);
+      if (paymentsState.paymentFilters.fromTimestamp != null ||
+          paymentsState.paymentFilters.toTimestamp != null) {
+        final startDate = DateTime.fromMillisecondsSinceEpoch(paymentsState.paymentFilters.fromTimestamp!);
+        final endDate = DateTime.fromMillisecondsSinceEpoch(paymentsState.paymentFilters.toTimestamp!);
         filePath =
-            await CsvExporter(currencyState.fiatId, accountCubit, startDate: startDate, endDate: endDate)
+            await CsvExporter(currencyState.fiatId, paymentsState, startDate: startDate, endDate: endDate)
                 .export();
       } else {
-        filePath = await CsvExporter(currencyState.fiatId, accountCubit).export();
+        filePath = await CsvExporter(currencyState.fiatId, paymentsState).export();
       }
       if (loaderRoute.isActive) {
         navigator.removeRoute(loaderRoute);

@@ -241,16 +241,16 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     _log.info("Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}");
     final navigator = Navigator.of(context);
     final currentRoute = ModalRoute.of(navigator.context)!;
-    final accountCubit = context.read<AccountCubit>();
+    final paymentsCubit = context.read<PaymentsCubit>();
     final currencyCubit = context.read<CurrencyCubit>();
 
     final amountMsat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
-    final prepareReceiveResponse = await accountCubit.prepareReceivePayment(amountMsat);
+    final prepareReceiveResponse = await paymentsCubit.prepareReceivePayment(amountMsat);
     final receivePaymentRequest = ReceivePaymentRequest(
       prepareRes: prepareReceiveResponse,
       description: _descriptionController.text,
     );
-    final receivePaymentResponse = accountCubit.receivePayment(receivePaymentRequest);
+    final receivePaymentResponse = paymentsCubit.receivePayment(receivePaymentRequest);
 
     navigator.pop();
     Widget dialog = FutureBuilder(

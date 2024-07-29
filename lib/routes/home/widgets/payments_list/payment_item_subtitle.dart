@@ -1,15 +1,15 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/date.dart';
 
 class PaymentItemSubtitle extends StatelessWidget {
-  final PaymentMinutiae _paymentMinutiae;
+  final PaymentData paymentData;
 
   const PaymentItemSubtitle(
-    this._paymentMinutiae, {
+    this.paymentData, {
     super.key,
   });
 
@@ -25,10 +25,10 @@ class PaymentItemSubtitle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          BreezDateUtils.formatTimelineRelative(_paymentMinutiae.paymentTime),
+          BreezDateUtils.formatTimelineRelative(paymentData.paymentTime),
           style: subtitleTextStyle,
         ),
-        if (_paymentMinutiae.status == PaymentState.pending) ...[
+        if (paymentData.status == PaymentState.pending) ...[
           Text(
             texts.wallet_dashboard_payment_item_balance_pending_suffix,
             style: subtitleTextStyle.copyWith(

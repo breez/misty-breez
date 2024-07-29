@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:l_breez/cubit/model/src/payment/payment_filters.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/utils/constants.dart' as constants;
 
 const initialInboundCapacity = 4000000;
 
@@ -25,8 +24,6 @@ class AccountState {
   final List<String> connectedPeers;
   final int maxInboundLiquidity;
   final int onChainFeeRate;
-  final List<PaymentMinutiae> payments;
-  final PaymentFilters paymentFilters;
   final ConnectionStatus? connectionStatus;
   final VerificationStatus? verificationStatus;
 
@@ -45,8 +42,6 @@ class AccountState {
     required this.connectedPeers,
     required this.maxInboundLiquidity,
     required this.onChainFeeRate,
-    required this.payments,
-    required this.paymentFilters,
     required this.connectionStatus,
     this.verificationStatus = VerificationStatus.unverified,
   });
@@ -58,7 +53,7 @@ class AccountState {
           blockheight: 0,
           maxAllowedToPay: 0,
           maxAllowedToReceive: 0,
-          maxPaymentAmountSat: 0,
+          maxPaymentAmountSat: constants.maxPaymentAmountSat,
           maxChanReserve: 0,
           connectedPeers: List.empty(),
           maxInboundLiquidity: 0,
@@ -67,8 +62,6 @@ class AccountState {
           walletBalance: 0,
           pendingReceive: 0,
           pendingSend: 0,
-          payments: [],
-          paymentFilters: PaymentFilters.initial(),
           connectionStatus: null,
           verificationStatus: VerificationStatus.unverified,
         );
@@ -88,8 +81,6 @@ class AccountState {
     List<String>? connectedPeers,
     int? maxInboundLiquidity,
     int? onChainFeeRate,
-    List<PaymentMinutiae>? payments,
-    PaymentFilters? paymentFilters,
     ConnectionStatus? connectionStatus,
     VerificationStatus? verificationStatus,
   }) {
@@ -108,8 +99,6 @@ class AccountState {
       connectedPeers: connectedPeers ?? this.connectedPeers,
       maxInboundLiquidity: maxInboundLiquidity ?? this.maxInboundLiquidity,
       onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
-      payments: payments ?? this.payments,
-      paymentFilters: paymentFilters ?? this.paymentFilters,
       connectionStatus: connectionStatus ?? this.connectionStatus,
       verificationStatus: verificationStatus ?? this.verificationStatus,
     );
@@ -121,7 +110,6 @@ class AccountState {
 
   bool get hasBalance => balance > 0;
 
-  // TODO: Add payments toJson
   Map<String, dynamic>? toJson() {
     return {
       "id": id,
@@ -137,13 +125,11 @@ class AccountState {
       "maxChanReserve": maxChanReserve,
       "maxInboundLiquidity": maxInboundLiquidity,
       "onChainFeeRate": onChainFeeRate,
-      "paymentFilters": paymentFilters.toJson(),
       "connectionStatus": connectionStatus?.index,
       "verificationStatus": verificationStatus?.index,
     };
   }
 
-  // TODO: Generate payments fromJson
   factory AccountState.fromJson(Map<String, dynamic> json) {
     return AccountState(
       id: json["id"],
@@ -160,8 +146,6 @@ class AccountState {
       connectedPeers: <String>[],
       maxInboundLiquidity: json["maxInboundLiquidity"] ?? 0,
       onChainFeeRate: (json["onChainFeeRate"]),
-      payments: [],
-      paymentFilters: PaymentFilters.fromJson(json["paymentFilters"]),
       connectionStatus: json["connectionStatus"] != null
           ? ConnectionStatus.values[json["connectionStatus"]]
           : ConnectionStatus.connecting,

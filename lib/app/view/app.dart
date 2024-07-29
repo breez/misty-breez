@@ -22,7 +22,9 @@ class App extends StatelessWidget {
           create: (BuildContext context) => AccountCubit(
             injector.liquidSDK,
             CredentialsManager(keyChain: injector.keychain),
-          ),
+        ),
+        BlocProvider<PaymentsCubit>(
+          create: (BuildContext context) => PaymentsCubit(injector.liquidSDK),
         ),
         BlocProvider<ConnectivityCubit>(
           create: (BuildContext context) => ConnectivityCubit(),

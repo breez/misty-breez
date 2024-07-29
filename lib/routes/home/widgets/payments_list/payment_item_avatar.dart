@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/widgets/breez_avatar.dart';
 
 class PaymentItemAvatar extends StatelessWidget {
-  final PaymentMinutiae paymentMinutiae;
+  final PaymentData paymentData;
   final double radius;
 
-  const PaymentItemAvatar(this.paymentMinutiae, {this.radius = 20.0, super.key});
+  const PaymentItemAvatar(this.paymentData, {this.radius = 20.0, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class PaymentItemAvatar extends StatelessWidget {
         radius: radius,
         backgroundColor: Colors.white,
         child: Icon(
-          paymentMinutiae.paymentType == PaymentType.receive ? Icons.add_rounded : Icons.remove_rounded,
+          paymentData.paymentType == PaymentType.receive ? Icons.add_rounded : Icons.remove_rounded,
           color: const Color(0xb3303234),
         ),
       );

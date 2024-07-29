@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/cubit/payments/payments_cubit.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/payment_filter_exporter.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_calendar.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_dropdown.dart';
@@ -28,8 +28,8 @@ class PaymentsFilterState extends State<PaymentsFilters> {
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    return BlocBuilder<AccountCubit, AccountState>(
-      builder: (context, account) {
+    return BlocBuilder<PaymentsCubit, PaymentsState>(
+      builder: (context, paymentsState) {
         if (_filter == null) {
           _filterMap = {
             texts.payments_filter_option_all: PaymentType.values,
@@ -38,7 +38,7 @@ class PaymentsFilterState extends State<PaymentsFilters> {
           };
           _filter = _getFilterTypeString(
             context,
-            account.paymentFilters.filters,
+            paymentsState.paymentFilters.filters,
           );
         }
 
@@ -52,11 +52,11 @@ class PaymentsFilterState extends State<PaymentsFilters> {
                 setState(() {
                   _filter = value?.toString();
                 });
-                final accountCubit = context.read<AccountCubit>();
-                accountCubit.changePaymentFilter(
+                final paymentsCubit = context.read<PaymentsCubit>();
+                paymentsCubit.changePaymentFilter(
                   filters: _getFilterType(),
-                  fromTimestamp: accountCubit.state.paymentFilters.fromTimestamp,
-                  toTimestamp: accountCubit.state.paymentFilters.toTimestamp,
+                  fromTimestamp: paymentsCubit.state.paymentFilters.fromTimestamp,
+                  toTimestamp: paymentsCubit.state.paymentFilters.toTimestamp,
                 );
               },
             ),
