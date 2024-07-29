@@ -47,6 +47,8 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
       final req = ConnectRequest(mnemonic: mnemonic, config: config.sdkConfig);
       await liquidSDK.connect(req: req);
 
+      _startSyncing();
+
       if (storeMnemonic) {
         await credentialsManager.storeMnemonic(mnemonic: mnemonic);
       }
@@ -59,6 +61,11 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
       emit(SdkConnectivityState.disconnected);
       rethrow;
     }
+  }
+
+  void _startSyncing() {
+    final syncManager = SyncManager(liquidSDK.instance);
+    syncManager.startSyncing();
   }
 
   Future<void> _retryUntilConnected() async {
