@@ -82,7 +82,7 @@ packages:
     source: hosted
     version: "3.0.0"
   bip39:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: bip39
       sha256: de1ee27ebe7d96b84bb3a04a4132a0a3007dcdd5ad27dd14aa87a29d97c45edc
@@ -111,7 +111,7 @@ packages:
       path: "../breez-sdk-liquid/packages/dart"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.4"
   breez_logger:
     dependency: "direct main"
     description:
@@ -606,7 +606,7 @@ packages:
       path: "../breez-sdk-liquid/packages/flutter"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.4"
   flutter_fgbg:
     dependency: "direct main"
     description:
@@ -1049,7 +1049,7 @@ packages:
     source: hosted
     version: "4.9.0"
   keychain:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "packages/keychain"
       relative: true
@@ -1446,6 +1446,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  sdk_connectivity_cubit:
+    dependency: "direct main"
+    description:
+      path: "packages/sdk_connectivity_cubit"
+      relative: true
+    source: path
+    version: "0.0.0"
   service_injector:
     dependency: "direct main"
     description:

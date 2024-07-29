@@ -15,6 +15,8 @@ dependencies:
   # Feature Packages
   breez_preferences:
     path: packages/breez_preferences
+  sdk_connectivity_cubit:
+    path: packages/sdk_connectivity_cubit
   device_client:
     path: packages/device_client
   keychain:
@@ -35,7 +37,6 @@ dependencies:
   app_group_directory: ^2.0.0
   archive: ^3.6.1
   auto_size_text: ^3.0.0
-  bip39: ^1.0.6
   breez_liquid:
     git:
       url: https://github.com/breez/breez-sdk-liquid-dart
