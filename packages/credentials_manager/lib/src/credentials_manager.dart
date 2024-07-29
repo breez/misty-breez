@@ -24,11 +24,15 @@ class CredentialsManager {
     }
   }
 
-  Future<String> restoreMnemonic() async {
+  Future<String?> restoreMnemonic() async {
     try {
       String? mnemonicStr = await keyChain.read(accountMnemonic);
-      _log.info("Restored credentials successfully");
-      return mnemonicStr!;
+      _log.info(
+        (mnemonicStr != null)
+            ? "Restored credentials successfully"
+            : "No credentials found in secure storage",
+      );
+      return mnemonicStr;
     } catch (err) {
       throw Exception(err.toString());
     }
@@ -44,8 +48,12 @@ class CredentialsManager {
       final Directory tempDir = await getTemporaryDirectory();
       var keysDir = tempDir.createTempSync("keys");
       final File mnemonicFile = await File('${keysDir.path}/phrase').create(recursive: true);
-      String mnemonic = await restoreMnemonic();
-      mnemonicFile.writeAsString(mnemonic);
+      String? mnemonic = await restoreMnemonic();
+      if (mnemonic != null) {
+        mnemonicFile.writeAsString(mnemonic);
+      } else {
+        throw Exception("No mnemonics");
+      }
       return [mnemonicFile];
     } catch (e) {
       throw e.toString();
