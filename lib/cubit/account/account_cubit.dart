@@ -9,10 +9,6 @@ export 'account_state.dart';
 
 final _log = Logger("AccountCubit");
 
-// AccountCubit is the business logic unit that is responsible to communicating with the lightning service
-// and reflect the wallet state. It is responsible for:
-// 1. Synchronizing with the wallet state.
-// 2. Abstracting actions exposed by the lightning service.
 class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   final BreezSDKLiquid _liquidSdk;
 
