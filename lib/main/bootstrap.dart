@@ -54,6 +54,11 @@ Future<void> bootstrap(AppBuilder builder) async {
       liquidSDK: injector.liquidSDK,
       credentialsManager: injector.credentialsManager,
     );
+    _log.info("Reconnect if secure storage has mnemonic.");
+    String? mnemonic = await injector.credentialsManager.restoreMnemonic();
+    if (mnemonic != null) {
+      await sdkConnectivityCubit.reconnect();
+    }
     runApp(builder(injector, sdkConnectivityCubit));
   }, (error, stackTrace) async {
     if (error is! FlutterErrorDetails) {
