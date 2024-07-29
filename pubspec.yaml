@@ -17,6 +17,8 @@ dependencies:
     path: packages/breez_preferences
   device_client:
     path: packages/device_client
+  keychain:
+    path: packages/keychain
   lightning_links:
     path: packages/lightning_links
   # Utility Packages

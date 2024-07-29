@@ -6,8 +6,6 @@ const initialInboundCapacity = 4000000;
 
 enum ConnectionStatus { connecting, connected, disconnected }
 
-enum VerificationStatus { unverified, verified }
-
 // TODO: Liquid - Remove non-applicable fields for Liquid SDK
 class AccountState {
   final String? id;
@@ -25,7 +23,6 @@ class AccountState {
   final int maxInboundLiquidity;
   final int onChainFeeRate;
   final ConnectionStatus? connectionStatus;
-  final VerificationStatus? verificationStatus;
 
   const AccountState({
     required this.id,
@@ -43,7 +40,6 @@ class AccountState {
     required this.maxInboundLiquidity,
     required this.onChainFeeRate,
     required this.connectionStatus,
-    this.verificationStatus = VerificationStatus.unverified,
   });
 
   AccountState.initial()
@@ -63,7 +59,6 @@ class AccountState {
           pendingReceive: 0,
           pendingSend: 0,
           connectionStatus: null,
-          verificationStatus: VerificationStatus.unverified,
         );
 
   AccountState copyWith({
@@ -82,7 +77,6 @@ class AccountState {
     int? maxInboundLiquidity,
     int? onChainFeeRate,
     ConnectionStatus? connectionStatus,
-    VerificationStatus? verificationStatus,
   }) {
     return AccountState(
       id: id ?? this.id,
@@ -100,7 +94,6 @@ class AccountState {
       maxInboundLiquidity: maxInboundLiquidity ?? this.maxInboundLiquidity,
       onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
       connectionStatus: connectionStatus ?? this.connectionStatus,
-      verificationStatus: verificationStatus ?? this.verificationStatus,
     );
   }
 
@@ -126,7 +119,6 @@ class AccountState {
       "maxInboundLiquidity": maxInboundLiquidity,
       "onChainFeeRate": onChainFeeRate,
       "connectionStatus": connectionStatus?.index,
-      "verificationStatus": verificationStatus?.index,
     };
   }
 
@@ -149,9 +141,6 @@ class AccountState {
       connectionStatus: json["connectionStatus"] != null
           ? ConnectionStatus.values[json["connectionStatus"]]
           : ConnectionStatus.connecting,
-      verificationStatus: json["verificationStatus"] != null
-          ? VerificationStatus.values[json["verificationStatus"]]
-          : VerificationStatus.unverified,
     );
   }
 

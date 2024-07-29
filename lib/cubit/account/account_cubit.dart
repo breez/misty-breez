@@ -1,7 +1,6 @@
 library account_cubit;
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:logging/logging.dart';
-import 'package:path/path.dart' as p;
 import 'package:rxdart/rxdart.dart';
 
 export 'account_state.dart';
@@ -132,35 +130,4 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   Map<String, dynamic>? toJson(AccountState state) {
     return state.toJson();
   }
-
-  Future<List<File>> exportCredentialFiles() async {
-    _log.info("exportCredentialFiles");
-    return _credentialsManager.exportCredentials();
-  }
-
-  void recursiveFolderCopySync(String path1, String path2) {
-    _log.info("recursiveFolderCopySync: $path1, $path2");
-    Directory dir1 = Directory(path1);
-    Directory dir2 = Directory(path2);
-    if (!dir2.existsSync()) {
-      dir2.createSync(recursive: true);
-    }
-
-    dir1.listSync().forEach((element) {
-      String elementName = p.basename(element.path);
-      String newPath = "${dir2.path}/$elementName";
-      if (element is File) {
-        File newFile = File(newPath);
-        newFile.writeAsBytesSync(element.readAsBytesSync());
-      } else {
-        recursiveFolderCopySync(element.path, newPath);
-      }
-    });
-  }
-
-  void mnemonicsValidated() {
-    _log.info("mnemonicsValidated");
-    emit(state.copyWith(verificationStatus: VerificationStatus.verified));
-  }
-
 }

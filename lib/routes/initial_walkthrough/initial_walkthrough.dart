@@ -166,6 +166,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void connect({String? mnemonic}) async {
+    final securityCubit = context.read<SecurityCubit>();
+
     final isRestore = mnemonic != null;
     _log.info("${isRestore ? "Restore" : "Starting new"} node");
     final texts = context.texts();
@@ -180,6 +182,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         mnemonic: mnemonic ?? bip39.generateMnemonic(strength: 128),
         isRestore: isRestore,
       );
+        securityCubit.mnemonicsValidated();
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {
