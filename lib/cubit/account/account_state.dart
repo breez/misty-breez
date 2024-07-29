@@ -4,8 +4,6 @@ import 'package:l_breez/utils/constants.dart' as constants;
 
 const initialInboundCapacity = 4000000;
 
-enum ConnectionStatus { connecting, connected, disconnected }
-
 // TODO: Liquid - Remove non-applicable fields for Liquid SDK
 class AccountState {
   final String? id;
@@ -21,8 +19,6 @@ class AccountState {
   final int maxChanReserve;
   final List<String> connectedPeers;
   final int maxInboundLiquidity;
-  final int onChainFeeRate;
-  final ConnectionStatus? connectionStatus;
 
   const AccountState({
     required this.id,
@@ -38,8 +34,6 @@ class AccountState {
     required this.maxChanReserve,
     required this.connectedPeers,
     required this.maxInboundLiquidity,
-    required this.onChainFeeRate,
-    required this.connectionStatus,
   });
 
   AccountState.initial()
@@ -53,12 +47,10 @@ class AccountState {
           maxChanReserve: 0,
           connectedPeers: List.empty(),
           maxInboundLiquidity: 0,
-          onChainFeeRate: 0,
           balance: 0,
           walletBalance: 0,
           pendingReceive: 0,
           pendingSend: 0,
-          connectionStatus: null,
         );
 
   AccountState copyWith({
@@ -75,8 +67,6 @@ class AccountState {
     int? maxChanReserve,
     List<String>? connectedPeers,
     int? maxInboundLiquidity,
-    int? onChainFeeRate,
-    ConnectionStatus? connectionStatus,
   }) {
     return AccountState(
       id: id ?? this.id,
@@ -92,8 +82,6 @@ class AccountState {
       maxChanReserve: maxChanReserve ?? this.maxChanReserve,
       connectedPeers: connectedPeers ?? this.connectedPeers,
       maxInboundLiquidity: maxInboundLiquidity ?? this.maxInboundLiquidity,
-      onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
-      connectionStatus: connectionStatus ?? this.connectionStatus,
     );
   }
 
@@ -117,8 +105,6 @@ class AccountState {
       "maxPaymentAmount": maxPaymentAmountSat,
       "maxChanReserve": maxChanReserve,
       "maxInboundLiquidity": maxInboundLiquidity,
-      "onChainFeeRate": onChainFeeRate,
-      "connectionStatus": connectionStatus?.index,
     };
   }
 
@@ -137,10 +123,6 @@ class AccountState {
       maxChanReserve: json["maxChanReserve"],
       connectedPeers: <String>[],
       maxInboundLiquidity: json["maxInboundLiquidity"] ?? 0,
-      onChainFeeRate: (json["onChainFeeRate"]),
-      connectionStatus: json["connectionStatus"] != null
-          ? ConnectionStatus.values[json["connectionStatus"]]
-          : ConnectionStatus.connecting,
     );
   }
 
