@@ -4,11 +4,12 @@ import 'package:keychain/keychain.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 
-class CredentialsManager {
-  final _log = Logger("CredentialsManager");
-  static const String accountMnemonic = "account_mnemonic";
-  static const String accountApiKey = "account_api_key";
+final _log = Logger("CredentialsManager");
 
+const String accountMnemonic = "account_mnemonic";
+const String accountApiKey = "account_api_key";
+
+class CredentialsManager {
   final KeyChain keyChain;
 
   CredentialsManager({required this.keyChain});
@@ -33,6 +34,15 @@ class CredentialsManager {
             : "No credentials found in secure storage",
       );
       return mnemonicStr;
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
+  Future deleteMnemonic() async {
+    try {
+      await keyChain.delete(accountMnemonic);
+      _log.info("Deleted credentials successfully");
     } catch (err) {
       throw Exception(err.toString());
     }
