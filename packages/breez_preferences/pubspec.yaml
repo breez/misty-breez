@@ -10,5 +10,5 @@ dependencies:
     sdk: flutter
 
   logging: ^1.2.0
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.3.0
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
