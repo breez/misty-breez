@@ -65,7 +65,7 @@ jobs:
   build-ios:
     needs: setup
     name: Build iOS
-    runs-on: macOS-latest
+    runs-on: macos-14
     env:
       SCHEME: Runner
       BUILD_CONFIGURATION: Release
