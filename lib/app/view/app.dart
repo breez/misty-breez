@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/app/app_theme_manager/app_theme_manager.dart';
 import 'package:l_breez/app/routes/routes.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/security/lock_screen.dart';
 import 'package:l_breez/routes/splash/splash_page.dart';
 import 'package:service_injector/service_injector.dart';
@@ -74,30 +75,34 @@ class _AppViewState extends State<AppView> {
   @override
   Widget build(BuildContext context) {
     return AppThemeManager(
-      child: BlocBuilder2<AccountCubit, AccountState, SecurityCubit, SecurityState>(
-        builder: (context, accountState, securityState) {
-          return MaterialApp(
-            key: _appKey,
-            title: "Misty ${getSystemAppLocalizations().app_name}",
-            theme: ThemeProvider.themeOf(context).data,
-            localizationsDelegates: localizationsDelegates(),
-            supportedLocales: supportedLocales(),
-            builder: (BuildContext context, Widget? child) {
-              const kMaxTitleTextScaleFactor = 1.3;
+      child: BlocBuilder<AccountCubit, AccountState>(
+        builder: (context, accountState) {
+          return BlocBuilder<SecurityCubit, SecurityState>(builder: (context, securityState) {
+            return MaterialApp(
+              key: _appKey,
+              title: "Misty ${getSystemAppLocalizations().app_name}",
+              theme: ThemeProvider.themeOf(context).data,
+              localizationsDelegates: localizationsDelegates(),
+              supportedLocales: supportedLocales(),
+              builder: (BuildContext context, Widget? child) {
+                const kMaxTitleTextScaleFactor = 1.3;
 
-              return MediaQuery.withClampedTextScaling(
-                maxScaleFactor: kMaxTitleTextScaleFactor,
-                child: child!,
-              );
-            },
-            initialRoute:
-                securityState.pinStatus == PinStatus.enabled ? LockScreen.routeName : SplashPage.routeName,
-            onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
-              settings: settings,
-              homeNavigatorKey: _homeNavigatorKey,
-              accountState: accountState,
-            ),
-          );
+                return MediaQuery.withClampedTextScaling(
+                  maxScaleFactor: kMaxTitleTextScaleFactor,
+                  child: child!,
+                );
+              },
+              initialRoute: securityState.pinStatus == PinStatus.enabled
+                  ? LockScreen.routeName
+                  : accountState.initial
+                      ? SplashPage.routeName
+                      : Home.routeName,
+              onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
+                settings: settings,
+                homeNavigatorKey: _homeNavigatorKey,
+              ),
+            );
+          });
         },
       ),
     );

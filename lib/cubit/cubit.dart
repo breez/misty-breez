@@ -7,7 +7,6 @@ export 'connectivity/connectivity_cubit.dart';
 // TODO: Remove this from this directory
 export 'csv_exporter.dart';
 export 'currency/currency_cubit.dart';
-export 'ext/block_builder_extensions.dart';
 export 'input/input_cubit.dart';
 export 'lnurl/lnurl_cubit.dart';
 export 'model/models.dart';

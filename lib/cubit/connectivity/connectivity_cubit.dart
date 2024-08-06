@@ -10,8 +10,9 @@ import 'package:logging/logging.dart';
 
 export 'connectivity_state.dart';
 
+final _log = Logger("ConnectivityCubit");
+
 class ConnectivityCubit extends Cubit<ConnectivityState> {
-  final _log = Logger("ConnectivityCubit");
   final Connectivity _connectivity = Connectivity();
 
   ConnectivityCubit() : super(const ConnectivityState.initial()) {
