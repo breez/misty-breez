@@ -50,7 +50,7 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30911.0, >= 2.30908.0)
   - Flutter (1.0.0)
-  - flutter_breez_liquid (0.1.0)
+  - flutter_breez_liquid (0.2.1)
   - flutter_fgbg (0.0.1):
     - Flutter
   - flutter_inappwebview_ios (0.0.1):
@@ -113,6 +113,7 @@ PODS:
     - Flutter
   - local_auth_darwin (0.0.1):
     - Flutter
+    - FlutterMacOS
   - MLImage (1.0.0-beta5)
   - MLKitBarcodeScanning (5.0.0):
     - MLKitCommon (~> 11.0)
@@ -272,7 +273,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
   FirebaseMessaging: 7b5d8033e183ab59eb5b852a53201559e976d366
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_breez_liquid: b61267976647a385b0446e628fe69421153513f7
+  flutter_breez_liquid: 9eff5bde06b88dadb57d3a4e7bc9dbfa24e5821e
   flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
@@ -285,7 +286,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   image_cropper: 37d40f62177c101ff4c164906d259ea2c3aa70cf
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
-  local_auth_darwin: 4d56c90c2683319835a61274b57620df9c4520ab
+  local_auth_darwin: 66e40372f1c29f383a314c738c7446e2f7fdadc3
   MLImage: 1824212150da33ef225fbd3dc49f184cf611046c
   MLKitBarcodeScanning: 10ca0845a6d15f2f6e911f682a1998b68b973e8b
   MLKitCommon: afec63980417d29ffbb4790529a1b0a2291699e1
