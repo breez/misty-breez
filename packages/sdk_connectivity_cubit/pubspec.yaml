@@ -1,0 +1,37 @@
+name: sdk_connectivity_cubit
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  bip39: ^1.0.6
+  connectivity_plus: ^6.0.3
+  breez_sdk_liquid:
+    path: ../breez_sdk_liquid
+  credentials_manager:
+    path: ../credentials_manager
+  breez_liquid:
+    git:
+      url: https://github.com/breez/breez-sdk-liquid-dart
+  flutter_breez_liquid:
+    git:
+      url: https://github.com/breez/breez-sdk-liquid-flutter
+  flutter_fgbg:
+    git:
+      url: https://github.com/breez/flutter_fgbg.git
+      ref: 976b28ff3c299836f215b6deb2003838c49a8001
+  flutter_bloc: ^8.1.6
+  flutter_secure_storage: ^9.2.2
+  logging: ^1.2.0
+
+dependency_overrides:
+  # Comment-out to work with breez-sdk-liquid from git repository
+  breez_liquid:
+    path: ../../../breez-sdk-liquid/packages/dart
+  flutter_breez_liquid:
+    path: ../../../breez-sdk-liquid/packages/flutter

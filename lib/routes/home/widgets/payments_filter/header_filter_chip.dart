@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/cubit/payments/payments_cubit.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/date.dart';
 
@@ -42,8 +43,8 @@ class HeaderFilterChip extends SliverPadding {
                                 ),
                               ),
                               onDeleted: () {
-                                var accountCubit = context.read<AccountCubit>();
-                                return accountCubit.changePaymentFilter(
+                                var paymentsCubit = context.read<PaymentsCubit>();
+                                return paymentsCubit.changePaymentFilter(
                                   toTimestamp: null,
                                   fromTimestamp: null,
                                 );

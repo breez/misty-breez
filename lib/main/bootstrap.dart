@@ -7,16 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:service_injector/service_injector.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/utils/date.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:service_injector/service_injector.dart';
 import 'package:shared_preference_app_group/shared_preference_app_group.dart';
 
 final _log = Logger("Bootstrap");
 
-typedef AppBuilder = Widget Function(ServiceInjector serviceInjector);
+typedef AppBuilder = Widget Function(
+  ServiceInjector serviceInjector,
+  SdkConnectivityCubit sdkConnectivityCubit,
+);
 
 Future<void> bootstrap(AppBuilder builder) async {
   // runZonedGuarded wrapper is required to log Dart errors.
@@ -46,7 +50,16 @@ Future<void> bootstrap(AppBuilder builder) async {
     HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: Directory(p.join(appDir.path, "bloc_storage")),
     );
-    runApp(builder(injector));
+    var sdkConnectivityCubit = SdkConnectivityCubit(
+      liquidSDK: injector.liquidSDK,
+      credentialsManager: injector.credentialsManager,
+    );
+    _log.info("Reconnect if secure storage has mnemonic.");
+    String? mnemonic = await injector.credentialsManager.restoreMnemonic();
+    if (mnemonic != null) {
+      await sdkConnectivityCubit.reconnect();
+    }
+    runApp(builder(injector, sdkConnectivityCubit));
   }, (error, stackTrace) async {
     if (error is! FlutterErrorDetails) {
       _log.severe("FlutterError: $error", error, stackTrace);

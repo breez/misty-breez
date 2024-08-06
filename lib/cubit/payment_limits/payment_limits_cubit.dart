@@ -13,8 +13,9 @@ import 'package:logging/logging.dart';
 
 export 'payment_limits_state.dart';
 
+final _log = Logger("PaymentLimitsCubit");
+
 class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
-  final _log = Logger("PaymentLimitsCubit");
   final BreezSDKLiquid _liquidSdk;
 
   PaymentLimitsCubit(this._liquidSdk) : super(PaymentLimitsState.initial()) {

@@ -1,17 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 
 class PaymentDetailsDialogContentTitle extends StatelessWidget {
-  final PaymentMinutiae paymentMinutiae;
+  final PaymentData paymentData;
 
-  const PaymentDetailsDialogContentTitle({super.key, required this.paymentMinutiae});
+  const PaymentDetailsDialogContentTitle({super.key, required this.paymentData});
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    final title = paymentMinutiae.title;
+    final title = paymentData.title;
     if (title.isEmpty) {
       return Container();
     }

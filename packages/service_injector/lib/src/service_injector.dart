@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez_logger/breez_logger.dart';
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
+import 'package:credentials_manager/credentials_manager.dart';
 import 'package:deep_link_client/deep_link_client.dart';
 import 'package:device_client/device_client.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
@@ -24,6 +25,7 @@ class ServiceInjector {
   DeviceClient? _deviceClient;
   Future<SharedPreferences>? _sharedPreferences = SharedPreferences.getInstance();
   KeyChain? _keychain;
+  CredentialsManager? _credentialsManager;
   BreezPreferences? _breezPreferences;
   BreezLogger? _breezLogger;
 
@@ -44,6 +46,8 @@ class ServiceInjector {
   Future<SharedPreferences> get sharedPreferences => _sharedPreferences ??= SharedPreferences.getInstance();
 
   KeyChain get keychain => _keychain ??= KeyChain();
+
+  CredentialsManager get credentialsManager => _credentialsManager ??= CredentialsManager(keyChain: keychain);
 
   BreezPreferences get breezPreferences => _breezPreferences ??= const BreezPreferences();
 

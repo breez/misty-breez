@@ -1,15 +1,15 @@
 import 'package:flutter/widgets.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/widgets/shareable_payment_row.dart';
 
 class PaymentDetailsSwapId extends StatelessWidget {
-  final PaymentMinutiae paymentMinutiae;
+  final PaymentData paymentData;
 
-  const PaymentDetailsSwapId({required this.paymentMinutiae, super.key});
+  const PaymentDetailsSwapId({required this.paymentData, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final swapId = paymentMinutiae.swapId;
+    final swapId = paymentData.swapId;
     return swapId.isNotEmpty
         ? ShareablePaymentRow(
             // TODO: Move this message to Breez-Translations

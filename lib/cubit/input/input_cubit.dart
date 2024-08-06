@@ -14,8 +14,9 @@ import 'package:service_injector/service_injector.dart';
 
 export 'input_state.dart';
 
+final _log = Logger("InputCubit");
+
 class InputCubit extends Cubit<InputState> {
-  final _log = Logger("InputCubit");
   final LightningLinksService _lightningLinks;
   final DeviceClient _deviceClient;
 

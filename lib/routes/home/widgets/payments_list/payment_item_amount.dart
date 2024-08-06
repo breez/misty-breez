@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class PaymentItemAmount extends StatelessWidget {
-  final PaymentMinutiae _paymentMinutiae;
+  final PaymentData paymentData;
 
-  const PaymentItemAmount(this._paymentMinutiae, {super.key});
+  const PaymentItemAmount(this.paymentData, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +21,9 @@ class PaymentItemAmount extends StatelessWidget {
         final bool hideBalance = userModel.profileSettings.hideBalance;
         return BlocBuilder<CurrencyCubit, CurrencyState>(
           builder: (context, currencyState) {
-            final fee = _paymentMinutiae.feeSat;
+            final fee = paymentData.feeSat;
             final amount = currencyState.bitcoinCurrency.format(
-              _paymentMinutiae.amountSat,
+              paymentData.amountSat,
               includeDisplayName: false,
             );
             final feeFormatted = currencyState.bitcoinCurrency.format(
@@ -33,21 +32,20 @@ class PaymentItemAmount extends StatelessWidget {
             );
 
             return Column(
-              mainAxisAlignment:
-                  _paymentMinutiae.feeSat == 0 || _paymentMinutiae.status == PaymentState.pending
-                      ? MainAxisAlignment.center
-                      : MainAxisAlignment.spaceAround,
+              mainAxisAlignment: paymentData.feeSat == 0 || paymentData.status == PaymentState.pending
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   hideBalance
                       ? texts.wallet_dashboard_payment_item_balance_hide
-                      : _paymentMinutiae.paymentType == PaymentType.receive
+                      : paymentData.paymentType == PaymentType.receive
                           ? texts.wallet_dashboard_payment_item_balance_positive(amount)
                           : texts.wallet_dashboard_payment_item_balance_negative(amount),
                   style: themeData.paymentItemAmountTextStyle,
                 ),
-                (fee == 0 || _paymentMinutiae.status == PaymentState.pending)
+                (fee == 0 || paymentData.status == PaymentState.pending)
                     ? const SizedBox()
                     : Text(
                         hideBalance
