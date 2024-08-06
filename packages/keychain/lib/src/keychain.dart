@@ -1,7 +1,12 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class KeyChain {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage(
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock,
+      groupId: "group.${const String.fromEnvironment("APP_ID_PREFIX")}.com.breez.liquid.lBreez",
+    ),
+  );
 
   Future<String?> read(String key) {
     return _storage.read(key: key);
