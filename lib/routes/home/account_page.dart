@@ -81,8 +81,12 @@ class AccountPage extends StatelessWidget {
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: FixedSliverDelegate(
-                    _bottomPlaceholderSpace(context, filteredPayments),
-                    child: Container(),
+                    _bottomPlaceholderSpace(
+                      context,
+                      paymentFilters.hasDateFilters,
+                      filteredPayments.length,
+                    ),
+                    child: const SizedBox.shrink(),
                   ),
                 ),
               );
@@ -126,16 +130,15 @@ class AccountPage extends StatelessWidget {
 
   double _bottomPlaceholderSpace(
     BuildContext context,
-    List<PaymentData> payments,
+    bool hasDateFilters,
+    int paymentsSize,
   ) {
-    if (payments.isEmpty) return 0.0;
-    double listHeightSpace =
-        MediaQuery.of(context).size.height - kMinExtent - kToolbarHeight - _kFilterMaxSize - 25.0;
-    const endDate = null;
-    double dateFilterSpace = endDate != null ? 0.65 : 0.0;
-    double bottomPlaceholderSpace =
-        (listHeightSpace - (_kPaymentListItemHeight + 8) * (payments.length + 1 + dateFilterSpace))
-            .clamp(0.0, listHeightSpace);
-    return bottomPlaceholderSpace;
+    if (paymentsSize == 0) return 0.0;
+
+    final screenSize = MediaQuery.of(context).size;
+    double listHeightSpace = screenSize.height - kMinExtent - kToolbarHeight - _kFilterMaxSize - 25.0;
+    double dateFilterSpace = hasDateFilters ? 0.65 : 0.0;
+    double requiredSpace = (_kPaymentListItemHeight + 8) * (paymentsSize + 1 + dateFilterSpace);
+    return (listHeightSpace - requiredSpace).clamp(0.0, listHeightSpace);
   }
 }
