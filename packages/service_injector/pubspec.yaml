@@ -28,4 +28,4 @@ dependencies:
 
   logging: ^1.2.0
   rxdart: ^0.28.0
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.3.0

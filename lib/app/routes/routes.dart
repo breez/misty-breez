@@ -25,7 +25,6 @@ final _log = Logger("Routes");
 Route? onGenerateRoute({
   required RouteSettings settings,
   required GlobalKey<NavigatorState> homeNavigatorKey,
-  required accountState,
 }) {
   _log.info("New route: ${settings.name}");
   switch (settings.name) {
@@ -36,7 +35,7 @@ Route? onGenerateRoute({
       );
     case SplashPage.routeName:
       return FadeInRoute(
-        builder: (_) => SplashPage(isInitial: accountState.initial),
+        builder: (_) => const SplashPage(),
         settings: settings,
       );
     case LockScreen.routeName:
