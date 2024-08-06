@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 final _log = Logger("NodeConnectivityHandler");
 
 class NodeConnectivityHandler extends Handler {
-  StreamSubscription<AccountState>? _subscription;
+  StreamSubscription<SdkConnectivityState?>? _subscription;
   Flushbar? _flushbar;
 
   @override
@@ -20,12 +20,10 @@ class NodeConnectivityHandler extends Handler {
     super.init(contextProvider);
     _subscription = contextProvider
         .getBuildContext()!
-        .read<AccountCubit>()
+        .read<SdkConnectivityCubit>()
         .stream
-        .distinct((previous, next) =>
-            previous.connectionStatus == next.connectionStatus ||
-            next.connectionStatus == ConnectionStatus.connecting)
-        .listen((a) => _listen(a.connectionStatus));
+        .distinct((previous, next) => previous == next || next == SdkConnectivityState.connecting)
+        .listen(_listen);
   }
 
   @override
@@ -36,11 +34,11 @@ class NodeConnectivityHandler extends Handler {
     _flushbar = null;
   }
 
-  void _listen(ConnectionStatus? connectionStatus) async {
+  void _listen(SdkConnectivityState? connectionStatus) async {
     _log.info("Received accountState $connectionStatus");
-    if (connectionStatus == ConnectionStatus.disconnected) {
+    if (connectionStatus == SdkConnectivityState.disconnected) {
       showDisconnectedFlushbar();
-    } else if (connectionStatus == ConnectionStatus.connected) {
+    } else if (connectionStatus == SdkConnectivityState.connected) {
       dismissFlushbarIfNeed();
     }
   }
@@ -87,11 +85,11 @@ class NodeConnectivityHandler extends Handler {
       ),
       mainButton: SizedBox(
         width: 64,
-        child: StreamBuilder<AccountState>(
-          stream: context.read<AccountCubit>().stream,
+        child: StreamBuilder<SdkConnectivityState>(
+          stream: context.read<SdkConnectivityCubit>().stream,
           builder: (context, snapshot) {
             var themeData = Theme.of(context);
-            if (snapshot.hasData && snapshot.data?.connectionStatus == ConnectionStatus.connecting) {
+            if (snapshot.hasData && snapshot.data! == SdkConnectivityState.connecting) {
               return Center(
                 child: SizedBox(
                   height: 24.0,
@@ -104,10 +102,10 @@ class NodeConnectivityHandler extends Handler {
             }
             return TextButton(
               onPressed: () {
-                final accountCubit = context.read<AccountCubit>();
+                final connectionService = context.read<SdkConnectivityCubit>();
                 Future.delayed(const Duration(milliseconds: 500), () async {
                   try {
-                    await accountCubit.connect();
+                    await connectionService.reconnect();
                   } catch (error) {
                     _log.severe("Failed to reconnect");
                     rethrow;

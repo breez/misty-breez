@@ -1,5 +1,4 @@
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -16,9 +15,9 @@ class SecurityMnemonicsManagement extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return BlocBuilder<AccountCubit, AccountState>(
-      builder: (context, account) {
-        final isVerified = (account.verificationStatus == VerificationStatus.verified);
+    return BlocBuilder<SecurityCubit, SecurityState>(
+      builder: (context, securityState) {
+        final isVerified = (securityState.verificationStatus == VerificationStatus.verified);
 
         return ListTile(
           title: Text(
@@ -36,9 +35,10 @@ class SecurityMnemonicsManagement extends StatelessWidget {
             size: 30.0,
           ),
           onTap: () async {
-            await ServiceInjector().keychain.read(CredentialsManager.accountMnemonic).then(
+            // TODO - Handle the case accountMnemonic is null as restoreMnemonic is now nullable
+            await ServiceInjector().credentialsManager.restoreMnemonic().then(
               (accountMnemonic) {
-                if (account.verificationStatus == VerificationStatus.unverified) {
+                if (securityState.verificationStatus == VerificationStatus.unverified) {
                   Navigator.pushNamed(
                     context,
                     MnemonicsConfirmationPage.routeName,

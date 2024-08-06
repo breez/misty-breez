@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/payment_item.dart';
 
 const _kBottomPadding = 8.0;
 
 class PaymentsList extends StatelessWidget {
-  final List<PaymentMinutiae> _payments;
+  final List<PaymentData> _payments;
   final double _itemHeight;
   final GlobalKey firstPaymentItemKey;
 

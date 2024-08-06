@@ -5,16 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
 
 class PaymentDetailsDialogAmount extends StatelessWidget {
-  final PaymentMinutiae paymentMinutiae;
+  final PaymentData paymentData;
   final AutoSizeGroup? labelAutoSizeGroup;
   final AutoSizeGroup? valueAutoSizeGroup;
 
   const PaymentDetailsDialogAmount({
     super.key,
-    required this.paymentMinutiae,
+    required this.paymentData,
     this.labelAutoSizeGroup,
     this.valueAutoSizeGroup,
   });
@@ -47,9 +46,9 @@ class PaymentDetailsDialogAmount extends StatelessWidget {
               child: BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, state) {
                 final amountSats = BitcoinCurrency.fromTickerSymbol(
                   state.bitcoinTicker,
-                ).format(paymentMinutiae.amountSat);
+                ).format(paymentData.amountSat);
                 return AutoSizeText(
-                  paymentMinutiae.paymentType == PaymentType.receive
+                  paymentData.paymentType == PaymentType.receive
                       ? texts.payment_details_dialog_amount_positive(amountSats)
                       : texts.payment_details_dialog_amount_negative(amountSats),
                   style: themeData.primaryTextTheme.displaySmall,

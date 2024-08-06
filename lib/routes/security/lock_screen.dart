@@ -11,6 +11,7 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/route.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:service_injector/service_injector.dart';
 
 class LockScreen extends StatelessWidget {
   final AuthorizedAction authorizedAction;
@@ -94,6 +95,7 @@ enum AuthorizedAction {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final injector = ServiceInjector();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: Directory(
       join((await getApplicationDocumentsDirectory()).path, "preview_storage"),
@@ -103,7 +105,7 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<SecurityCubit>(
-          create: (BuildContext context) => SecurityCubit(),
+          create: (BuildContext context) => SecurityCubit(injector.keychain),
         ),
       ],
       child: MaterialApp(

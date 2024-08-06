@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/widgets/shareable_payment_row.dart';
 
 class PaymentDetailsBolt11 extends StatelessWidget {
-  final PaymentMinutiae paymentMinutiae;
+  final PaymentData paymentData;
 
-  const PaymentDetailsBolt11({super.key, required this.paymentMinutiae});
+  const PaymentDetailsBolt11({super.key, required this.paymentData});
 
   @override
   Widget build(BuildContext context) {
-    final bolt11 = paymentMinutiae.bolt11;
+    final bolt11 = paymentData.bolt11;
     if (bolt11.isNotEmpty) {
       return ShareablePaymentRow(
         title: "Invoice",

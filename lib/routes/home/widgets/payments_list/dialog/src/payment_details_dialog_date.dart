@@ -1,17 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/models/payment_minutiae.dart';
+import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/utils/date.dart';
 
 class PaymentDetailsDialogDate extends StatelessWidget {
-  final PaymentMinutiae paymentMinutiae;
+  final PaymentData paymentData;
   final AutoSizeGroup? labelAutoSizeGroup;
   final AutoSizeGroup? valueAutoSizeGroup;
 
   const PaymentDetailsDialogDate({
     super.key,
-    required this.paymentMinutiae,
+    required this.paymentData,
     this.labelAutoSizeGroup,
     this.valueAutoSizeGroup,
   });
@@ -43,7 +43,7 @@ class PaymentDetailsDialogDate extends StatelessWidget {
               reverse: true,
               padding: const EdgeInsets.only(left: 8.0),
               child: AutoSizeText(
-                BreezDateUtils.formatYearMonthDayHourMinute(paymentMinutiae.paymentTime),
+                BreezDateUtils.formatYearMonthDayHourMinute(paymentData.paymentTime),
                 style: themeData.primaryTextTheme.displaySmall,
                 textAlign: TextAlign.right,
                 maxLines: 1,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
 class PaymentFilters implements Exception {
@@ -40,4 +42,7 @@ class PaymentFilters implements Exception {
       "toTimestamp": toTimestamp,
     };
   }
+
+  @override
+  String toString() => jsonEncode(toJson());
 }

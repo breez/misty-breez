@@ -4,7 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:intl/intl.dart';
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/cubit/payments/payments_state.dart';
 import 'package:l_breez/utils/date.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 final _log = Logger("CsvExporter");
 
 class CsvExporter {
-  final AccountCubit accountCubit;
+  final PaymentsState paymentsState;
   final bool usesUtcTime;
   final String fiatCurrency;
   final DateTime? startDate;
@@ -20,7 +20,7 @@ class CsvExporter {
 
   CsvExporter(
     this.fiatCurrency,
-    this.accountCubit, {
+    this.paymentsState, {
     this.usesUtcTime = false,
     this.startDate,
     this.endDate,
@@ -38,7 +38,7 @@ class CsvExporter {
     // Fetch CurrencyState map values accordingly
     _log.info("generating payment list started");
     final texts = getSystemAppLocalizations();
-    final filteredPayments = accountCubit.filterPaymentList();
+    final filteredPayments = paymentsState.filteredPayments;
     List<List<String>> paymentList = List.generate(filteredPayments.length, (index) {
       List<String> paymentItem = [];
       final data = filteredPayments.elementAt(index);
@@ -84,7 +84,7 @@ class CsvExporter {
 
   String _appendFilterInformation(String filePath) {
     _log.info("add filter information to path started $filePath");
-    final paymentTypeFilters = accountCubit.state.paymentFilters.filters;
+    final paymentTypeFilters = paymentsState.paymentFilters.filters;
     if (paymentTypeFilters != null && paymentTypeFilters != PaymentType.values) {
       loop:
       for (var filter in paymentTypeFilters) {

@@ -8,8 +8,9 @@ import 'package:logging/logging.dart';
 
 export 'backup_state.dart';
 
+final _log = Logger("BackupCubit");
+
 class BackupCubit extends Cubit<BackupState?> {
-  final _log = Logger("BackupCubit");
   final BreezSDKLiquid _liquidSDK;
 
   BackupCubit(this._liquidSDK) : super(null);

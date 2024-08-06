@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
-// TODO: Liquid - Remove if having PaymentMinutiae is not necessary with Liquid SDK
+// TODO: Liquid - Remove if having PaymentData is not necessary with Liquid SDK
 /// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
 /// info to avoid conflicts and make it easier to differentiate when reading the code.
-class PaymentMinutiae {
+class PaymentData {
   final String id;
   final String title;
   final String description;
@@ -20,7 +22,7 @@ class PaymentMinutiae {
   final int refundTxAmountSat;
   final PaymentState status;
 
-  const PaymentMinutiae({
+  const PaymentData({
     required this.id,
     required this.title,
     required this.description,
@@ -37,10 +39,10 @@ class PaymentMinutiae {
     required this.status,
   });
 
-  factory PaymentMinutiae.fromPayment(Payment payment, BreezTranslations texts) {
-    final factory = _PaymentMinutiaeFactory(payment, texts);
+  factory PaymentData.fromPayment(Payment payment, BreezTranslations texts) {
+    final factory = _PaymentDataFactory(payment, texts);
 
-    return PaymentMinutiae(
+    return PaymentData(
       id: payment.txId ?? "",
       title: factory._title(),
       description: payment.description,
@@ -58,20 +60,52 @@ class PaymentMinutiae {
     );
   }
 
-  @override
-  String toString() {
-    return 'PaymentMinutiae(id: $id, title: $title, description: $description, preimage: $preimage,'
-        ' bolt11: $bolt11, swapId: $swapId, txId: $txId, refundTxId: $refundTxId, paymentType: $paymentType,'
-        ' paymentTime: $paymentTime, feeSat: $feeSat, amountSat: $amountSat, '
-        'refundTxAmountSat: $refundTxAmountSat, status: $status)';
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'preimage': preimage,
+      'bolt11': bolt11,
+      'swapId': swapId,
+      'txId': txId,
+      'refundTxId': refundTxId,
+      'paymentType': paymentType.name,
+      'paymentTime': paymentTime.toIso8601String(),
+      'feeSat': feeSat,
+      'amountSat': amountSat,
+      'refundTxAmountSat': refundTxAmountSat,
+      'status': status.name,
+    };
   }
+
+  factory PaymentData.fromJson(Map<String, dynamic> json) {
+    return PaymentData(
+        id: json['id'],
+        title: json['title'],
+        description: json['description'],
+        preimage: json['preimage'],
+        bolt11: json['bolt11'],
+        swapId: json['swapId'],
+        txId: json['txId'],
+        refundTxId: json['refundTxId'],
+        paymentType: PaymentType.values.byName(json['paymentType']),
+        paymentTime: DateTime.parse(json['paymentTime']),
+        feeSat: json['feeSat'],
+        amountSat: json['amountSat'],
+        refundTxAmountSat: json['refundTxAmountSat'],
+        status: PaymentState.values.byName(json['status']));
+  }
+
+  @override
+  String toString() => jsonEncode(toJson());
 }
 
-class _PaymentMinutiaeFactory {
+class _PaymentDataFactory {
   final Payment _payment;
   final BreezTranslations _texts;
 
-  _PaymentMinutiaeFactory(this._payment, this._texts);
+  _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
     var title = "${_texts.wallet_dashboard_payment_item_no_title} Payment";
