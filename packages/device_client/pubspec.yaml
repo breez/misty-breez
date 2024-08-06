@@ -12,7 +12,7 @@ dependencies:
 
   clipboard_watcher: ^0.2.1
   logging: ^1.2.0
-  package_info_plus: ^8.0.0
+  package_info_plus: ^8.0.1
   rxdart: ^0.28.0
-  share_plus: ^9.0.0
-  shared_preferences: ^2.2.3
+  share_plus: ^10.0.0
+  shared_preferences: ^2.3.0
