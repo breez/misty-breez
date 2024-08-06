@@ -102,8 +102,8 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                     _hasError = false;
                   });
                   if (_formKey.currentState!.validate() && !_hasError) {
-                    final AccountCubit accountCubit = context.read();
-                    accountCubit.mnemonicsValidated();
+                    final securityCubit = context.read<SecurityCubit>();
+                    securityCubit.mnemonicsValidated();
                     Navigator.of(context).popUntil((route) {
                       bool shouldPop = false;
                       // Pop to where the verification flow has started from,

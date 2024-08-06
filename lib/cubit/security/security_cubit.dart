@@ -5,8 +5,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:keychain/keychain.dart';
 import 'package:l_breez/cubit/security/security_cubit.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
@@ -15,13 +15,17 @@ import 'package:logging/logging.dart';
 
 export 'security_state.dart';
 
+final _log = Logger("SecurityCubit");
+
+const String pinCodeKey = "pinCode";
+
 class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
-  final _log = Logger("LocalAuthenticationService");
+  final KeyChain keyChain;
+
   final _auth = LocalAuthentication();
-  final _secureStorage = const FlutterSecureStorage();
   Timer? _autoLock;
 
-  SecurityCubit() : super(const SecurityState.initial()) {
+  SecurityCubit(this.keyChain) : super(const SecurityState.initial()) {
     hydrate();
     FGBGEvents.stream.listen((event) {
       final lockInterval = state.lockInterval;
@@ -40,14 +44,12 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
   }
 
   Future setPin(String pin) async {
-    await _secureStorage.write(key: "pinCode", value: pin);
-    emit(state.copyWith(
-      pinStatus: PinStatus.enabled,
-    ));
+    await keyChain.write(pinCodeKey, pin);
+    emit(state.copyWith(pinStatus: PinStatus.enabled));
   }
 
   Future<bool> testPin(String pin) async {
-    final storedPin = await _secureStorage.read(key: "pinCode");
+    final storedPin = await keyChain.read(pinCodeKey);
     if (storedPin == null) {
       _setLockState(LockState.locked);
       throw SecurityStorageException();
@@ -56,10 +58,8 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
   }
 
   Future clearPin() async {
-    await _secureStorage.delete(key: "pinCode");
-    emit(state.copyWith(
-      pinStatus: PinStatus.disabled,
-    ));
+    await keyChain.delete(pinCodeKey);
+    emit(state.copyWith(pinStatus: PinStatus.disabled));
     _setLockState(LockState.unlocked);
   }
 
@@ -127,9 +127,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
   }
 
   void _setLockState(LockState lockState) {
-    emit(state.copyWith(
-      lockState: lockState,
-    ));
+    emit(state.copyWith(lockState: lockState));
   }
 
   @override
@@ -142,6 +140,10 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
   @override
   Map<String, dynamic>? toJson(SecurityState state) {
     return state.toJson();
+  }
+
+  void mnemonicsValidated() {
+    emit(state.copyWith(verificationStatus: VerificationStatus.verified));
   }
 }
 

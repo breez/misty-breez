@@ -20,7 +20,7 @@ dependencies:
       url: https://github.com/breez/breez-sdk-liquid-flutter
   logging: ^1.2.0
   rxdart: ^0.28.0
-  path_provider: ^2.1.3
+  path_provider: ^2.1.4
 
 dependency_overrides:
   # Comment-out to work with breez-sdk-liquid from git repository

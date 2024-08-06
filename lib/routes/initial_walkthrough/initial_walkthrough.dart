@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +13,8 @@ import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+final _log = Logger("InitialWalkthrough");
+
 class InitialWalkthroughPage extends StatefulWidget {
   static const routeName = "/intro";
 
@@ -25,7 +26,6 @@ class InitialWalkthroughPage extends StatefulWidget {
 
 class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  final _log = Logger("InitialWalkthrough");
   AnimationController? _controller;
   Animation<int>? _animation;
 
@@ -166,20 +166,24 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void connect({String? mnemonic}) async {
+    final connectionService = context.read<SdkConnectivityCubit>();
+    final securityCubit = context.read<SecurityCubit>();
+
     final isRestore = mnemonic != null;
     _log.info("${isRestore ? "Restore" : "Starting new"} node");
     final texts = context.texts();
-    final accountCubit = context.read<AccountCubit>();
     final navigator = Navigator.of(context);
     var loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
 
     final themeProvider = ThemeProvider.controllerOf(context);
     try {
-      await accountCubit.connect(
-        mnemonic: mnemonic ?? bip39.generateMnemonic(strength: 128),
-        isRestore: isRestore,
-      );
+      if (isRestore) {
+        await connectionService.restore(mnemonic: mnemonic);
+        securityCubit.mnemonicsValidated();
+      } else {
+        await connectionService.register();
+      }
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {
