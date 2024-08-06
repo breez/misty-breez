@@ -35,6 +35,7 @@ class SecurityMnemonicsManagement extends StatelessWidget {
             size: 30.0,
           ),
           onTap: () async {
+            // TODO - Handle the case accountMnemonic is null as restoreMnemonic is now nullable
             await ServiceInjector().credentialsManager.restoreMnemonic().then(
               (accountMnemonic) {
                 if (securityState.verificationStatus == VerificationStatus.unverified) {

@@ -11,8 +11,9 @@ import 'package:logging/logging.dart';
 
 export 'lnurl_state.dart';
 
+final _log = Logger("LnUrlCubit");
+
 class LnUrlCubit extends Cubit<LnUrlState> {
-  final _log = Logger("LnUrlCubit");
   final BreezSDKLiquid _liquidSdk;
 
   LnUrlCubit(this._liquidSdk) : super(LnUrlState.initial());
