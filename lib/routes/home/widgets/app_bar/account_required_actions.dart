@@ -31,12 +31,16 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
                   onTap: () async {
                     // TODO - Handle the case accountMnemonic is null as restoreMnemonic is now nullable
                     await ServiceInjector().credentialsManager.restoreMnemonic().then(
-                          (accountMnemonic) => Navigator.pushNamed(
+                      (accountMnemonic) {
+                        if (context.mounted) {
+                          return Navigator.pushNamed(
                             context,
                             MnemonicsConfirmationPage.routeName,
                             arguments: accountMnemonic,
-                          ),
-                        );
+                          );
+                        }
+                      },
+                    );
                   },
                 ),
               );

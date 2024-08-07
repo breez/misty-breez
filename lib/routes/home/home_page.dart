@@ -26,7 +26,6 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<HomeDrawerState> _drawerKey = GlobalKey<HomeDrawerState>();
   final GlobalKey firstPaymentItemKey = GlobalKey();
   final ScrollController scrollController = ScrollController();
   final handlers = <Handler>[];
@@ -66,7 +65,7 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
           ),
       child: PopScope(
         canPop: false,
-        onPopInvoked: (bool didPop) async {
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
           if (didPop) {
             return;
           }
@@ -95,18 +94,15 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               key: _scaffoldKey,
-              appBar: HomeAppBar(
-                themeData: themeData,
-                scaffoldKey: _scaffoldKey,
-              ),
+              appBar: HomeAppBar(themeData: themeData, scaffoldKey: _scaffoldKey),
               drawerEnableOpenDragGesture: true,
               drawerDragStartBehavior: DragStartBehavior.down,
               drawerEdgeDragWidth: mediaSize.width,
-              drawer: HomeDrawer(key: _drawerKey),
+              drawer: const HomeDrawer(),
               bottomNavigationBar: BottomActionsBar(firstPaymentItemKey),
               floatingActionButton: QrActionButton(firstPaymentItemKey),
               floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-              body: _drawerKey.currentState?.screen() ?? AccountPage(firstPaymentItemKey, scrollController),
+              body: AccountPage(firstPaymentItemKey, scrollController),
             ),
           ),
         ),

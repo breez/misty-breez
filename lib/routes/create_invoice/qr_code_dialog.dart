@@ -74,7 +74,9 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
         });
       }).catchError((e) {
         _log.warning("Failed to track payment", e);
-        showFlushbar(context, message: extractExceptionMessage(e, context.texts()));
+        if (mounted) {
+          showFlushbar(context, message: extractExceptionMessage(e, context.texts()));
+        }
         onFinish(false);
       });
     }

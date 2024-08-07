@@ -11,13 +11,15 @@ mixin AutoLockMixin<T extends StatefulWidget> on State<T> {
     final securityCubit = context.read<cubit.SecurityCubit>();
     securityCubit.stream.distinct().where((state) => state.lockState == cubit.LockState.locked).listen(
       (_) {
-        Navigator.of(context, rootNavigator: true).push(
-          FadeInRoute(
-            builder: (_) => const LockScreen(
-              authorizedAction: AuthorizedAction.popPage,
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).push(
+            FadeInRoute(
+              builder: (_) => const LockScreen(
+                authorizedAction: AuthorizedAction.popPage,
+              ),
             ),
-          ),
-        );
+          );
+        }
       },
     );
   }
