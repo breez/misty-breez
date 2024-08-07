@@ -2,9 +2,9 @@ name: device_client
 publish_to: none
 
 environment:
-  sdk: '>=3.4.0 <4.0.0'
+  sdk: '>=3.5.0 <4.0.0'
 
-  flutter: ">=3.22.0"
+  flutter: ">=3.24.0"
 
 dependencies:
   flutter:
@@ -15,4 +15,4 @@ dependencies:
   package_info_plus: ^8.0.1
   rxdart: ^0.28.0
   share_plus: ^10.0.0
-  shared_preferences: ^2.3.0
+  shared_preferences: ^2.3.1
