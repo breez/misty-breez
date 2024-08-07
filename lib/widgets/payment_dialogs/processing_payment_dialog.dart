@@ -110,7 +110,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         if (_currentRoute != null && _currentRoute!.isActive) {
           navigator.removeRoute(_currentRoute!);
         }
-        showFlushbar(context, message: extractExceptionMessage(err, texts));
+        if (mounted) {
+          showFlushbar(context, message: extractExceptionMessage(err, texts));
+        }
       }
     });
   }

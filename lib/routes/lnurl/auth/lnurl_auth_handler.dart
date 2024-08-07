@@ -17,7 +17,7 @@ Future<LNURLPageResult?> handleAuthRequest(
 ) async {
   return promptAreYouSure(context, null, LoginText(domain: reqData.domain)).then(
     (permitted) async {
-      if (permitted == true) {
+      if (permitted == true && context.mounted) {
         final texts = context.texts();
         final navigator = Navigator.of(context);
         final loaderRoute = createLoaderRoute(context);

@@ -38,22 +38,24 @@ class SecurityMnemonicsManagement extends StatelessWidget {
             // TODO - Handle the case accountMnemonic is null as restoreMnemonic is now nullable
             await ServiceInjector().credentialsManager.restoreMnemonic().then(
               (accountMnemonic) {
-                if (securityState.verificationStatus == VerificationStatus.unverified) {
-                  Navigator.pushNamed(
-                    context,
-                    MnemonicsConfirmationPage.routeName,
-                    arguments: accountMnemonic,
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    FadeInRoute(
-                      builder: (context) => MnemonicsPage(
-                        mnemonics: accountMnemonic!,
-                        viewMode: true,
+                if (context.mounted) {
+                  if (securityState.verificationStatus == VerificationStatus.unverified) {
+                    Navigator.pushNamed(
+                      context,
+                      MnemonicsConfirmationPage.routeName,
+                      arguments: accountMnemonic,
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      FadeInRoute(
+                        builder: (context) => MnemonicsPage(
+                          mnemonics: accountMnemonic!,
+                          viewMode: true,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 }
               },
             );

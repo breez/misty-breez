@@ -44,7 +44,7 @@ class QrActionButton extends StatelessWidget {
       (barcode) {
         _log.info("Scanned string: '$barcode'");
         if (barcode == null) return;
-        if (barcode.isEmpty) {
+        if (barcode.isEmpty && context.mounted) {
           showFlushbar(
             context,
             message: texts.qr_action_button_error_code_not_detected,

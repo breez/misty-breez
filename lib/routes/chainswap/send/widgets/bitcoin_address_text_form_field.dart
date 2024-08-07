@@ -32,19 +32,21 @@ class BitcoinAddressTextFormField extends TextFormField {
               onPressed: () async {
                 Navigator.pushNamed<String>(context, QRScan.routeName).then(
                   (barcode) {
-                    _log.info("Scanned string: '$barcode'");
-                    final address = BitcoinAddressInfo.fromScannedString(barcode).address;
-                    _log.info("BitcoinAddressInfoFromScannedString: '$address'");
-                    if (address == null) return;
-                    if (address.isEmpty) {
-                      showFlushbar(
-                        context,
-                        message: context.texts().withdraw_funds_error_qr_code_not_detected,
-                      );
-                      return;
+                    if (context.mounted) {
+                      _log.info("Scanned string: '$barcode'");
+                      final address = BitcoinAddressInfo.fromScannedString(barcode).address;
+                      _log.info("BitcoinAddressInfoFromScannedString: '$address'");
+                      if (address == null) return;
+                      if (address.isEmpty) {
+                        showFlushbar(
+                          context,
+                          message: context.texts().withdraw_funds_error_qr_code_not_detected,
+                        );
+                        return;
+                      }
+                      controller.text = address;
+                      _onAddressChanged(context, validatorHolder, address);
                     }
-                    controller.text = address;
-                    _onAddressChanged(context, validatorHolder, address);
                   },
                 );
               },

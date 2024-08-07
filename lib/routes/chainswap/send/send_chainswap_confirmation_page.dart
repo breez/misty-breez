@@ -90,13 +90,15 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
       amountSat: widget.amountSat,
     );
     _fetchFeeOptionsFuture.then((feeOptions) {
-      final accountState = context.read<AccountCubit>().state;
-      setState(() {
-        affordableFees = feeOptions
-            .where((f) => f.isAffordable(balanceSat: accountState.balance, amountSat: widget.amountSat))
-            .toList();
-        selectedFeeIndex = (affordableFees.length / 2).floor();
-      });
+      if (mounted) {
+        final accountState = context.read<AccountCubit>().state;
+        setState(() {
+          affordableFees = feeOptions
+              .where((f) => f.isAffordable(balanceSat: accountState.balance, amountSat: widget.amountSat))
+              .toList();
+          selectedFeeIndex = (affordableFees.length / 2).floor();
+        });
+      }
     }, onError: (error, stackTrace) {
       setState(() {
         affordableFees = <SendChainSwapFeeOption>[];

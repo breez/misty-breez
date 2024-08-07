@@ -43,13 +43,15 @@ class PaymentsFilterCalendar extends StatelessWidget {
                     context: context,
                     builder: (_) => CalendarDialog(firstDate!),
                   ).then((result) {
-                    final paymentsCubit = context.read<PaymentsCubit>();
-                    if (result != null) {
-                      paymentsCubit.changePaymentFilter(
-                        filters: filter,
-                        fromTimestamp: result[0].millisecondsSinceEpoch,
-                        toTimestamp: result[1].millisecondsSinceEpoch,
-                      );
+                    if (context.mounted) {
+                      final paymentsCubit = context.read<PaymentsCubit>();
+                      if (result != null) {
+                        paymentsCubit.changePaymentFilter(
+                          filters: filter,
+                          fromTimestamp: result[0].millisecondsSinceEpoch,
+                          toTimestamp: result[1].millisecondsSinceEpoch,
+                        );
+                      }
                     }
                   })
                 : ScaffoldMessenger.of(context).showSnackBar(
