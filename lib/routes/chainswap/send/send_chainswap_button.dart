@@ -38,7 +38,7 @@ class SendChainSwapButton extends StatelessWidget {
     var loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
     try {
-      final req = PayOnchainRequest(address: recipientAddress, prepareRes: preparePayOnchainResponse);
+      final req = PayOnchainRequest(address: recipientAddress, prepareResponse: preparePayOnchainResponse);
       await chainSwapCubit.payOnchain(req: req);
       navigator.pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
     } catch (e) {

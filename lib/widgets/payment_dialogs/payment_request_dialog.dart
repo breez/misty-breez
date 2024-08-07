@@ -81,7 +81,10 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         minHeight: minHeight,
         paymentFunc: () async {
           try {
-            final prepareSendResponse = await paymentsCubit.prepareSendPayment(widget.invoice.bolt11);
+            final prepareSendResponse = await paymentsCubit.prepareSendPayment(
+              destination: widget.invoice.bolt11,
+              amountSat: BigInt.from(_amountToPay!),
+            );
             return await paymentsCubit.sendPayment(prepareSendResponse);
           } catch (e) {
             rethrow;

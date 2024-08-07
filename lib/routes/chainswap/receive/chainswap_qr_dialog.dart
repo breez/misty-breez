@@ -19,14 +19,14 @@ import 'package:share_plus/share_plus.dart';
 final _log = Logger("QrCodeDialog");
 
 class ChainSwapQrDialog extends StatefulWidget {
-  final PrepareReceiveOnchainResponse prepareReceiveOnchainResponse;
-  final ReceiveOnchainResponse? receiveOnchainResponse;
+  final PrepareReceiveResponse prepareReceiveResponse;
+  final ReceivePaymentResponse? receivePaymentResponse;
   final Object? error;
   final Function(dynamic result) _onFinish;
 
   const ChainSwapQrDialog(
-    this.prepareReceiveOnchainResponse,
-    this.receiveOnchainResponse,
+    this.prepareReceiveResponse,
+    this.receivePaymentResponse,
     this.error,
     this._onFinish,
   );
@@ -64,9 +64,9 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
   @override
   void didUpdateWidget(covariant ChainSwapQrDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.receiveOnchainResponse?.address != oldWidget.receiveOnchainResponse?.address) {
+    if (widget.receivePaymentResponse?.destination != oldWidget.receivePaymentResponse?.destination) {
       var inputCubit = context.read<InputCubit>();
-      inputCubit.trackPayment(widget.receiveOnchainResponse!.bip21).then((value) {
+      inputCubit.trackPayment(widget.receivePaymentResponse!.destination).then((value) {
         Timer(const Duration(milliseconds: 1000), () {
           if (mounted) {
             _controller!.reverse();
@@ -108,7 +108,7 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
                         icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
                         color: themeData.primaryTextTheme.labelLarge!.color!,
                         onPressed: () {
-                          Share.share(widget.receiveOnchainResponse!.bip21);
+                          Share.share(widget.receivePaymentResponse!.destination);
                         },
                       ),
                     ),
@@ -123,7 +123,7 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
                         onPressed: () {
                           ServiceInjector()
                               .deviceClient
-                              .setClipboardText(widget.receiveOnchainResponse!.bip21);
+                              .setClipboardText(widget.receivePaymentResponse!.destination);
                           showFlushbar(
                             context,
                             message: texts.qr_code_dialog_copied,
@@ -146,23 +146,23 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
                       ? extractExceptionMessage(error, texts)
                       : texts.qr_code_dialog_warning_message_error,
                 ),
-                secondChild: widget.receiveOnchainResponse == null
+                secondChild: widget.receivePaymentResponse == null
                     ? const SizedBox()
                     : Column(
                         children: [
-                          InvoiceQR(bolt11: widget.receiveOnchainResponse!.bip21, bip21: true),
+                          InvoiceQR(bolt11: widget.receivePaymentResponse!.destination, bip21: true),
                           const Padding(padding: EdgeInsets.only(top: 16.0)),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: ExpiryAndFeeMessage(
-                              feesSat: widget.prepareReceiveOnchainResponse.feesSat.toInt(),
+                              feesSat: widget.prepareReceiveResponse.feesSat.toInt(),
                             ),
                           ),
                           const Padding(padding: EdgeInsets.only(top: 16.0)),
                         ],
                       ),
                 duration: const Duration(seconds: 1),
-                crossFadeState: widget.receiveOnchainResponse == null
+                crossFadeState: widget.receivePaymentResponse == null
                     ? CrossFadeState.showFirst
                     : CrossFadeState.showSecond,
               ),

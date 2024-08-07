@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -30,7 +31,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  //final _descriptionController = TextEditingController();
+  final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();
@@ -96,20 +97,18 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /* TODO: Liquid - Disabled until description is passable to payment data
-                      TextFormField(
-                        controller: _descriptionController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: 90,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        decoration: InputDecoration(
-                          labelText: texts.invoice_description_label,
-                        ),
-                        style:FieldTextStyle.textStyle,
-                      ),*/
-
+                          TextFormField(
+                            controller: _descriptionController,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.done,
+                            maxLines: null,
+                            maxLength: 90,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            decoration: InputDecoration(
+                              labelText: texts.invoice_description_label,
+                            ),
+                            style: FieldTextStyle.textStyle,
+                          ),
                           AmountFormField(
                             context: context,
                             texts: texts,
@@ -177,24 +176,25 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   Future _createSwap() async {
     final navigator = Navigator.of(context);
     final currentRoute = ModalRoute.of(navigator.context)!;
-    final chainSwapCubit = context.read<ChainSwapCubit>();
+    final paymentsCubit = context.read<PaymentsCubit>();
     final currencyCubit = context.read<CurrencyCubit>();
 
     final amountMsat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
-    final prepareReceiveOnchainRequest = PrepareReceiveOnchainRequest(
-      payerAmountSat: BigInt.from(amountMsat),
+    final prepareResponse = await paymentsCubit.prepareReceivePayment(
+      paymentMethod: PaymentMethod.bitcoinAddress,
+      amountSat: BigInt.from(amountMsat),
     );
-    final prepareReceiveOnchainResponse = await chainSwapCubit.prepareReceiveOnchain(
-      req: prepareReceiveOnchainRequest,
+    final receivePaymentResponse = paymentsCubit.receivePayment(
+      prepareResponse: prepareResponse,
+      description: _descriptionController.text,
     );
-    final receiveOnchainResponse = chainSwapCubit.receiveOnchain(req: prepareReceiveOnchainResponse);
 
     navigator.pop();
     Widget dialog = FutureBuilder(
-      future: receiveOnchainResponse,
-      builder: (BuildContext context, AsyncSnapshot<ReceiveOnchainResponse> snapshot) {
+      future: receivePaymentResponse,
+      builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
         return ChainSwapQrDialog(
-          prepareReceiveOnchainResponse,
+          prepareResponse,
           snapshot.data,
           snapshot.error,
           (result) {
