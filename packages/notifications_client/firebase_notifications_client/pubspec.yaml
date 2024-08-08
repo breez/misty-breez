@@ -2,7 +2,7 @@ name: firebase_notifications_client
 publish_to: none
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
   firebase_messaging: ^15.0.4
