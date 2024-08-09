@@ -99,6 +99,44 @@ class PaymentData {
 
   @override
   String toString() => jsonEncode(toJson());
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        title,
+        description,
+        preimage,
+        bolt11,
+        swapId,
+        txId,
+        refundTxId,
+        paymentType,
+        paymentTime,
+        feeSat,
+        amountSat,
+        refundTxAmountSat,
+        status,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PaymentData &&
+            id == other.id &&
+            title == other.title &&
+            description == other.description &&
+            preimage == other.preimage &&
+            bolt11 == other.bolt11 &&
+            swapId == other.swapId &&
+            txId == other.txId &&
+            refundTxId == other.refundTxId &&
+            paymentType == other.paymentType &&
+            paymentTime == other.paymentTime &&
+            feeSat == other.feeSat &&
+            amountSat == other.amountSat &&
+            refundTxAmountSat == other.refundTxAmountSat &&
+            status == other.status;
+  }
 }
 
 class _PaymentDataFactory {
