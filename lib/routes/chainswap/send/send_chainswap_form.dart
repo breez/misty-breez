@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
 import 'package:l_breez/routes/chainswap/send/widgets/bitcoin_address_text_form_field.dart';
@@ -91,27 +95,35 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
                 widget.paymentLimits.send.maxSat,
               ),
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                texts.withdraw_funds_use_all_funds,
-                style: const TextStyle(color: Colors.white),
-                maxLines: 1,
-              ),
-              trailing: Switch(
-                value: widget.withdrawMaxValue,
-                activeColor: Colors.white,
-                onChanged: (bool value) async {
-                  setState(() {
-                    widget.onChanged(value);
-                    if (value) {
-                      _setAmount(widget.paymentLimits.send.maxSat.toInt());
-                    } else {
-                      widget.amountController.text = "";
-                    }
-                  });
-                },
-              ),
+            BlocBuilder<AccountCubit, AccountState>(
+              builder: (context, accountState) {
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    texts.withdraw_funds_use_all_funds,
+                    style: const TextStyle(color: Colors.white),
+                    maxLines: 1,
+                  ),
+                  trailing: Switch(
+                    value: widget.withdrawMaxValue,
+                    activeColor: Colors.white,
+                    onChanged: (bool value) async {
+                      setState(() {
+                        widget.onChanged(value);
+                        if (value) {
+                          final maxEligibleFunds = min(
+                            accountState.balance,
+                            widget.paymentLimits.send.maxSat.toInt(),
+                          );
+                          _setAmount(maxEligibleFunds);
+                        } else {
+                          widget.amountController.text = "";
+                        }
+                      });
+                    },
+                  ),
+                );
+              },
             ),
           ],
         ),
