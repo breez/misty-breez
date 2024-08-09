@@ -106,6 +106,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: 3.22.3 # Pinned until resource linking issues on Android is resolved with 3.24
           cache: true
 
       - name: Set up just

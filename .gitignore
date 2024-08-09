@@ -48,3 +48,6 @@ ios/Runner/GoogleService-Info.plist
 
 # Compile-time variables
 config.json
+
+# fenv file
+.flutter-version
