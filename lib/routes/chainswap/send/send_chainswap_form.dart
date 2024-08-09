@@ -75,7 +75,6 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
         child: Column(
           children: [
             BitcoinAddressTextFormField(
-              context: context,
               controller: widget.addressController,
               validatorHolder: _validatorHolder,
             ),
