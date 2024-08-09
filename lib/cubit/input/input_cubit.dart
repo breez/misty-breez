@@ -34,9 +34,9 @@ class InputCubit extends Cubit<InputState> {
     _watchIncomingInvoices().listen((inputState) => emit(inputState!));
   }
 
-  void addIncomingInput(String bolt11, InputSource source) {
-    _log.info("addIncomingInput: $bolt11 source: $source");
-    _decodeInvoiceController.add(InputData(data: bolt11, source: source));
+  void addIncomingInput(String input, InputSource source) {
+    _log.info("addIncomingInput: $input source: $source");
+    _decodeInvoiceController.add(InputData(data: input, source: source));
   }
 
   Future trackPayment(String? invoiceId) async {
