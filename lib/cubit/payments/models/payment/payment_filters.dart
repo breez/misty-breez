@@ -15,6 +15,10 @@ class PaymentFilters implements Exception {
 
   PaymentFilters.initial() : this();
 
+  bool get hasTypeFilters => filters != null && filters != PaymentType.values;
+
+  bool get hasDateFilters => fromTimestamp != null || toTimestamp != null;
+
   PaymentFilters copyWith({
     List<PaymentType>? filters,
     int? fromTimestamp,

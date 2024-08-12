@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
 
 class PaymentsState {
@@ -22,32 +21,23 @@ class PaymentsState {
   }
 
   List<PaymentData> get filteredPayments {
-    List<PaymentData> filteredPayments = payments;
-    // Apply date filters, if there's any
-    if (paymentFilters.fromTimestamp != null || paymentFilters.toTimestamp != null) {
-      filteredPayments = payments.where((paymentData) {
-        final fromTimestamp = paymentFilters.fromTimestamp;
-        final toTimestamp = paymentFilters.toTimestamp;
-        final milliseconds = paymentData.paymentTime.millisecondsSinceEpoch;
-        if (fromTimestamp != null && toTimestamp != null) {
-          return fromTimestamp < milliseconds && milliseconds < toTimestamp;
-        }
-        return true;
-      }).toList();
-    }
+    if (paymentFilters == PaymentFilters.initial()) return payments;
 
-    // Apply payment type filters, if there's any
-    final paymentTypeFilters = paymentFilters.filters;
-    if (paymentTypeFilters != null && paymentTypeFilters != PaymentType.values) {
-      filteredPayments = filteredPayments.where((paymentData) {
-        return paymentTypeFilters.any(
-          (filter) {
-            return filter.name == paymentData.paymentType.name;
-          },
-        );
-      }).toList();
-    }
-    return filteredPayments;
+    final typeFilterSet =
+        paymentFilters.hasTypeFilters ? paymentFilters.filters!.map((filter) => filter.name).toSet() : null;
+
+    return payments.where(
+      (paymentData) {
+        final milliseconds = paymentData.paymentTime.millisecondsSinceEpoch;
+
+        final passDateFilter = !paymentFilters.hasDateFilters ||
+            (paymentFilters.fromTimestamp! < milliseconds && milliseconds < paymentFilters.toTimestamp!);
+
+        final passTypeFilter = typeFilterSet == null || typeFilterSet.contains(paymentData.paymentType.name);
+
+        return passDateFilter && passTypeFilter;
+      },
+    ).toList();
   }
 
   Map<String, dynamic>? toJson() {
