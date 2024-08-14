@@ -13,7 +13,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.$(TeamIdentifierPrefix)$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<string>group.F7R2LZH3W5.com.breez.liquid.lBreez</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
