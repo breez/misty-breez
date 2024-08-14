@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/cubit/webhook/webhook_state.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
@@ -20,7 +19,7 @@ final _log = Logger("LnAddressPage");
 class LnAddressPage extends StatefulWidget {
   static const routeName = "/ln_address";
 
-  const LnAddressPage();
+  const LnAddressPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -73,7 +72,7 @@ class LnAddressPageState extends State<LnAddressPage> {
             title: Text(texts.invoice_ln_address_title),
           ),
           body: webhookState.isLoading
-              ? AddressWidgetPlaceholder()
+              ? const AddressWidgetPlaceholder()
               : SingleChildScrollView(
                   child: Column(
                     children: [

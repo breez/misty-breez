@@ -573,7 +573,7 @@ packages:
     source: hosted
     version: "3.8.12"
   firebase_notifications_client:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "packages/notifications_client/firebase_notifications_client"
       relative: true

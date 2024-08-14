@@ -26,8 +26,8 @@ class WebhookCubit extends Cubit<WebhookState> {
     this._notifications,
   ) : super(WebhookState()) {
     _liquidSDK.walletInfoStream
-        .firstWhere((walletInfo) => walletInfo != null)
-        .then((walletInfo) => refreshLnurlPay(walletInfo: walletInfo!));
+        .first
+        .then((walletInfo) => refreshLnurlPay(walletInfo: walletInfo));
   }
 
   Future refreshLnurlPay({GetInfoResponse? walletInfo}) async {
