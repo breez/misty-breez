@@ -22,7 +22,7 @@ class FiatBalanceText extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    if (accountState.balance <= 0) {
+    if (!isAboveMinAmount(currencyState, accountState)) {
       return const SizedBox.shrink();
     }
 
