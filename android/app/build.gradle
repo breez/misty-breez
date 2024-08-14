@@ -27,19 +27,27 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.breez.liquid.l_breez"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdkVersion 34
+    ndkVersion flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 
     defaultConfig {
         applicationId = "com.breez.liquid.l_breez"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = 24
+        minSdkVersion 24 // Android 7.0
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
@@ -124,6 +132,16 @@ flutter {
 }
 
 dependencies {
-    // Import the Firebase BoM
-    implementation platform("com.google.firebase:firebase-bom:33.0.0")
+    implementation "androidx.core:core-ktx:1.12.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+    // Import FCM
+    implementation 'com.google.firebase:firebase-messaging:23.4.1'
+    // Import breez_sdk_liquid for notifications
+    implementation("net.java.dev.jna:jna:5.14.0@aar")
+    implementation("com.github.breez:breez-sdk-liquid:0.2.2-dev1") {
+        exclude group:"net.java.dev.jna"
+    }
+    // Logging
+    implementation 'org.tinylog:tinylog-api-kotlin:2.6.2'
+    implementation 'org.tinylog:tinylog-impl:2.6.2'
 }

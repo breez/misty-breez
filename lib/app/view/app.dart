@@ -40,6 +40,14 @@ class App extends StatelessWidget {
         BlocProvider<UserProfileCubit>(
           create: (BuildContext context) => UserProfileCubit(),
         ),
+        BlocProvider<WebhookCubit>(
+          lazy: false,
+          create: (BuildContext context) => WebhookCubit(
+            injector.liquidSDK,
+            injector.breezPreferences,
+            injector.notifications,
+          ),
+        ),
         BlocProvider<CurrencyCubit>(
           create: (BuildContext context) => CurrencyCubit(injector.liquidSDK),
         ),

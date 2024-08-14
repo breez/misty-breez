@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="foreground_service_notification_title">Misty Breez is running in the background</string>
+    <string name="lnurl_pay_metadata_plain_text">Pay to Misty Breez</string>
+</resources>
