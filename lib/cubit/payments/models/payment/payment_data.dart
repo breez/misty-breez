@@ -9,34 +9,28 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 class PaymentData {
   final String id;
   final String title;
-  final String description;
-  final String preimage;
-  final String bolt11;
-  final String swapId;
+  final String destination;
   final String txId;
-  final String refundTxId;
-  final PaymentType paymentType;
   final DateTime paymentTime;
-  final int feeSat;
   final int amountSat;
-  final int refundTxAmountSat;
+  final int feeSat;
+  final String description;
+  final PaymentType paymentType;
   final PaymentState status;
+  final PaymentDetails? details;
 
   const PaymentData({
     required this.id,
     required this.title,
-    required this.description,
-    required this.preimage,
-    required this.bolt11,
-    required this.swapId,
+    required this.destination,
     required this.txId,
-    required this.refundTxId,
-    required this.paymentType,
     required this.paymentTime,
-    required this.feeSat,
     required this.amountSat,
-    required this.refundTxAmountSat,
+    required this.feeSat,
+    required this.description,
+    required this.paymentType,
     required this.status,
+    this.details,
   });
 
   factory PaymentData.fromPayment(Payment payment, BreezTranslations texts) {
@@ -45,18 +39,15 @@ class PaymentData {
     return PaymentData(
       id: payment.txId ?? "",
       title: factory._title(),
-      description: payment.description,
-      preimage: payment.preimage ?? "",
-      bolt11: payment.bolt11 ?? "",
-      swapId: payment.swapId ?? "",
+      destination: payment.destination ?? "",
       txId: payment.txId ?? "",
-      refundTxId: payment.refundTxId ?? "",
-      paymentType: payment.paymentType,
       paymentTime: factory._paymentTime(),
-      feeSat: payment.feesSat.toInt(),
       amountSat: payment.amountSat.toInt(),
-      refundTxAmountSat: payment.refundTxAmountSat?.toInt() ?? 0,
+      feeSat: payment.feesSat.toInt(),
+      description: payment.description,
+      paymentType: payment.paymentType,
       status: payment.status,
+      details: payment.details,
     );
   }
 
@@ -64,37 +55,34 @@ class PaymentData {
     return {
       'id': id,
       'title': title,
-      'description': description,
-      'preimage': preimage,
-      'bolt11': bolt11,
-      'swapId': swapId,
+      'destination': destination,
       'txId': txId,
-      'refundTxId': refundTxId,
-      'paymentType': paymentType.name,
       'paymentTime': paymentTime.toIso8601String(),
-      'feeSat': feeSat,
       'amountSat': amountSat,
-      'refundTxAmountSat': refundTxAmountSat,
+      'feeSat': feeSat,
+      'description': description,
+      'paymentType': paymentType.name,
       'status': status.name,
+      // TODO: Deserialize PaymentDetails
+      'details': details,
     };
   }
 
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     return PaymentData(
-        id: json['id'],
-        title: json['title'],
-        description: json['description'],
-        preimage: json['preimage'],
-        bolt11: json['bolt11'],
-        swapId: json['swapId'],
-        txId: json['txId'],
-        refundTxId: json['refundTxId'],
-        paymentType: PaymentType.values.byName(json['paymentType']),
-        paymentTime: DateTime.parse(json['paymentTime']),
-        feeSat: json['feeSat'],
-        amountSat: json['amountSat'],
-        refundTxAmountSat: json['refundTxAmountSat'],
-        status: PaymentState.values.byName(json['status']));
+      id: json['id'],
+      title: json['title'],
+      destination: json['destination'],
+      txId: json['txId'],
+      paymentTime: DateTime.parse(json['paymentTime']),
+      amountSat: json['amountSat'],
+      feeSat: json['feeSat'],
+      description: json['description'],
+      paymentType: PaymentType.values.byName(json['paymentType']),
+      status: PaymentState.values.byName(json['status']),
+      // TODO: Serialize PaymentDetails
+      details: json['details'],
+    );
   }
 
   @override
