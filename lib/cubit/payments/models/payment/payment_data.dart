@@ -148,10 +148,6 @@ class _PaymentDataFactory {
   String _title() {
     var title = "${_texts.wallet_dashboard_payment_item_no_title} Payment";
     if (_payment.description.isNotEmpty) return _payment.description;
-    // TODO: Liquid SDK - Following matchers are kind of made obsolete with description not being empty
-    if (_payment.bolt11 != null) return "Lightning Payment";
-    if (_payment.refundTxId != null) return "Refund Transaction";
-    if (_payment.swapId != null) return "Chain Swap Transaction";
     return title;
   }
 
