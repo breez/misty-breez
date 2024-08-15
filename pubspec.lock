@@ -345,10 +345,10 @@ packages:
     dependency: transitive
     description:
       name: crypto
-      sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
+      sha256: ec30d999af904f33454ba22ed9a86162b35e52b44ac4807d1d93c288041d7d27
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.5"
   csv:
     dependency: "direct main"
     description:
@@ -956,10 +956,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: c0e72ecd170b00a5590bb71238d57dc8ad22ee14c60c6b0d1a4e05cafbc5db4b
+      sha256: "8c5abf0dcc24fe6e8e0b4a5c0b51a5cf30cefdf6407a3213dae61edc75a70f56"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.12+11"
+    version: "0.8.12+12"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -1282,10 +1282,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "490539678396d4c3c0b06efdaab75ae60675c3e0c66f72bc04c2e2c1e0e2abeb"
+      sha256: "6f01f8e37ec30b07bc424b4deabac37cacb1bc7e2e515ad74486039918a37eb7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.9"
+    version: "2.2.10"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -1504,10 +1504,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_foundation
-      sha256: "776786cff96324851b656777648f36ac772d88bc4c669acff97b7fce5de3c849"
+      sha256: c4b35f6cb8f63c147312c054ce7c2254c8066745125264f0c88739c417fc9d9f
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.2"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -1773,10 +1773,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "94d8ad05f44c6d4e2ffe5567ab4d741b82d62e3c8e288cc1fcea45965edf47c9"
+      sha256: f0c73347dfcfa5b3db8bc06e1502668265d39c08f310c29bff4e28eea9699f79
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.8"
+    version: "6.3.9"
   url_launcher_ios:
     dependency: transitive
     description:
