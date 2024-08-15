@@ -4,7 +4,8 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:intl/intl.dart';
-import 'package:l_breez/cubit/payments/payments_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 import 'package:l_breez/utils/date.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
@@ -46,7 +47,8 @@ class CsvExporter {
       paymentItem.add(BreezDateUtils.formatYearMonthDayHourMinute(paymentInfo.paymentTime));
       paymentItem.add(paymentInfo.title);
       paymentItem.add(paymentInfo.amountSat.toString());
-      paymentItem.add(paymentInfo.preimage);
+      // TODO: Add other payment details necessary for liquid & BTC payments.
+      paymentItem.add(_getPreimage(paymentInfo));
       paymentItem.add(paymentInfo.id);
       paymentItem.add(paymentInfo.feeSat.toString());
       return paymentItem;
@@ -105,5 +107,13 @@ class CsvExporter {
     }
     _log.info("add filter information to path finished");
     return filePath;
+  }
+
+  String _getPreimage(PaymentData paymentInfo) {
+    return paymentInfo.details?.maybeMap(
+          lightning: (details) => details.preimage,
+          orElse: () => "",
+        ) ??
+        "";
   }
 }
