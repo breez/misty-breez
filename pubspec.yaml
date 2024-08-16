@@ -79,7 +79,7 @@ dependencies:
   hydrated_bloc: ^9.1.5
   image: ^4.2.0
   # Doesn't support: Linux Mac Windows
-  image_cropper: ^8.0.1
+  image_cropper: ^8.0.2
   # Doesn't support: Linux Mac Windows
   image_picker: ^1.1.2
   ini: ^2.1.0
@@ -101,10 +101,10 @@ dependencies:
   qr_flutter: ^4.1.0
   rxdart: ^0.28.0
   share_plus: ^10.0.0
-  shared_preferences: ^2.3.1
+  shared_preferences: ^2.3.2
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
   simple_animations: ^5.0.2
-  synchronized: ^3.1.0+1
+  synchronized: ^3.2.0
   theme_provider: ^0.6.0
   timeago: ^3.7.0
   # Doesn't support: Linux Mac Windows
