@@ -44,7 +44,9 @@ app.*.map.json
 
 # Firebase configuration files
 google-services.json
-ios/Runner/GoogleService-Info.plist
+GoogleService-Info.plist
+firebase_options.dart
+firebase.json
 
 # Compile-time variables
 config.json

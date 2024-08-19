@@ -34,16 +34,23 @@ l-breez/
 
 ```
 
-### Add firebase config files
-l-breez depends on google services and requires a configured firebase app.
+### Add Firebase configuration
 
-To create your firebase app follow the following link
-[create-firebase-project](https://firebase.google.com/docs/android/setup#create-firebase-project).
+FlutterFire CLI currently requires the official Firebase CLI to also be installed, see [Install the Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli) for how to install it.
 
-After creating the app follow the instructions to create the specific
-configuration file for your platform:
-* For android - place the google-services.json in the android/app folder
-* For iOS - place the GoogleService-info.plist under ios/Runner folder
+After installing FlutterFire CLI, log into Firebase using your Google account by running the following command:
+```
+firebase login
+```
+then, install the FlutterFire CLI by running the following command from any directory:
+```
+dart pub global activate flutterfire_cli
+```
+
+From Flutter project directory, run the following command to start the app configuration workflow:
+```
+flutterfire configure -p breez-technology -o lib/firebase/firebase_options.dart --platforms="android,ios" -a com.breez.liquid.l_breez -y
+```
 
 ### Android
 
