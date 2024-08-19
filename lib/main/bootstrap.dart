@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+// ignore: uri_does_not_exist
+import 'package:l_breez/firebase/firebase_options.dart';
 import 'package:l_breez/utils/date.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
@@ -33,7 +36,10 @@ Future<void> bootstrap(AppBuilder builder) async {
     await liquid_sdk.initialize();
     //initializeDateFormatting(Platform.localeName, null);
     BreezDateUtils.setupLocales();
-    //await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      // ignore: undefined_identifier
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     final injector = ServiceInjector();
     var breezLogger = injector.breezLogger;
     breezLogger.registerBreezSdkLiquidLogs(injector.liquidSDK);
