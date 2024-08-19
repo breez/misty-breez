@@ -1,24 +1,24 @@
-![Build Android workflow](https://github.com/breez/l-breez/actions/workflows/build-android.yml/badge.svg)
-![Build iOS workflow](https://github.com/breez/l-breez/actions/workflows/build-ios.yml/badge.svg)
-![CI workflow](https://github.com/breez/l-breez/actions/workflows/CI.yml/badge.svg)
+![Build Android workflow](https://github.com/breez/misty-breez/actions/workflows/build-android.yml/badge.svg)
+![Build iOS workflow](https://github.com/breez/misty-breez/actions/workflows/build-ios.yml/badge.svg)
+![CI workflow](https://github.com/breez/misty-breez/actions/workflows/CI.yml/badge.svg)
 
-# l-Breez
+# Misty Breez
 
 <img align="right" width="112" height="42" title="Breez logo"
 src="./src/images/liquid-logo-color.svg">
 
-l-Breez is a migration of [Breez mobile app](https://github.com/breez/breezmobile) to
+Misty Breez is a migration of [Breez mobile app](https://github.com/breez/breezmobile) to
 the [Breez Liquid SDK](https://github.com/breez/breez-sdk-liquid) infrastructure.
 
 ## Build
 
 ### Build the lightning_tookit plugin
 
-l-Breez depends on Breez Liquid SDK's [breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/dart) & [flutter_breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/flutter) plugin,
+Misty Breez depends on Breez Liquid SDK's [breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/dart) & [flutter_breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/flutter) plugin,
 so be sure to follow those instructions first.
 
 After successfully having build the `breez_liquid` & `flutter_breez_liquid` make sure that [breez-sdk-liquid](https://github.com/breez/breez-sdk-liquid)
-and l-breez are side by side like so:
+and misty-breez are side by side like so:
 
 ```
 breez-sdk-liquid/
@@ -28,7 +28,7 @@ breez-sdk-liquid/
 ├─ packages/
 │  ├─ dart/
 │  ├─ flutter/
-l-breez/
+misty-breez/
 ├─ android/
 ├─ ios/
 
@@ -70,7 +70,7 @@ ___
 ### Pre-commit `dart format` with Lefthook
 
 [Lefthook](https://github.com/evilmartians/lefthook) is a Git hooks manager that allows custom logic to be
-executed prior to Git commit or push. l-Breez comes with Lefthook configuration (`lefthook.yml`), but it must
+executed prior to Git commit or push. Misty Breez comes with Lefthook configuration (`lefthook.yml`), but it must
 be installed first.
 
 ### Installation
