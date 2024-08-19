@@ -202,9 +202,11 @@ jobs:
       - name: 🔨 Build Android binaries
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: |
-          just build-android
-          just link
+        run: just build-android
+
+      - name: Copy the binaries to the needed location
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        run: just copy-android
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez

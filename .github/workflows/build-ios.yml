@@ -207,9 +207,11 @@ jobs:
       - name: 🔨 Build iOS binaries
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: |
-          just build-apple
-          just link
+        run: just build-apple
+
+      - name: Copy the XCFramework to the needed location
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        run: just copy-apple
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
