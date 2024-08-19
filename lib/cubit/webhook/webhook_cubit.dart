@@ -1,20 +1,20 @@
 import 'dart:convert';
 
-import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/cubit/webhook/webhook_state.dart';
 import 'package:breez_preferences/breez_preferences.dart';
+import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:http/http.dart' as http;
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:l_breez/cubit/webhook/webhook_state.dart';
 import 'package:logging/logging.dart';
+
+final _log = Logger("WebhookCubit");
 
 class WebhookCubit extends Cubit<WebhookState> {
   static const notifierServiceURL = "https://notifier.breez.technology";
   static const lnurlServiceURL = "https://breez.fun";
-
-  final _log = Logger("WebhookCubit");
 
   final BreezSDKLiquid _liquidSDK;
   final BreezPreferences _breezPreferences;
@@ -25,9 +25,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     this._breezPreferences,
     this._notifications,
   ) : super(WebhookState()) {
-    _liquidSDK.walletInfoStream
-        .first
-        .then((walletInfo) => refreshLnurlPay(walletInfo: walletInfo));
+    _liquidSDK.walletInfoStream.first.then((walletInfo) => refreshLnurlPay(walletInfo: walletInfo));
   }
 
   Future refreshLnurlPay({GetInfoResponse? walletInfo}) async {
@@ -71,7 +69,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     }
     final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final req = SignMessageRequest(message: "$currentTime-$webhookUrl");
-    final signMessageRes = await _liquidSDK.instance?.signMessage(req: req);
+    final signMessageRes = _liquidSDK.instance?.signMessage(req: req);
     if (signMessageRes == null) {
       throw Exception("Missing signature");
     }
@@ -105,7 +103,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     final lnurlWebhookUrl = "$lnurlServiceURL/lnurlpay/${walletInfo.pubkey}";
     final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final req = SignMessageRequest(message: "$currentTime-$toInvalidate");
-    final signMessageRes = await _liquidSDK.instance?.signMessage(req: req);
+    final signMessageRes = _liquidSDK.instance?.signMessage(req: req);
     if (signMessageRes == null) {
       throw Exception("Missing signature");
     }
