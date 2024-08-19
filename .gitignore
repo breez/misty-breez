@@ -51,3 +51,6 @@ config.json
 
 # fenv file
 .flutter-version
+
+# Swift Package Manager
+Package.resolved
