@@ -54,7 +54,7 @@ class AppConfig {
       path = workingDir.path;
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       final sharedDirectory = await AppGroupDirectory.getAppGroupDirectory(
-        "group.${const String.fromEnvironment("APP_ID_PREFIX")}.com.breez.liquid.lBreez",
+        "group.F7R2LZH3W5.com.breez.liquid.lBreez",
       );
       if (sharedDirectory == null) {
         throw Exception("Could not get shared directory");

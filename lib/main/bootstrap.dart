@@ -49,7 +49,7 @@ Future<void> bootstrap(AppBuilder builder) async {
     // iOS Extension requirement
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       SharedPreferenceAppGroup.setAppGroup(
-        "group.${const String.fromEnvironment("APP_ID_PREFIX")}.com.breez.liquid.lBreez",
+        "group.F7R2LZH3W5.com.breez.liquid.lBreez",
       );
     }
 

@@ -99,6 +99,13 @@ jobs:
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal
 
+      - name: Install Protoc
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        uses: arduino/setup-protoc@v3
+        with:
+          version: "27.2"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 🏗️ Setup Java
         uses: actions/setup-java@v4
         with:
@@ -195,9 +202,11 @@ jobs:
       - name: 🔨 Build Android binaries
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: |
-          just build-android
-          just link
+        run: just build-android
+
+      - name: Copy the binaries to the needed location
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        run: just copy-android
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
