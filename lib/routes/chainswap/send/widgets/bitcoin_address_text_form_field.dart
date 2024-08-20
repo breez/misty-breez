@@ -1,7 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/models/bitcoin_address_info.dart';
 import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -10,76 +9,105 @@ import 'package:logging/logging.dart';
 
 final _log = Logger("BitcoinAddressTextFormField");
 
-class BitcoinAddressTextFormField extends TextFormField {
-  BitcoinAddressTextFormField({
-    super.key,
-    required BuildContext context,
-    required TextEditingController super.controller,
-    required ValidatorHolder validatorHolder,
-  }) : super(
-          decoration: InputDecoration(
-            labelText: context.texts().withdraw_funds_btc_address,
-            suffixIcon: IconButton(
-              alignment: Alignment.bottomRight,
-              icon: Image(
-                image: const AssetImage("src/icon/qr_scan.png"),
-                color: BreezColors.white[500],
-                fit: BoxFit.contain,
-                width: 24.0,
-                height: 24.0,
-              ),
-              tooltip: context.texts().withdraw_funds_scan_barcode,
-              onPressed: () async {
-                Navigator.pushNamed<String>(context, QRScan.routeName).then(
-                  (barcode) {
-                    if (context.mounted) {
-                      _log.info("Scanned string: '$barcode'");
-                      final address = BitcoinAddressInfo.fromScannedString(barcode).address;
-                      _log.info("BitcoinAddressInfoFromScannedString: '$address'");
-                      if (address == null) return;
-                      if (address.isEmpty) {
-                        showFlushbar(
-                          context,
-                          message: context.texts().withdraw_funds_error_qr_code_not_detected,
-                        );
-                        return;
-                      }
-                      controller.text = address;
-                      _onAddressChanged(context, validatorHolder, address);
-                    }
-                  },
-                );
-              },
-            ),
-          ),
-          style: FieldTextStyle.textStyle,
-          onChanged: (address) => _onAddressChanged(context, validatorHolder, address),
-          validator: (address) {
-            _log.info("validator called for $address, $validatorHolder");
-            if (validatorHolder.valid) {
-              return null;
-            } else {
-              return context.texts().withdraw_funds_error_invalid_address;
-            }
-          },
-        );
+class BitcoinAddressTextFormField extends StatefulWidget {
+  final TextEditingController controller;
+  final ValidatorHolder validatorHolder;
 
-  static void _onAddressChanged(
-    BuildContext context,
-    ValidatorHolder holder,
-    String address,
-  ) async {
-    _log.info("Address changed $address");
-    await holder.lock.synchronized(() async {
-      _log.info("Calling validator for $address");
-      holder.valid = await isValidBitcoinAddress(address);
-      _log.info("Address $address validation result $holder");
+  const BitcoinAddressTextFormField({
+    super.key,
+    required this.controller,
+    required this.validatorHolder,
+  });
+
+  @override
+  BitcoinAddressTextFormFieldState createState() => BitcoinAddressTextFormFieldState();
+}
+
+class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField> {
+  final _textFieldKey = GlobalKey<FormFieldState<String>>();
+  bool _autoValidate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.controller.text.isNotEmpty) {
+        await _validateAddress();
+        setState(() {
+          _autoValidate = true;
+        });
+      }
     });
   }
 
-  static Future<bool> isValidBitcoinAddress(String address) async {
+  @override
+  Widget build(BuildContext context) {
+    final texts = context.texts();
+
+    return TextFormField(
+      key: _textFieldKey,
+      controller: widget.controller,
+      autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
+      decoration: InputDecoration(
+        labelText: context.texts().withdraw_funds_btc_address,
+        suffixIcon: IconButton(
+          alignment: Alignment.bottomRight,
+          icon: Image(
+            image: const AssetImage("src/icon/qr_scan.png"),
+            color: BreezColors.white[500],
+            fit: BoxFit.contain,
+            width: 24.0,
+            height: 24.0,
+          ),
+          tooltip: texts.withdraw_funds_scan_barcode,
+          onPressed: () {
+            _log.info("Start qr code scan");
+            Navigator.pushNamed<String>(context, QRScan.routeName).then(
+              (barcode) async {
+                _log.info("Scanned string: '$barcode'");
+                if (barcode == null) return;
+                if (barcode.isEmpty && context.mounted) {
+                  showFlushbar(
+                    context,
+                    message: texts.withdraw_funds_error_qr_code_not_detected,
+                  );
+                  return;
+                }
+
+                widget.controller.text = barcode;
+                await _validateAddress();
+              },
+            );
+          },
+        ),
+      ),
+      style: FieldTextStyle.textStyle,
+      onChanged: (_) => _validateAddress(),
+      validator: (address) {
+        _log.info("validator called for $address");
+        if (address == null || address.isEmpty) {
+          return texts.withdraw_funds_error_invalid_address;
+        }
+        if (!widget.validatorHolder.valid) {
+          return texts.withdraw_funds_error_invalid_address;
+        }
+        return null;
+      },
+    );
+  }
+
+  Future<void> _validateAddress() async {
+    widget.validatorHolder.valid = await widget.validatorHolder.lock.synchronized(
+      () => isValidBitcoinAddress(),
+    );
+    if (mounted) {
+      _textFieldKey.currentState?.validate();
+    }
+  }
+
+  Future<bool> isValidBitcoinAddress() async {
     try {
-      final inputType = await parse(input: address);
+      final inputType = await parse(input: widget.controller.text);
       return inputType is InputType_BitcoinAddress;
     } catch (e) {
       return false;
