@@ -38,7 +38,7 @@ misty-breez/
 
 FlutterFire CLI currently requires the official Firebase CLI to also be installed, see [Install the Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli) for how to install it.
 
-After installing FlutterFire CLI, log into Firebase using your Google account by running the following command:
+After installing Firebase CLI, log into Firebase using your Google account by running the following command:
 ```
 firebase login
 ```
