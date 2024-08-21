@@ -210,6 +210,7 @@ jobs:
         run: just build-apple
 
       - name: Copy the XCFramework to the needed location
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just copy-apple
 

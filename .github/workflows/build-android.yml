@@ -205,6 +205,7 @@ jobs:
         run: just build-android
 
       - name: Copy the binaries to the needed location
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just copy-android
 
