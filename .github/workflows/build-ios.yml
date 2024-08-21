@@ -157,6 +157,11 @@ jobs:
           path: 'breez-sdk-liquid'
           ref: ${{ needs.setup.outputs.liquid-sdk-ref }}
 
+      - name: Use production .podspec
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/packages/flutter/ios/
+        run: mv flutter_breez_liquid.podspec.production flutter_breez_liquid.podspec
+
       - name: 🏗️ Rust cache
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         uses: Swatinem/rust-cache@v2
