@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
 class PaymentFilters implements Exception {
@@ -49,4 +50,20 @@ class PaymentFilters implements Exception {
 
   @override
   String toString() => jsonEncode(toJson());
+
+  @override
+  int get hashCode => Object.hash(
+        filters?.map((type) => type.hashCode).toList() ?? [],
+        fromTimestamp,
+        toTimestamp,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PaymentFilters &&
+            listEquals(filters, other.filters) &&
+            fromTimestamp == other.fromTimestamp &&
+            toTimestamp == other.toTimestamp;
+  }
 }

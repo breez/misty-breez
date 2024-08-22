@@ -43,17 +43,12 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
       _liquidSdk.paymentsStream,
       paymentFiltersStream,
       (payments, paymentFilters) {
-        return PaymentsState(
+        return state.copyWith(
           payments: payments.map((e) => PaymentData.fromPayment(e, texts)).toList(),
           paymentFilters: paymentFilters,
         );
       },
-    ).distinct().listen(_updatePaymentsState);
-  }
-
-  void _updatePaymentsState(newState) {
-    _log.info("_updatePaymentsState\nPaymentsState changed: $newState");
-    emit(newState);
+    ).distinct().listen((newState) => emit(newState));
   }
 
   Future<PrepareSendResponse> prepareSendPayment(String invoice) async {

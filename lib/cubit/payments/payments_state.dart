@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
 
 class PaymentsState {
@@ -56,4 +57,18 @@ class PaymentsState {
 
   @override
   String toString() => jsonEncode(toJson());
+
+  @override
+  int get hashCode => Object.hash(
+        payments.map((payment) => payment.hashCode).toList(),
+        paymentFilters.hashCode,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PaymentsState &&
+            listEquals(payments, other.payments) &&
+            paymentFilters == other.paymentFilters;
+  }
 }
