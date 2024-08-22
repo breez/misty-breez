@@ -76,6 +76,13 @@ jobs:
       P12_BASE64: ${{secrets.P12_BASE64}}
       P12_PASSWORD: ${{secrets.P12_PASSWORD}}
       GOOGLE_SERVICES_IOS: ${{secrets.GOOGLE_SERVICES_IOS}}
+      FIREBASE_PROJECT: breez-technology
+      FIREBASE_ANDROID_PACKAGE_NAME: com.breez.liquid.l_breez
+      FIREBASE_IOS_BUNDLE_ID: com.breez.liquid.lBreez
+      # A bug causes 'flutterfire configure' to require app id's for non-selected platforms on CI workflows https://github.com/invertase/flutterfire_cli/issues/233
+      # If the app id does not exists on project, 'flutterfire configure' automatically create an app with that app id, that is why an existing app id is used here.
+      FIREBASE_PLACEHOLDER_APP_ID: com.breez.liquid.lBreez
+      GOOGLE_APPLICATION_CREDENTIALS_BASE64: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BASE64 }}
     steps:
       - name: 🏗️ Setup l-breez repository
         uses: actions/checkout@v4
@@ -125,6 +132,21 @@ jobs:
         uses: bluefireteam/melos-action@v3
         with:
           run-bootstrap: false
+
+      - name: Set up Firebase CLI
+        run: sudo npm i -g firebase-tools
+
+      - name: Decode Google Application Credentials
+        working-directory: lbreez
+        run: base64 --decode <<< $GOOGLE_APPLICATION_CREDENTIALS_BASE64 > google-application-credentials.json
+
+      - name: Set up FlutterFire
+        working-directory: lbreez
+        run: dart pub global activate flutterfire_cli
+
+      - name: Configure Firebase
+        working-directory: lbreez
+        run: flutterfire configure -p $FIREBASE_PROJECT -o lib/firebase/firebase_options.dart --platforms="android,ios" -a $FIREBASE_ANDROID_PACKAGE_NAME -i $FIREBASE_IOS_BUNDLE_ID -m $FIREBASE_PLACEHOLDER_APP_ID -w $FIREBASE_PLACEHOLDER_APP_ID -x $FIREBASE_PLACEHOLDER_APP_ID --service-account=google-application-credentials.json -y
 
       - name: 🔐 Install Keychain keys
         run: |
@@ -292,3 +314,8 @@ jobs:
           altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
           ipa="$PWD/lbreez/build-output/ios/l_breez.ipa"
           "$altool" --upload-app --type ios --file "$ipa" --username $TESTFLIGHT_USERNAME --password $TESTFLIGHT_PASSWORD
+
+      - name: Remove Google Application Credentials file
+        if: success() || failure()
+        working-directory: lbreez
+        run: rm -f google-application-credentials.json
