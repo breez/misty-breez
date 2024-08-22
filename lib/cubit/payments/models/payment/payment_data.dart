@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 
 // TODO: Liquid - Remove if having PaymentData is not necessary with Liquid SDK
 /// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
@@ -14,7 +15,6 @@ class PaymentData {
   final DateTime paymentTime;
   final int amountSat;
   final int feeSat;
-  final String description;
   final PaymentType paymentType;
   final PaymentState status;
   final PaymentDetails? details;
@@ -27,7 +27,6 @@ class PaymentData {
     required this.paymentTime,
     required this.amountSat,
     required this.feeSat,
-    required this.description,
     required this.paymentType,
     required this.status,
     this.details,
@@ -44,7 +43,6 @@ class PaymentData {
       paymentTime: factory._paymentTime(),
       amountSat: payment.amountSat.toInt(),
       feeSat: payment.feesSat.toInt(),
-      description: payment.description,
       paymentType: payment.paymentType,
       status: payment.status,
       details: payment.details,
@@ -60,7 +58,6 @@ class PaymentData {
       'paymentTime': paymentTime.toIso8601String(),
       'amountSat': amountSat,
       'feeSat': feeSat,
-      'description': description,
       'paymentType': paymentType.name,
       'status': status.name,
       // TODO: Deserialize PaymentDetails
@@ -77,7 +74,6 @@ class PaymentData {
       paymentTime: DateTime.parse(json['paymentTime']),
       amountSat: json['amountSat'],
       feeSat: json['feeSat'],
-      description: json['description'],
       paymentType: PaymentType.values.byName(json['paymentType']),
       status: PaymentState.values.byName(json['status']),
       // TODO: Serialize PaymentDetails
@@ -135,7 +131,14 @@ class _PaymentDataFactory {
 
   String _title() {
     var title = "${_texts.wallet_dashboard_payment_item_no_title} Payment";
-    if (_payment.description.isNotEmpty) return _payment.description;
+    final description = _payment.details?.maybeMap(
+          lightning: (details) => details.description,
+          bitcoin: (details) => details.description,
+          liquid: (details) => details.description,
+          orElse: () => "",
+        ) ??
+        "";
+    if (description.isNotEmpty) return description;
     return title;
   }
 
