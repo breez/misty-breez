@@ -78,13 +78,13 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
 
   Future<PrepareReceiveResponse> prepareReceivePayment({
     required PaymentMethod paymentMethod,
-    BigInt? amountSat,
+    BigInt? payerAmountSat,
   }) async {
-    _log.info("prepareReceivePayment\nPreparing receive payment for $amountSat sats");
+    _log.info("prepareReceivePayment\nPreparing receive payment for $payerAmountSat sats");
     try {
       final req = PrepareReceiveRequest(
         paymentMethod: paymentMethod,
-        amountSat: amountSat,
+        payerAmountSat: payerAmountSat,
       );
       return _liquidSdk.instance!.prepareReceivePayment(req: req);
     } catch (e) {
@@ -99,7 +99,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
   }) async {
     _log.info(
       "receivePayment\nReceive ${prepareResponse.paymentMethod.name} payment for amount: "
-      "${prepareResponse.amountSat} (sats), fees: ${prepareResponse.feesSat} (sats), description: $description",
+      "${prepareResponse.payerAmountSat} (sats), fees: ${prepareResponse.feesSat} (sats), description: $description",
     );
     try {
       final req = ReceivePaymentRequest(prepareResponse: prepareResponse, description: description);

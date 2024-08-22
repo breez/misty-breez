@@ -244,10 +244,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     final paymentsCubit = context.read<PaymentsCubit>();
     final currencyCubit = context.read<CurrencyCubit>();
 
-    final amountMsat = BigInt.from(currencyCubit.state.bitcoinCurrency.parse(_amountController.text));
+    final payerAmountSat = BigInt.from(currencyCubit.state.bitcoinCurrency.parse(_amountController.text));
     final prepareReceiveResponse = await paymentsCubit.prepareReceivePayment(
       paymentMethod: PaymentMethod.lightning,
-      amountSat: amountMsat,
+      payerAmountSat: payerAmountSat,
     );
     final receivePaymentResponse = paymentsCubit.receivePayment(
       prepareResponse: prepareReceiveResponse,

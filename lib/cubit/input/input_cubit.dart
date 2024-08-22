@@ -52,7 +52,7 @@ class InputCubit extends Cubit<InputState> {
                 bitcoin: (details) => details.swapId,
                 lightning: (details) => details.bolt11,
                 // TODO: liquid: is unused as Liquid payments are not integrated yet
-                liquid: (details) => details.address,
+                liquid: (details) => details.destination,
                 orElse: () => "",
               ) ??
               "";

@@ -179,10 +179,10 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
     final paymentsCubit = context.read<PaymentsCubit>();
     final currencyCubit = context.read<CurrencyCubit>();
 
-    final amountMsat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
+    final payerAmountSat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
     final prepareResponse = await paymentsCubit.prepareReceivePayment(
       paymentMethod: PaymentMethod.bitcoinAddress,
-      amountSat: BigInt.from(amountMsat),
+      payerAmountSat: BigInt.from(payerAmountSat),
     );
     final receivePaymentResponse = paymentsCubit.receivePayment(
       prepareResponse: prepareResponse,
