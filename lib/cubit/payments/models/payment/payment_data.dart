@@ -60,8 +60,7 @@ class PaymentData {
       'feeSat': feeSat,
       'paymentType': paymentType.name,
       'status': status.name,
-      // TODO: Deserialize PaymentDetails
-      'details': details,
+      'details': details.toJson(),
     };
   }
 
@@ -76,8 +75,7 @@ class PaymentData {
       feeSat: json['feeSat'],
       paymentType: PaymentType.values.byName(json['paymentType']),
       status: PaymentState.values.byName(json['status']),
-      // TODO: Serialize PaymentDetails
-      details: json['details'],
+      details: PaymentDetailsFromJson.fromJson(json['details']),
     );
   }
 
