@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/invoice.dart';
-import 'package:l_breez/models/payment_details_extension.dart';
 import 'package:lightning_links/lightning_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
@@ -40,33 +39,24 @@ class InputCubit extends Cubit<InputState> {
     _decodeInvoiceController.add(InputData(data: input, source: source));
   }
 
-  Future trackPayment(String? trackedPaymentId) async {
-    _log.info("Tracking incoming payment: $trackedPaymentId");
-    await ServiceInjector().liquidSDK.paymentResultStream.firstWhere(
-      (payment) {
-        if (trackedPaymentId != null && trackedPaymentId.isNotEmpty) {
-          // TODO: Question: Which payment details fields correlate to  ReceivePaymentResponse.destination?
-          // Does PaymentDetails_Lightning.bolt11 correlate to ReceivePaymentResponse.destination?
-          // Does PaymentDetails_Bitcoin.swapId correlate to ReceivePaymentResponse.destination?
-          final receivedPaymentId = payment.details?.maybeMap(
-                bitcoin: (details) => details.swapId,
-                lightning: (details) => details.bolt11,
-                // TODO: liquid: is unused as Liquid payments are not integrated yet
-                liquid: (details) => details.destination,
-                orElse: () => "",
-              ) ??
-              "";
-          if (receivedPaymentId.isNotEmpty) {
-            if (receivedPaymentId == trackedPaymentId &&
-                (payment.status == PaymentState.pending || payment.status == PaymentState.complete)) {
-              _log.info("Payment Received! Id: $trackedPaymentId");
-              return true;
-            }
-          }
-        }
-        return false;
-      },
-    );
+  Future<void> trackPayment(String? paymentDestination) async {
+    if (paymentDestination == null || paymentDestination.isEmpty) {
+      _log.warning("Payment can't be tracked. Payment destination is empty.");
+      return;
+    }
+    _log.info("Tracking incoming payment: $paymentDestination");
+    await ServiceInjector().liquidSDK.paymentResultStream.firstWhere((payment) {
+      final receivedPaymentDestination = payment.destination ?? "";
+      final doesDestinationMatch = receivedPaymentDestination == paymentDestination;
+      final isPaymentReceived =
+          payment.status == PaymentState.pending || payment.status == PaymentState.complete;
+
+      if (doesDestinationMatch && isPaymentReceived) {
+        _log.info("Payment Received! Destination: ${payment.destination}, Status: ${payment.status}");
+        return true;
+      }
+      return false;
+    });
   }
 
   Stream<InputState?> _watchIncomingInvoices() {
