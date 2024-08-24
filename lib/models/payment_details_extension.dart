@@ -79,3 +79,41 @@ extension PaymentDetailsFromJson on PaymentDetails? {
     }
   }
 }
+
+extension PaymentDetailsExtension on PaymentDetails? {
+  bool equals(PaymentDetails? other) {
+    if (identical(this, other)) return true;
+
+    return other.runtimeType == runtimeType &&
+        other.maybeMap(
+          lightning: (o) =>
+              o.swapId == (this as PaymentDetails_Lightning).swapId &&
+              o.description == (this as PaymentDetails_Lightning).description &&
+              o.preimage == (this as PaymentDetails_Lightning).preimage &&
+              o.bolt11 == (this as PaymentDetails_Lightning).bolt11 &&
+              o.refundTxId == (this as PaymentDetails_Lightning).refundTxId &&
+              o.refundTxAmountSat == (this as PaymentDetails_Lightning).refundTxAmountSat,
+          liquid: (o) =>
+              o.destination == (this as PaymentDetails_Liquid).destination &&
+              o.description == (this as PaymentDetails_Liquid).description,
+          bitcoin: (o) =>
+              o.swapId == (this as PaymentDetails_Bitcoin).swapId &&
+              o.description == (this as PaymentDetails_Bitcoin).description &&
+              o.refundTxId == (this as PaymentDetails_Bitcoin).refundTxId &&
+              o.refundTxAmountSat == (this as PaymentDetails_Bitcoin).refundTxAmountSat,
+          orElse: () => this == other,
+        );
+  }
+}
+
+extension PaymentDetailsHashCode on PaymentDetails? {
+  int calculateHashCode() {
+    return maybeMap(
+      lightning: (o) =>
+          Object.hash(o.swapId, o.description, o.preimage, o.bolt11, o.refundTxId, o.refundTxAmountSat),
+      liquid: (o) => Object.hash(o.destination, o.description),
+      bitcoin: (o) => Object.hash(o.swapId, o.description, o.refundTxId, o.refundTxAmountSat),
+      orElse: () => 0,
+    );
+  }
+}

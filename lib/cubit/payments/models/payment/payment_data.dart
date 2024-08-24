@@ -86,18 +86,14 @@ class PaymentData {
   int get hashCode => Object.hash(
         id,
         title,
-        description,
-        preimage,
-        bolt11,
-        swapId,
+        destination,
         txId,
-        refundTxId,
-        paymentType,
         paymentTime,
-        feeSat,
         amountSat,
-        refundTxAmountSat,
+        feeSat,
+        paymentType,
         status,
+        details.calculateHashCode(),
       );
 
   @override
@@ -106,18 +102,14 @@ class PaymentData {
         other is PaymentData &&
             id == other.id &&
             title == other.title &&
-            description == other.description &&
-            preimage == other.preimage &&
-            bolt11 == other.bolt11 &&
-            swapId == other.swapId &&
+            destination == other.destination &&
             txId == other.txId &&
-            refundTxId == other.refundTxId &&
-            paymentType == other.paymentType &&
             paymentTime == other.paymentTime &&
-            feeSat == other.feeSat &&
+            paymentType == other.paymentType &&
             amountSat == other.amountSat &&
-            refundTxAmountSat == other.refundTxAmountSat &&
-            status == other.status;
+            feeSat == other.feeSat &&
+            status == other.status &&
+            details.equals(other.details);
   }
 }
 
