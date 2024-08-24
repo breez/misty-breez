@@ -1,5 +1,6 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
+// TODO: Ensure that any changes to [PaymentDetails] are reflected here on each extension.
 extension PaymentDetailsMaybeMapExtension on PaymentDetails? {
   T maybeMap<T>({
     T Function(PaymentDetails_Bitcoin details)? bitcoin,
@@ -82,27 +83,26 @@ extension PaymentDetailsFromJson on PaymentDetails? {
 
 extension PaymentDetailsExtension on PaymentDetails? {
   bool equals(PaymentDetails? other) {
-    if (identical(this, other)) return true;
-
-    return other.runtimeType == runtimeType &&
-        other.maybeMap(
-          lightning: (o) =>
-              o.swapId == (this as PaymentDetails_Lightning).swapId &&
-              o.description == (this as PaymentDetails_Lightning).description &&
-              o.preimage == (this as PaymentDetails_Lightning).preimage &&
-              o.bolt11 == (this as PaymentDetails_Lightning).bolt11 &&
-              o.refundTxId == (this as PaymentDetails_Lightning).refundTxId &&
-              o.refundTxAmountSat == (this as PaymentDetails_Lightning).refundTxAmountSat,
-          liquid: (o) =>
-              o.destination == (this as PaymentDetails_Liquid).destination &&
-              o.description == (this as PaymentDetails_Liquid).description,
-          bitcoin: (o) =>
-              o.swapId == (this as PaymentDetails_Bitcoin).swapId &&
-              o.description == (this as PaymentDetails_Bitcoin).description &&
-              o.refundTxId == (this as PaymentDetails_Bitcoin).refundTxId &&
-              o.refundTxAmountSat == (this as PaymentDetails_Bitcoin).refundTxAmountSat,
-          orElse: () => this == other,
-        );
+    return (identical(this, other)) ||
+        other.runtimeType == runtimeType &&
+            other.maybeMap(
+              lightning: (o) =>
+                  o.swapId == (this as PaymentDetails_Lightning).swapId &&
+                  o.description == (this as PaymentDetails_Lightning).description &&
+                  o.preimage == (this as PaymentDetails_Lightning).preimage &&
+                  o.bolt11 == (this as PaymentDetails_Lightning).bolt11 &&
+                  o.refundTxId == (this as PaymentDetails_Lightning).refundTxId &&
+                  o.refundTxAmountSat == (this as PaymentDetails_Lightning).refundTxAmountSat,
+              liquid: (o) =>
+                  o.destination == (this as PaymentDetails_Liquid).destination &&
+                  o.description == (this as PaymentDetails_Liquid).description,
+              bitcoin: (o) =>
+                  o.swapId == (this as PaymentDetails_Bitcoin).swapId &&
+                  o.description == (this as PaymentDetails_Bitcoin).description &&
+                  o.refundTxId == (this as PaymentDetails_Bitcoin).refundTxId &&
+                  o.refundTxAmountSat == (this as PaymentDetails_Bitcoin).refundTxAmountSat,
+              orElse: () => this == other,
+            );
   }
 }
 
