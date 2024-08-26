@@ -244,13 +244,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     final paymentsCubit = context.read<PaymentsCubit>();
     final currencyCubit = context.read<CurrencyCubit>();
 
-    final amountMsat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
-    final prepareReceiveResponse = await paymentsCubit.prepareReceivePayment(amountMsat);
-    final receivePaymentRequest = ReceivePaymentRequest(
-      prepareRes: prepareReceiveResponse,
+    final payerAmountSat = BigInt.from(currencyCubit.state.bitcoinCurrency.parse(_amountController.text));
+    final prepareReceiveResponse = await paymentsCubit.prepareReceivePayment(
+      paymentMethod: PaymentMethod.lightning,
+      payerAmountSat: payerAmountSat,
+    );
+    final receivePaymentResponse = paymentsCubit.receivePayment(
+      prepareResponse: prepareReceiveResponse,
       description: _descriptionController.text,
     );
-    final receivePaymentResponse = paymentsCubit.receivePayment(receivePaymentRequest);
 
     navigator.pop();
     Widget dialog = FutureBuilder(

@@ -32,18 +32,6 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     return await _liquidSdk.instance!.payOnchain(req: req);
   }
 
-  Future<PrepareReceiveOnchainResponse> prepareReceiveOnchain({
-    required PrepareReceiveOnchainRequest req,
-  }) async {
-    return await _liquidSdk.instance!.prepareReceiveOnchain(req: req);
-  }
-
-  Future<ReceiveOnchainResponse> receiveOnchain({
-    required PrepareReceiveOnchainResponse req,
-  }) async {
-    return await _liquidSdk.instance!.receiveOnchain(req: req);
-  }
-
   Future<RefundResponse> refund({
     required RefundRequest req,
   }) async {

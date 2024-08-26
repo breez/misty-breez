@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:l_breez/cubit/payments/models/payment/payment_data.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 import 'package:l_breez/widgets/shareable_payment_row.dart';
 
 class PaymentDetailsSwapId extends StatelessWidget {
@@ -9,13 +10,19 @@ class PaymentDetailsSwapId extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final swapId = paymentData.swapId;
-    return swapId.isNotEmpty
-        ? ShareablePaymentRow(
-            // TODO: Move this message to Breez-Translations
-            title: "Swap ID",
-            sharedValue: swapId,
-          )
-        : const SizedBox.shrink();
+    final swapId = paymentData.details?.maybeMap(
+          bitcoin: (details) => details.swapId,
+          lightning: (details) => details.swapId,
+          orElse: () => "",
+        ) ??
+        "";
+
+    if (swapId.isEmpty) return const SizedBox.shrink();
+
+    return ShareablePaymentRow(
+      // TODO: Move this message to Breez-Translations
+      title: "Swap ID",
+      sharedValue: swapId,
+    );
   }
 }

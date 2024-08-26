@@ -1,6 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 import 'package:l_breez/widgets/shareable_payment_row.dart';
 
 class PaymentDetailsPreimage extends StatelessWidget {
@@ -10,16 +11,18 @@ class PaymentDetailsPreimage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final paymentPreimage = paymentData.details?.maybeMap(
+          lightning: (details) => details.preimage,
+          orElse: () => "",
+        ) ??
+        "";
 
-    final paymentPreimage = paymentData.preimage;
-    if (paymentPreimage.isNotEmpty) {
-      return ShareablePaymentRow(
-        title: texts.payment_details_dialog_single_info_pre_image,
-        sharedValue: paymentPreimage,
-      );
-    } else {
-      return Container();
-    }
+    if (paymentPreimage.isEmpty) return const SizedBox.shrink();
+
+    final texts = context.texts();
+    return ShareablePaymentRow(
+      title: texts.payment_details_dialog_single_info_pre_image,
+      sharedValue: paymentPreimage,
+    );
   }
 }

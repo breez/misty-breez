@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 
 // TODO: Liquid - Remove if having PaymentData is not necessary with Liquid SDK
 /// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
@@ -9,34 +10,26 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 class PaymentData {
   final String id;
   final String title;
-  final String description;
-  final String preimage;
-  final String bolt11;
-  final String swapId;
+  final String destination;
   final String txId;
-  final String refundTxId;
-  final PaymentType paymentType;
   final DateTime paymentTime;
-  final int feeSat;
   final int amountSat;
-  final int refundTxAmountSat;
+  final int feeSat;
+  final PaymentType paymentType;
   final PaymentState status;
+  final PaymentDetails? details;
 
   const PaymentData({
     required this.id,
     required this.title,
-    required this.description,
-    required this.preimage,
-    required this.bolt11,
-    required this.swapId,
+    required this.destination,
     required this.txId,
-    required this.refundTxId,
-    required this.paymentType,
     required this.paymentTime,
-    required this.feeSat,
     required this.amountSat,
-    required this.refundTxAmountSat,
+    required this.feeSat,
+    required this.paymentType,
     required this.status,
+    this.details,
   });
 
   factory PaymentData.fromPayment(Payment payment, BreezTranslations texts) {
@@ -45,18 +38,14 @@ class PaymentData {
     return PaymentData(
       id: payment.txId ?? "",
       title: factory._title(),
-      description: payment.description,
-      preimage: payment.preimage ?? "",
-      bolt11: payment.bolt11 ?? "",
-      swapId: payment.swapId ?? "",
+      destination: payment.destination ?? "",
       txId: payment.txId ?? "",
-      refundTxId: payment.refundTxId ?? "",
-      paymentType: payment.paymentType,
       paymentTime: factory._paymentTime(),
-      feeSat: payment.feesSat.toInt(),
       amountSat: payment.amountSat.toInt(),
-      refundTxAmountSat: payment.refundTxAmountSat?.toInt() ?? 0,
+      feeSat: payment.feesSat.toInt(),
+      paymentType: payment.paymentType,
       status: payment.status,
+      details: payment.details,
     );
   }
 
@@ -64,37 +53,30 @@ class PaymentData {
     return {
       'id': id,
       'title': title,
-      'description': description,
-      'preimage': preimage,
-      'bolt11': bolt11,
-      'swapId': swapId,
+      'destination': destination,
       'txId': txId,
-      'refundTxId': refundTxId,
-      'paymentType': paymentType.name,
       'paymentTime': paymentTime.toIso8601String(),
-      'feeSat': feeSat,
       'amountSat': amountSat,
-      'refundTxAmountSat': refundTxAmountSat,
+      'feeSat': feeSat,
+      'paymentType': paymentType.name,
       'status': status.name,
+      'details': details.toJson(),
     };
   }
 
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     return PaymentData(
-        id: json['id'],
-        title: json['title'],
-        description: json['description'],
-        preimage: json['preimage'],
-        bolt11: json['bolt11'],
-        swapId: json['swapId'],
-        txId: json['txId'],
-        refundTxId: json['refundTxId'],
-        paymentType: PaymentType.values.byName(json['paymentType']),
-        paymentTime: DateTime.parse(json['paymentTime']),
-        feeSat: json['feeSat'],
-        amountSat: json['amountSat'],
-        refundTxAmountSat: json['refundTxAmountSat'],
-        status: PaymentState.values.byName(json['status']));
+      id: json['id'],
+      title: json['title'],
+      destination: json['destination'],
+      txId: json['txId'],
+      paymentTime: DateTime.parse(json['paymentTime']),
+      amountSat: json['amountSat'],
+      feeSat: json['feeSat'],
+      paymentType: PaymentType.values.byName(json['paymentType']),
+      status: PaymentState.values.byName(json['status']),
+      details: PaymentDetailsFromJson.fromJson(json['details']),
+    );
   }
 
   @override
@@ -104,18 +86,14 @@ class PaymentData {
   int get hashCode => Object.hash(
         id,
         title,
-        description,
-        preimage,
-        bolt11,
-        swapId,
+        destination,
         txId,
-        refundTxId,
-        paymentType,
         paymentTime,
-        feeSat,
         amountSat,
-        refundTxAmountSat,
+        feeSat,
+        paymentType,
         status,
+        details.calculateHashCode(),
       );
 
   @override
@@ -124,18 +102,14 @@ class PaymentData {
         other is PaymentData &&
             id == other.id &&
             title == other.title &&
-            description == other.description &&
-            preimage == other.preimage &&
-            bolt11 == other.bolt11 &&
-            swapId == other.swapId &&
+            destination == other.destination &&
             txId == other.txId &&
-            refundTxId == other.refundTxId &&
-            paymentType == other.paymentType &&
             paymentTime == other.paymentTime &&
-            feeSat == other.feeSat &&
+            paymentType == other.paymentType &&
             amountSat == other.amountSat &&
-            refundTxAmountSat == other.refundTxAmountSat &&
-            status == other.status;
+            feeSat == other.feeSat &&
+            status == other.status &&
+            details.equals(other.details);
   }
 }
 
@@ -147,11 +121,14 @@ class _PaymentDataFactory {
 
   String _title() {
     var title = "${_texts.wallet_dashboard_payment_item_no_title} Payment";
-    if (_payment.description.isNotEmpty) return _payment.description;
-    // TODO: Liquid SDK - Following matchers are kind of made obsolete with description not being empty
-    if (_payment.bolt11 != null) return "Lightning Payment";
-    if (_payment.refundTxId != null) return "Refund Transaction";
-    if (_payment.swapId != null) return "Chain Swap Transaction";
+    final description = _payment.details?.maybeMap(
+          lightning: (details) => details.description,
+          bitcoin: (details) => details.description,
+          liquid: (details) => details.description,
+          orElse: () => "",
+        ) ??
+        "";
+    if (description.isNotEmpty) return description;
     return title;
   }
 

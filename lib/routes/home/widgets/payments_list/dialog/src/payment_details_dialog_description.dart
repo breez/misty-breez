@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 
 class PaymentDetailsDialogDescription extends StatelessWidget {
   final PaymentData paymentData;
@@ -12,7 +13,13 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
     final themeData = Theme.of(context);
 
     final title = paymentData.title;
-    final description = paymentData.description;
+    final description = paymentData.details?.maybeMap(
+          lightning: (details) => details.description,
+          bitcoin: (details) => details.description,
+          liquid: (details) => details.description,
+          orElse: () => "",
+        ) ??
+        "";
     if (description.isEmpty || title == description) {
       return const SizedBox.shrink();
     }

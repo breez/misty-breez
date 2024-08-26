@@ -39,21 +39,24 @@ class InputCubit extends Cubit<InputState> {
     _decodeInvoiceController.add(InputData(data: input, source: source));
   }
 
-  Future trackPayment(String? invoiceId) async {
-    _log.info("Tracking incoming payment: $invoiceId");
-    await ServiceInjector().liquidSDK.paymentResultStream.firstWhere(
-      (payment) {
-        if (invoiceId != null && invoiceId.isNotEmpty) {
-          if (payment.swapId == invoiceId &&
-              (payment.status == PaymentState.pending || payment.status == PaymentState.complete)) {
-            _log.info("Payment Received! Id: $invoiceId");
-            return true;
-          }
-        }
+  Future<void> trackPayment(String? paymentDestination) async {
+    if (paymentDestination == null || paymentDestination.isEmpty) {
+      _log.warning("Payment can't be tracked. Payment destination is empty.");
+      return;
+    }
+    _log.info("Tracking incoming payment: $paymentDestination");
+    await ServiceInjector().liquidSDK.paymentResultStream.firstWhere((payment) {
+      final receivedPaymentDestination = payment.destination ?? "";
+      final doesDestinationMatch = receivedPaymentDestination == paymentDestination;
+      final isPaymentReceived =
+          payment.status == PaymentState.pending || payment.status == PaymentState.complete;
 
-        return false;
-      },
-    );
+      if (doesDestinationMatch && isPaymentReceived) {
+        _log.info("Payment Received! Destination: ${payment.destination}, Status: ${payment.status}");
+        return true;
+      }
+      return false;
+    });
   }
 
   Stream<InputState?> _watchIncomingInvoices() {

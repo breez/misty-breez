@@ -19,13 +19,13 @@ import 'package:share_plus/share_plus.dart';
 final _log = Logger("QrCodeDialog");
 
 class QrCodeDialog extends StatefulWidget {
-  final PrepareReceivePaymentResponse prepareReceivePaymentResponse;
+  final PrepareReceiveResponse prepareReceiveResponse;
   final ReceivePaymentResponse? receivePaymentResponse;
   final Object? error;
   final Function(dynamic result) _onFinish;
 
   const QrCodeDialog(
-    this.prepareReceivePaymentResponse,
+    this.prepareReceiveResponse,
     this.receivePaymentResponse,
     this.error,
     this._onFinish,
@@ -64,9 +64,9 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
   @override
   void didUpdateWidget(covariant QrCodeDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.receivePaymentResponse?.id != oldWidget.receivePaymentResponse?.id) {
+    if (widget.receivePaymentResponse?.destination != oldWidget.receivePaymentResponse?.destination) {
       final inputCubit = context.read<InputCubit>();
-      inputCubit.trackPayment(widget.receivePaymentResponse!.id).then((value) {
+      inputCubit.trackPayment(widget.receivePaymentResponse!.destination).then((value) {
         Timer(const Duration(milliseconds: 1000), () {
           if (mounted) {
             _controller!.reverse();
@@ -108,7 +108,7 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
                         icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
                         color: themeData.primaryTextTheme.labelLarge!.color!,
                         onPressed: () {
-                          Share.share(widget.receivePaymentResponse!.invoice);
+                          Share.share(widget.receivePaymentResponse!.destination);
                         },
                       ),
                     ),
@@ -123,7 +123,7 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
                         onPressed: () {
                           ServiceInjector()
                               .deviceClient
-                              .setClipboardText(widget.receivePaymentResponse!.invoice);
+                              .setClipboardText(widget.receivePaymentResponse!.destination);
                           showFlushbar(
                             context,
                             message: texts.qr_code_dialog_copied,
@@ -150,12 +150,12 @@ class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderSta
                     ? const SizedBox()
                     : Column(
                         children: [
-                          InvoiceQR(bolt11: widget.receivePaymentResponse!.invoice),
+                          InvoiceQR(bolt11: widget.receivePaymentResponse!.destination),
                           const Padding(padding: EdgeInsets.only(top: 16.0)),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: ExpiryAndFeeMessage(
-                              feesSat: widget.prepareReceivePaymentResponse.feesSat.toInt(),
+                              feesSat: widget.prepareReceiveResponse.feesSat.toInt(),
                             ),
                           ),
                           const Padding(padding: EdgeInsets.only(top: 16.0)),

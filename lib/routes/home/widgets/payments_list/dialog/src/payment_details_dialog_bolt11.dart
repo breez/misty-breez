@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 import 'package:l_breez/widgets/shareable_payment_row.dart';
 
 class PaymentDetailsBolt11 extends StatelessWidget {
@@ -9,14 +10,17 @@ class PaymentDetailsBolt11 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bolt11 = paymentData.bolt11;
-    if (bolt11.isNotEmpty) {
-      return ShareablePaymentRow(
-        title: "Invoice",
-        sharedValue: bolt11,
-      );
-    } else {
-      return Container();
-    }
+    final bolt11 = paymentData.details?.maybeMap(
+          lightning: (details) => details.bolt11,
+          orElse: () => "",
+        ) ??
+        "";
+
+    if (bolt11.isEmpty) return const SizedBox.shrink();
+
+    return ShareablePaymentRow(
+      title: "Invoice",
+      sharedValue: bolt11,
+    );
   }
 }
