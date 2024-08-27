@@ -25,7 +25,7 @@ class SuccessfulPaymentDialog extends StatelessWidget {
                   iconSize: 24.0,
                   color: themeData.appBarTheme.actionsIconTheme!.color,
                   icon: SvgPicture.asset(
-                    "src/icon/printer.svg",
+                    "assets/icons/printer.svg",
                     colorFilter: ColorFilter.mode(
                       themeData.appBarTheme.actionsIconTheme!.color!,
                       BlendMode.srcATop,

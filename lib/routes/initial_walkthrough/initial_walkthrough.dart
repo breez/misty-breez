@@ -82,7 +82,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         builder: (BuildContext context, Widget? child) {
                           String frame = _animation!.value.toString().padLeft(2, '0');
                           return Image.asset(
-                            'src/animations/welcome/frame_${frame}_delay-0.04s.png',
+                            'assets/animations/welcome/frame_${frame}_delay-0.04s.png',
                             gaplessPlayback: true,
                             fit: BoxFit.cover,
                           );

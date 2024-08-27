@@ -21,7 +21,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         const SizedBox(height: 8.0),
         ListTile(
           leading: const BottomActionItemImage(
-            iconAssetPath: "src/icon/paste.png",
+            iconAssetPath: "assets/icons/paste.png",
           ),
           title: Text(
             texts.bottom_action_bar_receive_invoice,
@@ -40,7 +40,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         ),
         ListTile(
           leading: const BottomActionItemImage(
-            iconAssetPath: "src/icon/bitcoin.png",
+            iconAssetPath: "assets/icons/bitcoin.png",
           ),
           title: Text(
             texts.bottom_action_bar_receive_btc_address,

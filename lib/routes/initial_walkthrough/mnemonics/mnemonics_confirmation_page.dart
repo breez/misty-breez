@@ -60,7 +60,7 @@ class MnemonicsImage extends StatelessWidget {
     return const Expanded(
       flex: 2,
       child: Image(
-        image: AssetImage("src/images/generate_backup_phrase.png"),
+        image: AssetImage("assets/images/generate_backup_phrase.png"),
         height: 100,
         width: 100,
       ),

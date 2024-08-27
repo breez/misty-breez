@@ -22,7 +22,7 @@ class QrActionButton extends StatelessWidget {
       child: FloatingActionButton(
         onPressed: () => _scanBarcode(context),
         child: SvgPicture.asset(
-          "src/icon/qr_scan.svg",
+          "assets/icons/qr_scan.svg",
           colorFilter: ColorFilter.mode(
             BreezColors.white[500]!,
             BlendMode.srcATop,

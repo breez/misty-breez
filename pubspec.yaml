@@ -132,14 +132,12 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - src/json/
-    - src/images/
-    - src/icon/
-    - src/icon/animals/
-    - src/icon/vendors/
-    - src/animations/welcome/
     - assets/images/
     - assets/icons/
+    - assets/icons/animals/
+    - assets/icons/vendors/
+    - assets/animations/
+    - assets/animations/welcome/
   fonts:
     - family: IBMPlexSans
       fonts:

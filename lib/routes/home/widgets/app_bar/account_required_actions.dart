@@ -59,7 +59,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
                   },
                   iconWidget: Rotator(
                     child: Image(
-                      image: const AssetImage("src/icon/sync.png"),
+                      image: const AssetImage("assets/icons/sync.png"),
                       color: themeData.appBarTheme.actionsIconTheme!.color!,
                     ),
                   ),

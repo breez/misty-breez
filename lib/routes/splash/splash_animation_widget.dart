@@ -7,7 +7,7 @@ class SplashAnimationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Image.asset(
-        'src/images/splash-animation.gif',
+        'assets/animations/splash-animation.gif',
         fit: BoxFit.contain,
         gaplessPlayback: true,
         width: MediaQuery.of(context).size.width / 3,

@@ -22,7 +22,7 @@ class CustomData {
 
 final CustomData blueThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.multiply,
-  loaderAssetPath: 'src/images/breez_loader_blue.gif',
+  loaderAssetPath: 'assets/animations/breez_loader_blue.gif',
   dashboardBgColor: Colors.white,
   pendingTextColor: const Color(0xff4D88EC),
   paymentListBgColor: const Color(0xFFf9f9f9),
@@ -32,7 +32,7 @@ final CustomData blueThemeCustomData = CustomData(
 
 final CustomData darkThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.multiply,
-  loaderAssetPath: 'src/images/breez_loader_dark.gif',
+  loaderAssetPath: 'assets/animations/breez_loader_dark.gif',
   pendingTextColor: const Color(0xff4D88EC),
   dashboardBgColor: const Color(0xFF0D1F33),
   paymentListBgColor: const Color(0xFF152a3d),

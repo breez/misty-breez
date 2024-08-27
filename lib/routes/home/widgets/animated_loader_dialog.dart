@@ -24,7 +24,7 @@ AlertDialog createAnimatedLoaderDialog(
           textAlign: TextAlign.center,
         ),
         Image.asset(
-          themeData.isLightTheme ? 'src/images/breez_loader_blue.gif' : 'src/images/breez_loader_dark.gif',
+          themeData.customData.loaderAssetPath,
           height: 64.0,
           gaplessPlayback: true,
         ),

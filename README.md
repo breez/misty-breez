@@ -5,7 +5,7 @@
 # Misty Breez
 
 <img align="right" width="112" height="42" title="Breez logo"
-src="./src/images/liquid-logo-color.svg">
+src="./assets/images/liquid-logo-color.svg">
 
 Misty Breez is a migration of [Breez mobile app](https://github.com/breez/breezmobile) to
 the [Breez Liquid SDK](https://github.com/breez/breez-sdk-liquid) infrastructure.

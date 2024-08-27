@@ -208,7 +208,7 @@ class NavigationDrawerFooter extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                "src/images/drawer_footer.svg",
+                "assets/images/drawer_footer.svg",
                 colorFilter: ColorFilter.mode(
                   BreezColors.white[500]!,
                   BlendMode.srcATop,
@@ -260,7 +260,7 @@ GestureDetector _buildThemeSwitch(
             child: Row(
               children: [
                 Image.asset(
-                  "src/icon/ic_lightmode.png",
+                  "assets/icons/ic_lightmode.png",
                   height: 24,
                   width: 24,
                   color: themeData.lightThemeSwitchIconColor,
@@ -273,7 +273,7 @@ GestureDetector _buildThemeSwitch(
                   ),
                 ),
                 ImageIcon(
-                  const AssetImage("src/icon/ic_darkmode.png"),
+                  const AssetImage("assets/icons/ic_darkmode.png"),
                   color: themeData.darkThemeSwitchIconColor,
                   size: 24.0,
                 ),

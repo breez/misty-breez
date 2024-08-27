@@ -53,7 +53,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
         suffixIcon: IconButton(
           alignment: Alignment.bottomRight,
           icon: Image(
-            image: const AssetImage("src/icon/qr_scan.png"),
+            image: const AssetImage("assets/icons/qr_scan.png"),
             color: BreezColors.white[500],
             fit: BoxFit.contain,
             width: 24.0,

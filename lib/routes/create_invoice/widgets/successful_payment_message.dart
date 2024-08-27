@@ -29,7 +29,7 @@ class SuccessfulPaymentMessage extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Image(
-              image: const AssetImage("src/icon/ic_done.png"),
+              image: const AssetImage("assets/icons/ic_done.png"),
               height: 48.0,
               color: themeData.primaryColorLight, // Circle Color
             ),

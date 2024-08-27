@@ -84,7 +84,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                     padding: const EdgeInsets.only(top: 21.0),
                     alignment: Alignment.bottomRight,
                     icon: Image(
-                      image: const AssetImage("src/icon/qr_scan.png"),
+                      image: const AssetImage("assets/icons/qr_scan.png"),
                       color: themeData.primaryIconTheme.color,
                       width: 24.0,
                       height: 24.0,

@@ -54,10 +54,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "9353761f3d8824e2d85733b078da2145be3534e9"
+      resolved-ref: "155dc5b49cac86b873c0fd37f5e3e99ad12beb15"
       url: "https://github.com/breez/breez-sdk-liquid-dart"
     source: git
-    version: "0.2.2-dev10"
+    version: "0.2.2-dev11"
   breez_logger:
     dependency: "direct main"
     description:
@@ -301,10 +301,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "96e8a30294100a386d362b00e17ce2cf5f627970"
+      resolved-ref: "5dde7e828ed293335c6c8c8c3a39ff7fe0298860"
       url: "https://github.com/breez/breez-sdk-liquid-flutter"
     source: git
-    version: "0.2.2-dev10"
+    version: "0.2.2-dev11"
   flutter_rust_bridge:
     dependency: transitive
     description:
@@ -493,10 +493,10 @@ packages:
     dependency: transitive
     description:
       name: mime
-      sha256: "2e123074287cc9fd6c09de8336dae606d1ddb88d9ac47358826db698c176a1f2"
+      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.5"
+    version: "1.0.6"
   package_config:
     dependency: transitive
     description:
@@ -645,10 +645,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: a7e8467e9181cef109f601e3f65765685786c1a738a83d7fbbde377589c0d974
+      sha256: "480ba4345773f56acda9abf5f50bd966f581dac5d514e5fc4a18c62976bbba7e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   shared_preferences_foundation:
     dependency: transitive
     description:

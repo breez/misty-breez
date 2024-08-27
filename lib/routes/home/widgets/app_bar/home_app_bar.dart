@@ -19,7 +19,7 @@ class HomeAppBar extends AppBar {
           ],
           leading: IconButton(
             icon: SvgPicture.asset(
-              "src/icon/hamburger.svg",
+              "assets/icons/hamburger.svg",
               height: 24.0,
               width: 24.0,
               colorFilter: ColorFilter.mode(
@@ -32,7 +32,7 @@ class HomeAppBar extends AppBar {
           title: IconButton(
             padding: EdgeInsets.zero,
             icon: SvgPicture.asset(
-              "src/images/liquid-logo-color.svg",
+              "assets/images/liquid-logo-color.svg",
               colorFilter: ColorFilter.mode(
                 themeData.appBarTheme.actionsIconTheme!.color!,
                 BlendMode.srcATop,

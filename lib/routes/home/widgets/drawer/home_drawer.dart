@@ -26,7 +26,7 @@ class HomeDrawer extends StatelessWidget {
               DrawerItemConfig(
                 "",
                 texts.home_drawer_item_title_balance,
-                "src/icon/balance.png",
+                "assets/icons/balance.png",
                 isSelected: settings.appMode == AppMode.balance,
                 onItemSelected: (_) {
                   // TODO add protectAdminAction
@@ -38,17 +38,17 @@ class HomeDrawer extends StatelessWidget {
                 DrawerItemConfig(
                   FiatCurrencySettings.routeName,
                   texts.home_drawer_item_title_fiat_currencies,
-                  "src/icon/fiat_currencies.png",
+                  "assets/icons/fiat_currencies.png",
                 ),
                 DrawerItemConfig(
                   SecurityPage.routeName,
                   texts.home_drawer_item_title_security_and_backup,
-                  "src/icon/security.png",
+                  "assets/icons/security.png",
                 ),
                 DrawerItemConfig(
                   DevelopersView.routeName,
                   texts.home_drawer_item_title_developers,
-                  "src/icon/developers.png",
+                  "assets/icons/developers.png",
                 ),
               ],
               groupTitle: texts.home_drawer_item_title_preferences,

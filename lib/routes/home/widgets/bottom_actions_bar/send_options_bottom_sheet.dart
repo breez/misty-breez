@@ -31,7 +31,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
             ListTile(
               enabled: hasBalance,
               leading: BottomActionItemImage(
-                iconAssetPath: "src/icon/paste.png",
+                iconAssetPath: "assets/icons/paste.png",
                 enabled: hasBalance,
               ),
               title: Text(
@@ -48,7 +48,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
             ListTile(
               enabled: hasBalance,
               leading: BottomActionItemImage(
-                iconAssetPath: "src/icon/bitcoin.png",
+                iconAssetPath: "assets/icons/bitcoin.png",
                 enabled: hasBalance,
               ),
               title: Text(

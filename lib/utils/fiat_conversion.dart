@@ -13,15 +13,15 @@ class FiatConversion {
   String get logoPath {
     switch (currencyData.info.symbol ?? "") {
       case "€":
-        return "src/icon/btc_eur.png";
+        return "assets/icons/btc_eur.png";
       case "£":
-        return "src/icon/btc_gbp.png";
+        return "assets/icons/btc_gbp.png";
       case "¥":
-        return "src/icon/btc_yen.png";
+        return "assets/icons/btc_yen.png";
       case "\$":
-        return "src/icon/btc_usd.png";
+        return "assets/icons/btc_usd.png";
       default:
-        return "src/icon/btc_convert.png";
+        return "assets/icons/btc_convert.png";
     }
   }
 

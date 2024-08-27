@@ -74,7 +74,7 @@ class SendOptions extends StatelessWidget {
       ),
       group: actionsGroup,
       text: texts.bottom_action_bar_send,
-      iconAssetPath: "src/icon/send-action.png",
+      iconAssetPath: "assets/icons/send-action.png",
     );
   }
 }
@@ -110,7 +110,7 @@ class ReceiveOptions extends StatelessWidget {
       ),
       group: actionsGroup,
       text: texts.bottom_action_bar_receive,
-      iconAssetPath: "src/icon/receive-action.png",
+      iconAssetPath: "assets/icons/receive-action.png",
     );
   }
 }

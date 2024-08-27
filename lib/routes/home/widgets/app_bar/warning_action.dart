@@ -51,7 +51,7 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
         width: 45 * _animation!.value,
         child: widget.iconWidget ??
             SvgPicture.asset(
-              "src/icon/warning.svg",
+              "assets/icons/warning.svg",
               colorFilter: ColorFilter.mode(
                 themeData.appBarTheme.actionsIconTheme!.color!,
                 BlendMode.srcATop,
