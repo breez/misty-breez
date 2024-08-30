@@ -40,7 +40,7 @@ end
 target 'NotificationService' do
   use_frameworks!
 
-  pod 'BreezSDKLiquid', '= 0.2.2-dev7'
+  pod 'BreezSDKLiquid', '= 0.2.2-dev15'
   pod 'KeychainAccess'
   pod 'XCGLogger'
 end
