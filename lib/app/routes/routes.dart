@@ -11,6 +11,7 @@ import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
+import 'package:l_breez/routes/ln_address/ln_address_page.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/routes/security/lock_screen.dart';
 import 'package:l_breez/routes/security/secured_page.dart';
@@ -73,6 +74,11 @@ Route? onGenerateRoute({
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
                       child: const CreateInvoicePage(),
                     ),
+                    settings: settings,
+                  );
+                case LnAddressPage.routeName:
+                  return FadeInRoute(
+                    builder: (_) => const LnAddressPage(),
                     settings: settings,
                   );
                 case ReceiveChainSwapPage.routeName:

@@ -40,14 +40,12 @@ class InputCubit extends Cubit<InputState> {
   }
 
   Future<void> trackPayment(String? paymentDestination) async {
-    if (paymentDestination == null || paymentDestination.isEmpty) {
-      _log.warning("Payment can't be tracked. Payment destination is empty.");
-      return;
-    }
     _log.info("Tracking incoming payment: $paymentDestination");
+    final paymentDestinationIsEmpty = paymentDestination == null || paymentDestination.isEmpty;
     await ServiceInjector().liquidSDK.paymentResultStream.firstWhere((payment) {
       final receivedPaymentDestination = payment.destination ?? "";
-      final doesDestinationMatch = receivedPaymentDestination == paymentDestination;
+      final doesDestinationMatch =
+          paymentDestinationIsEmpty || receivedPaymentDestination == paymentDestination;
       final isPaymentReceived =
           payment.status == PaymentState.pending || payment.status == PaymentState.complete;
 

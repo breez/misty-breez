@@ -23,6 +23,8 @@ dependencies:
     path: packages/keychain
   lightning_links:
     path: packages/lightning_links
+  firebase_notifications_client:
+    path: packages/notifications_client/firebase_notifications_client
   # Utility Packages
   breez_logger:
     path: packages/breez_logger
