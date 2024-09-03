@@ -138,7 +138,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.4.1'
     // Import breez_sdk_liquid for notifications
     implementation("net.java.dev.jna:jna:5.14.0@aar")
-    implementation("com.github.breez:breez-sdk-liquid:0.2.2-dev14") {
+    implementation("com.github.breez:breez-sdk-liquid:latest.release") {
         exclude group:"net.java.dev.jna"
     }
     // Logging
