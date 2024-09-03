@@ -53,7 +53,7 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30911.0, >= 2.30908.0)
   - Flutter (1.0.0)
-  - flutter_breez_liquid (0.2.2-dev15):
+  - flutter_breez_liquid (0.2.1):
     - Flutter
   - flutter_fgbg (0.0.1):
     - Flutter
@@ -295,7 +295,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
   FirebaseMessaging: 7b5d8033e183ab59eb5b852a53201559e976d366
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_breez_liquid: 23597bcd8ac71d5ef64e00279482072bf34c6939
+  flutter_breez_liquid: 25615dbdf0dd058755f23d1b97202090fa0f49bc
   flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
