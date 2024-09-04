@@ -283,5 +283,7 @@ jobs:
 
       - name: Remove Google Application Credentials file
         if: success() || failure()
-        working-directory: lbreez
-        run: rm -f google-application-credentials.json
+        run: |
+          if [ -d "lbreez" ] && [ -f "lbreez/google-application-credentials.json" ]; then
+            rm lbreez/google-application-credentials.json
+          fi
