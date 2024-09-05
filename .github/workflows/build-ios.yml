@@ -347,10 +347,17 @@ jobs:
             echo "Error: Notification provisioning profile copy failed!" >&2
             exit 1
           fi
-
-          # List installed profiles for verification
-          echo "Installed provisioning profiles:"
+          
+          echo "Listing installed provisioning profiles:"
           ls -l "$PROFILES_DIR"
+          
+          echo "Provisioning profile details:"
+          for profile in "$PROFILES_DIR"/*; do
+            echo "Profile: $(basename "$profile")"
+            security cms -D -i "$profile" | grep -A1 -E "Name|UUID|TeamIdentifier" | sed 's/^[[:space:]]*//' | sed 'N;s/\n/ /'
+            echo "Entitlements:"
+            security cms -D -i "$profile" | sed -n '/Entitlements/,/<\/dict>/p' | grep -v "Entitlements" | sed 's/^[[:space:]]*//' | sed 'N;s/\n/ /'
+          done
           
           # Cleanup temporary files
           echo "Cleaning up temporary files..."
