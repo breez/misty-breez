@@ -294,20 +294,69 @@ jobs:
         run: echo "$CONFIG_FILE" > ./lbreez/config.json
 
       - name: 📝 Install the Provisioning Profile
-        env:
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
-          NOTIFICATION_PROVISIONING_PROFILE_BASE64: ${{ secrets.NOTIFICATION_PROVISIONING_PROFILE_BASE64 }}
         run: |
-          # create variables
+          set -euo pipefail
+
+          # Define paths
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           NOTIFICATIONS_PP_PATH=$RUNNER_TEMP/build_notifications_pp.mobileprovision
-          # import provisioning profile from secrets
-          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-          echo -n "$NOTIFICATION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $NOTIFICATIONS_PP_PATH
-          # apply provisioning profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $NOTIFICATIONS_PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          PROFILES_DIR=~/Library/MobileDevice/Provisioning\ Profiles
+
+          # Decode and save provisioning profiles
+          echo "Decoding main provisioning profile..."
+          echo -n "${{ secrets.PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $PP_PATH
+          echo "Decoding notification provisioning profile..."
+          echo -n "${{ secrets.NOTIFICATION_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $NOTIFICATIONS_PP_PATH
+
+          # Verify provisioning profile validity
+          echo "Verifying provisioning profile validity..."
+          for profile in "$PP_PATH" "$NOTIFICATIONS_PP_PATH"; do
+            if ! security cms -D -i "$profile" > /dev/null 2>&1; then
+              echo "Error: Invalid provisioning profile: $(basename $profile)" >&2
+              exit 1
+            fi
+            
+            # Check expiration date
+            expiration=$(security cms -D -i "$profile" | plutil -extract ExpirationDate raw -)
+            expiration_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$expiration" "+%s" 2>/dev/null)
+            current_epoch=$(date "+%s")
+            
+            if [ -z "$expiration_epoch" ] || [ "$expiration_epoch" -lt "$current_epoch" ]; then
+              echo "Error: Expired or invalid date in provisioning profile: $(basename $profile)" >&2
+              echo "Expiration date: $expiration" >&2
+              exit 1
+            fi
+            
+            echo "Provisioning profile $(basename $profile) is valid and not expired."
+          done
+
+          # Apply provisioning profiles
+          echo "Creating profiles directory..."
+          mkdir -p "$PROFILES_DIR"
+          echo "Copying provisioning profiles..."
+          cp "$PP_PATH" "$PROFILES_DIR"
+          cp "$NOTIFICATIONS_PP_PATH" "$PROFILES_DIR"
+
+          # Verify copying was successful
+          echo "Verifying provisioning profiles are installed..."
+          if [ ! -f "$PROFILES_DIR/$(basename $PP_PATH)" ]; then
+            echo "Error: Main provisioning profile copy failed!" >&2
+            exit 1
+          fi
+          if [ ! -f "$PROFILES_DIR/$(basename $NOTIFICATIONS_PP_PATH)" ]; then
+            echo "Error: Notification provisioning profile copy failed!" >&2
+            exit 1
+          fi
+
+          # List installed profiles for verification
+          echo "Installed provisioning profiles:"
+          ls -l "$PROFILES_DIR"
+          
+          # Cleanup temporary files
+          echo "Cleaning up temporary files..."
+          rm -f "$PP_PATH" "$NOTIFICATIONS_PP_PATH"
+          
+          echo "Provisioning profiles installed successfully."
 
       - name: 🚀 Build app
         working-directory: lbreez
