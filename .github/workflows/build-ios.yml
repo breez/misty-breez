@@ -46,6 +46,24 @@ jobs:
 
       - run: echo "set pre-setup output variables"
 
+      - name: Disk Cleanup
+        run: |
+          echo "::group::Free space before cleanup"
+          df -h --total
+          echo "::endgroup::"
+          echo "::group::Cleaned Files"
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/lib/android/sdk/ndk
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo apt-get clean
+          echo "::endgroup::"
+          echo "::group::Free space after cleanup"
+          df -h --total
+          echo "::endgroup::"
+
   setup:
     name: Setup
     needs: pre-setup
@@ -84,6 +102,23 @@ jobs:
       FIREBASE_PLACEHOLDER_APP_ID: com.breez.liquid.lBreez
       GOOGLE_APPLICATION_CREDENTIALS_BASE64: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BASE64 }}
     steps:
+      - name: Disk Cleanup
+        run: |
+          echo "::group::Free space before cleanup"
+          df -hI
+          echo "::endgroup::"
+          echo "::group::Cleaned Files"
+          sudo rm -rf /Users/runner/Library/Android/sdk
+          sudo rm -rf /Applications/Xcode_14.3.1.app
+          sudo rm -rf /Applications/Xcode_15.0.1.app
+          sudo rm -rf /Applications/Xcode_15.1.app
+          sudo rm -rf /Applications/Xcode_15.2.app
+          sudo rm -rf /Applications/Xcode_15.3.app
+          echo "::endgroup::"
+          echo "::group::Free space after cleanup"
+          df -hI
+          echo "::endgroup::"
+
       - name: 🏗️ Setup l-breez repository
         uses: actions/checkout@v4
         with:
@@ -322,5 +357,7 @@ jobs:
 
       - name: Remove Google Application Credentials file
         if: success() || failure()
-        working-directory: lbreez
-        run: rm -f google-application-credentials.json
+        run: |
+          if [ -d "lbreez" ] && [ -f "lbreez/google-application-credentials.json" ]; then
+            rm lbreez/google-application-credentials.json
+          fi
