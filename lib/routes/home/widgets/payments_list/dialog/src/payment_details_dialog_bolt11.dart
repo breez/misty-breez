@@ -10,7 +10,7 @@ class PaymentDetailsBolt11 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bolt11 = paymentData.details?.maybeMap(
+    final bolt11 = paymentData.details.map(
           lightning: (details) => details.bolt11,
           orElse: () => "",
         ) ??

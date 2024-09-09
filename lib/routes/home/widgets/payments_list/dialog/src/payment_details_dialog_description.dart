@@ -13,13 +13,12 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
     final themeData = Theme.of(context);
 
     final title = paymentData.title;
-    final description = paymentData.details?.maybeMap(
-          lightning: (details) => details.description,
-          bitcoin: (details) => details.description,
-          liquid: (details) => details.description,
-          orElse: () => "",
-        ) ??
-        "";
+    final description = paymentData.details.map(
+      lightning: (details) => details.description,
+      bitcoin: (details) => details.description,
+      liquid: (details) => details.description,
+      orElse: () => "",
+    );
     if (description.isEmpty || title == description) {
       return const SizedBox.shrink();
     }

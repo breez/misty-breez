@@ -110,7 +110,7 @@ class CsvExporter {
   }
 
   String _getPreimage(PaymentData paymentInfo) {
-    return paymentInfo.details?.maybeMap(
+    return paymentInfo.details.map(
           lightning: (details) => details.preimage,
           orElse: () => "",
         ) ??
