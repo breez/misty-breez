@@ -5,29 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/cubit/webhook/webhook_state.dart';
-import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
-import 'package:l_breez/routes/ln_address/ln_address_widget.dart';
-import 'package:l_breez/routes/ln_address/widgets/address_widget_placeholder.dart';
+import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
+import 'package:l_breez/routes/receive_payment/ln_address/widgets/address_widget_placeholder.dart';
+import 'package:l_breez/routes/receive_payment/ln_address/widgets/ln_address_fee_message.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("LnAddressPage");
+final _log = Logger("ReceiveLightningAddressPage");
 
-class LnAddressPage extends StatefulWidget {
-  static const routeName = "/ln_address";
+class ReceiveLightningAddressPage extends StatefulWidget {
+  static const routeName = "/lightning_address";
+  static const pageIndex = 1;
 
-  const LnAddressPage({super.key});
+  const ReceiveLightningAddressPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return LnAddressPageState();
+    return ReceiveLightningAddressPageState();
   }
 }
 
-class LnAddressPageState extends State<LnAddressPage> {
+class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage> {
   @override
   void initState() {
     super.initState();
@@ -66,31 +67,41 @@ class LnAddressPageState extends State<LnAddressPage> {
     return BlocBuilder<WebhookCubit, WebhookState>(
       builder: (context, webhookState) {
         return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            leading: const back_button.BackButton(),
-            title: Text(texts.invoice_ln_address_title),
-          ),
           body: webhookState.isLoading
               ? const AddressWidgetPlaceholder()
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      if (webhookState.lnurlPayUrl != null) LnAddressWidget(webhookState.lnurlPayUrl!),
-                      if (webhookState.lnurlPayError != null) ...[
-                        _ErrorMessage(
-                          message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
-                        ),
-                      ]
-                    ],
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 40.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        if (webhookState.lnurlPayUrl != null)
+                          AddressWidget(
+                            address: webhookState.lnurlPayUrl!,
+                            title: "Lightning Address",
+                            type: AddressWidgetType.lightning,
+                            feeWidget: const LnAddressFeeMessage(),
+                          ),
+                        if (webhookState.lnurlPayError != null)
+                          _ErrorMessage(
+                            message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
           bottomNavigationBar: webhookState.lnurlPayError != null
               ? SingleButtonBottomBar(
+                  stickToBottom: true,
                   text: texts.invoice_ln_address_action_retry,
                   onPressed: () => _refreshLnurlPay,
                 )
-              : const SizedBox(),
+              : SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.qr_code_dialog_action_close,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
         );
       },
     );

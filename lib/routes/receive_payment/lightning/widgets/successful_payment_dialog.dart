@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:l_breez/routes/create_invoice/widgets/successful_payment_message.dart';
+import 'package:l_breez/routes/receive_payment/lightning/widgets/successful_payment_message.dart';
 
 class SuccessfulPaymentDialog extends StatelessWidget {
   final Function()? onPrint;

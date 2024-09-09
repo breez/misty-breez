@@ -18,16 +18,18 @@ class ExpiryAndFeeMessage extends StatelessWidget {
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, currencyState) {
         return WarningBox(
-          boxPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          boxPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
           contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
           backgroundColor: themeData.isLightTheme ? const Color(0xFFf3f8fc) : null,
           borderColor: themeData.isLightTheme ? const Color(0xFF0085fb) : null,
           child: Text(
             (feesSat != 0)
-                ? texts.qr_code_dialog_warning_message_with_lsp(
-                    currencyState.bitcoinCurrency.format(feesSat),
-                    currencyState.fiatConversion()?.format(feesSat) ?? "",
-                  )
+                ? texts
+                    .qr_code_dialog_warning_message_with_lsp(
+                      currencyState.bitcoinCurrency.format(feesSat),
+                      currencyState.fiatConversion()?.format(feesSat) ?? "",
+                    )
+                    .replaceAll(" setup", "")
                 : texts.qr_code_dialog_warning_message,
             textAlign: TextAlign.center,
             style: themeData.primaryTextTheme.bodySmall,

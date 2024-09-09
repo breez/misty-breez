@@ -49,7 +49,7 @@ class CompactQRImage extends StatelessWidget {
   final double? size;
   final bool bip21;
 
-  const CompactQRImage({super.key, required this.data, this.size, this.bip21 = false});
+  const CompactQRImage({super.key, required this.data, this.size, this.bip21 = true});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +64,10 @@ class CompactQRImage extends StatelessWidget {
       */
       data: bip21 ? data : data.toUpperCase(),
       size: size,
+      embeddedImage: const AssetImage("assets/icons/app_icon.png"),
+      embeddedImageStyle: const QrEmbeddedImageStyle(
+        size: Size.square(68.0),
+      ),
     );
   }
 

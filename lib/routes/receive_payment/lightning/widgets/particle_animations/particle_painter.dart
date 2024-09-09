@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/create_invoice/widgets/animation_properties.dart';
-import 'package:l_breez/routes/create_invoice/widgets/particle_model.dart';
+import 'package:l_breez/routes/receive_payment/lightning/widgets/particle_animations/animation_properties.dart';
+import 'package:l_breez/routes/receive_payment/lightning/widgets/particle_animations/particle_model.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class ParticlePainter extends CustomPainter {

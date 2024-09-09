@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
-import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
-import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
+import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
+import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
@@ -25,7 +25,7 @@ Future<LNURLPageResult?> handleWithdrawRequest(
     MaterialPageRoute(
       builder: (_) => BlocProvider(
         create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
-        child: CreateInvoicePage(
+        child: ReceiveLightningPaymentPage(
           requestData: requestData,
           onFinish: (LNURLPageResult? response) {
             completer.complete(response);
