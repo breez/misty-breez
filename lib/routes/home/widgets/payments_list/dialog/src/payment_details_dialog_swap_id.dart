@@ -10,12 +10,11 @@ class PaymentDetailsSwapId extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final swapId = paymentData.details?.maybeMap(
-          bitcoin: (details) => details.swapId,
-          lightning: (details) => details.swapId,
-          orElse: () => "",
-        ) ??
-        "";
+    final swapId = paymentData.details.map(
+      bitcoin: (details) => details.swapId,
+      lightning: (details) => details.swapId,
+      orElse: () => "",
+    );
 
     if (swapId.isEmpty) return const SizedBox.shrink();
 

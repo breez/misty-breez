@@ -17,7 +17,7 @@ class PaymentData {
   final int feeSat;
   final PaymentType paymentType;
   final PaymentState status;
-  final PaymentDetails? details;
+  final PaymentDetails details;
 
   const PaymentData({
     required this.id,
@@ -29,7 +29,7 @@ class PaymentData {
     required this.feeSat,
     required this.paymentType,
     required this.status,
-    this.details,
+    required this.details,
   });
 
   factory PaymentData.fromPayment(Payment payment, BreezTranslations texts) {
@@ -120,14 +120,13 @@ class _PaymentDataFactory {
   _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
-    var title = "${_texts.wallet_dashboard_payment_item_no_title} Payment";
-    final description = _payment.details?.maybeMap(
-          lightning: (details) => details.description,
-          bitcoin: (details) => details.description,
-          liquid: (details) => details.description,
-          orElse: () => "",
-        ) ??
-        "";
+    var title = _texts.payment_info_title_unknown;
+    final description = _payment.details.map(
+      lightning: (details) => details.description,
+      bitcoin: (details) => details.description,
+      liquid: (details) => details.description,
+      orElse: () => "",
+    );
     if (description.isNotEmpty) return description;
     return title;
   }

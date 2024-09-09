@@ -1,8 +1,8 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
 // TODO: Ensure that any changes to [PaymentDetails] are reflected here on each extension.
-extension PaymentDetailsMaybeMapExtension on PaymentDetails? {
-  T maybeMap<T>({
+extension PaymentDetailsMapExtension on PaymentDetails {
+  T map<T>({
     T Function(PaymentDetails_Bitcoin details)? bitcoin,
     T Function(PaymentDetails_Lightning details)? lightning,
     T Function(PaymentDetails_Liquid details)? liquid,
@@ -20,9 +20,9 @@ extension PaymentDetailsMaybeMapExtension on PaymentDetails? {
   }
 }
 
-extension PaymentDetailsToJson on PaymentDetails? {
+extension PaymentDetailsToJson on PaymentDetails {
   Map<String, dynamic>? toJson() {
-    return this?.maybeMap(
+    return map(
       lightning: (details) => {
         'type': 'lightning',
         'swapId': details.swapId,
@@ -49,8 +49,8 @@ extension PaymentDetailsToJson on PaymentDetails? {
   }
 }
 
-extension PaymentDetailsFromJson on PaymentDetails? {
-  static PaymentDetails? fromJson(Map<String, dynamic> json) {
+extension PaymentDetailsFromJson on PaymentDetails {
+  static PaymentDetails fromJson(Map<String, dynamic> json) {
     switch (json['type']) {
       case 'lightning':
         return PaymentDetails.lightning(
@@ -76,16 +76,19 @@ extension PaymentDetailsFromJson on PaymentDetails? {
               json['refundTxAmountSat'] != null ? BigInt.parse(json['refundTxAmountSat'] as String) : null,
         );
       default:
-        return null;
+        return PaymentDetails.liquid(
+          destination: json['destination'] as String,
+          description: json['description'] as String,
+        );
     }
   }
 }
 
-extension PaymentDetailsExtension on PaymentDetails? {
-  bool equals(PaymentDetails? other) {
+extension PaymentDetailsExtension on PaymentDetails {
+  bool equals(PaymentDetails other) {
     return (identical(this, other)) ||
         other.runtimeType == runtimeType &&
-            other.maybeMap(
+            other.map(
               lightning: (o) =>
                   o.swapId == (this as PaymentDetails_Lightning).swapId &&
                   o.description == (this as PaymentDetails_Lightning).description &&
@@ -106,9 +109,9 @@ extension PaymentDetailsExtension on PaymentDetails? {
   }
 }
 
-extension PaymentDetailsHashCode on PaymentDetails? {
+extension PaymentDetailsHashCode on PaymentDetails {
   int calculateHashCode() {
-    return maybeMap(
+    return map(
       lightning: (o) =>
           Object.hash(o.swapId, o.description, o.preimage, o.bolt11, o.refundTxId, o.refundTxAmountSat),
       liquid: (o) => Object.hash(o.destination, o.description),

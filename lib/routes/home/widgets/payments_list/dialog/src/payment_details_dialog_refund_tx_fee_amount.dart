@@ -21,7 +21,7 @@ class PaymentDetailsDialogRefundTxAmount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final refundTxAmountSat = paymentData.details.maybeMap(
+    final refundTxAmountSat = paymentData.details.map(
       bitcoin: (details) => details.refundTxAmountSat?.toInt() ?? 0,
       lightning: (details) => details.refundTxAmountSat?.toInt() ?? 0,
       orElse: () => 0,

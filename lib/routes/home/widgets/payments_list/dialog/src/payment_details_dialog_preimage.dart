@@ -11,7 +11,7 @@ class PaymentDetailsPreimage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final paymentPreimage = paymentData.details?.maybeMap(
+    final paymentPreimage = paymentData.details.map(
           lightning: (details) => details.preimage,
           orElse: () => "",
         ) ??
