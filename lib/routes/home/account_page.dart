@@ -85,7 +85,7 @@ class AccountPage extends StatelessWidget {
                       paymentFilters.hasDateFilters,
                       filteredPayments.length,
                     ),
-                    child: const SizedBox.shrink(),
+                    child: const SizedBox.expand(),
                   ),
                 ),
               );
