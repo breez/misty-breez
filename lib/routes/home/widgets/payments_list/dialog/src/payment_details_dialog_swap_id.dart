@@ -1,3 +1,4 @@
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/widgets.dart';
 import 'package:l_breez/cubit/payments/models/payment/payment_data.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
@@ -18,9 +19,10 @@ class PaymentDetailsSwapId extends StatelessWidget {
 
     if (swapId.isEmpty) return const SizedBox.shrink();
 
+    final texts = context.texts();
+
     return ShareablePaymentRow(
-      // TODO: Move this message to Breez-Translations
-      title: "Swap ID",
+      title: texts.payment_details_dialog_single_info_swap_id,
       sharedValue: swapId,
     );
   }

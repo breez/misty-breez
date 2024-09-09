@@ -118,13 +118,13 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     final texts = context.texts();
     switch (index) {
       case 0:
-        return "Receive via Lightning ${texts.qr_code_dialog_invoice}";
+        return texts.invoice_lightning_title;
       case 1:
         return texts.invoice_ln_address_title;
       case 2:
         return texts.invoice_btc_address_title;
       default:
-        return texts.invoice_title;
+        return texts.invoice_lightning_title;
     }
   }
 
@@ -132,13 +132,13 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     final texts = context.texts();
     switch (index) {
       case 0:
-        return "Lightning Invoice";
+        return texts.receive_payment_method_lightning_invoice;
       case 1:
-        return "Lightning Address";
+        return texts.receive_payment_method_lightning_address;
       case 2:
-        return "BTC Address";
+        return texts.receive_payment_method_btc_address;
       default:
-        return texts.invoice_title;
+        return texts.receive_payment_method_lightning_invoice;
     }
   }
 }

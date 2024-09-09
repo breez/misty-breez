@@ -158,9 +158,11 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                                   Padding(
                                     padding: const EdgeInsets.only(top: 16.0),
                                     child: AutoSizeText(
-                                      "Enter at least ${currencyState.bitcoinCurrency.format(
-                                        _lightningLimits.receive.minSat.toInt(),
-                                      )}",
+                                      texts.invoice_min_payment_limit(
+                                        currencyState.bitcoinCurrency.format(
+                                          _lightningLimits.receive.minSat.toInt(),
+                                        ),
+                                      ),
                                       style: textStyle,
                                       maxLines: 1,
                                       minFontSize: MinFontSize(context).minFontSize,

@@ -1,3 +1,4 @@
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/widgets.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/utils/blockchain_explorer_utils.dart';
@@ -11,10 +12,11 @@ class PaymentDetailsTxId extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final txId = paymentData.txId;
+    final texts = context.texts();
+
     return txId.isNotEmpty
         ? ShareablePaymentRow(
-            // TODO: Move this message to Breez-Translations
-            title: "Transaction ID",
+            title: texts.payment_details_dialog_single_info_tx_id,
             sharedValue: txId,
             isURL: true,
             urlValue: BlockChainExplorerUtils().formatTransactionUrl(txid: txId),

@@ -131,9 +131,11 @@ class _ReceiveLiquidAddressPaymentPageState extends State<ReceiveLiquidAddressPa
                               Padding(
                                 padding: const EdgeInsets.only(top: 16.0),
                                 child: AutoSizeText(
-                                  "Enter at least ${currencyState.bitcoinCurrency.format(
-                                    _onchainPaymentLimits.receive.minSat.toInt(),
-                                  )}",
+                                  texts.invoice_min_payment_limit(
+                                    currencyState.bitcoinCurrency.format(
+                                      _onchainPaymentLimits.receive.minSat.toInt(),
+                                    ),
+                                  ),
                                   style: textStyle,
                                   maxLines: 1,
                                   minFontSize: MinFontSize(context).minFontSize,
@@ -162,9 +164,9 @@ class _ReceiveLiquidAddressPaymentPageState extends State<ReceiveLiquidAddressPa
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 20.0),
-                              child: Text("Liquid Address"),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Text(texts.invoice_liquid_address_deposit_address),
                             ),
                             Row(
                               children: <Widget>[
