@@ -130,7 +130,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       child: Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                         child: GestureDetector(
-                          onTap: () => _restoreNodeFromMnemonicSeed(),
+                          onTap: () => _restoreWalletFromMnemonicSeed(),
                           child: Text(
                             texts.initial_walk_through_restore_from_backup,
                             style: restoreLinkStyle,
@@ -170,7 +170,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final securityCubit = context.read<SecurityCubit>();
 
     final isRestore = mnemonic != null;
-    _log.info("${isRestore ? "Restore" : "Starting new"} node");
+    _log.info("${isRestore ? "Restore" : "Starting new"} wallet");
     final texts = context.texts();
     final navigator = Navigator.of(context);
     var loaderRoute = createLoaderRoute(context);
@@ -187,9 +187,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {
-      _log.info("Failed to ${isRestore ? "restore" : "register"} node", error);
+      _log.info("Failed to ${isRestore ? "restore" : "register"} wallet", error);
       if (isRestore) {
-        _restoreNodeFromMnemonicSeed(initialWords: mnemonic.split(" "));
+        _restoreWalletFromMnemonicSeed(initialWords: mnemonic.split(" "));
       }
       if (!mounted) return;
       showFlushbar(context, message: extractExceptionMessage(error, texts));
@@ -199,10 +199,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  void _restoreNodeFromMnemonicSeed({
+  void _restoreWalletFromMnemonicSeed({
     List<String>? initialWords,
   }) async {
-    _log.info("Restore node from mnemonic seed");
+    _log.info("Restore wallet from mnemonic seed");
     String? mnemonic = await _getMnemonic(initialWords: initialWords);
     if (mnemonic != null) {
       connect(mnemonic: mnemonic);

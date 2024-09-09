@@ -35,7 +35,7 @@ class WebhookCubit extends Cubit<WebhookState> {
       if (getInfoResponse != null) {
         await _registerWebhooks(getInfoResponse);
       } else {
-        throw Exception("Node state is empty");
+        throw Exception("Unable to retrieve wallet information.");
       }
     } catch (err) {
       _log.warning("Failed to refresh lnurlpay: $err");
