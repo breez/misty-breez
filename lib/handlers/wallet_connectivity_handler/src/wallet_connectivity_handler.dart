@@ -9,9 +9,9 @@ import 'package:l_breez/handlers/handler/handler.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("NodeConnectivityHandler");
+final _log = Logger("WalletConnectivityHandler");
 
-class NodeConnectivityHandler extends Handler {
+class WalletConnectivityHandler extends Handler {
   StreamSubscription<SdkConnectivityState?>? _subscription;
   Flushbar? _flushbar;
 
@@ -61,7 +61,7 @@ class NodeConnectivityHandler extends Handler {
     if (flushbar.flushbarRoute != null && flushbar.flushbarRoute!.isActive) {
       final context = contextProvider?.getBuildContext();
       if (context == null) {
-        _log.info("Skipping dismissing node connectivity flushbar as context is null");
+        _log.info("Skipping dismissing wallet connectivity flushbar as context is null");
         return;
       }
       Navigator.of(context).removeRoute(flushbar.flushbarRoute!);

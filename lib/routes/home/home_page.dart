@@ -37,7 +37,7 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
       handlers.addAll([
         InputHandler(firstPaymentItemKey, _scaffoldKey),
         NetworkConnectivityHandler(),
-        NodeConnectivityHandler(),
+        WalletConnectivityHandler(),
       ]);
       for (var handler in handlers) {
         handler.init(this);
