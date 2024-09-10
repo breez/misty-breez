@@ -65,38 +65,38 @@ class _ReceiveLiquidAddressPaymentPageState extends State<ReceiveLiquidAddressPa
 
     return Scaffold(
       key: _scaffoldKey,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (receivePaymentResponse == null) ...[
-              BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
-                builder: (BuildContext context, PaymentLimitsState snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                        child: Text(
-                          texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  }
-                  if (snapshot.onchainPaymentLimits == null) {
-                    final themeData = Theme.of(context);
+      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                child: Text(
+                  texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+          if (snapshot.onchainPaymentLimits == null) {
+            final themeData = Theme.of(context);
 
-                    return Center(
-                      child: Loader(
-                        color: themeData.primaryColor.withOpacity(0.5),
-                      ),
-                    );
-                  }
+            return Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
+            );
+          }
 
-                  _onchainPaymentLimits = snapshot.onchainPaymentLimits!;
+          _onchainPaymentLimits = snapshot.onchainPaymentLimits!;
 
-                  return BlocBuilder<CurrencyCubit, CurrencyState>(
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (receivePaymentResponse == null) ...[
+                  BlocBuilder<CurrencyCubit, CurrencyState>(
                     builder: (context, currencyState) {
                       return Form(
                         key: _formKey,
@@ -146,103 +146,104 @@ class _ReceiveLiquidAddressPaymentPageState extends State<ReceiveLiquidAddressPa
                         ),
                       );
                     },
-                  );
-                },
-              ),
-            ],
-            if (receivePaymentResponse != null) ...[
-              FutureBuilder(
-                future: receivePaymentResponse,
-                builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
-                  final themeData = Theme.of(context);
+                  )
+                ],
+                if (receivePaymentResponse != null) ...[
+                  FutureBuilder(
+                    future: receivePaymentResponse,
+                    builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
+                      final themeData = Theme.of(context);
 
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 40.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Text(texts.invoice_liquid_address_deposit_address),
-                            ),
                             Row(
-                              children: <Widget>[
-                                Tooltip(
-                                  message: texts.qr_code_dialog_share,
-                                  child: IconButton(
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    padding:
-                                        const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
-                                    icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                                    color: themeData.primaryTextTheme.labelLarge!.color!,
-                                    onPressed: () {
-                                      Share.share(snapshot.data!.destination);
-                                    },
-                                  ),
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20.0),
+                                  child: Text(texts.invoice_liquid_address_deposit_address),
                                 ),
-                                Tooltip(
-                                  message: texts.qr_code_dialog_copy,
-                                  child: IconButton(
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    padding:
-                                        const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
-                                    icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                                    color: themeData.primaryTextTheme.labelLarge!.color!,
-                                    onPressed: () {
-                                      ServiceInjector()
-                                          .deviceClient
-                                          .setClipboardText(snapshot.data!.destination);
-                                      showFlushbar(
-                                        context,
-                                        message: texts.qr_code_dialog_copied,
-                                        duration: const Duration(seconds: 3),
-                                      );
-                                    },
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                        AnimatedCrossFade(
-                          firstChild: LoadingOrError(
-                            error: snapshot.error,
-                            displayErrorMessage: snapshot.error != null
-                                ? extractExceptionMessage(snapshot.error!, texts)
-                                : texts.qr_code_dialog_warning_message_error,
-                          ),
-                          secondChild: snapshot.data == null || prepareResponse == null
-                              ? const SizedBox.shrink()
-                              : Column(
-                                  children: [
-                                    AddressQR(bolt11: snapshot.data!.destination, bip21: true),
-                                    const Padding(padding: EdgeInsets.only(top: 16.0)),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: ExpiryAndFeeMessage(
-                                        feesSat: prepareResponse!.feesSat.toInt(),
+                                Row(
+                                  children: <Widget>[
+                                    Tooltip(
+                                      message: texts.qr_code_dialog_share,
+                                      child: IconButton(
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+                                        icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                                        color: themeData.primaryTextTheme.labelLarge!.color!,
+                                        onPressed: () {
+                                          Share.share(snapshot.data!.destination);
+                                        },
                                       ),
                                     ),
-                                    const Padding(padding: EdgeInsets.only(top: 16.0)),
+                                    Tooltip(
+                                      message: texts.qr_code_dialog_copy,
+                                      child: IconButton(
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+                                        icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+                                        color: themeData.primaryTextTheme.labelLarge!.color!,
+                                        onPressed: () {
+                                          ServiceInjector()
+                                              .deviceClient
+                                              .setClipboardText(snapshot.data!.destination);
+                                          showFlushbar(
+                                            context,
+                                            message: texts.qr_code_dialog_copied,
+                                            duration: const Duration(seconds: 3),
+                                          );
+                                        },
+                                      ),
+                                    )
                                   ],
-                                ),
-                          duration: const Duration(seconds: 1),
-                          crossFadeState:
-                              snapshot.data == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                )
+                              ],
+                            ),
+                            AnimatedCrossFade(
+                              firstChild: LoadingOrError(
+                                error: snapshot.error,
+                                displayErrorMessage: snapshot.error != null
+                                    ? extractExceptionMessage(snapshot.error!, texts)
+                                    : texts.qr_code_dialog_warning_message_error,
+                              ),
+                              secondChild: snapshot.data == null || prepareResponse == null
+                                  ? const SizedBox.shrink()
+                                  : Column(
+                                      children: [
+                                        AddressQR(bolt11: snapshot.data!.destination, bip21: true),
+                                        const Padding(padding: EdgeInsets.only(top: 16.0)),
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width,
+                                          child: ExpiryAndFeeMessage(
+                                            feesSat: prepareResponse!.feesSat.toInt(),
+                                          ),
+                                        ),
+                                        const Padding(padding: EdgeInsets.only(top: 16.0)),
+                                      ],
+                                    ),
+                              duration: const Duration(seconds: 1),
+                              crossFadeState: snapshot.data == null
+                                  ? CrossFadeState.showFirst
+                                  : CrossFadeState.showSecond,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ],
-          ],
-        ),
+                      );
+                    },
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
       ),
       bottomNavigationBar: (receivePaymentResponse == null)
           ? SingleButtonBottomBar(

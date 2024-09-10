@@ -63,37 +63,37 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
     return Scaffold(
       key: _scaffoldKey,
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 40.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (receivePaymentResponse == null) ...[
-                BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
-                  builder: (BuildContext context, PaymentLimitsState snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }
-                    if (snapshot.onchainPaymentLimits == null) {
-                      final themeData = Theme.of(context);
+      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          if (snapshot.onchainPaymentLimits == null) {
+            final themeData = Theme.of(context);
 
-                      return Center(
-                        child: Loader(
-                          color: themeData.primaryColor.withOpacity(0.5),
-                        ),
-                      );
-                    }
+            return Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
+            );
+          }
 
-                    _onchainPaymentLimits = snapshot.onchainPaymentLimits!;
+          _onchainPaymentLimits = snapshot.onchainPaymentLimits!;
 
-                    return BlocBuilder<CurrencyCubit, CurrencyState>(
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 40.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (receivePaymentResponse == null) ...[
+                    BlocBuilder<CurrencyCubit, CurrencyState>(
                       builder: (context, currencyState) {
                         return Form(
                           key: _formKey,
@@ -140,33 +140,33 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                           ),
                         );
                       },
-                    );
-                  },
-                ),
-              ],
-              if (receivePaymentResponse != null) ...[
-                FutureBuilder(
-                  future: receivePaymentResponse,
-                  builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        AddressWidget(
-                          snapshot: snapshot,
-                          title: texts.withdraw_funds_btc_address,
-                          type: AddressWidgetType.lightning,
-                          feeWidget: ExpiryAndFeeMessage(
-                            feesSat: prepareResponse!.feesSat.toInt(),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            ],
-          ),
-        ),
+                    )
+                  ],
+                  if (receivePaymentResponse != null) ...[
+                    FutureBuilder(
+                      future: receivePaymentResponse,
+                      builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            AddressWidget(
+                              snapshot: snapshot,
+                              title: texts.withdraw_funds_btc_address,
+                              type: AddressWidgetType.lightning,
+                              feeWidget: ExpiryAndFeeMessage(
+                                feesSat: prepareResponse!.feesSat.toInt(),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: (receivePaymentResponse == null)
           ? SingleButtonBottomBar(

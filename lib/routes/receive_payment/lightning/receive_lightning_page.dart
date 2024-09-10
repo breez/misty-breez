@@ -96,35 +96,35 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
     return Scaffold(
       key: _scaffoldKey,
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 40.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              if (receivePaymentResponse == null) ...[
-                BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
-                  builder: (BuildContext context, PaymentLimitsState snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }
-                    if (snapshot.lightningPaymentLimits == null) {
-                      final themeData = Theme.of(context);
+      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          if (snapshot.lightningPaymentLimits == null) {
+            final themeData = Theme.of(context);
 
-                      return Center(
-                        child: Loader(
-                          color: themeData.primaryColor.withOpacity(0.5),
-                        ),
-                      );
-                    }
+            return Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
+            );
+          }
 
-                    _lightningLimits = snapshot.lightningPaymentLimits!;
+          _lightningLimits = snapshot.lightningPaymentLimits!;
 
-                    return BlocBuilder<CurrencyCubit, CurrencyState>(
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 40.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (receivePaymentResponse == null) ...[
+                    BlocBuilder<CurrencyCubit, CurrencyState>(
                       builder: (context, currencyState) {
                         return Form(
                           key: _formKey,
@@ -175,33 +175,34 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                           ),
                         );
                       },
-                    );
-                  },
-                ),
-              ],
-              if (receivePaymentResponse != null) ...[
-                FutureBuilder(
-                  future: receivePaymentResponse,
-                  builder: (BuildContext context, AsyncSnapshot<liquid_sdk.ReceivePaymentResponse> snapshot) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        AddressWidget(
-                          snapshot: snapshot,
-                          title: "Lightning ${texts.qr_code_dialog_invoice}",
-                          type: AddressWidgetType.lightning,
-                          feeWidget: ExpiryAndFeeMessage(
-                            feesSat: prepareResponse!.feesSat.toInt(),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                )
-              ],
-            ],
-          ),
-        ),
+                    )
+                  ],
+                  if (receivePaymentResponse != null) ...[
+                    FutureBuilder(
+                      future: receivePaymentResponse,
+                      builder:
+                          (BuildContext context, AsyncSnapshot<liquid_sdk.ReceivePaymentResponse> snapshot) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            AddressWidget(
+                              snapshot: snapshot,
+                              title: "Lightning ${texts.qr_code_dialog_invoice}",
+                              type: AddressWidgetType.lightning,
+                              feeWidget: ExpiryAndFeeMessage(
+                                feesSat: prepareResponse!.feesSat.toInt(),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    )
+                  ],
+                ],
+              ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: (receivePaymentResponse == null)
           ? SingleButtonBottomBar(
