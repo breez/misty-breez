@@ -73,7 +73,9 @@ Route? onGenerateRoute({
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
-                      child: const ReceivePaymentPage(),
+                      child: ReceivePaymentPage(
+                        initialPageIndex: settings.arguments as int? ?? 0,
+                      ),
                     ),
                     settings: settings,
                   );

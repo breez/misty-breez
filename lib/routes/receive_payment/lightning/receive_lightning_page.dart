@@ -30,6 +30,7 @@ class ReceiveLightningPaymentPage extends StatefulWidget {
 
   static const routeName = "/receive_lightning";
   static const paymentMethod = PaymentMethod.lightning;
+  static const pageIndex = 0;
 
   const ReceiveLightningPaymentPage({super.key, this.onFinish, this.requestData})
       : assert(

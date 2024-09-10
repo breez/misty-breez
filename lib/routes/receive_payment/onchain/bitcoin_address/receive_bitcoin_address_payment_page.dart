@@ -20,6 +20,7 @@ import 'package:l_breez/widgets/transparent_page_route.dart';
 class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
   static const routeName = "/receive_bitcoin_address";
   static const paymentMethod = PaymentMethod.bitcoinAddress;
+  static const pageIndex = 2;
 
   const ReceiveBitcoinAddressPaymentPage({super.key});
 

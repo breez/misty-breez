@@ -1,6 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
 import 'package:l_breez/routes/receive_payment/ln_address/receive_lightning_address_page.dart';
 import 'package:l_breez/routes/receive_payment/onchain/bitcoin_address/receive_bitcoin_address_payment_page.dart';
@@ -8,23 +7,32 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 
 class ReceivePaymentPage extends StatefulWidget {
   static const routeName = "/receive_payment";
+  final int initialPageIndex;
 
-  const ReceivePaymentPage({super.key});
+  const ReceivePaymentPage({super.key, required this.initialPageIndex});
 
   @override
   State<ReceivePaymentPage> createState() => _ReceivePaymentPageState();
 }
 
 class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
-  final PageController pageController = PageController();
-  int selectedPage = 0;
-  PaymentMethod selectedMethod = PaymentMethod.lightning;
+  late PageController pageController;
+  int selectedPageIndex = 0;
 
   static const pages = [
     ReceiveLightningPaymentPage(),
     ReceiveLightningAddressPage(),
     ReceiveBitcoinAddressPaymentPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      selectedPageIndex = widget.initialPageIndex;
+      pageController = PageController(initialPage: selectedPageIndex);
+    });
+  }
 
   @override
   void dispose() {
@@ -34,8 +42,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
 
   void _onPageChanged(int index) {
     setState(() {
-      selectedPage = index;
-      selectedMethod = _getCurrentPaymentMethod(index);
+      selectedPageIndex = index;
     });
   }
 
@@ -45,11 +52,11 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   }
 
   void _nextPage() {
-    _changePage((selectedPage + 1) % pages.length);
+    _changePage((selectedPageIndex + 1) % pages.length);
   }
 
   void _previousPage() {
-    _changePage((selectedPage - 1) % pages.length);
+    _changePage((selectedPageIndex - 1) % pages.length);
   }
 
   @override
@@ -57,7 +64,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        title: Text(_getTitle(selectedPage)),
+        title: Text(_getTitle()),
       ),
       body: Column(
         children: [
@@ -75,7 +82,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 2.0),
                   child: Text(
-                    _getMethodName(selectedPage),
+                    _getMethodName(),
                     style: Theme.of(context).appBarTheme.titleTextStyle,
                   ),
                 ),
@@ -101,41 +108,28 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     );
   }
 
-  PaymentMethod _getCurrentPaymentMethod(int index) {
-    switch (index) {
-      case 0:
-        return PaymentMethod.lightning;
-      case 1:
-        return PaymentMethod.lightning;
-      case 2:
-        return PaymentMethod.bitcoinAddress;
-      default:
-        return PaymentMethod.lightning;
-    }
-  }
-
-  String _getTitle(int index) {
+  String _getTitle() {
     final texts = context.texts();
-    switch (index) {
-      case 0:
+    switch (selectedPageIndex) {
+      case ReceiveLightningPaymentPage.pageIndex:
         return texts.invoice_lightning_title;
-      case 1:
+      case ReceiveLightningAddressPage.pageIndex:
         return texts.invoice_ln_address_title;
-      case 2:
+      case ReceiveBitcoinAddressPaymentPage.pageIndex:
         return texts.invoice_btc_address_title;
       default:
         return texts.invoice_lightning_title;
     }
   }
 
-  String _getMethodName(int index) {
+  String _getMethodName() {
     final texts = context.texts();
-    switch (index) {
-      case 0:
+    switch (selectedPageIndex) {
+      case ReceiveLightningPaymentPage.pageIndex:
         return texts.receive_payment_method_lightning_invoice;
-      case 1:
+      case ReceiveLightningAddressPage.pageIndex:
         return texts.receive_payment_method_lightning_address;
-      case 2:
+      case ReceiveBitcoinAddressPaymentPage.pageIndex:
         return texts.receive_payment_method_btc_address;
       default:
         return texts.receive_payment_method_lightning_invoice;

@@ -2,8 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:l_breez/routes/home/widgets/bottom_actions_bar/receive_options_bottom_sheet.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/send_options_bottom_sheet.dart';
-import 'package:l_breez/routes/receive_payment/receive_payment_page.dart';
 
 import 'bottom_action_item.dart';
 
@@ -93,9 +93,21 @@ class ReceiveOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final texts = context.texts();
     return BottomActionItem(
-      onPress: () {
-        Navigator.pushNamed(context, ReceivePaymentPage.routeName);
-      },
+      onPress: () => showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
+                  systemNavigationBarColor: Theme.of(context).canvasColor,
+                ),
+            child: SafeArea(
+              child: ReceiveOptionsBottomSheet(
+                firstPaymentItemKey: firstPaymentItemKey,
+              ),
+            ),
+          );
+        },
+      ),
       group: actionsGroup,
       text: texts.bottom_action_bar_receive,
       iconAssetPath: "assets/icons/receive-action.png",
