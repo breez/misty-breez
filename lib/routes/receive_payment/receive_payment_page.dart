@@ -16,48 +16,11 @@ class ReceivePaymentPage extends StatefulWidget {
 }
 
 class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
-  late PageController pageController;
-  int selectedPageIndex = 0;
-
   static const pages = [
     ReceiveLightningPaymentPage(),
     ReceiveLightningAddressPage(),
     ReceiveBitcoinAddressPaymentPage(),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      selectedPageIndex = widget.initialPageIndex;
-      pageController = PageController(initialPage: selectedPageIndex);
-    });
-  }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
-  }
-
-  void _onPageChanged(int index) {
-    setState(() {
-      selectedPageIndex = index;
-    });
-  }
-
-  void _changePage(int index) {
-    pageController.jumpToPage(index);
-    _onPageChanged(index);
-  }
-
-  void _nextPage() {
-    _changePage((selectedPageIndex + 1) % pages.length);
-  }
-
-  void _previousPage() {
-    _changePage((selectedPageIndex - 1) % pages.length);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,52 +31,14 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    alignment: Alignment.centerRight,
-                    onPressed: _previousPage,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 2.0),
-                    child: Text(
-                      _getMethodName(),
-                      style: Theme.of(context).appBarTheme.titleTextStyle,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios),
-                    alignment: Alignment.centerLeft,
-                    onPressed: _nextPage,
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: PageView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: pageController,
-                onPageChanged: _onPageChanged,
-                itemCount: pages.length,
-                itemBuilder: (context, index) => pages.elementAt(index),
-              ),
-            ),
-          ],
-        ),
+        child: pages.elementAt(widget.initialPageIndex),
       ),
     );
   }
 
   String _getTitle() {
     final texts = context.texts();
-    switch (selectedPageIndex) {
+    switch (widget.initialPageIndex) {
       case ReceiveLightningPaymentPage.pageIndex:
         return texts.invoice_lightning_title;
       case ReceiveLightningAddressPage.pageIndex:
@@ -122,20 +47,6 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
         return texts.invoice_btc_address_title;
       default:
         return texts.invoice_lightning_title;
-    }
-  }
-
-  String _getMethodName() {
-    final texts = context.texts();
-    switch (selectedPageIndex) {
-      case ReceiveLightningPaymentPage.pageIndex:
-        return texts.receive_payment_method_lightning_invoice;
-      case ReceiveLightningAddressPage.pageIndex:
-        return texts.receive_payment_method_lightning_address;
-      case ReceiveBitcoinAddressPaymentPage.pageIndex:
-        return texts.receive_payment_method_btc_address;
-      default:
-        return texts.receive_payment_method_lightning_invoice;
     }
   }
 }
