@@ -67,7 +67,7 @@ class _ShareIcon extends StatelessWidget {
         highlightColor: Colors.transparent,
         padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 2.0, left: 20.0),
         icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
-        color: themeData.primaryTextTheme.labelLarge!.color!,
+        color: themeData.colorScheme.primary,
         onPressed: () {
           Share.share(address);
         },
@@ -97,7 +97,7 @@ class _CopyIcon extends StatelessWidget {
         highlightColor: Colors.transparent,
         padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 2.0),
         icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-        color: themeData.primaryTextTheme.labelLarge!.color!,
+        color: themeData.colorScheme.primary,
         onPressed: () {
           ServiceInjector().deviceClient.setClipboardText(address);
           showFlushbar(
