@@ -28,6 +28,7 @@ class AddressWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
@@ -39,7 +40,7 @@ class AddressWidget extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: AddressQRWidget(
             address: address,
             snapshot: snapshot,

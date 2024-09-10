@@ -22,26 +22,29 @@ class AddressHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title ?? ""),
-        if (address != null || (snapshot != null && snapshot!.hasData)) ...[
+    return SizedBox(
+      height: 64,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title ?? ""),
           Row(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              _ShareIcon(
-                address: address ?? snapshot!.data!.destination,
-                type: type,
-              ),
-              _CopyIcon(
-                address: address ?? snapshot!.data!.destination,
-                type: type,
-              ),
+              if (address != null || (snapshot != null && snapshot!.hasData)) ...[
+                _ShareIcon(
+                  address: address ?? snapshot!.data!.destination,
+                  type: type,
+                ),
+                _CopyIcon(
+                  address: address ?? snapshot!.data!.destination,
+                  type: type,
+                ),
+              ]
             ],
           ),
-        ]
-      ],
+        ],
+      ),
     );
   }
 }
