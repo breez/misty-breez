@@ -97,7 +97,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     return Scaffold(
       key: _scaffoldKey,
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 40.0),
+        padding: const EdgeInsets.only(bottom: 40.0),
         child: SingleChildScrollView(
           child: Column(
             children: [

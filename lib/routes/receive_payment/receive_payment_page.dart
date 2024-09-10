@@ -66,44 +66,47 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
         leading: const back_button.BackButton(),
         title: Text(_getTitle()),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  alignment: Alignment.centerRight,
-                  onPressed: _previousPage,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 2.0),
-                  child: Text(
-                    _getMethodName(),
-                    style: Theme.of(context).appBarTheme.titleTextStyle,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    alignment: Alignment.centerRight,
+                    onPressed: _previousPage,
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios),
-                  alignment: Alignment.centerLeft,
-                  onPressed: _nextPage,
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2.0),
+                    child: Text(
+                      _getMethodName(),
+                      style: Theme.of(context).appBarTheme.titleTextStyle,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios),
+                    alignment: Alignment.centerLeft,
+                    onPressed: _nextPage,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: PageView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: pageController,
-              onPageChanged: _onPageChanged,
-              itemCount: pages.length,
-              itemBuilder: (context, index) => pages.elementAt(index),
+            Expanded(
+              child: PageView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: pageController,
+                onPageChanged: _onPageChanged,
+                itemCount: pages.length,
+                itemBuilder: (context, index) => pages.elementAt(index),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
