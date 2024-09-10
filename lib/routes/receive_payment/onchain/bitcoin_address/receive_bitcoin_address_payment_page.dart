@@ -88,82 +88,8 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
           return Padding(
             padding: const EdgeInsets.only(bottom: 40.0),
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (receivePaymentResponse == null) ...[
-                    BlocBuilder<CurrencyCubit, CurrencyState>(
-                      builder: (context, currencyState) {
-                        return Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextFormField(
-                                controller: _descriptionController,
-                                keyboardType: TextInputType.multiline,
-                                textInputAction: TextInputAction.done,
-                                maxLines: null,
-                                maxLength: 90,
-                                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                decoration: InputDecoration(
-                                  labelText: texts.invoice_description_label,
-                                ),
-                                style: FieldTextStyle.textStyle,
-                              ),
-                              AmountFormField(
-                                context: context,
-                                texts: texts,
-                                bitcoinCurrency: currencyState.bitcoinCurrency,
-                                focusNode: _amountFocusNode,
-                                autofocus: true,
-                                controller: _amountController,
-                                validatorFn: (v) => validatePayment(v),
-                                style: FieldTextStyle.textStyle,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 16.0),
-                                child: AutoSizeText(
-                                  texts.invoice_min_payment_limit(
-                                    currencyState.bitcoinCurrency.format(
-                                      _onchainPaymentLimits.receive.minSat.toInt(),
-                                    ),
-                                  ),
-                                  style: textStyle,
-                                  maxLines: 1,
-                                  minFontSize: MinFontSize(context).minFontSize,
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    )
-                  ],
-                  if (receivePaymentResponse != null) ...[
-                    FutureBuilder(
-                      future: receivePaymentResponse,
-                      builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            AddressWidget(
-                              snapshot: snapshot,
-                              title: texts.withdraw_funds_btc_address,
-                              type: AddressWidgetType.lightning,
-                              feeWidget: ExpiryAndFeeMessage(
-                                feesSat: prepareResponse!.feesSat.toInt(),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ],
-                ],
-              ),
+              // TODO: Extract these into widgets
+              child: receivePaymentResponse == null ? _buildForm() : _buildQRCode(),
             ),
           );
         },
@@ -185,6 +111,75 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                 Navigator.of(context).pop();
               },
             ),
+    );
+  }
+
+  FutureBuilder<ReceivePaymentResponse> _buildQRCode() {
+    final texts = context.texts();
+    return FutureBuilder(
+      future: receivePaymentResponse,
+      builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
+        return AddressWidget(
+          snapshot: snapshot,
+          title: texts.withdraw_funds_btc_address,
+          type: AddressWidgetType.lightning,
+          feeWidget: ExpiryAndFeeMessage(
+            feesSat: prepareResponse!.feesSat.toInt(),
+          ),
+        );
+      },
+    );
+  }
+
+  BlocBuilder<CurrencyCubit, CurrencyState> _buildForm() {
+    final texts = context.texts();
+    return BlocBuilder<CurrencyCubit, CurrencyState>(
+      builder: (context, currencyState) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _descriptionController,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.done,
+                maxLines: null,
+                maxLength: 90,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                decoration: InputDecoration(
+                  labelText: texts.invoice_description_label,
+                ),
+                style: FieldTextStyle.textStyle,
+              ),
+              AmountFormField(
+                context: context,
+                texts: texts,
+                bitcoinCurrency: currencyState.bitcoinCurrency,
+                focusNode: _amountFocusNode,
+                autofocus: true,
+                controller: _amountController,
+                validatorFn: (v) => validatePayment(v),
+                style: FieldTextStyle.textStyle,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: AutoSizeText(
+                  texts.invoice_min_payment_limit(
+                    currencyState.bitcoinCurrency.format(
+                      _onchainPaymentLimits.receive.minSat.toInt(),
+                    ),
+                  ),
+                  style: textStyle,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 

@@ -121,85 +121,8 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           return Padding(
             padding: const EdgeInsets.only(bottom: 40.0),
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (receivePaymentResponse == null) ...[
-                    BlocBuilder<CurrencyCubit, CurrencyState>(
-                      builder: (context, currencyState) {
-                        return Form(
-                          key: _formKey,
-                          child: Scrollbar(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextFormField(
-                                    controller: _descriptionController,
-                                    keyboardType: TextInputType.multiline,
-                                    textInputAction: TextInputAction.done,
-                                    maxLines: null,
-                                    maxLength: 90,
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                    decoration: InputDecoration(
-                                      labelText: texts.invoice_description_label,
-                                    ),
-                                    style: FieldTextStyle.textStyle,
-                                  ),
-                                  AmountFormField(
-                                    context: context,
-                                    texts: texts,
-                                    bitcoinCurrency: currencyState.bitcoinCurrency,
-                                    focusNode: _amountFocusNode,
-                                    autofocus: true,
-                                    controller: _amountController,
-                                    validatorFn: (v) => validatePayment(v),
-                                    style: FieldTextStyle.textStyle,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 16.0),
-                                    child: AutoSizeText(
-                                      texts.invoice_min_payment_limit(
-                                        currencyState.bitcoinCurrency.format(
-                                          _lightningLimits.receive.minSat.toInt(),
-                                        ),
-                                      ),
-                                      style: textStyle,
-                                      maxLines: 1,
-                                      minFontSize: MinFontSize(context).minFontSize,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    )
-                  ],
-                  if (receivePaymentResponse != null) ...[
-                    FutureBuilder(
-                      future: receivePaymentResponse,
-                      builder:
-                          (BuildContext context, AsyncSnapshot<liquid_sdk.ReceivePaymentResponse> snapshot) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            AddressWidget(
-                              snapshot: snapshot,
-                              title: "Lightning ${texts.qr_code_dialog_invoice}",
-                              type: AddressWidgetType.lightning,
-                              feeWidget: ExpiryAndFeeMessage(
-                                feesSat: prepareResponse!.feesSat.toInt(),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    )
-                  ],
-                ],
-              ),
+              // TODO: Extract these into widgets
+              child: receivePaymentResponse == null ? _buildForm() : _buildQRCode(),
             ),
           );
         },
@@ -226,6 +149,79 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                 Navigator.of(context).pop();
               },
             ),
+    );
+  }
+
+  Widget _buildForm() {
+    final texts = context.texts();
+
+    return BlocBuilder<CurrencyCubit, CurrencyState>(
+      builder: (context, currencyState) {
+        return Form(
+          key: _formKey,
+          child: Scrollbar(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: _descriptionController,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.done,
+                    maxLines: null,
+                    maxLength: 90,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    decoration: InputDecoration(
+                      labelText: texts.invoice_description_label,
+                    ),
+                    style: FieldTextStyle.textStyle,
+                  ),
+                  AmountFormField(
+                    context: context,
+                    texts: texts,
+                    bitcoinCurrency: currencyState.bitcoinCurrency,
+                    focusNode: _amountFocusNode,
+                    autofocus: true,
+                    controller: _amountController,
+                    validatorFn: (v) => validatePayment(v),
+                    style: FieldTextStyle.textStyle,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: AutoSizeText(
+                      texts.invoice_min_payment_limit(
+                        currencyState.bitcoinCurrency.format(
+                          _lightningLimits.receive.minSat.toInt(),
+                        ),
+                      ),
+                      style: textStyle,
+                      maxLines: 1,
+                      minFontSize: MinFontSize(context).minFontSize,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildQRCode() {
+    return FutureBuilder(
+      future: receivePaymentResponse,
+      builder: (BuildContext context, AsyncSnapshot<liquid_sdk.ReceivePaymentResponse> snapshot) {
+        return AddressWidget(
+          snapshot: snapshot,
+          title: "Lightning ${context.texts().qr_code_dialog_invoice}",
+          type: AddressWidgetType.lightning,
+          feeWidget: ExpiryAndFeeMessage(
+            feesSat: prepareResponse!.feesSat.toInt(),
+          ),
+        );
+      },
     );
   }
 
