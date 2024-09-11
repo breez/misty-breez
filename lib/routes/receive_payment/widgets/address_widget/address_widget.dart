@@ -10,7 +10,6 @@ import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_he
 import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_qr_widget.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
 
 enum AddressWidgetType { lightning, bitcoin }
@@ -85,9 +84,12 @@ class _AddressWidgetState extends State<AddressWidget> {
     _log.info("Payment finished: $result");
     if (result == true) {
       if (mounted) {
-        final navigator = Navigator.of(context);
-        navigator.pop();
-        navigator.push(TransparentPageRoute((ctx) => const SuccessfulPaymentRoute()));
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(),
+          ),
+        );
       }
     } else {
       if (result is String) {
