@@ -182,6 +182,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
       if (pickedFilePath != null) {
         ImageCropper().cropImage(
           sourcePath: pickedFilePath,
+          aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
           uiSettings: [
             AndroidUiSettings(
               cropStyle: CropStyle.circle,
