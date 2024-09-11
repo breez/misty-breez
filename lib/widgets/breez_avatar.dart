@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 class BreezAvatar extends StatelessWidget {
   final String? avatarURL;
@@ -99,13 +101,28 @@ class _FileImageAvatar extends StatelessWidget {
       backgroundColor: Colors.yellow,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: Image(
-          image: FileImage(
-            File(filePath),
-          ),
+        child: FutureBuilder(
+          future: _getAvatarImageFile(),
+          builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+            if (snapshot.hasData) {
+              return Image(
+                image: FileImage(snapshot.data!),
+              );
+            }
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );
+  }
+
+  Future<File> _getAvatarImageFile() async {
+    File file = File(filePath);
+    if (Platform.isIOS) {
+      final documentPath = (await getApplicationDocumentsDirectory()).path;
+      file = await file.copy('$documentPath/${path.basename(file.path)}');
+    }
+    return file;
   }
 }
 
