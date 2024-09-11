@@ -25,6 +25,9 @@ String extractExceptionMessage(
     message = _localizedExceptionMessage(texts, message);
     return message;
   }
+  if (exception is PaymentError_InsufficientFunds) {
+    return texts.invoice_payment_validator_error_insufficient_local_balance;
+  }
   return _extractInnerErrorMessage(exception.toString()) ?? defaultErrorMsg ?? exception.toString();
 }
 
