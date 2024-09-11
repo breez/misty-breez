@@ -6,5 +6,4 @@ export 'particle_animations/particle_model.dart';
 export 'particle_animations/particle_painter.dart';
 export 'particle_animations/particles_animations.dart';
 export 'successful_payment.dart';
-export 'successful_payment_dialog.dart';
 export 'successful_payment_message.dart';

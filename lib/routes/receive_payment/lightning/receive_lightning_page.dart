@@ -9,18 +9,15 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
-import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
 import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
-import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("ReceiveLightningPaymentPage");
@@ -271,25 +268,6 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
         description: _descriptionController.text,
       );
     });
-  }
-
-  void onPaymentFinished(
-    dynamic result,
-    ModalRoute currentRoute,
-    NavigatorState navigator,
-  ) {
-    _log.info("Payment finished: $result");
-    if (result == true) {
-      if (currentRoute.isCurrent) {
-        navigator.push(
-          TransparentPageRoute((ctx) => const SuccessfulPaymentRoute()),
-        );
-      }
-    } else {
-      if (result is String) {
-        showFlushbar(context, title: "", message: result);
-      }
-    }
   }
 
   String? validatePayment(int amount) {
