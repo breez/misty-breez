@@ -17,18 +17,22 @@ class PaymentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PaymentsCubit, PaymentsState>(
-      builder: (context, paymentsState) {
-        return SliverFixedExtentList(
-          itemExtent: _itemHeight + _kBottomPadding,
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => PaymentItem(
-              paymentsState.filteredPayments[index],
-              0 == index,
-              firstPaymentItemKey,
-            ),
-            childCount: paymentsState.filteredPayments.length,
-          ),
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
+      builder: (context, userprofileState) {
+        return BlocBuilder<PaymentsCubit, PaymentsState>(
+          builder: (context, paymentsState) {
+            return SliverFixedExtentList(
+              itemExtent: _itemHeight + _kBottomPadding,
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => PaymentItem(
+                  paymentsState.filteredPayments[index],
+                  0 == index,
+                  firstPaymentItemKey,
+                ),
+                childCount: paymentsState.filteredPayments.length,
+              ),
+            );
+          },
         );
       },
     );
