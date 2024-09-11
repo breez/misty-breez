@@ -1,9 +1,9 @@
 PODS:
   - app_group_directory (1.0.0):
     - Flutter
-  - breez_sdk_liquidFFI (0.2.2-dev15)
-  - BreezSDKLiquid (0.2.2-dev15):
-    - breez_sdk_liquidFFI (= 0.2.2-dev15)
+  - breez_sdk_liquidFFI (0.3.0)
+  - BreezSDKLiquid (0.3.0):
+    - breez_sdk_liquidFFI (= 0.3.0)
   - clipboard_watcher (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -173,7 +173,7 @@ PODS:
 
 DEPENDENCIES:
   - app_group_directory (from `.symlinks/plugins/app_group_directory/ios`)
-  - BreezSDKLiquid (= 0.2.2-dev15)
+  - BreezSDKLiquid
   - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -280,8 +280,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_group_directory: 7bf9f8f9819ead554de29da7c25fb7a680d6a9a0
-  breez_sdk_liquidFFI: 647218d0988c04ccecd47c1bdb5daab76a50e255
-  BreezSDKLiquid: c3ef83bd1c02fc11e768453df474a291411530d1
+  breez_sdk_liquidFFI: c85c235fb8177538d63f7902f86ff994bdc622a6
+  BreezSDKLiquid: 68dca0e9ba38647692f4950468f602ca756b5cd8
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
   connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
@@ -329,6 +329,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   XCGLogger: 399c5885210b4e2ad79d9f7a29b105d672ef724f
 
-PODFILE CHECKSUM: c94ce8fa34caf602b535086a60d4cc770c21d194
+PODFILE CHECKSUM: 1e927beb1a3b39594684e1fcce0874e37846ec98
 
 COCOAPODS: 1.15.2
