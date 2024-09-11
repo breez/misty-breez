@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,6 +34,7 @@ class AddressHeaderWidget extends StatelessWidget {
               if (address != null || (snapshot != null && snapshot!.hasData)) ...[
                 _ShareIcon(
                   address: address ?? snapshot!.data!.destination,
+                  title: title,
                   type: type,
                 ),
                 _CopyIcon(
@@ -51,20 +52,22 @@ class AddressHeaderWidget extends StatelessWidget {
 
 class _ShareIcon extends StatelessWidget {
   final String address;
+  final String? title;
   final AddressWidgetType type;
 
   const _ShareIcon({
     required this.address,
+    required this.title,
     this.type = AddressWidgetType.lightning,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Tooltip(
-      message: type == AddressWidgetType.lightning ? texts.qr_code_dialog_share : "Share deposit address",
+      // TODO: Add these messages to Breez-Translations
+      message: (title != null && title!.isNotEmpty) ? "Share $title" : "Share deposit address",
       child: IconButton(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -103,6 +106,7 @@ class _CopyIcon extends StatelessWidget {
         color: themeData.colorScheme.primary,
         onPressed: () {
           ServiceInjector().deviceClient.setClipboardText(address);
+          // TODO: Create payment method specific copy messages to Breez-Translations
           showFlushbar(
             context,
             message: type == AddressWidgetType.lightning

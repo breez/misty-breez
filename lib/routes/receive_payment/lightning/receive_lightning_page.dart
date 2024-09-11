@@ -10,7 +10,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
 import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';

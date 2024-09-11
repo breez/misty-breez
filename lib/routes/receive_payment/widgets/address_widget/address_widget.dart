@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_header_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_qr_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_header_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_qr_widget.dart';
 
 enum AddressWidgetType { lightning, bitcoin }
 
