@@ -3,16 +3,15 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_info_message_box.dart';
 import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/warning_box.dart';
 
-class LnAddressFeeMessage extends StatelessWidget {
-  const LnAddressFeeMessage({super.key});
+class PaymentLimitsMessageBox extends StatelessWidget {
+  const PaymentLimitsMessageBox({super.key});
 
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
       builder: (BuildContext context, PaymentLimitsState snapshot) {
@@ -37,36 +36,26 @@ class LnAddressFeeMessage extends StatelessWidget {
           );
         }
 
-        return WarningBox(
-          boxPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
-          contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _formatFeeMessage(context, snapshot.lightningPaymentLimits!.receive),
-                style: themeData.textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        );
+        final receivePaymentLimits = snapshot.lightningPaymentLimits!.receive;
+        final limitsMessage = _formatLimitsMessage(context, receivePaymentLimits);
+
+        return PaymentInfoMessageBox(message: limitsMessage);
       },
     );
   }
 
-  String _formatFeeMessage(BuildContext context, Limits lightningReceiveLimits) {
+  String _formatLimitsMessage(BuildContext context, Limits limits) {
     final texts = context.texts();
     final currencyState = context.read<CurrencyCubit>().state;
 
     // Get the minimum sendable amount (in sats), can not be less than 1 or more than maxSendable
-    final minSendableSat = lightningReceiveLimits.minSat.toInt();
+    final minSendableSat = limits.minSat.toInt();
     final minSendableAboveMin = minSendableSat >= 1;
     if (!minSendableAboveMin) {
       return "Minimum sendable amount can't be less than ${currencyState.bitcoinCurrency.format(1)}.";
     }
 
-    final maxSendableSat = lightningReceiveLimits.maxSat.toInt();
+    final maxSendableSat = limits.maxSat.toInt();
     if (minSendableSat > maxSendableSat) {
       return "Minimum sendable amount can't be greater than maximum sendable amount.";
     }

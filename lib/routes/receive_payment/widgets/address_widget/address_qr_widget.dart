@@ -12,7 +12,7 @@ class AddressQRWidget extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final void Function()? onLongPress;
   final AddressWidgetType type;
-  final Widget? feeWidget;
+  final Widget? infoWidget;
 
   const AddressQRWidget({
     super.key,
@@ -20,7 +20,7 @@ class AddressQRWidget extends StatelessWidget {
     this.footer,
     this.onLongPress,
     this.type = AddressWidgetType.lightning,
-    this.feeWidget,
+    this.infoWidget,
     required this.snapshot,
   });
 
@@ -40,10 +40,10 @@ class AddressQRWidget extends StatelessWidget {
           : Column(
               children: [
                 AddressQR(bolt11: address ?? snapshot!.data!.destination, bip21: true),
-                if (feeWidget != null) ...[
+                if (infoWidget != null) ...[
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    child: feeWidget,
+                    child: infoWidget,
                   ),
                 ]
               ],

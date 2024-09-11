@@ -7,8 +7,8 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/cubit/webhook/webhook_state.dart';
 import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
 import 'package:l_breez/routes/receive_payment/ln_address/widgets/address_widget_placeholder.dart';
-import 'package:l_breez/routes/receive_payment/ln_address/widgets/ln_address_fee_message.dart';
 import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_limits_message_box.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
@@ -79,7 +79,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                             address: webhookState.lnurlPayUrl!,
                             title: "Lightning Address",
                             type: AddressWidgetType.lightning,
-                            feeWidget: const LnAddressFeeMessage(),
+                            infoWidget: const PaymentLimitsMessageBox(),
                           ),
                         if (webhookState.lnurlPayError != null)
                           _ErrorMessage(

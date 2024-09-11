@@ -12,7 +12,7 @@ class AddressWidget extends StatelessWidget {
   final String? title;
   final void Function()? onLongPress;
   final AddressWidgetType type;
-  final Widget? feeWidget;
+  final Widget? infoWidget;
 
   const AddressWidget({
     this.snapshot,
@@ -21,7 +21,7 @@ class AddressWidget extends StatelessWidget {
     this.title,
     this.onLongPress,
     this.type = AddressWidgetType.lightning,
-    this.feeWidget,
+    this.infoWidget,
     this.address,
   });
 
@@ -44,7 +44,7 @@ class AddressWidget extends StatelessWidget {
           child: AddressQRWidget(
             address: address,
             snapshot: snapshot,
-            feeWidget: feeWidget,
+            infoWidget: infoWidget,
             footer: footer,
             onLongPress: onLongPress,
             type: type,

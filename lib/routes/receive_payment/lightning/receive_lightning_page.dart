@@ -11,6 +11,7 @@ import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
 import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
 import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
@@ -217,7 +218,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           snapshot: snapshot,
           title: "Lightning ${context.texts().qr_code_dialog_invoice}",
           type: AddressWidgetType.lightning,
-          feeWidget: ExpiryAndFeeMessage(
+          infoWidget: PaymentFeesMessageBox(
             feesSat: prepareResponse!.feesSat.toInt(),
           ),
         );
