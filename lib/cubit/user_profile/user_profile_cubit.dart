@@ -9,6 +9,7 @@ import 'package:l_breez/cubit/model/models.dart';
 import 'package:l_breez/cubit/user_profile/user_profile_cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 export 'user_profile_state.dart';
@@ -90,18 +91,17 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     return state.profileSettings.toJson();
   }
 
-  Future<String> _saveImage(List<int> logoBytes) {
-    return getApplicationDocumentsDirectory()
-        .then(
-          (docDir) => Directory(
-            [docDir.path, profileDataFolderPath].join("/"),
-          ).create(recursive: true),
-        )
-        .then(
-          (profileDir) => File(
-            [profileDir.path, 'profile-${DateTime.now().millisecondsSinceEpoch}-.png'].join("/"),
-          ).writeAsBytes(logoBytes, flush: true),
-        )
-        .then((file) => file.path);
+  Future<String> _saveImage(List<int> logoBytes) async {
+    try {
+      final docDir = await getApplicationDocumentsDirectory();
+      final profileDirPath = path.join(docDir.path, profileDataFolderPath);
+      final profileDir = await Directory(profileDirPath).create(recursive: true);
+      final filePath = path.join(profileDir.path, 'profile-${DateTime.now().millisecondsSinceEpoch}.png');
+      final file = await File(filePath).writeAsBytes(logoBytes, flush: true);
+      return file.path;
+    } catch (e) {
+      _log.warning('Error saving image: $e');
+      rethrow;
+    }
   }
 }
