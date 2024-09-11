@@ -1,7 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
+import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 
 class PaymentDetailsDialogDescription extends StatelessWidget {
   final PaymentData paymentData;
@@ -12,7 +15,12 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    final title = paymentData.title;
+    var title = paymentData.title;
+    if (paymentData.paymentType == PaymentType.receive && title.isDefaultTitleWithLiquidNaming) {
+      final userProfileCubit = context.read<UserProfileCubit>();
+      final userProfileState = userProfileCubit.state;
+      title = "Payment to ${userProfileState.profileSettings.name}";
+    }
     final description = paymentData.details.map(
       lightning: (details) => details.description,
       bitcoin: (details) => details.description,

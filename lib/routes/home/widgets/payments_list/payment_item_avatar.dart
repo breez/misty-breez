@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 import 'package:l_breez/widgets/breez_avatar.dart';
 
 class PaymentItemAvatar extends StatelessWidget {
@@ -11,7 +13,13 @@ class PaymentItemAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (true) {
+    var title = paymentData.title;
+    if (paymentData.paymentType == PaymentType.receive && title.isDefaultTitleWithLiquidNaming) {
+      final userProfileCubit = context.read<UserProfileCubit>();
+      final userProfileState = userProfileCubit.state;
+      final user = userProfileState.profileSettings;
+      return BreezAvatar(user.avatarURL, radius: radius);
+    } else {
       return CircleAvatar(
         radius: radius,
         backgroundColor: Colors.white,
@@ -20,10 +28,6 @@ class PaymentItemAvatar extends StatelessWidget {
           color: const Color(0xb3303234),
         ),
       );
-      // TODO: Liquid - Check if payment's metadata has image - https://github.com/breez/breez-sdk-liquid/issues/232
-      // ignore: dead_code
-    } else {
-      return BreezAvatar("", radius: radius);
     }
   }
 }
