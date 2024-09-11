@@ -77,7 +77,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                         if (webhookState.lnurlPayUrl != null)
                           AddressWidget(
                             address: webhookState.lnurlPayUrl!,
-                            title: "Lightning Address",
+                            title: texts.receive_payment_method_lightning_address,
                             type: AddressWidgetType.lightning,
                             infoWidget: const PaymentLimitsMessageBox(),
                           ),

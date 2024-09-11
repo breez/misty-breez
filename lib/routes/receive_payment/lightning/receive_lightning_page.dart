@@ -216,7 +216,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
       builder: (BuildContext context, AsyncSnapshot<liquid_sdk.ReceivePaymentResponse> snapshot) {
         return AddressWidget(
           snapshot: snapshot,
-          title: "Lightning ${context.texts().qr_code_dialog_invoice}",
+          title: context.texts().receive_payment_method_lightning_invoice,
           type: AddressWidgetType.lightning,
           infoWidget: PaymentFeesMessageBox(
             feesSat: prepareResponse!.feesSat.toInt(),
