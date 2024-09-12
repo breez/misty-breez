@@ -88,6 +88,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
     final chainSwapCubit = context.read<ChainSwapCubit>();
     _fetchFeeOptionsFuture = chainSwapCubit.fetchSendChainSwapFeeOptions(
       amountSat: widget.amountSat,
+      isDrain: widget.isMaxValue,
     );
     _fetchFeeOptionsFuture.then((feeOptions) {
       if (mounted) {

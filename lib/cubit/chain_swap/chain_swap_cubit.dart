@@ -45,6 +45,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
   /// Fetches the current recommended fees
   Future<List<SendChainSwapFeeOption>> fetchSendChainSwapFeeOptions({
     required int amountSat,
+    required bool isDrain,
   }) async {
     RecommendedFees recommendedFees;
     try {
@@ -52,6 +53,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
       return await _constructFeeOptionList(
         amountSat: amountSat,
         recommendedFees: recommendedFees,
+        isDrain: isDrain,
       );
     } catch (e) {
       emit(ChainSwapState(error: extractExceptionMessage(e, getSystemAppLocalizations())));
@@ -62,6 +64,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
   Future<List<SendChainSwapFeeOption>> _constructFeeOptionList({
     required int amountSat,
     required RecommendedFees recommendedFees,
+    required bool isDrain,
   }) async {
     final recommendedFeeList = [
       recommendedFees.hourFee,
@@ -71,8 +74,11 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     final feeOptions = await Future.wait(
       List.generate(3, (index) async {
         final recommendedFee = recommendedFeeList.elementAt(index);
+        final payOnchainAmount = isDrain
+            ? const PayOnchainAmount_Drain()
+            : PayOnchainAmount_Receiver(amountSat: BigInt.from(amountSat));
         final preparePayOnchainRequest = PreparePayOnchainRequest(
-          receiverAmountSat: BigInt.from(amountSat),
+          amount: payOnchainAmount,
           satPerVbyte: recommendedFee.toInt(),
         );
         final swapOption = await preparePayOnchain(
