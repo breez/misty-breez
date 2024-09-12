@@ -60,13 +60,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       (_) {
         final data = widget.requestData;
         if (data != null) {
-          final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+          final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+          final paymentLimitsState = paymentLimitsCubit.state;
           final minSat = paymentLimitsState.lightningPaymentLimits?.receive.minSat.toInt();
           if (minSat != null && data.maxWithdrawable.toInt() ~/ 1000 < minSat) {
             throw Exception("Payment is below network limit of $minSat sats.");
           }
 
-          final currencyState = context.read<CurrencyCubit>().state;
+          final currencyCubit = context.read<CurrencyCubit>();
+          final currencyState = currencyCubit.state;
           _amountController.text = currencyState.bitcoinCurrency.format(
             data.maxWithdrawable.toInt() ~/ 1000,
             includeDisplayName: false,
@@ -218,7 +220,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       "Withdraw request: description=${data.defaultDescription}, k1=${data.k1}, "
       "min=${data.minWithdrawable}, max=${data.maxWithdrawable}",
     );
-    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
 
     final navigator = Navigator.of(context);
     navigator.pop();
@@ -299,7 +301,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String? validatePayment(int amount) {
-    var currencyCubit = context.read<CurrencyCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: _validatePayment,
       currency: currencyCubit.state.bitcoinCurrency,
@@ -308,7 +310,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   void _validatePayment(int amount, bool outgoing) {
-    final accountState = context.read<AccountCubit>().state;
+    final accountCubit = context.read<AccountCubit>();
+    final accountState = accountCubit.state;
     final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);

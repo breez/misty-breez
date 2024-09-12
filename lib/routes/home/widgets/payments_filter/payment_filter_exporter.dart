@@ -57,7 +57,8 @@ class PaymentFilterExporter extends StatelessWidget {
   Future _exportPayments(BuildContext context) async {
     final texts = context.texts();
     final navigator = Navigator.of(context);
-    final currencyState = context.read<CurrencyCubit>().state;
+    final currencyCubit = context.read<CurrencyCubit>();
+    final currencyState = currencyCubit.state;
     final paymentsCubit = context.read<PaymentsCubit>();
     final paymentsState = paymentsCubit.state;
     var loaderRoute = createLoaderRoute(context);

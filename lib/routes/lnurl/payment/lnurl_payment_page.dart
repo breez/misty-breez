@@ -65,7 +65,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   @override
   void initState() {
     super.initState();
-    final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+    final paymentLimitsState = paymentLimitsCubit.state;
     final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
     if (minSat != null && widget.data.maxSendable.toInt() ~/ 1000 < minSat) {
       throw Exception("Payment is below network limit of $minSat sats.");
@@ -74,7 +75,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         if (fixedAmount) {
-          final currencyState = context.read<CurrencyCubit>().state;
+          final currencyCubit = context.read<CurrencyCubit>();
+          final currencyState = currencyCubit.state;
           _amountController.text = currencyState.bitcoinCurrency.format(
             (widget.data.maxSendable.toInt() ~/ 1000),
             includeDisplayName: false,
@@ -87,7 +89,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final currencyState = context.read<CurrencyCubit>().state;
+    final currencyCubit = context.read<CurrencyCubit>();
+    final currencyState = currencyCubit.state;
     final metadataMap = {
       for (var v in json.decode(widget.data.metadataStr)) v[0] as String: v[1],
     };
@@ -274,7 +277,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
 
   String? validatePayment(int amount) {
     final texts = context.texts();
-    final currencyState = context.read<CurrencyCubit>().state;
+    final currencyCubit = context.read<CurrencyCubit>();
+    final currencyState = currencyCubit.state;
 
     final maxSendable = widget.data.maxSendable.toInt() ~/ 1000;
     if (amount > maxSendable) {
@@ -294,7 +298,8 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   }
 
   void _validatePayment(int amount, bool outgoing) {
-    final accountState = context.read<AccountCubit>().state;
+    final accountCubit = context.read<AccountCubit>();
+    final accountState = accountCubit.state;
     final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);

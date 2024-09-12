@@ -232,7 +232,7 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   }
 
   String? validatePayment(int amount) {
-    var currencyCubit = context.read<CurrencyCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: _validateSwap,
       currency: currencyCubit.state.bitcoinCurrency,
@@ -241,7 +241,8 @@ class _ReceiveChainSwapPageState extends State<ReceiveChainSwapPage> {
   }
 
   void _validateSwap(int amount, bool outgoing) {
-    final accountState = context.read<AccountCubit>().state;
+    final accountCubit = context.read<AccountCubit>();
+    final accountState = accountCubit.state;
     final balance = accountState.balance;
     final chainSwapCubit = context.read<ChainSwapCubit>();
     return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits, balance);

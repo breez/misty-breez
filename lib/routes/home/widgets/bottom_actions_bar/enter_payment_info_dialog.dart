@@ -205,7 +205,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
     try {
       _setValidatorErrorMessage("");
-      var inputCubit = context.read<InputCubit>();
+      final inputCubit = context.read<InputCubit>();
       final inputType = await inputCubit.parseInput(input: input);
       _log.info("Parsed input type: '${inputType.runtimeType.toString()}");
       // Can't compare against a list of InputType as runtime type comparison is a bit tricky with binding generated enums

@@ -27,7 +27,8 @@ class LNURLPaymentDialogState extends State<LNURLPaymentDialog> {
   @override
   void initState() {
     super.initState();
-    final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
+    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+    final paymentLimitsState = paymentLimitsCubit.state;
     final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
     if (minSat != null && widget.data.maxSendable.toInt() ~/ 1000 < minSat) {
       throw Exception("Payment is below network limit of $minSat sats.");
@@ -38,7 +39,8 @@ class LNURLPaymentDialogState extends State<LNURLPaymentDialog> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final texts = context.texts();
-    final currencyState = context.read<CurrencyCubit>().state;
+    final currencyCubit = context.read<CurrencyCubit>();
+    final currencyState = currencyCubit.state;
     final metadataMap = {
       for (var v in json.decode(widget.data.metadataStr)) v[0] as String: v[1],
     };

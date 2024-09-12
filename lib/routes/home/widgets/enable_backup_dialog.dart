@@ -61,7 +61,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              var backupCubit = context.read<BackupCubit>();
+              final backupCubit = context.read<BackupCubit>();
               await backupCubit.backup();
             },
             child: Text(
