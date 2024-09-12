@@ -37,7 +37,7 @@ class QrActionButton extends StatelessWidget {
 
   void _scanBarcode(BuildContext context) {
     final texts = context.texts();
-    InputCubit inputCubit = context.read<InputCubit>();
+    final inputCubit = context.read<InputCubit>();
 
     _log.info("Start qr code scan");
     Navigator.pushNamed<String>(context, QRScan.routeName).then(

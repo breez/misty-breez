@@ -107,7 +107,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   void _updatePreferredCurrencies(
     List<String> preferredFiatCurrencies,
   ) {
-    var currencyCubit = context.read<CurrencyCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
     currencyCubit.setPreferredCurrencies(preferredFiatCurrencies);
   }
 

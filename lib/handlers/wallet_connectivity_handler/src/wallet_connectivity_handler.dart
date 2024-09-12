@@ -102,10 +102,10 @@ class WalletConnectivityHandler extends Handler {
             }
             return TextButton(
               onPressed: () {
-                final connectionService = context.read<SdkConnectivityCubit>();
+                final sdkConnectivityCubit = context.read<SdkConnectivityCubit>();
                 Future.delayed(const Duration(milliseconds: 500), () async {
                   try {
-                    await connectionService.reconnect();
+                    await sdkConnectivityCubit.reconnect();
                   } catch (error) {
                     _log.severe("Failed to reconnect");
                     rethrow;

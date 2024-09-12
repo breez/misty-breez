@@ -65,7 +65,7 @@ class ChainSwapQrDialogState extends State<ChainSwapQrDialog> with SingleTickerP
   void didUpdateWidget(covariant ChainSwapQrDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.receivePaymentResponse?.destination != oldWidget.receivePaymentResponse?.destination) {
-      var inputCubit = context.read<InputCubit>();
+      final inputCubit = context.read<InputCubit>();
       inputCubit.trackPayment(widget.receivePaymentResponse!.destination).then((value) {
         Timer(const Duration(milliseconds: 1000), () {
           if (mounted) {

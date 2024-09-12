@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/cubit/webhook/webhook_state.dart';
 import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
@@ -10,8 +12,6 @@ import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("LnAddressPage");
@@ -41,7 +41,7 @@ class LnAddressPageState extends State<LnAddressPage> {
   }
 
   void _trackPayment() {
-    var inputCubit = context.read<InputCubit>();
+    final inputCubit = context.read<InputCubit>();
     inputCubit.trackPayment(null).then((value) {
       Timer(const Duration(milliseconds: 1000), () {
         if (mounted) {

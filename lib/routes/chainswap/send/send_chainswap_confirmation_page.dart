@@ -91,7 +91,8 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
     );
     _fetchFeeOptionsFuture.then((feeOptions) {
       if (mounted) {
-        final accountState = context.read<AccountCubit>().state;
+        final accountCubit = context.read<AccountCubit>();
+        final accountState = accountCubit.state;
         setState(() {
           affordableFees = feeOptions
               .where((f) => f.isAffordable(balanceSat: accountState.balance, amountSat: widget.amountSat))

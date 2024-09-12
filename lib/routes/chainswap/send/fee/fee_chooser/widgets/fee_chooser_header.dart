@@ -28,7 +28,8 @@ class _FeeChooserHeaderState extends State<FeeChooserHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final account = context.read<AccountCubit>().state;
+    final accountCubit = context.read<AccountCubit>();
+    final accountState = accountCubit.state;
     final texts = context.texts();
 
     return Column(
@@ -44,8 +45,8 @@ class _FeeChooserHeaderState extends State<FeeChooserHeader> {
                 index: index,
                 text: feeOption.getDisplayName(texts),
                 isAffordable: feeOption.isAffordable(
-                  balanceSat: account.balance,
-                  walletBalanceSat: account.walletBalance,
+                  balanceSat: accountState.balance,
+                  walletBalanceSat: accountState.walletBalance,
                   amountSat: widget.amountSat,
                 ),
                 isSelected: widget.selectedFeeIndex == index,

@@ -43,7 +43,7 @@ class HeaderFilterChip extends SliverPadding {
                                 ),
                               ),
                               onDeleted: () {
-                                var paymentsCubit = context.read<PaymentsCubit>();
+                                final paymentsCubit = context.read<PaymentsCubit>();
                                 return paymentsCubit.changePaymentFilter(
                                   toTimestamp: null,
                                   fromTimestamp: null,

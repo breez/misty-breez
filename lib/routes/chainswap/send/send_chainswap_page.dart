@@ -54,7 +54,8 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
             );
           }
 
-          var currencyState = context.read<CurrencyCubit>().state;
+          final currencyCubit = context.read<CurrencyCubit>();
+          final currencyState = currencyCubit.state;
           return SendChainSwapFormPage(
             bitcoinCurrency: currencyState.bitcoinCurrency,
             paymentLimits: snapshot.onchainPaymentLimits!,
