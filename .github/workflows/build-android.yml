@@ -273,9 +273,8 @@ jobs:
 
       - name: Use the production build.gradle
         if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
-        run: |
-          mv packages/flutter/android/build.gradle.production packages/flutter/android/build.gradle
-          mv lbreez/android/build.gradle.production lbreez/android/build.gradle
+        working-directory: lbreez
+        run: mv android/app/build.gradle.production android/app/build.gradle
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez

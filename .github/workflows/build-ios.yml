@@ -283,9 +283,8 @@ jobs:
 
       - name: Use the production Podfile
         if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
-        run: |
-          rm packages/flutter/ios/breez_sdk_liquid.podspec
-          mv lbreez/ios/Podfile.production lbreez/ios/Podfile
+        working-directory: lbreez
+        run: mv ios/Podfile.production ios/Podfile
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
