@@ -276,6 +276,17 @@ jobs:
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just copy-apple
 
+      - name: 🔨 Build Breez Liquid SDK Swift bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        run: just build-bindings-swift
+
+      - name: Use the production Podfile
+        if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
+        run: |
+          rm packages/flutter/ios/breez_sdk_liquid.podspec
+          mv lbreez/ios/Podfile.production lbreez/ios/Podfile
+
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
         run: flutter precache

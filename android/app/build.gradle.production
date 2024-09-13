@@ -136,6 +136,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
     // Import FCM
     implementation 'com.google.firebase:firebase-messaging:23.4.1'
+    // Import breez_sdk_liquid for notifications
+    implementation("net.java.dev.jna:jna:5.14.0@aar")
+    implementation("com.github.breez:breez-sdk-liquid:latest.release") {
+        exclude group:"net.java.dev.jna"
+    }
     // Logging
     implementation 'org.tinylog:tinylog-api-kotlin:2.6.2'
     implementation 'org.tinylog:tinylog-impl:2.6.2'

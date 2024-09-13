@@ -266,6 +266,17 @@ jobs:
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just copy-android
 
+      - name: 🔨 Build Breez Liquid SDK Android bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        run: just build-bindings-android
+
+      - name: Use the production build.gradle
+        if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
+        run: |
+          mv packages/flutter/android/build.gradle.production packages/flutter/android/build.gradle
+          mv lbreez/android/build.gradle.production lbreez/android/build.gradle
+
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
         run: flutter precache
