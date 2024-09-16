@@ -1,6 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
 import 'package:l_breez/routes/chainswap/send/widgets/bitcoin_address_text_form_field.dart';
@@ -104,7 +106,9 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
                   setState(() {
                     widget.onChanged(value);
                     if (value) {
-                      _setAmount(widget.paymentLimits.send.maxSat.toInt());
+                      final accountCubit = context.read<AccountCubit>();
+                      final accountState = accountCubit.state;
+                      _setAmount(accountState.balance);
                     } else {
                       widget.amountController.text = "";
                     }
