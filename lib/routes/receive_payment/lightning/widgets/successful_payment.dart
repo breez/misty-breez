@@ -82,12 +82,11 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute> with Tic
       children: [
         if (!showParticles)
           SlideTransition(
-            position: _slideAnimation, // Apply the slide animation
+            position: _slideAnimation,
             child: Container(
-              color: themeData.bottomAppBarTheme.color
-                  ?.withOpacity(0.95), // Fullscreen half-transparent background
+              color: themeData.bottomAppBarTheme.color?.withOpacity(0.98),
               child: const Center(
-                child: SuccessfulPaymentMessage(), // The message widget
+                child: SuccessfulPaymentMessage(),
               ),
             ),
           ),

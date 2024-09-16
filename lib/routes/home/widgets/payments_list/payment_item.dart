@@ -31,7 +31,19 @@ class _PaymentItemState extends State<PaymentItem> {
   @override
   void initState() {
     super.initState();
-    isPaymentItemNew = _createdWithin(const Duration(seconds: 15));
+    setState(() {
+      isPaymentItemNew = _createdWithin(const Duration(seconds: 15));
+    });
+  }
+
+  @override
+  void didUpdateWidget(PaymentItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.paymentData != oldWidget.paymentData) {
+      setState(() {
+        isPaymentItemNew = _createdWithin(const Duration(seconds: 15));
+      });
+    }
   }
 
   @override
@@ -105,11 +117,7 @@ class _PaymentItemState extends State<PaymentItem> {
   }
 
   bool _createdWithin(Duration duration) {
-    final diff = widget.paymentData.paymentTime.difference(
-      DateTime.fromMillisecondsSinceEpoch(
-        DateTime.now().millisecondsSinceEpoch,
-      ),
-    );
+    final diff = widget.paymentData.paymentTime.difference(DateTime.now());
     return diff > -duration;
   }
 }

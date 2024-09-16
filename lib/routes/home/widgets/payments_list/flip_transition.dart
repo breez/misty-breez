@@ -36,14 +36,16 @@ class FlipTransitionState extends State<FlipTransition> with TickerProviderState
         curve: const Interval(0.0, 1.0, curve: Curves.fastOutSlowIn),
       ),
     );
-
-    _flipAnimationController!.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _flipAnimationController!.reverse();
-      }
-    });
-    _flipAnimationController!.forward().whenCompleteOrCancel(() {
-      widget.onComplete();
+    const successfulPaymentRouteAnimation = Duration(seconds: 5, milliseconds: 800);
+    Future.delayed(successfulPaymentRouteAnimation, () {
+      _flipAnimationController!.forward().whenCompleteOrCancel(() {
+        if (!mounted) return;
+        _flipAnimationController!.reverse().whenCompleteOrCancel(() {
+          if (mounted) {
+            widget.onComplete();
+          }
+        });
+      });
     });
   }
 
