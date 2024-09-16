@@ -269,7 +269,7 @@ jobs:
       - name: 🔨 Build Breez Liquid SDK Android bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: just build-bindings-android
+        run: just build-uniffi-android
 
       - name: Use the production build.gradle
         if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
