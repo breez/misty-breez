@@ -178,7 +178,10 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   _amountController.text = currencyState.bitcoinCurrency.format(
-                                    (widget.data.minSendable.toInt() ~/ 1000),
+                                    max(
+                                      _lightningLimits.send.minSat.toInt(),
+                                      widget.data.minSendable.toInt() ~/ 1000,
+                                    ),
                                     includeDisplayName: false,
                                   );
                                 },
