@@ -83,8 +83,11 @@ class _AddressWidgetState extends State<AddressWidget> {
   void _onPaymentFinished(dynamic result) {
     _log.info("Payment finished: $result");
     if (result == true) {
+      // Close the page and show successful payment route
       if (mounted) {
-        Navigator.of(context).push(
+        final navigatorState = Navigator.of(context);
+        navigatorState.pop();
+        navigatorState.push(
           PageRouteBuilder(
             opaque: false,
             pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(),

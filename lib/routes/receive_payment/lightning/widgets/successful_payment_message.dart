@@ -19,6 +19,7 @@ class SuccessfulPaymentMessage extends StatelessWidget {
           textAlign: TextAlign.center,
           style: themeData.primaryTextTheme.headlineMedium!.copyWith(
             fontSize: 16,
+            color: Colors.white,
           ),
         ),
         Padding(
