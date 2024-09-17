@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_widget.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
@@ -117,10 +117,9 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     return FutureBuilder(
       future: receivePaymentResponse,
       builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
-        return AddressWidget(
+        return DestinationWidget(
           snapshot: snapshot,
           title: texts.withdraw_funds_btc_address,
-          type: AddressWidgetType.bitcoin,
           infoWidget: PaymentFeesMessageBox(
             feesSat: prepareResponse!.feesSat.toInt(),
           ),

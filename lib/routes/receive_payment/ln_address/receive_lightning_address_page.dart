@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/cubit/webhook/webhook_state.dart';
-import 'package:l_breez/routes/receive_payment/ln_address/widgets/address_widget_placeholder.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
+import 'package:l_breez/routes/receive_payment/ln_address/widgets/destination_widget_placeholder.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_widget.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_limits_message_box.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
@@ -41,17 +41,16 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
       builder: (context, webhookState) {
         return Scaffold(
           body: webhookState.isLoading
-              ? const AddressWidgetPlaceholder()
+              ? const DestinationWidgetPlaceholder()
               : Padding(
                   padding: const EdgeInsets.only(bottom: 40.0),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
                         if (webhookState.lnurlPayUrl != null)
-                          AddressWidget(
-                            address: webhookState.lnurlPayUrl!,
+                          DestinationWidget(
+                            destination: webhookState.lnurlPayUrl!,
                             title: texts.receive_payment_method_lightning_address,
-                            type: AddressWidgetType.lightning,
                             infoWidget: const PaymentLimitsMessageBox(),
                           ),
                         if (webhookState.lnurlPayError != null)

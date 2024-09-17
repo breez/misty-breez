@@ -9,7 +9,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_widget.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
@@ -271,10 +271,9 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     return FutureBuilder(
       future: receivePaymentResponse,
       builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
-        return AddressWidget(
+        return DestinationWidget(
           snapshot: snapshot,
           title: context.texts().receive_payment_method_lightning_invoice,
-          type: AddressWidgetType.lightning,
           infoWidget: PaymentFeesMessageBox(
             feesSat: prepareResponse!.feesSat.toInt(),
           ),

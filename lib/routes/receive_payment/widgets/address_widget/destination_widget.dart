@@ -6,53 +6,47 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_header_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_qr_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_header.dart';
+import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_qr_widget.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
-enum AddressWidgetType { lightning, bitcoin }
+final _log = Logger("DestinationWidget");
 
-final _log = Logger("AddressWidget");
-
-class AddressWidget extends StatefulWidget {
-  final String? address;
+class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
-  final String? footer;
+  final String? destination;
   final String? title;
   final void Function()? onLongPress;
-  final AddressWidgetType type;
   final Widget? infoWidget;
 
-  const AddressWidget({
-    this.snapshot,
+  const DestinationWidget({
     super.key,
-    this.footer,
+    this.snapshot,
+    this.destination,
     this.title,
     this.onLongPress,
-    this.type = AddressWidgetType.lightning,
     this.infoWidget,
-    this.address,
   });
 
   @override
-  State<AddressWidget> createState() => _AddressWidgetState();
+  State<DestinationWidget> createState() => _DestinationWidgetState();
 }
 
-class _AddressWidgetState extends State<AddressWidget> {
+class _DestinationWidgetState extends State<DestinationWidget> {
   @override
-  void didUpdateWidget(covariant AddressWidget oldWidget) {
+  void didUpdateWidget(covariant DestinationWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     String? destination = _getDestination(oldWidget);
     _trackPayment(destination);
   }
 
-  String? _getDestination(AddressWidget oldWidget) {
+  String? _getDestination(DestinationWidget oldWidget) {
     String? destination;
-    if (widget.address != null) {
-      if (widget.address != oldWidget.address) {
-        destination = widget.address!;
+    if (widget.destination != null) {
+      if (widget.destination != oldWidget.destination) {
+        destination = widget.destination!;
       }
     } else if ((widget.snapshot != null && widget.snapshot!.hasData) &&
         (oldWidget.snapshot != null && oldWidget.snapshot!.hasData)) {
@@ -108,22 +102,19 @@ class _AddressWidgetState extends State<AddressWidget> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: AddressHeaderWidget(
+          child: DestinationHeader(
             snapshot: widget.snapshot,
-            address: widget.address,
-            title: widget.title,
-            type: widget.type,
+            destination: widget.destination,
+            paymentMethod: widget.title,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: AddressQRWidget(
-            address: widget.address,
+          child: DestinationQRWidget(
             snapshot: widget.snapshot,
-            infoWidget: widget.infoWidget,
-            footer: widget.footer,
+            destination: widget.destination,
             onLongPress: widget.onLongPress,
-            type: widget.type,
+            infoWidget: widget.infoWidget,
           ),
         ),
       ],

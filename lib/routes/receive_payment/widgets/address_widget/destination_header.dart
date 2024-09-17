@@ -1,45 +1,42 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/address_widget.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
-class AddressHeaderWidget extends StatelessWidget {
+class DestinationHeader extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
-  final String? address;
-  final String? title;
-  final AddressWidgetType type;
+  final String? destination;
+  final String? paymentMethod;
 
-  const AddressHeaderWidget({
+  const DestinationHeader({
     super.key,
-    this.title,
-    required this.address,
-    this.type = AddressWidgetType.lightning,
     required this.snapshot,
+    required this.destination,
+    this.paymentMethod,
   });
 
   @override
   Widget build(BuildContext context) {
+    final destination = this.destination ?? snapshot?.data?.destination;
     return SizedBox(
       height: 64,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title ?? ""),
+          if (paymentMethod != null && paymentMethod!.isNotEmpty) ...[Text(paymentMethod!)],
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (address != null || (snapshot != null && snapshot!.hasData)) ...[
+              if (destination != null) ...[
                 _ShareIcon(
-                  address: address ?? snapshot!.data!.destination,
-                  title: title,
-                  type: type,
+                  destination: destination,
+                  paymentMethod: paymentMethod,
                 ),
                 _CopyIcon(
-                  address: address ?? snapshot!.data!.destination,
-                  type: type,
+                  destination: destination,
+                  paymentMethod: paymentMethod,
                 ),
               ]
             ],
@@ -51,14 +48,12 @@ class AddressHeaderWidget extends StatelessWidget {
 }
 
 class _ShareIcon extends StatelessWidget {
-  final String address;
-  final String? title;
-  final AddressWidgetType type;
+  final String destination;
+  final String? paymentMethod;
 
   const _ShareIcon({
-    required this.address,
-    required this.title,
-    this.type = AddressWidgetType.lightning,
+    required this.destination,
+    required this.paymentMethod,
   });
 
   @override
@@ -67,7 +62,9 @@ class _ShareIcon extends StatelessWidget {
 
     return Tooltip(
       // TODO: Add these messages to Breez-Translations
-      message: (title != null && title!.isNotEmpty) ? "Share $title" : "Share deposit address",
+      message: (paymentMethod != null && paymentMethod!.isNotEmpty)
+          ? "Share $paymentMethod"
+          : "Share deposit address",
       child: IconButton(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -75,7 +72,7 @@ class _ShareIcon extends StatelessWidget {
         icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
         color: themeData.colorScheme.primary,
         onPressed: () {
-          Share.share(address);
+          Share.share(destination);
         },
       ),
     );
@@ -83,12 +80,12 @@ class _ShareIcon extends StatelessWidget {
 }
 
 class _CopyIcon extends StatelessWidget {
-  final String address;
-  final AddressWidgetType type;
+  final String destination;
+  final String? paymentMethod;
 
   const _CopyIcon({
-    required this.address,
-    this.type = AddressWidgetType.lightning,
+    required this.destination,
+    this.paymentMethod,
   });
 
   @override
@@ -105,12 +102,12 @@ class _CopyIcon extends StatelessWidget {
         icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
         color: themeData.colorScheme.primary,
         onPressed: () {
-          ServiceInjector().deviceClient.setClipboardText(address);
+          ServiceInjector().deviceClient.setClipboardText(destination);
           // TODO: Create payment method specific copy messages to Breez-Translations
           showFlushbar(
             context,
-            message: type == AddressWidgetType.lightning
-                ? texts.qr_code_dialog_copied
+            message: (paymentMethod != null && paymentMethod!.isNotEmpty)
+                ? texts.payment_details_dialog_copied(paymentMethod!)
                 : texts.invoice_btc_address_deposit_address_copied,
             duration: const Duration(seconds: 3),
           );

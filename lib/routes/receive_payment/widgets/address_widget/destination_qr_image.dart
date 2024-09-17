@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/receive_payment/lightning/widgets/compact_qr_image.dart';
 
-class AddressQR extends StatelessWidget {
-  final String bolt11;
-  final bool bip21;
+class DestinationQRImage extends StatelessWidget {
+  final String destination;
 
-  const AddressQR({super.key, required this.bolt11, this.bip21 = true});
+  const DestinationQRImage({super.key, required this.destination});
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +14,7 @@ class AddressQR extends StatelessWidget {
         width: 230.0,
         height: 230.0,
         child: CompactQRImage(
-          data: bolt11,
-          bip21: bip21,
+          data: destination,
         ),
       ),
     );
