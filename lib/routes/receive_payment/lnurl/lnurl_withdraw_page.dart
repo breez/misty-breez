@@ -189,15 +189,13 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
         final minWithdrawableFormatted = currencyState.bitcoinCurrency.format(minWithdrawable);
         final maxWithdrawableFormatted = currencyState.bitcoinCurrency.format(maxWithdrawable);
 
-        final isFixedAmountWithinLimits = minWithdrawable == maxWithdrawable;
+        final isFixedAmountWithinLimits = isFixedAmount && (minWithdrawable == maxWithdrawable);
         if (!isFixedAmountWithinLimits) {
           return BlocBuilder<CurrencyCubit, CurrencyState>(
             builder: (context, currencyState) {
               return Center(
                 child: Text(
-                  texts.invoice_payment_validator_error_payment_below_invoice_limit(
-                    minWithdrawableFormatted,
-                  ),
+                  "Payment is outside the allowed limits, which range from $minWithdrawableFormatted to $maxWithdrawableFormatted",
                   textAlign: TextAlign.center,
                 ),
               );
@@ -312,7 +310,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
   }
 
   String? validatePayment(int amount) {
-    var currencyCubit = context.read<CurrencyCubit>();
+    final currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: _validatePayment,
       currency: currencyCubit.state.bitcoinCurrency,
