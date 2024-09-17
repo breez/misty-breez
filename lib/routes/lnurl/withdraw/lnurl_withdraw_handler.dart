@@ -7,7 +7,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
-import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
+import 'package:l_breez/routes/receive_payment/lnurl/lnurl_withdraw_page.dart';
 import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/error_dialog.dart';
@@ -34,7 +34,7 @@ Future<LNURLPageResult?> handleWithdrawRequest(
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-            child: ReceiveLightningPaymentPage(
+            child: LnUrlWithdrawPage(
               requestData: requestData,
               onFinish: (LNURLPageResult? response) {
                 completer.complete(response);

@@ -124,10 +124,15 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
         };
         String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
 
-        final minSendable =
-            max(_lightningLimits!.send.minSat.toInt(), widget.data.minSendable.toInt() ~/ 1000);
+        final minSendable = max(
+          _lightningLimits!.send.minSat.toInt(),
+          widget.data.minSendable.toInt() ~/ 1000,
+        );
         final minSendableFormatted = currencyState.bitcoinCurrency.format(minSendable);
-        final maxSendable = (widget.data.maxSendable.toInt() ~/ 1000);
+        final maxSendable = min(
+          _lightningLimits!.send.maxSat.toInt(),
+          widget.data.maxSendable.toInt() ~/ 1000,
+        );
         final maxSendableFormatted = currencyState.bitcoinCurrency.format(maxSendable);
         return Form(
           key: _formKey,
@@ -241,7 +246,10 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     final currencyCubit = context.read<CurrencyCubit>();
     final currencyState = currencyCubit.state;
 
-    final maxSendable = widget.data.maxSendable.toInt() ~/ 1000;
+    final maxSendable = min(
+      _lightningLimits!.send.maxSat.toInt(),
+      widget.data.maxSendable.toInt() ~/ 1000,
+    );
     if (amount > maxSendable) {
       return texts.lnurl_payment_page_error_exceeds_limit(maxSendable);
     }
