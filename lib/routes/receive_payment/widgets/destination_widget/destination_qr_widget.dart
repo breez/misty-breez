@@ -1,8 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_qr_image.dart';
+import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_qr_image.dart';
+import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widgets/widgets.dart';
 import 'package:l_breez/utils/exceptions.dart';
 
 class DestinationQRWidget extends StatelessWidget {

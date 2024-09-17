@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/receive_payment/lightning/widgets/compact_qr_image.dart';
+import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widgets/compact_qr_image.dart';
 
 class DestinationQRImage extends StatelessWidget {
   final String destination;

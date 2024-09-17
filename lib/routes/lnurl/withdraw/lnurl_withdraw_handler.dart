@@ -8,7 +8,7 @@ import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
-import 'package:l_breez/routes/receive_payment/lightning/widgets/widgets.dart';
+import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';

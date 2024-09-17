@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/receive_payment/lightning/widgets/particle_animations/animation_progress.dart';
-import 'package:l_breez/routes/receive_payment/lightning/widgets/particle_animations/animation_properties.dart';
+import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widgets/particle_animations/animation_progress.dart';
+import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widgets/particle_animations/animation_properties.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class ParticleModel {

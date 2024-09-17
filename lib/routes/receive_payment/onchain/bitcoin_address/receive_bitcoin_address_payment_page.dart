@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';

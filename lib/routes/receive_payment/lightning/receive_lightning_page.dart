@@ -9,7 +9,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
-import 'package:l_breez/routes/receive_payment/widgets/address_widget/destination_widget.dart';
+import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
