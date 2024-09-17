@@ -29,9 +29,12 @@ class PaymentLimitsMessageBox extends StatelessWidget {
         if (snapshot.lightningPaymentLimits == null) {
           final themeData = Theme.of(context);
 
-          return Center(
-            child: Loader(
-              color: themeData.primaryColor.withOpacity(0.5),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
             ),
           );
         }
