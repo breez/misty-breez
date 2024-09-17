@@ -1,14 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_liquid/breez_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
-import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
 import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/src/theme.dart';
@@ -25,19 +22,11 @@ import 'package:logging/logging.dart';
 final _log = Logger("ReceiveLightningPaymentPage");
 
 class ReceiveLightningPaymentPage extends StatefulWidget {
-  final Function(LNURLPageResult? result)? onFinish;
-  // TODO: Create a dedicated page for LNURL-Withdraw page.
-  final LnUrlWithdrawRequestData? requestData;
-
   static const routeName = "/receive_lightning";
   static const paymentMethod = PaymentMethod.lightning;
   static const pageIndex = 0;
 
-  const ReceiveLightningPaymentPage({super.key, this.onFinish, this.requestData})
-      : assert(
-          requestData == null || (onFinish != null),
-          "If you are using LNURL withdraw, you must provide an onFinish callback.",
-        );
+  const ReceiveLightningPaymentPage({super.key});
 
   @override
   State<StatefulWidget> createState() => ReceiveLightningPaymentPageState();
@@ -61,31 +50,10 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   @override
   void initState() {
     super.initState();
-    final data = widget.requestData;
-    if (data != null && data.minWithdrawable != data.maxWithdrawable) {
+    if (_amountFocusNode.canRequestFocus) {
       _amountFocusNode.requestFocus();
     }
     _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
-
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        final data = widget.requestData;
-        if (data != null) {
-          final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
-          final minSat = paymentLimitsState.lightningPaymentLimits?.receive.minSat.toInt();
-          if (minSat != null && data.maxWithdrawable.toInt() ~/ 1000 < minSat) {
-            isBelowPaymentLimit = true;
-          }
-
-          final currencyState = context.read<CurrencyCubit>().state;
-          _amountController.text = currencyState.bitcoinCurrency.format(
-            data.maxWithdrawable.toInt() ~/ 1000,
-            includeDisplayName: false,
-          );
-          _descriptionController.text = data.defaultDescription;
-        }
-      },
-    );
   }
 
   @override
@@ -122,22 +90,6 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
           _lightningLimits = snapshot.lightningPaymentLimits!;
 
-          var minSat = _lightningLimits.receive.minSat.toInt();
-          var data = widget.requestData;
-          isBelowPaymentLimit = data != null && (minSat > data.maxWithdrawable.toInt() ~/ 1000);
-
-          if (isBelowPaymentLimit) {
-            return BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, currencyState) {
-              final formattedMinSat = currencyState.bitcoinCurrency.format(minSat);
-              return Center(
-                child: Text(
-                  texts.invoice_payment_validator_error_payment_below_invoice_limit(formattedMinSat),
-                  textAlign: TextAlign.center,
-                ),
-              );
-            });
-          }
-
           return Padding(
             padding: const EdgeInsets.only(bottom: 40.0),
             child: SingleChildScrollView(
@@ -150,15 +102,10 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
       bottomNavigationBar: (receivePaymentResponse == null && !isBelowPaymentLimit)
           ? SingleButtonBottomBar(
               stickToBottom: true,
-              text: widget.requestData != null ? texts.invoice_action_redeem : texts.invoice_action_create,
+              text: texts.invoice_action_create,
               onPressed: () {
                 if (_formKey.currentState?.validate() ?? false) {
-                  final data = widget.requestData;
-                  if (data != null) {
-                    _withdraw(data);
-                  } else {
-                    _createInvoice();
-                  }
+                  _createInvoice();
                 }
               },
             )
@@ -174,7 +121,6 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
   Widget _buildForm() {
     final texts = context.texts();
-    final data = widget.requestData;
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, currencyState) {
@@ -191,6 +137,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.done,
                     maxLines: null,
+                    readOnly: false,
                     maxLength: 90,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     decoration: InputDecoration(
@@ -203,61 +150,25 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                     texts: texts,
                     bitcoinCurrency: currencyState.bitcoinCurrency,
                     focusNode: _amountFocusNode,
-                    autofocus: (data != null) ? !(data.minWithdrawable == data.maxWithdrawable) : true,
-                    readOnly: (data != null) ? (data.minWithdrawable == data.maxWithdrawable) : false,
+                    autofocus: true,
+                    readOnly: false,
                     controller: _amountController,
                     validatorFn: (v) => validatePayment(v),
                     style: FieldTextStyle.textStyle,
                   ),
-                  (data != null)
-                      ? (data.minWithdrawable == data.maxWithdrawable)
-                          ? const SizedBox.shrink()
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: RichText(
-                                text: TextSpan(
-                                  style: FieldTextStyle.labelStyle,
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: texts.lnurl_fetch_invoice_min(
-                                        currencyState.bitcoinCurrency.format(
-                                          data.minWithdrawable.toInt() ~/ 1000,
-                                        ),
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () => _pasteAmount(
-                                              currencyState,
-                                              data.minWithdrawable.toInt() ~/ 1000,
-                                            ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          texts.lnurl_fetch_invoice_and(currencyState.bitcoinCurrency.format(
-                                        data.maxWithdrawable.toInt() ~/ 1000,
-                                      )),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () => _pasteAmount(
-                                              currencyState,
-                                              data.maxWithdrawable.toInt() ~/ 1000,
-                                            ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                      : Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: AutoSizeText(
-                            texts.invoice_min_payment_limit(
-                              currencyState.bitcoinCurrency.format(
-                                _lightningLimits.receive.minSat.toInt(),
-                              ),
-                            ),
-                            style: textStyle,
-                            maxLines: 1,
-                            minFontSize: MinFontSize(context).minFontSize,
-                          ),
-                        )
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: AutoSizeText(
+                      texts.invoice_min_payment_limit(
+                        currencyState.bitcoinCurrency.format(
+                          _lightningLimits.receive.minSat.toInt(),
+                        ),
+                      ),
+                      style: textStyle,
+                      maxLines: 1,
+                      minFontSize: MinFontSize(context).minFontSize,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -279,32 +190,6 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           ),
         );
       },
-    );
-  }
-
-  Future<void> _withdraw(
-    LnUrlWithdrawRequestData data,
-  ) async {
-    _log.info(
-      "Withdraw request: description=${data.defaultDescription}, k1=${data.k1}, "
-      "min=${data.minWithdrawable}, max=${data.maxWithdrawable}",
-    );
-    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
-
-    final navigator = Navigator.of(context);
-    navigator.pop();
-
-    showDialog(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => LNURLWithdrawDialog(
-        requestData: data,
-        amountSats: currencyCubit.state.bitcoinCurrency.parse(
-          _amountController.text,
-        ),
-        onFinish: widget.onFinish!,
-      ),
     );
   }
 
@@ -343,15 +228,5 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);
-  }
-
-  void _pasteAmount(CurrencyState currencyState, int amount) {
-    setState(() {
-      _amountController.text = currencyState.bitcoinCurrency.format(
-        amount,
-        includeDisplayName: false,
-        userInput: true,
-      );
-    });
   }
 }
