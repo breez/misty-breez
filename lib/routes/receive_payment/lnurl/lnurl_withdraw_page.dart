@@ -9,8 +9,6 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -74,10 +72,9 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
   }
 
   void _handleLightningPaymentLimitsResponse(LightningPaymentLimitsResponse response) {
-    var minWithdrawableSat = widget.requestData.minWithdrawable.toInt() ~/ 1000;
-    final effectiveMinSat = max(response.receive.minSat.toInt(), minWithdrawableSat);
+    final minWithdrawableSat = widget.requestData.minWithdrawable.toInt() ~/ 1000;
     final maxWithdrawableSat = widget.requestData.maxWithdrawable.toInt() ~/ 1000;
-
+    final effectiveMinSat = max(response.receive.minSat.toInt(), minWithdrawableSat);
     final effectiveMaxSat = min(response.receive.maxSat.toInt(), maxWithdrawableSat);
     if (effectiveMaxSat < effectiveMinSat) {
       final texts = context.texts();
@@ -90,8 +87,8 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       );
       final isFixedAmountWithinLimits = _isFixedAmount && (effectiveMinSat == effectiveMaxSat);
       if (!isFixedAmountWithinLimits) {
-        final minWithdrawableFormatted = currencyState.bitcoinCurrency.format(maxWithdrawableSat);
-        final maxWithdrawableFormatted = currencyState.bitcoinCurrency.format(maxWithdrawableSat);
+        final minWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+        final maxWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
         throw Exception(
           "Payment amount is outside the allowed limits, which range from $minWithdrawableFormatted to $maxWithdrawableFormatted",
         );
@@ -159,6 +156,13 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
             );
           }
 
+          final minWithdrawableSat = widget.requestData.minWithdrawable.toInt() ~/ 1000;
+          final maxWithdrawableSat = widget.requestData.maxWithdrawable.toInt() ~/ 1000;
+          final effectiveMinSat = max(_lightningLimits!.receive.minSat.toInt(), minWithdrawableSat);
+          final effectiveMaxSat = min(_lightningLimits!.receive.maxSat.toInt(), maxWithdrawableSat);
+          final effMinWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+          final effMaxWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
+
           return Padding(
             padding: const EdgeInsets.only(bottom: 40.0),
             child: SingleChildScrollView(
@@ -205,15 +209,17 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                     children: <TextSpan>[
                                       TextSpan(
                                         text: texts.lnurl_fetch_invoice_min(
-                                          minWithdrawableFormatted,
+                                          effMinWithdrawableFormatted,
                                         ),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () => _pasteAmount(currencyState, minWithdrawable),
+                                          ..onTap = () => _pasteAmount(currencyState, effectiveMinSat),
                                       ),
                                       TextSpan(
-                                        text: texts.lnurl_fetch_invoice_and(maxWithdrawableFormatted),
+                                        text: texts.lnurl_fetch_invoice_and(
+                                          effMaxWithdrawableFormatted,
+                                        ),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () => _pasteAmount(currencyState, maxWithdrawable),
+                                          ..onTap = () => _pasteAmount(currencyState, effectiveMaxSat),
                                       ),
                                     ],
                                   ),
@@ -291,12 +297,11 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
   }
 
-  void _pasteAmount(CurrencyState currencyState, int amount) {
+  void _pasteAmount(CurrencyState currencyState, int amountSat) {
     setState(() {
       _amountController.text = currencyState.bitcoinCurrency.format(
-        amount,
+        amountSat,
         includeDisplayName: false,
-        userInput: true,
       );
     });
   }

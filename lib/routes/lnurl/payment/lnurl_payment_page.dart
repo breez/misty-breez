@@ -124,16 +124,18 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         };
         String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
 
-        final minSendable = max(
+        final minSendableSat = widget.data.minSendable.toInt() ~/ 1000;
+        final effectiveMinSendableSat = max(
           _lightningLimits!.send.minSat.toInt(),
-          widget.data.minSendable.toInt() ~/ 1000,
+          minSendableSat,
         );
-        final minSendableFormatted = currencyState.bitcoinCurrency.format(minSendable);
-        final maxSendable = min(
+        final effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSendableSat);
+        final maxSendableSat = widget.data.maxSendable.toInt() ~/ 1000;
+        final effectiveMaxSendableSat = min(
           _lightningLimits!.send.maxSat.toInt(),
-          widget.data.maxSendable.toInt() ~/ 1000,
+          maxSendableSat,
         );
-        final maxSendableFormatted = currencyState.bitcoinCurrency.format(maxSendable);
+        final effMaxSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSendableSat);
         return Form(
           key: _formKey,
           child: Padding(
@@ -174,21 +176,17 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         children: <TextSpan>[
                           TextSpan(
                             text: texts.lnurl_fetch_invoice_min(
-                              minSendableFormatted,
+                              effMinSendableFormatted,
                             ),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                _amountController.text = minSendableFormatted;
-                              },
+                              ..onTap = () => _pasteAmount(currencyState, effectiveMinSendableSat),
                           ),
                           TextSpan(
                             text: texts.lnurl_fetch_invoice_and(
-                              maxSendableFormatted,
+                              effMaxSendableFormatted,
                             ),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                _amountController.text = maxSendableFormatted;
-                              },
+                              ..onTap = () => _pasteAmount(currencyState, effectiveMaxSendableSat),
                           )
                         ],
                       ),
@@ -272,5 +270,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+  }
+
+  void _pasteAmount(CurrencyState currencyState, int amountSat) {
+    setState(() {
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        amountSat,
+        includeDisplayName: false,
+      );
+    });
   }
 }
