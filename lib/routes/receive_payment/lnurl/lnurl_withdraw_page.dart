@@ -81,10 +81,6 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       final currencyCubit = context.read<CurrencyCubit>();
       final currencyState = currencyCubit.state;
 
-      final networkLimit = currencyState.bitcoinCurrency.format(
-        effectiveMinSat,
-        includeDisplayName: true,
-      );
       final isFixedAmountWithinLimits = _isFixedAmount && (effectiveMinSat == effectiveMaxSat);
       if (!isFixedAmountWithinLimits) {
         final minWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
@@ -94,6 +90,10 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
         );
       }
 
+      final networkLimit = currencyState.bitcoinCurrency.format(
+        effectiveMinSat,
+        includeDisplayName: true,
+      );
       throw Exception(texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit));
     }
 
