@@ -17,16 +17,16 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 
-class LNURLPaymentPage extends StatefulWidget {
+class LnUrlPaymentPage extends StatefulWidget {
   final LnUrlPayRequestData data;
 
-  const LNURLPaymentPage({super.key, required this.data});
+  const LnUrlPaymentPage({super.key, required this.data});
 
   @override
-  State<StatefulWidget> createState() => LNURLPaymentPageState();
+  State<StatefulWidget> createState() => LnUrlPaymentPageState();
 }
 
-class LNURLPaymentPageState extends State<LNURLPaymentPage> {
+class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _amountController = TextEditingController();
@@ -40,11 +40,13 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   @override
   void initState() {
     super.initState();
-    _fetchLightningLimits();
-    _isFixedAmount = widget.data.minSendable == widget.data.maxSendable;
-    if (_isFixedAmount) {
-      _setPaymentAmount();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _fetchLightningLimits();
+      _isFixedAmount = widget.data.minSendable == widget.data.maxSendable;
+      if (_isFixedAmount) {
+        _setPaymentAmount();
+      }
+    });
   }
 
   Future<void> _fetchLightningLimits() async {
@@ -78,14 +80,12 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
   }
 
   void _setPaymentAmount() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currencyCubit = context.read<CurrencyCubit>();
-      final currencyState = currencyCubit.state;
-      _amountController.text = currencyState.bitcoinCurrency.format(
-        (widget.data.maxSendable.toInt() ~/ 1000),
-        includeDisplayName: false,
-      );
-    });
+    final currencyCubit = context.read<CurrencyCubit>();
+    final currencyState = currencyCubit.state;
+    _amountController.text = currencyState.bitcoinCurrency.format(
+      (widget.data.maxSendable.toInt() ~/ 1000),
+      includeDisplayName: false,
+    );
   }
 
   @override
