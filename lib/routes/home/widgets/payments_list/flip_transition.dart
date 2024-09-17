@@ -36,7 +36,10 @@ class FlipTransitionState extends State<FlipTransition> with TickerProviderState
         curve: const Interval(0.0, 1.0, curve: Curves.fastOutSlowIn),
       ),
     );
-    const successfulPaymentRouteAnimation = Duration(seconds: 5, milliseconds: 800);
+
+    /// 0.4s Slide In + 2s Wait + 0.4s Slide Out + 3 seconds Particles
+    /// Show flip transition as particles animation is half fade-out
+    const successfulPaymentRouteAnimation = Duration(seconds: 4, milliseconds: 300);
     Future.delayed(successfulPaymentRouteAnimation, () {
       _flipAnimationController!.forward().whenCompleteOrCancel(() {
         if (!mounted) return;
