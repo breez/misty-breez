@@ -32,18 +32,8 @@ class _PaymentItemState extends State<PaymentItem> {
   void initState() {
     super.initState();
     setState(() {
-      isPaymentItemNew = _createdWithin(const Duration(seconds: 15));
+      isPaymentItemNew = _createdWithin(const Duration(seconds: 10));
     });
-  }
-
-  @override
-  void didUpdateWidget(PaymentItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.paymentData != oldWidget.paymentData) {
-      setState(() {
-        isPaymentItemNew = _createdWithin(const Duration(seconds: 15));
-      });
-    }
   }
 
   @override
