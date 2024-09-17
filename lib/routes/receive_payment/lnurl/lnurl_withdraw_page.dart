@@ -65,7 +65,9 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
     final data = widget.requestData;
     final isFixedAmount = data.minWithdrawable == data.maxWithdrawable;
     if (!isFixedAmount) {
-      _amountFocusNode.requestFocus();
+      if (_amountFocusNode.canRequestFocus) {
+        _amountFocusNode.requestFocus();
+      }
     }
     final paymentLimitsState = context.read<PaymentLimitsCubit>().state;
     final minSat = paymentLimitsState.lightningPaymentLimits?.receive.minSat.toInt();
