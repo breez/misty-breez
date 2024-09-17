@@ -98,7 +98,7 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        title: Text(texts.lnurl_fetch_invoice_pay_to_payee(Uri.parse(widget.data.callback).host)),
+        title: Text(texts.lnurl_fetch_invoice_pay_to_payee(widget.data.domain)),
       ),
       body: Builder(builder: (context) {
         if (_loading) {
