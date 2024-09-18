@@ -52,9 +52,9 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
     super.initState();
     _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
 
+    _isFixedAmount = widget.requestData.minWithdrawable == widget.requestData.maxWithdrawable;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _fetchLightningLimits();
-      _initializePageData();
     });
   }
 
@@ -76,6 +76,21 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
     final maxWithdrawableSat = widget.requestData.maxWithdrawable.toInt() ~/ 1000;
     final effectiveMinSat = max(response.receive.minSat.toInt(), minWithdrawableSat);
     final effectiveMaxSat = min(response.receive.maxSat.toInt(), maxWithdrawableSat);
+
+    _validateEffectiveLimits(effectiveMinSat: effectiveMinSat, effectiveMaxSat: effectiveMaxSat);
+
+    _updateFormFields(effectiveMaxSat: effectiveMaxSat);
+
+    setState(() {
+      _lightningLimits = response;
+      _loading = false;
+    });
+  }
+
+  void _validateEffectiveLimits({
+    required int effectiveMinSat,
+    required int effectiveMaxSat,
+  }) {
     if (effectiveMaxSat < effectiveMinSat) {
       final texts = context.texts();
       final currencyCubit = context.read<CurrencyCubit>();
@@ -83,10 +98,10 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
 
       final isFixedAmountWithinLimits = _isFixedAmount && (effectiveMinSat == effectiveMaxSat);
       if (!isFixedAmountWithinLimits) {
-        final minWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
-        final maxWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
+        final effMinWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+        final effMaxWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
         throw Exception(
-          "Payment amount is outside the allowed limits, which range from $minWithdrawableFormatted to $maxWithdrawableFormatted",
+          "Payment amount is outside the allowed limits, which range from $effMinWithdrawableFormatted to $effMaxWithdrawableFormatted",
         );
       }
 
@@ -96,28 +111,24 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       );
       throw Exception(texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit));
     }
-
-    setState(() {
-      _lightningLimits = response;
-      _loading = false;
-    });
   }
 
-  void _initializePageData() {
-    final data = widget.requestData;
-    _isFixedAmount = data.minWithdrawable == data.maxWithdrawable;
-    if (!_isFixedAmount) {
-      if (_amountFocusNode.canRequestFocus) {
-        _amountFocusNode.requestFocus();
-      }
+  void _updateFormFields({
+    required int effectiveMaxSat,
+  }) {
+    if (_isFixedAmount) {
+      final currencyCubit = context.read<CurrencyCubit>();
+      final currencyState = currencyCubit.state;
+
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        effectiveMaxSat,
+        includeDisplayName: false,
+      );
+    } else if (_amountFocusNode.canRequestFocus) {
+      _amountFocusNode.requestFocus();
     }
 
-    final currencyState = context.read<CurrencyCubit>().state;
-    _amountController.text = currencyState.bitcoinCurrency.format(
-      data.maxWithdrawable.toInt() ~/ 1000,
-      includeDisplayName: false,
-    );
-    _descriptionController.text = data.defaultDescription;
+    _descriptionController.text = widget.requestData.defaultDescription;
   }
 
   @override

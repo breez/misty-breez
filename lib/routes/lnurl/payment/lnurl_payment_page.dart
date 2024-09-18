@@ -40,12 +40,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   @override
   void initState() {
     super.initState();
+    _isFixedAmount = widget.requestData.minSendable == widget.requestData.maxSendable;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _fetchLightningLimits();
-      _isFixedAmount = widget.data.minSendable == widget.data.maxSendable;
-      if (_isFixedAmount) {
-        _setPaymentAmount();
-      }
     });
   }
 
@@ -63,29 +60,61 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   }
 
   void _handleLightningPaymentLimitsResponse(LightningPaymentLimitsResponse response) {
-    final effectiveMinSat = max(response.send.minSat.toInt(), widget.data.minSendable.toInt() ~/ 1000);
-    if (widget.data.maxSendable.toInt() ~/ 1000 < effectiveMinSat) {
-      final currencyCubit = context.read<CurrencyCubit>();
-      final currencyState = currencyCubit.state;
-      final networkLimit = currencyState.bitcoinCurrency.format(
-        effectiveMinSat,
-        includeDisplayName: true,
-      );
-      throw Exception("Payment is below network limit of $networkLimit.");
-    }
+    final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
+    final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
+    final effectiveMinSat = max(response.send.minSat.toInt(), minSendableSat);
+    final effectiveMaxSat = min(response.send.maxSat.toInt(), maxSendableSat);
+
+    _validateEffectiveLimits(effectiveMinSat: effectiveMinSat, effectiveMaxSat: effectiveMaxSat);
+
+    _updateFormFields(effectiveMaxSat: effectiveMaxSat);
+
     setState(() {
       _lightningLimits = response;
       _loading = false;
     });
   }
 
-  void _setPaymentAmount() {
-    final currencyCubit = context.read<CurrencyCubit>();
-    final currencyState = currencyCubit.state;
-    _amountController.text = currencyState.bitcoinCurrency.format(
-      (widget.data.maxSendable.toInt() ~/ 1000),
-      includeDisplayName: false,
-    );
+  void _validateEffectiveLimits({
+    required int effectiveMinSat,
+    required int effectiveMaxSat,
+  }) {
+    if (effectiveMaxSat < effectiveMinSat) {
+      final texts = context.texts();
+      final currencyCubit = context.read<CurrencyCubit>();
+      final currencyState = currencyCubit.state;
+
+      final isFixedAmountWithinLimits = _isFixedAmount && (effectiveMinSat == effectiveMaxSat);
+      if (!isFixedAmountWithinLimits) {
+        final effMinWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+        final effMaxWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
+        throw Exception(
+          "Payment amount is outside the allowed limits, which range from $effMinWithdrawableFormatted to $effMaxWithdrawableFormatted",
+        );
+      }
+
+      final networkLimit = currencyState.bitcoinCurrency.format(
+        effectiveMinSat,
+        includeDisplayName: true,
+      );
+      throw Exception(texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit));
+    }
+  }
+
+  void _updateFormFields({
+    required int effectiveMaxSat,
+  }) {
+    if (_isFixedAmount) {
+      final currencyCubit = context.read<CurrencyCubit>();
+      final currencyState = currencyCubit.state;
+
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        effectiveMaxSat,
+        includeDisplayName: false,
+      );
+    } else if (_amountFocusNode.canRequestFocus) {
+      _amountFocusNode.requestFocus();
+    }
   }
 
   @override
