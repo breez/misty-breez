@@ -12,6 +12,7 @@ import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:l_breez/utils/always_disabled_focus_node.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/keyboard_done_action.dart';
@@ -204,38 +205,42 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                           texts: texts,
                           bitcoinCurrency: currencyState.bitcoinCurrency,
                           focusNode: _isFixedAmount ? AlwaysDisabledFocusNode() : _amountFocusNode,
-                          autofocus: !(_isFixedAmount),
+                          autofocus: !_isFixedAmount,
                           readOnly: _isFixedAmount,
                           controller: _amountController,
-                          validatorFn: (v) => validatePayment(v),
+                          validatorFn: (amount) => validatePayment(
+                            amount: amount,
+                            effectiveMinSat: effectiveMinSat,
+                            effectiveMaxSat: effectiveMaxSat,
+                          ),
                           style: FieldTextStyle.textStyle,
                         ),
-                        (_isFixedAmount)
-                            ? const SizedBox.shrink()
-                            : Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: FieldTextStyle.labelStyle,
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: texts.lnurl_fetch_invoice_min(
-                                          effMinWithdrawableFormatted,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () => _pasteAmount(currencyState, effectiveMinSat),
-                                      ),
-                                      TextSpan(
-                                        text: texts.lnurl_fetch_invoice_and(
-                                          effMaxWithdrawableFormatted,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () => _pasteAmount(currencyState, effectiveMaxSat),
-                                      ),
-                                    ],
+                        if (!_isFixedAmount) ...[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: RichText(
+                              text: TextSpan(
+                                style: FieldTextStyle.labelStyle,
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: texts.lnurl_fetch_invoice_min(
+                                      effMinWithdrawableFormatted,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _pasteAmount(currencyState, effectiveMinSat),
                                   ),
-                                ),
-                              )
+                                  TextSpan(
+                                    text: texts.lnurl_fetch_invoice_and(
+                                      effMaxWithdrawableFormatted,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _pasteAmount(currencyState, effectiveMaxSat),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ]
                       ],
                     ),
                   ),
@@ -292,11 +297,26 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
     );
   }
 
-  String? validatePayment(int amount) {
+  String? validatePayment({
+    required int amount,
+    required int effectiveMinSat,
+    required int effectiveMaxSat,
+  }) {
+    final texts = context.texts();
     final currencyCubit = context.read<CurrencyCubit>();
+    final currencyState = currencyCubit.state;
+
+    if (amount > effectiveMaxSat) {
+      return texts.lnurl_withdraw_dialog_error_amount_exceeds(effectiveMaxSat);
+    }
+
+    if (amount < effectiveMinSat) {
+      return texts.lnurl_withdraw_dialog_error_amount_below(effectiveMinSat);
+    }
+
     return PaymentValidator(
       validatePayment: _validatePayment,
-      currency: currencyCubit.state.bitcoinCurrency,
+      currency: currencyState.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }
@@ -316,9 +336,4 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       );
     });
   }
-}
-
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }

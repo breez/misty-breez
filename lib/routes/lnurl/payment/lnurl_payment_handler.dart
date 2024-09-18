@@ -38,7 +38,7 @@ Future<LNURLPageResult?> handlePayRequest(
       FadeInRoute(
         builder: (_) => BlocProvider(
           create: (BuildContext context) => paymentLimitsCubit,
-          child: LnUrlPaymentPage(data: data),
+          child: LnUrlPaymentPage(requestData: data),
         ),
       ),
     );
