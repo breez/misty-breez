@@ -259,23 +259,6 @@ jobs:
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
 
-      - name: 🔨 Build Breez Liquid SDK
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: |
-          rm -rf ../../../target
-          just build
-
-      - name: 🔨 Build iOS binaries
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: just build-apple
-
-      - name: Copy the XCFramework to the needed location
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: just copy-apple
-
       - name: 🔨 Build Breez Liquid SDK Swift bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
