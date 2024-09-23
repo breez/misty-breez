@@ -79,7 +79,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
             : PayOnchainAmount_Receiver(amountSat: BigInt.from(amountSat));
         final preparePayOnchainRequest = PreparePayOnchainRequest(
           amount: payOnchainAmount,
-          satPerVbyte: recommendedFee.toInt(),
+          feeRateMsatPerVbyte: recommendedFee.toInt(),
         );
         final swapOption = await preparePayOnchain(
           req: preparePayOnchainRequest,
