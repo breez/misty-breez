@@ -9,6 +9,8 @@ extension ConfigCopyWith on Config {
     LiquidNetwork? network,
     BigInt? paymentTimeoutSec,
     int? zeroConfMinFeeRateMsat,
+    BigInt? zeroConfMaxAmountSat,
+    String? breezApiKey,
   }) {
     return Config(
       liquidElectrumUrl: liquidElectrumUrl ?? this.liquidElectrumUrl,
@@ -18,6 +20,8 @@ extension ConfigCopyWith on Config {
       network: network ?? this.network,
       paymentTimeoutSec: paymentTimeoutSec ?? this.paymentTimeoutSec,
       zeroConfMinFeeRateMsat: zeroConfMinFeeRateMsat ?? this.zeroConfMinFeeRateMsat,
+      zeroConfMaxAmountSat: zeroConfMaxAmountSat ?? this.zeroConfMaxAmountSat,
+      breezApiKey: breezApiKey ?? this.breezApiKey,
     );
   }
 }
