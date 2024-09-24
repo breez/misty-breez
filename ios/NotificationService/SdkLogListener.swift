@@ -1,6 +1,5 @@
 import Foundation
 import XCGLogger
-import BreezSDKLiquid
 
 class SdkLogListener : Logger {
     private var logger: XCGLogger
