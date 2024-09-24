@@ -42,8 +42,10 @@ class AppConfig {
     liquid_sdk.Config defaultConf,
   ) async {
     _log.info("Getting SDK config");
+    const breezApiKey = String.fromEnvironment("API_KEY");
     return defaultConf.copyWith(
       workingDir: await _workingDir(),
+      breezApiKey: breezApiKey,
     );
   }
 
