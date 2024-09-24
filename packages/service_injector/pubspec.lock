@@ -54,10 +54,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "27e4a7c762774cd057f06ef826f07bcaba658f25"
+      resolved-ref: "2d5d5949839c0f4a62378414facbd5965ef42e9c"
       url: "https://github.com/breez/breez-sdk-liquid-dart"
     source: git
-    version: "0.3.1-dev4"
+    version: "0.3.2"
   breez_logger:
     dependency: "direct main"
     description:
@@ -301,10 +301,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "3ac92dca25d75fed7a1cc0cd702b6c0ca059b6d8"
+      resolved-ref: cfd0b609a3912a89e22dc738f58c1dd53e09824c
       url: "https://github.com/breez/breez-sdk-liquid-flutter"
     source: git
-    version: "0.3.1-dev4"
+    version: "0.3.2"
   flutter_rust_bridge:
     dependency: transitive
     description:
