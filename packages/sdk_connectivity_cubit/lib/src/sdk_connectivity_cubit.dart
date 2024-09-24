@@ -19,11 +19,11 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
 
   Future<void> register() async {
     final mnemonic = generateMnemonic(strength: 128);
-    await _connect(mnemonic, storeMnemonic: true);
+    await _connect(mnemonic, storeCredentials: true);
   }
 
   Future<void> restore({required String mnemonic}) async {
-    await _connect(mnemonic, storeMnemonic: true);
+    await _connect(mnemonic, storeCredentials: true);
   }
 
   Future<void> reconnect({String? mnemonic}) async {
@@ -39,7 +39,7 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
     }
   }
 
-  Future<void> _connect(String mnemonic, {bool storeMnemonic = false}) async {
+  Future<void> _connect(String mnemonic, {bool storeCredentials = false}) async {
     try {
       emit(SdkConnectivityState.connecting);
 
@@ -49,18 +49,39 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
 
       _startSyncing();
 
-      if (storeMnemonic) {
-        await credentialsManager.storeMnemonic(mnemonic: mnemonic);
+      if (storeCredentials) {
+        _storeCredentials(breezApiKey: config.sdkConfig.breezApiKey, mnemonic: mnemonic);
       }
 
       emit(SdkConnectivityState.connected);
     } catch (e) {
-      if (storeMnemonic) {
-        await credentialsManager.deleteMnemonic();
+      if (storeCredentials) {
+        _clearStoredCredentials();
       }
       emit(SdkConnectivityState.disconnected);
       rethrow;
     }
+  }
+
+  Future<void> _storeCredentials({required String mnemonic, String? breezApiKey}) async {
+    await _storeBreezApiKey(breezApiKey);
+    await credentialsManager.storeMnemonic(mnemonic: mnemonic);
+  }
+
+  Future<void> _storeBreezApiKey(String? breezApiKey) async {
+    final storedBreezApiKey = await credentialsManager.restoreBreezApiKey();
+
+    // Store the API key from AppConfig if it's not stored yet or if it has changed
+    if (breezApiKey != null && breezApiKey.isNotEmpty) {
+      if (storedBreezApiKey == null || storedBreezApiKey.isEmpty || storedBreezApiKey != breezApiKey) {
+        await credentialsManager.storeBreezApiKey(breezApiKey: breezApiKey);
+      }
+    }
+  }
+
+  Future<void> _clearStoredCredentials() async {
+    await credentialsManager.deleteBreezApiKey();
+    await credentialsManager.deleteMnemonic();
   }
 
   void _startSyncing() {

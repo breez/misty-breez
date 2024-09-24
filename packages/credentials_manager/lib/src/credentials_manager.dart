@@ -14,6 +14,34 @@ class CredentialsManager {
 
   CredentialsManager({required this.keyChain});
 
+  Future storeBreezApiKey({
+    required String breezApiKey,
+  }) async {
+    try {
+      await _storeBreezApiKey(breezApiKey);
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
+  Future<String?> restoreBreezApiKey() async {
+    try {
+      String? mnemonicStr = await keyChain.read(accountApiKey);
+      return mnemonicStr;
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
+  Future deleteBreezApiKey() async {
+    try {
+      await keyChain.delete(accountApiKey);
+      _log.info("Deleted Breez API key successfully");
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
   Future storeMnemonic({
     required String mnemonic,
   }) async {
@@ -49,6 +77,10 @@ class CredentialsManager {
   }
 
   // Helper methods
+  Future<void> _storeBreezApiKey(String breezApiKey) async {
+    await keyChain.write(accountApiKey, breezApiKey);
+  }
+
   Future<void> _storeMnemonic(String mnemonic) async {
     await keyChain.write(accountMnemonic, mnemonic);
   }
