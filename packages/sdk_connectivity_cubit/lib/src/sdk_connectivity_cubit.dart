@@ -66,12 +66,8 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
 
   Future<void> _storeBreezApiKey(String? breezApiKey) async {
     final storedBreezApiKey = await credentialsManager.restoreBreezApiKey();
-
-    // Store the API key from AppConfig if it's not stored yet or if it has changed
-    if (breezApiKey != null && breezApiKey.isNotEmpty) {
-      if (storedBreezApiKey == null || storedBreezApiKey.isEmpty || storedBreezApiKey != breezApiKey) {
-        await credentialsManager.storeBreezApiKey(breezApiKey: breezApiKey);
-      }
+    if (breezApiKey != null && breezApiKey.isNotEmpty && storedBreezApiKey != breezApiKey) {
+      await credentialsManager.storeBreezApiKey(breezApiKey: breezApiKey);
     }
   }
 
