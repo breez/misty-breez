@@ -34,9 +34,12 @@ class BreezForegroundService : SdkLogger, ForegroundService() {
     }
 
     override fun getConnectRequest(): ConnectRequest? {
+        val apiKey = applicationContext.getString(R.string.breezApiKey)
+        Logger.tag(TAG).trace { "API_KEY: $apiKey" }
         val config = defaultConfig(LiquidNetwork.MAINNET)
 
         config.workingDir = PathUtils.getDataDirectory(applicationContext)
+        config.breezApiKey = apiKey
 
         return readSecuredValue(
             applicationContext,
