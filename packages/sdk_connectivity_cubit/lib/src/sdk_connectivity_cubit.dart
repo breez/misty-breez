@@ -19,11 +19,11 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
 
   Future<void> register() async {
     final mnemonic = generateMnemonic(strength: 128);
-    await _connect(mnemonic, storeCredentials: true);
+    await _connect(mnemonic, storeMnemonic: true);
   }
 
   Future<void> restore({required String mnemonic}) async {
-    await _connect(mnemonic, storeCredentials: true);
+    await _connect(mnemonic, storeMnemonic: true);
   }
 
   Future<void> reconnect({String? mnemonic}) async {
@@ -39,7 +39,7 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
     }
   }
 
-  Future<void> _connect(String mnemonic, {bool storeCredentials = false}) async {
+  Future<void> _connect(String mnemonic, {bool storeMnemonic = false}) async {
     try {
       emit(SdkConnectivityState.connecting);
 
@@ -49,23 +49,19 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
 
       _startSyncing();
 
-      if (storeCredentials) {
-        _storeCredentials(breezApiKey: config.sdkConfig.breezApiKey, mnemonic: mnemonic);
+      await _storeBreezApiKey(config.sdkConfig.breezApiKey);
+      if (storeMnemonic) {
+        await credentialsManager.storeMnemonic(mnemonic: mnemonic);
       }
 
       emit(SdkConnectivityState.connected);
     } catch (e) {
-      if (storeCredentials) {
+      if (storeMnemonic) {
         _clearStoredCredentials();
       }
       emit(SdkConnectivityState.disconnected);
       rethrow;
     }
-  }
-
-  Future<void> _storeCredentials({required String mnemonic, String? breezApiKey}) async {
-    await _storeBreezApiKey(breezApiKey);
-    await credentialsManager.storeMnemonic(mnemonic: mnemonic);
   }
 
   Future<void> _storeBreezApiKey(String? breezApiKey) async {
