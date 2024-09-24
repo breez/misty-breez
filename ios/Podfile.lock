@@ -1,8 +1,7 @@
 PODS:
   - app_group_directory (1.0.0):
     - Flutter
-  - BreezSDKLiquid (0.2.1):
-    - Flutter
+  - BreezSDKLiquid (0.2.1)
   - clipboard_watcher (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -279,7 +278,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_group_directory: 7bf9f8f9819ead554de29da7c25fb7a680d6a9a0
-  BreezSDKLiquid: 937e553b4a081dc76c5a6cba9837e299354aedca
+  BreezSDKLiquid: 251f19328069eb73b8653c159f12196fa1cbe22f
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
   connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
@@ -293,7 +292,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
   FirebaseMessaging: 7b5d8033e183ab59eb5b852a53201559e976d366
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_breez_liquid: c673b43b14c33cf9ce4b24d40d344dd0f10960fa
+  flutter_breez_liquid: 25615dbdf0dd058755f23d1b97202090fa0f49bc
   flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
@@ -327,6 +326,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   XCGLogger: 399c5885210b4e2ad79d9f7a29b105d672ef724f
 
-PODFILE CHECKSUM: 27d8d9df63feebbe29f412c244d89619e2d05ec1
+PODFILE CHECKSUM: c7e3aa05d64d03b1e96041369ae57f6584015526
 
 COCOAPODS: 1.15.2
