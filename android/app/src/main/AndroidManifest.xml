@@ -151,6 +151,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/breez_notification_color" />
+        <!-- Compile-time Variables -->
+        <meta-data
+            android:name="com.breez.liquid.l_breez.API_KEY"
+            android:value="@string/breezApiKey" />
     </application>
     <!-- Required to query activities that can process text, see:
     https://developer.android.com/training/package-visibility and

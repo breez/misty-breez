@@ -8,6 +8,7 @@ class NotificationService: SDKNotificationService {
     fileprivate let TAG = "NotificationService"
     
     private let accountMnemonic: String = "account_mnemonic"
+    private let accountApiKey: String = "account_api_key"
     
     override init() {
         let logsDir = FileManager
@@ -33,10 +34,16 @@ class NotificationService: SDKNotificationService {
     }
     
     override func getConnectRequest() -> ConnectRequest? {
+        guard let apiKey = KeychainHelper.shared.getFlutterString(accessGroup: accessGroup, key: accountApiKey) else {
+            self.logger.log(tag: TAG, line: "API key not found", level: "ERROR")
+            return nil
+        }
+        self.logger.log(tag: TAG, line: "API_KEY: \(apiKey)", level: "TRACE")
         var config = defaultConfig(network: LiquidNetwork.mainnet)
         config.workingDir = FileManager
             .default.containerURL(forSecurityApplicationGroupIdentifier: accessGroup)!
             .path
+        config.breezApiKey = apiKey
         
         // Construct the ConnectRequest 
         guard let mnemonic = KeychainHelper.shared.getFlutterString(accessGroup: accessGroup, key: accountMnemonic) else {

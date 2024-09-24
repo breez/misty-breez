@@ -42,8 +42,13 @@ class AppConfig {
     liquid_sdk.Config defaultConf,
   ) async {
     _log.info("Getting SDK config");
+    const breezApiKey = String.fromEnvironment("API_KEY");
+    if (breezApiKey.isEmpty) {
+      throw Exception("API_KEY is not set in environment variables");
+    }
     return defaultConf.copyWith(
       workingDir: await _workingDir(),
+      breezApiKey: breezApiKey,
     );
   }
 

@@ -26,11 +26,11 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
     await _connect(mnemonic, storeMnemonic: true);
   }
 
-  Future<void> reconnect() async {
+  Future<void> reconnect({String? mnemonic}) async {
     try {
-      final mnemonic = await credentialsManager.restoreMnemonic();
-      if (mnemonic != null) {
-        await _connect(mnemonic);
+      final restoredMnemonic = mnemonic ?? await credentialsManager.restoreMnemonic();
+      if (restoredMnemonic != null) {
+        await _connect(restoredMnemonic);
       } else {
         throw Exception("No mnemonics");
       }
@@ -49,6 +49,7 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
 
       _startSyncing();
 
+      await _storeBreezApiKey(config.sdkConfig.breezApiKey);
       if (storeMnemonic) {
         await credentialsManager.storeMnemonic(mnemonic: mnemonic);
       }
@@ -56,11 +57,23 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
       emit(SdkConnectivityState.connected);
     } catch (e) {
       if (storeMnemonic) {
-        await credentialsManager.deleteMnemonic();
+        _clearStoredCredentials();
       }
       emit(SdkConnectivityState.disconnected);
       rethrow;
     }
+  }
+
+  Future<void> _storeBreezApiKey(String? breezApiKey) async {
+    final storedBreezApiKey = await credentialsManager.restoreBreezApiKey();
+    if (breezApiKey != null && breezApiKey.isNotEmpty && storedBreezApiKey != breezApiKey) {
+      await credentialsManager.storeBreezApiKey(breezApiKey: breezApiKey);
+    }
+  }
+
+  Future<void> _clearStoredCredentials() async {
+    await credentialsManager.deleteBreezApiKey();
+    await credentialsManager.deleteMnemonic();
   }
 
   void _startSyncing() {
