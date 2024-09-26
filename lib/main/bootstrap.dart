@@ -32,20 +32,6 @@ Future<void> bootstrap(AppBuilder builder) async {
     SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
     );
-    // Initialize library
-    await liquid_sdk.initialize();
-    //initializeDateFormatting(Platform.localeName, null);
-    BreezDateUtils.setupLocales();
-    await Firebase.initializeApp(
-      // ignore: undefined_identifier
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    final injector = ServiceInjector();
-    var breezLogger = injector.breezLogger;
-    breezLogger.registerBreezSdkLiquidLogs(injector.liquidSDK);
-
-    final appDir = await getApplicationDocumentsDirectory();
-
     // iOS Extension requirement
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       SharedPreferenceAppGroup.setAppGroup(
@@ -53,6 +39,18 @@ Future<void> bootstrap(AppBuilder builder) async {
       );
     }
 
+    // Initialize library
+    await liquid_sdk.initialize();
+    final injector = ServiceInjector();
+    final breezLogger = injector.breezLogger;
+    breezLogger.registerBreezSdkLiquidLogs(injector.liquidSDK);
+    BreezDateUtils.setupLocales();
+    await Firebase.initializeApp(
+      // ignore: undefined_identifier
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    final appDir = await getApplicationDocumentsDirectory();
     HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: Directory(p.join(appDir.path, "bloc_storage")),
     );
