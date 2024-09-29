@@ -110,7 +110,7 @@ jobs:
           df -hI
           echo "::endgroup::"
 
-      - name: 🏗️ Setup l-breez repository
+      - name: 🏗️ Check-out l-breez repository
         uses: actions/checkout@v4
         with:
           path: 'lbreez'
@@ -309,7 +309,7 @@ jobs:
           name: Android-APK
           path: lbreez/build/app/outputs/flutter-apk/app-*.apk
 
-      - name: Remove Google Application Credentials file
+      - name: Cleanup Google Application Credentials
         if: success() || failure()
         run: |
           if [ -d "lbreez" ] && [ -f "lbreez/google-application-credentials.json" ]; then
