@@ -10,7 +10,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _log = Logger("Logger");
+final _log = Logger("BreezLogger");
 final _liquidSdkLog = Logger("BreezSdkLiquid");
 
 class BreezLogger {
@@ -26,39 +26,65 @@ class BreezLogger {
       });
     }
 
-    AppConfig.instance().then((config) {
-      var appDir = Directory(config.sdkConfig.workingDir);
-      _pruneLogs(appDir);
-      final file = File("${_logDir(appDir)}/${DateTime.now().millisecondsSinceEpoch}.app.log");
+    _createSessionLogFile();
 
-      try {
-        file.createSync(recursive: true);
-      } catch (e) {
-        _log.severe("Failed to create log file", e);
-        return;
-      }
-      final sync = file.openWrite(mode: FileMode.append);
-      Logger.root.onRecord.listen((record) {
-        sync.writeln(_recordToString(record));
-      }, onDone: () {
-        sync.flush();
-        sync.close();
-      });
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      FlutterError.presentError(details);
+      final name = details.context?.name ?? "FlutterError";
+      final exception = details.exceptionAsString();
+      _log.severe("$exception -- $name", details, details.stack);
+    };
 
-      FlutterError.onError = (FlutterErrorDetails details) async {
-        FlutterError.presentError(details);
-        final name = details.context?.name ?? "FlutterError";
-        final exception = details.exceptionAsString();
-        _log.severe("$exception -- $name", details, details.stack);
-      };
-
-      DeviceInfoPlugin().deviceInfo.then((deviceInfo) {
-        _log.info("Device info:");
-        deviceInfo.data.forEach((key, value) => _log.info("$key: $value"));
-      }, onError: (error) {
-        _log.severe("Failed to get device info", error);
-      });
+    DeviceInfoPlugin().deviceInfo.then((deviceInfo) {
+      _log.info("Device info:");
+      deviceInfo.data.forEach((key, value) => _log.info("$key: $value"));
+    }, onError: (error) {
+      _log.severe("Failed to get device info", error);
     });
+  }
+
+  void _createSessionLogFile() async {
+    try {
+      final config = await AppConfig.instance();
+      final appDir = Directory(config.sdkConfig.workingDir);
+
+      _pruneLogs(appDir);
+
+      final logFile = File("${appDir.path}/logs/${DateTime.now().millisecondsSinceEpoch}.app.log");
+      logFile.createSync(recursive: true);
+
+      final sync = logFile.openWrite(mode: FileMode.append);
+      Logger.root.onRecord.listen(
+        (record) => sync.writeln(_recordToString(record)),
+        onDone: () async {
+          await sync.flush();
+          await sync.close();
+        },
+      );
+    } catch (e) {
+      _log.severe("Failed to create log file", e);
+    }
+  }
+
+  void _pruneLogs(Directory appDir) {
+    final loggingFolder = Directory("${appDir.path}/logs/");
+    if (!loggingFolder.existsSync()) return;
+
+    // Get and sort log files by modified date
+    final logFiles = loggingFolder
+        .listSync(followLinks: false)
+        .whereType<File>()
+        .where((file) => file.path.endsWith('.log'))
+        .toList()
+      ..sort((a, b) => a.statSync().modified.compareTo(b.statSync().modified));
+
+    // Delete all except the last 10 log files
+    if (logFiles.length > 10) {
+      final filesToDelete = logFiles.take(logFiles.length - 10);
+      for (var file in filesToDelete) {
+        file.deleteSync();
+      }
+    }
   }
 
   void registerBreezSdkLiquidLogs(BreezSDKLiquid liquidSdk) {
@@ -91,30 +117,6 @@ class BreezLogger {
       "${record.stackTrace != null ? "\n${record.stackTrace}" : ""}";
 
   String _formatTime(DateTime time) => time.toUtc().toIso8601String();
-
-  String _logDir(Directory appDir) => "${appDir.path}/logs/";
-
-  void _pruneLogs(Directory appDir) {
-    final loggingFolder = Directory(_logDir(appDir));
-    if (loggingFolder.existsSync()) {
-      // Get and sort log files by modified date
-      List<FileSystemEntity> filesToBePruned = loggingFolder
-          .listSync(followLinks: false)
-          .where((e) => e.path.endsWith('.log'))
-          .toList()
-        ..sort((l, r) => l.statSync().modified.compareTo(r.statSync().modified));
-      // Delete all except last 10 logs
-      if (filesToBePruned.length > 10) {
-        filesToBePruned.removeRange(
-          filesToBePruned.length - 10,
-          filesToBePruned.length,
-        );
-        for (var logFile in filesToBePruned) {
-          logFile.delete();
-        }
-      }
-    }
-  }
 }
 
 void shareLog() async {

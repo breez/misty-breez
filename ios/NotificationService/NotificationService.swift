@@ -1,6 +1,5 @@
 import UserNotifications
 import XCGLogger
-import BreezSDKLiquid
 
 let accessGroup = "group.F7R2LZH3W5.com.breez.liquid.lBreez"
 
@@ -24,10 +23,10 @@ class NotificationService: SDKNotificationService {
 
         // Set Notification Service Logger to SdkLogListener that utilizes XCGLogger library
         let sdkLogger = SdkLogListener(logger: xcgLogger)
-        self.setLogger(logger: sdkLogger)
+        self.setServiceLogger(logger: sdkLogger)
         // Use the same SdkLogListener to listen in on BreezSDKLiquid node logs
         do {
-            try BreezSDKLiquid.setLogger(logger: sdkLogger)
+            try setLogger(logger: sdkLogger)
         } catch let e {
             self.logger.log(tag: TAG, line:"Failed to set log stream: \(e)", level: "ERROR")
         }

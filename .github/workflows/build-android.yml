@@ -110,7 +110,7 @@ jobs:
           df -hI
           echo "::endgroup::"
 
-      - name: 🏗️ Setup l-breez repository
+      - name: 🏗️ Check-out l-breez repository
         uses: actions/checkout@v4
         with:
           path: 'lbreez'
@@ -234,12 +234,6 @@ jobs:
         continue-on-error: true
         run: just codegen
 
-      - name: Generate FFI bindings
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        continue-on-error: true
-        run: just ffigen
-
       - name: 🔒 Install SSH Key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.REPO_SSH_KEY }}
@@ -249,32 +243,22 @@ jobs:
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
 
-      - name: 🔨 Build Breez Liquid SDK
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: |
-          rm -rf ../../../target
-          just build
-
-      - name: 🔨 Build Android binaries
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: just build-android
-
-      - name: Copy the binaries to the needed location
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: just copy-android
-
       - name: 🔨 Build Breez Liquid SDK Android bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just build-uniffi-android
 
-      - name: Use the production build.gradle
-        if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
-        working-directory: lbreez
-        run: mv android/app/build.gradle.production android/app/build.gradle
+      - name: Link C Headers
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just link-headers
+
+      - name: Generate FFI bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just ffigen
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
@@ -325,7 +309,7 @@ jobs:
           name: Android-APK
           path: lbreez/build/app/outputs/flutter-apk/app-*.apk
 
-      - name: Remove Google Application Credentials file
+      - name: Cleanup Google Application Credentials
         if: success() || failure()
         run: |
           if [ -d "lbreez" ] && [ -f "lbreez/google-application-credentials.json" ]; then

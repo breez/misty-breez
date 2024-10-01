@@ -3,12 +3,12 @@ import KeychainAccess
 import os.log
 
 #if DEBUG && true
-fileprivate var log = Logger(
+fileprivate var log = OSLog(
     subsystem: Bundle.main.bundleIdentifier!,
     category: "KeychainHelper"
 )
 #else
-fileprivate var log = Logger(OSLog.disabled)
+fileprivate var log = OSLog.disabled
 #endif
 
 public class KeychainHelper {
@@ -25,7 +25,7 @@ public class KeychainHelper {
         do {
             return try keychain.getString(key)
         } catch let error {
-            log.error("Failed to restore \(key) from \(service) keychain. Error: \(error)")
+            os_log(.error, "Failed to restore \(key) from \(service) keychain. Error: \(error)")
         }
         
         return nil

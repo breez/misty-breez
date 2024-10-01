@@ -30,7 +30,7 @@ jobs:
     runs-on: macOS-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: 🏗️ Setup l-breez repository
+      - name: 🏗️ Check-out l-breez repository
         uses: actions/checkout@v4
         with: 
           path: 'lbreez'
@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid'
-          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          ssh-key: ${{ secrets.REPO_SSH_KEY }}
           path: 'breez-sdk-liquid'
           ref: ${{ inputs.liquid_sdk_ref }}
 

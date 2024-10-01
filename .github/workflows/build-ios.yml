@@ -87,13 +87,13 @@ jobs:
     env:
       SCHEME: Runner
       BUILD_CONFIGURATION: Release
-      TESTFLIGHT_USERNAME: ${{secrets.TESTFLIGHT_USERNAME}}
-      TESTFLIGHT_PASSWORD: ${{secrets.TESTFLIGHT_PASSWORD}}
+      TESTFLIGHT_USERNAME: ${{ secrets.TESTFLIGHT_USERNAME }}
+      TESTFLIGHT_PASSWORD: ${{ secrets.TESTFLIGHT_PASSWORD }}
       IOS_VERSION_STRING: 0.1.0
-      DISTRIBUTION_CERT: ${{secrets.DISTRIBUTION_CERT}}
-      P12_BASE64: ${{secrets.P12_BASE64}}
-      P12_PASSWORD: ${{secrets.P12_PASSWORD}}
-      GOOGLE_SERVICES_IOS: ${{secrets.GOOGLE_SERVICES_IOS}}
+      DISTRIBUTION_CERT: ${{ secrets.DISTRIBUTION_CERT }}
+      P12_BASE64: ${{ secrets.P12_BASE64 }}
+      P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+      GOOGLE_SERVICES_IOS: ${{ secrets.GOOGLE_SERVICES_IOS }}
       FIREBASE_PROJECT: breez-technology
       FIREBASE_ANDROID_PACKAGE_NAME: com.breez.liquid.l_breez
       FIREBASE_IOS_BUNDLE_ID: com.breez.liquid.lBreez
@@ -119,7 +119,7 @@ jobs:
           df -hI
           echo "::endgroup::"
 
-      - name: 🏗️ Setup l-breez repository
+      - name: 🏗️ Check-out l-breez repository
         uses: actions/checkout@v4
         with:
           path: 'lbreez'
@@ -210,14 +210,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid'
-          ssh-key: ${{secrets.REPO_SSH_KEY}}
+          ssh-key: ${{ secrets.REPO_SSH_KEY }}
           path: 'breez-sdk-liquid'
           ref: ${{ needs.setup.outputs.liquid-sdk-ref }}
-
-      - name: Use production .podspec
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/packages/flutter/ios/
-        run: mv flutter_breez_liquid.podspec.production flutter_breez_liquid.podspec
 
       - name: 🏗️ Rust cache
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
@@ -244,47 +239,31 @@ jobs:
         continue-on-error: true
         run: just codegen
 
-      - name: Generate FFI bindings
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        continue-on-error: true
-        run: just ffigen
-
       - name: 🔒 Install SSH Key
         env:
-          SSH_PRIVATE_KEY: ${{secrets.REPO_SSH_KEY}}
+          SSH_PRIVATE_KEY: ${{ secrets.REPO_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
 
-      - name: 🔨 Build Breez Liquid SDK
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: |
-          rm -rf ../../../target
-          just build
-
-      - name: 🔨 Build iOS binaries
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: just build-apple
-
-      - name: Copy the XCFramework to the needed location
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        run: just copy-apple
-
       - name: 🔨 Build Breez Liquid SDK Swift bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just build-uniffi-swift
 
-      - name: Use the production Podfile
-        if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
-        working-directory: lbreez
-        run: mv ios/Podfile.production ios/Podfile
+      - name: Link C Headers
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just link-headers
+
+      - name: Generate FFI bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        continue-on-error: true
+        run: just ffigen
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
@@ -300,7 +279,7 @@ jobs:
 
       - name: ⚙️ Setup compile-time variables
         env:
-          CONFIG_FILE: ${{secrets.CONFIG_FILE}}
+          CONFIG_FILE: ${{ secrets.CONFIG_FILE }}
         run: echo "$CONFIG_FILE" > ./lbreez/config.json
 
       - name: 📝 Install the Provisioning Profile
@@ -425,7 +404,7 @@ jobs:
           ipa="$PWD/lbreez/build-output/ios/l_breez.ipa"
           "$altool" --upload-app --type ios --file "$ipa" --username $TESTFLIGHT_USERNAME --password $TESTFLIGHT_PASSWORD
 
-      - name: Remove Google Application Credentials file
+      - name: Cleanup Google Application Credentials
         if: success() || failure()
         run: |
           if [ -d "lbreez" ] && [ -f "lbreez/google-application-credentials.json" ]; then
