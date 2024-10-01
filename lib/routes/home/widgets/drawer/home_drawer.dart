@@ -6,6 +6,7 @@ import 'package:l_breez/models/user_profile.dart';
 import 'package:l_breez/routes/dev/developers_view.dart';
 import 'package:l_breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_navigation_drawer.dart';
+import 'package:l_breez/routes/refund/get_refund_page.dart';
 import 'package:l_breez/routes/security/security_page.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 
@@ -22,6 +23,15 @@ class HomeDrawer extends StatelessWidget {
 
         return BreezNavigationDrawer(
           [
+            DrawerItemConfigGroup(
+              [
+                DrawerItemConfig(
+                  GetRefundPage.routeName,
+                  texts.home_drawer_item_title_get_refund,
+                  "assets/icons/withdraw_funds.png",
+                ),
+              ],
+            ),
             DrawerItemConfigGroup([
               DrawerItemConfig(
                 "",

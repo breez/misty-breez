@@ -31,9 +31,9 @@ class Choice {
 }
 
 class DevelopersView extends StatefulWidget {
-  const DevelopersView({super.key});
-
   static const routeName = "/developers";
+
+  const DevelopersView({super.key});
 
   @override
   State<DevelopersView> createState() => _DevelopersViewState();

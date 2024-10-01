@@ -1,4 +1,4 @@
-import 'package:l_breez/routes/chainswap/send/fee/fee_option.dart';
+import 'package:l_breez/cubit/model/models.dart';
 
 class ChainSwapState {
   final List<SendChainSwapFeeOption> feeOptions;

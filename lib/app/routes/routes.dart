@@ -14,6 +14,8 @@ import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.
 import 'package:l_breez/routes/receive_payment/ln_address/receive_lightning_address_page.dart';
 import 'package:l_breez/routes/receive_payment/onchain/bitcoin_address/receive_bitcoin_address_payment_page.dart';
 import 'package:l_breez/routes/receive_payment/receive_payment_page.dart';
+import 'package:l_breez/routes/refund/get_refund_page.dart';
+import 'package:l_breez/routes/refund/refund_page.dart';
 import 'package:l_breez/routes/security/lock_screen.dart';
 import 'package:l_breez/routes/security/secured_page.dart';
 import 'package:l_breez/routes/security/security_page.dart';
@@ -97,6 +99,18 @@ Route? onGenerateRoute({
                     builder: (_) => BlocProvider(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
                       child: const ReceiveBitcoinAddressPaymentPage(),
+                    ),
+                    settings: settings,
+                  );
+                case GetRefundPage.routeName:
+                  return FadeInRoute(
+                    builder: (_) => const GetRefundPage(),
+                    settings: settings,
+                  );
+                case RefundPage.routeName:
+                  return FadeInRoute(
+                    builder: (_) => RefundPage(
+                      swapInfo: settings.arguments as RefundableSwap,
                     ),
                     settings: settings,
                   );

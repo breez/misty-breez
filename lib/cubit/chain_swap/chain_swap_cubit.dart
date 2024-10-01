@@ -5,55 +5,62 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/chain_swap/chain_swap_state.dart';
+import 'package:l_breez/cubit/model/models.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_option.dart';
 import 'package:l_breez/utils/exceptions.dart';
+import 'package:logging/logging.dart';
 
 export 'chain_swap_state.dart';
+
+final _log = Logger("ChainSwapCubit");
 
 class ChainSwapCubit extends Cubit<ChainSwapState> {
   final BreezSDKLiquid _liquidSdk;
 
-  ChainSwapCubit(this._liquidSdk) : super(ChainSwapState.initial());
-
-  Future<RecommendedFees> recommendedFees() async {
-    return await _liquidSdk.instance!.recommendedFees();
+  ChainSwapCubit(this._liquidSdk) : super(ChainSwapState.initial()) {
+    _initializeChainSwapCubit();
   }
 
-  Future<PreparePayOnchainResponse> preparePayOnchain({
-    required PreparePayOnchainRequest req,
-  }) async {
-    return await _liquidSdk.instance!.preparePayOnchain(req: req);
+  void _initializeChainSwapCubit() {
+    _liquidSdk.walletInfoStream.first.then((_) => rescanOnchainSwaps());
+  }
+
+  Future<void> rescanOnchainSwaps() async {
+    try {
+      _log.info("Rescanning onchain swaps");
+      return await _liquidSdk.instance!.rescanOnchainSwaps();
+    } catch (e) {
+      _log.severe("Failed to rescan onchain swaps", e);
+      rethrow;
+    }
   }
 
   Future<SendPaymentResponse> payOnchain({
     required PayOnchainRequest req,
   }) async {
-    return await _liquidSdk.instance!.payOnchain(req: req);
+    try {
+      _log.info(
+        "Paying onchain ${req.address} to ${req.prepareResponse.receiverAmountSat} with fee ${req.prepareResponse.totalFeesSat}",
+      );
+      return await _liquidSdk.instance!.payOnchain(req: req);
+    } catch (e) {
+      _log.severe("Failed to pay onchain", e);
+      emit(state.copyWith(error: extractExceptionMessage(e, getSystemAppLocalizations())));
+      rethrow;
+    }
   }
 
-  Future<RefundResponse> refund({
-    required RefundRequest req,
-  }) async {
-    return await _liquidSdk.instance!.refund(req: req);
-  }
-
-  Future<void> rescanOnchainSwaps() async {
-    return await _liquidSdk.instance!.rescanOnchainSwaps();
-  }
-
-  /// Fetches the current recommended fees
+  /// Fetches the current recommended fees for a chain swap transaction
   Future<List<SendChainSwapFeeOption>> fetchSendChainSwapFeeOptions({
     required int amountSat,
     required bool isDrain,
   }) async {
-    RecommendedFees recommendedFees;
     try {
-      recommendedFees = await this.recommendedFees();
-      return await _constructFeeOptionList(
+      final recommendedFees = await _liquidSdk.instance!.recommendedFees();
+      return _constructFeeOptionList(
         amountSat: amountSat,
-        recommendedFees: recommendedFees,
         isDrain: isDrain,
+        recommendedFees: recommendedFees,
       );
     } catch (e) {
       emit(ChainSwapState(error: extractExceptionMessage(e, getSystemAppLocalizations())));
@@ -63,8 +70,8 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
 
   Future<List<SendChainSwapFeeOption>> _constructFeeOptionList({
     required int amountSat,
-    required RecommendedFees recommendedFees,
     required bool isDrain,
+    required RecommendedFees recommendedFees,
   }) async {
     final recommendedFeeList = [
       recommendedFees.hourFee,
@@ -73,29 +80,36 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     ];
     final feeOptions = await Future.wait(
       List.generate(3, (index) async {
-        final recommendedFee = recommendedFeeList.elementAt(index);
         final payOnchainAmount = isDrain
             ? const PayOnchainAmount_Drain()
             : PayOnchainAmount_Receiver(amountSat: BigInt.from(amountSat));
         final preparePayOnchainRequest = PreparePayOnchainRequest(
           amount: payOnchainAmount,
-          feeRateSatPerVbyte: recommendedFee.toInt(),
+          feeRateSatPerVbyte: recommendedFeeList[index].toInt(),
         );
-        final swapOption = await preparePayOnchain(
-          req: preparePayOnchainRequest,
-        );
+        final preparePayOnchainResponse = await _preparePayOnchain(preparePayOnchainRequest);
 
         return SendChainSwapFeeOption(
-          txFeeSat: swapOption.claimFeesSat,
-          processingSpeed: ProcessingSpeed.values.elementAt(index),
-          satPerVbyte: recommendedFee,
-          pairInfo: swapOption,
+          processingSpeed: ProcessingSpeed.values[index],
+          feeRateSatPerVbyte: recommendedFeeList[index],
+          preparePayOnchainResponse: preparePayOnchainResponse,
         );
       }),
     );
 
-    emit(state.copyWith(feeOptions: feeOptions));
     return feeOptions;
+  }
+
+  Future<PreparePayOnchainResponse> _preparePayOnchain(PreparePayOnchainRequest req) async {
+    try {
+      _log.info(
+        "Preparing pay onchain for amount: ${req.amount} with fee ${req.feeRateSatPerVbyte}",
+      );
+      return await _liquidSdk.instance!.preparePayOnchain(req: req);
+    } catch (e) {
+      _log.severe("Failed to prepare pay onchain", e);
+      rethrow;
+    }
   }
 
   void validateSwap(
