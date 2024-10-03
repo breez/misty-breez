@@ -134,7 +134,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   Future<void> saveAvatarChanges() async {
-    _log.fine("saveAvatarChanges");
+    _log.info("saveAvatarChanges");
     final navigator = Navigator.of(context);
     final texts = context.texts();
     try {
@@ -164,7 +164,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   void generateRandomProfile() {
-    _log.fine("generateRandomProfile");
+    _log.info("generateRandomProfile");
     final DefaultProfile randomUser = generateDefaultProfile();
     setState(() {
       nameInputController.text = "${randomUser.color} ${randomUser.animal}";
@@ -176,10 +176,10 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   pickImageFromGallery() async {
-    _log.fine("pickImageFromGallery");
+    _log.info("pickImageFromGallery");
     ImagePicker().pickImage(source: ImageSource.gallery).then((pickedFile) {
       final pickedFilePath = pickedFile?.path;
-      _log.fine("pickedFile $pickedFilePath");
+      _log.info("pickedFile $pickedFilePath");
       if (pickedFilePath != null) {
         ImageCropper().cropImage(
           sourcePath: pickedFilePath,
@@ -221,8 +221,8 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
     }
   }
 
-    _log.fine("scaleAndFormatPNG");
   Future<Uint8List> scaleAndFormatPNG() async {
+    _log.info("scaleAndFormatPNG");
     const int scaledSize = 200;
     try {
       final image = dart_image.decodeImage(await pickedImage!.readAsBytes());
