@@ -233,12 +233,6 @@ jobs:
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just frb
 
-      - name: Generate Dart/Flutter bindings
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        continue-on-error: true
-        run: just codegen
-
       - name: 🔒 Install SSH Key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.REPO_SSH_KEY }}
@@ -253,17 +247,11 @@ jobs:
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just build-uniffi-swift
 
-      - name: Link C Headers
+      - name: Generate Dart/Flutter bindings & Softlink C Headers
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
-        run: just link-headers
-
-      - name: Generate FFI bindings
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        continue-on-error: true
-        run: just ffigen
+        run: just gen
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez

@@ -221,18 +221,11 @@ jobs:
         run: |
           just clean
           just init
-          just init-sdk
 
       - name: Install flutter_rust_bridge_codegen dependencies
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just frb
-
-      - name: Generate Dart/Flutter bindings
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        continue-on-error: true
-        run: just codegen
 
       - name: 🔒 Install SSH Key
         env:
@@ -248,17 +241,11 @@ jobs:
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: just build-uniffi-android
 
-      - name: Link C Headers
+      - name: Generate Dart/Flutter bindings & Softlink C Headers
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         continue-on-error: true
-        run: just link-headers
-
-      - name: Generate FFI bindings
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
-        continue-on-error: true
-        run: just ffigen
+        run: just gen false
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: lbreez
