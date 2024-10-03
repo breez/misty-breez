@@ -33,7 +33,7 @@ class HomeDrawer extends StatelessWidget {
                       DrawerItemConfig(
                         GetRefundPage.routeName,
                         texts.home_drawer_item_title_get_refund,
-                        "assets/icons/withdraw_funds.png",
+                        "assets/icons/get_refund.png",
                       ),
                     ],
                   ),
