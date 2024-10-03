@@ -120,7 +120,14 @@ class _FileImageAvatar extends StatelessWidget {
     File file = File(filePath);
     if (Platform.isIOS) {
       final documentPath = (await getApplicationDocumentsDirectory()).path;
-      file = await file.copy('$documentPath/${path.basename(file.path)}');
+      final destinationPath = '$documentPath/${path.basename(file.path)}';
+      final destinationFile = File(destinationPath);
+
+      if (!(await destinationFile.exists())) {
+        file = await file.copy(destinationPath);
+      } else {
+        file = destinationFile;
+      }
     }
     return file;
   }
