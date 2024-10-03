@@ -6,8 +6,12 @@ import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:l_breez/cubit/chain_swap/chain_swap_cubit.dart';
 import 'package:l_breez/routes/dev/command_line_interface.dart';
+import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
+import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -84,6 +88,11 @@ class _DevelopersViewState extends State<DevelopersView> {
                 icon: Icons.share,
                 function: (_) => shareLog(),
               ),
+              Choice(
+                title: "Rescan Onchain Swaps",
+                icon: Icons.radar,
+                function: _rescanOnchainSwaps,
+              ),
               if (bugReportBehavior != BugReportBehavior.prompt)
                 Choice(
                   title: "Enable Failure Prompt",
@@ -139,5 +148,17 @@ class _DevelopersViewState extends State<DevelopersView> {
     encoder.close();
     final zipFile = XFile(zipFilePath);
     Share.shareXFiles([zipFile]);
+  }
+
+  Future<void> _rescanOnchainSwaps(BuildContext context) async {
+    final texts = getSystemAppLocalizations();
+    final chainSwapCubit = context.read<ChainSwapCubit>();
+
+    try {
+      return await chainSwapCubit.rescanOnchainSwaps();
+    } catch (error) {
+      if (!context.mounted) return;
+      showFlushbar(context, title: extractExceptionMessage(error, texts));
+    }
   }
 }
