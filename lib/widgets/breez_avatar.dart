@@ -1,20 +1,27 @@
+import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 
 class BreezAvatar extends StatelessWidget {
   final String? avatarURL;
   final double radius;
   final Color? backgroundColor;
+  final bool isPreview;
 
-  const BreezAvatar(this.avatarURL, {super.key, this.radius = 20.0, this.backgroundColor});
+  const BreezAvatar(
+    this.avatarURL, {
+    super.key,
+    this.radius = 20.0,
+    this.backgroundColor,
+    this.isPreview = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,7 @@ class BreezAvatar extends StatelessWidget {
         return _DataImageAvatar(avatarURL!, radius);
       }
 
-      return _FileImageAvatar(radius, avatarURL!);
+      return _FileImageAvatar(radius, avatarURL!, isPreview: isPreview);
     }
 
     return _UnknownAvatar(radius, avatarBgColor);
@@ -91,45 +98,30 @@ class _GeneratedAvatar extends StatelessWidget {
 class _FileImageAvatar extends StatelessWidget {
   final double radius;
   final String filePath;
+  final bool isPreview;
 
-  const _FileImageAvatar(this.radius, this.filePath);
+  const _FileImageAvatar(this.radius, this.filePath, {this.isPreview = false});
 
   @override
   Widget build(BuildContext context) {
+    final userProfileCubit = context.read<UserProfileCubit>();
     return CircleAvatar(
       radius: radius,
-      backgroundColor: Colors.yellow,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: FutureBuilder(
-          future: _getAvatarImageFile(),
-          builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-            if (snapshot.hasData) {
-              return Image(
-                image: FileImage(snapshot.data!),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+        child: isPreview
+            ? Image.file(io.File(filePath))
+            : FutureBuilder(
+                future: userProfileCubit.getProfileImageFile(),
+                builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
+                  if (snapshot.hasData) {
+                    return Image.file(snapshot.data!);
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
       ),
     );
-  }
-
-  Future<File> _getAvatarImageFile() async {
-    File file = File(filePath);
-    if (Platform.isIOS) {
-      final documentPath = (await getApplicationDocumentsDirectory()).path;
-      final destinationPath = '$documentPath/${path.basename(file.path)}';
-      final destinationFile = File(destinationPath);
-
-      if (!(await destinationFile.exists())) {
-        file = await file.copy(destinationPath);
-      } else {
-        file = destinationFile;
-      }
-    }
-    return file;
   }
 }
 

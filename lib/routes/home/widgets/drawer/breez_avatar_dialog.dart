@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -144,7 +145,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
           ? nameInputController.text
           : userProfileCubit.state.profileSettings.name;
       userProfileCubit.updateProfile(name: userName);
-      await uploadAvatar();
+      await saveProfileImage();
       setState(() {
         isUploading = false;
       });
@@ -210,18 +211,18 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
     });
   }
 
-  Future<void> uploadAvatar() async {
-    _log.fine("uploadAvatar ${pickedImage?.path} $randomAvatarPath");
+  Future<void> saveProfileImage() async {
+    _log.info("saveProfileImage ${pickedImage?.path} $randomAvatarPath");
     if (pickedImage != null) {
-      String imageUrl = await userProfileCubit.uploadImage(await scaleAndFormatPNG());
-      userProfileCubit.updateProfile(image: imageUrl);
+      final profileImageFilePath = await userProfileCubit.saveProfileImage(await scaleAndFormatPNG());
+      userProfileCubit.updateProfile(image: profileImageFilePath);
     } else if (randomAvatarPath != null) {
       userProfileCubit.updateProfile(image: randomAvatarPath);
     }
   }
 
-  Future<List<int>> scaleAndFormatPNG() async {
     _log.fine("scaleAndFormatPNG");
+  Future<Uint8List> scaleAndFormatPNG() async {
     const int scaledSize = 200;
     try {
       final image = dart_image.decodeImage(await pickedImage!.readAsBytes());
@@ -318,6 +319,7 @@ class AvatarPreview extends StatelessWidget {
                 child: BreezAvatar(
                   pickedImage?.path ?? randomAvatarPath ?? userModel.profileSettings.avatarURL,
                   radius: 36.0,
+                  isPreview: pickedImage != null,
                 ),
               ),
             ),

@@ -1,7 +1,9 @@
 library user_profile_cubit;
 
 import 'dart:async';
+import 'dart:io' as io;
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -14,7 +16,7 @@ import 'package:path_provider/path_provider.dart';
 
 export 'user_profile_state.dart';
 
-const profileDataFolderPath = "profile";
+const profileImagesDirName = "ProfileImages";
 
 final _log = Logger("UserProfileCubit");
 
@@ -41,15 +43,35 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     emit(profile);
   }
 
-  Future<String> uploadImage(List<int> bytes) async {
-    _log.info("uploadImage ${bytes.length}");
+  Future<String> saveProfileImage(Uint8List bytes) async {
     try {
-      // TODO upload image to server
-      // return await _breezServer.uploadLogo(bytes);
-      return await _saveImage(bytes);
-    } catch (error) {
+      _log.info("Saving profile image, size: ${bytes.length} bytes");
+      final profileImageFilePath = await _createProfileImageFilePath();
+      await io.File(profileImageFilePath).writeAsBytes(bytes, flush: true);
+      return path.basename(profileImageFilePath);
+    } catch (e) {
+      _log.warning('Error saving profile image: $e');
       rethrow;
     }
+  }
+
+  Future<String> _createProfileImageFilePath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
+    await profileImagesDir.create(recursive: true);
+    final fileName = 'profile-${DateTime.now().millisecondsSinceEpoch}.png';
+    return path.join(profileImagesDir.path, fileName);
+  }
+
+  Future<File?> getProfileImageFile() async {
+    final imageUrl = state.profileSettings.image;
+    if (imageUrl != null) {
+      final directory = await getApplicationDocumentsDirectory();
+      final profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
+      final profileImageFilePath = "${profileImagesDir.path}/$imageUrl";
+      return io.File(profileImageFilePath);
+    }
+    return null;
   }
 
   void updateProfile({
@@ -62,8 +84,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     AppMode? appMode,
     bool? expandPreferences,
   }) {
-    _log.info(
-        "updateProfile $name $color $animal $image $registrationRequested $hideBalance $appMode $expandPreferences");
+    _log.info("updateProfile");
     var profile = state.profileSettings;
     profile = profile.copyWith(
       name: name ?? profile.name,
@@ -89,19 +110,5 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
   @override
   Map<String, dynamic> toJson(UserProfileState state) {
     return state.profileSettings.toJson();
-  }
-
-  Future<String> _saveImage(List<int> logoBytes) async {
-    try {
-      final docDir = await getApplicationDocumentsDirectory();
-      final profileDirPath = path.join(docDir.path, profileDataFolderPath);
-      final profileDir = await Directory(profileDirPath).create(recursive: true);
-      final filePath = path.join(profileDir.path, 'profile-${DateTime.now().millisecondsSinceEpoch}.png');
-      final file = await File(filePath).writeAsBytes(logoBytes, flush: true);
-      return file.path;
-    } catch (e) {
-      _log.warning('Error saving image: $e');
-      rethrow;
-    }
   }
 }
