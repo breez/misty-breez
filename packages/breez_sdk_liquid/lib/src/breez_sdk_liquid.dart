@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:rxdart/rxdart.dart';
 
 class BreezSDKLiquid {
@@ -98,58 +98,23 @@ class BreezSDKLiquid {
 
   Stream<liquid_sdk.GetInfoResponse> get walletInfoStream => _walletInfoController.stream;
 
-  final StreamController<liquid_sdk.Payment> _paymentResultStream = StreamController.broadcast();
-
   final StreamController<List<liquid_sdk.Payment>> _paymentsController =
       BehaviorSubject<List<liquid_sdk.Payment>>();
 
   Stream<List<liquid_sdk.Payment>> get paymentsStream => _paymentsController.stream;
 
-  Stream<liquid_sdk.Payment> get paymentResultStream => _paymentResultStream.stream;
+  final StreamController<PaymentEvent> _paymentEventStream = StreamController.broadcast();
 
-  /* TODO: Liquid - Log statements are added for debugging purposes, should be removed after early development stage is complete & events are behaving as expected.*/
+  Stream<PaymentEvent> get paymentEventStream => _paymentEventStream.stream;
+
   /// Subscribes to SdkEvent's stream
   void _subscribeToEventsStream(liquid_sdk.BindingLiquidSdk sdk) {
     _breezEventsSubscription = _breezEventsStream?.listen(
       (event) async {
-        if (event is liquid_sdk.SdkEvent_PaymentFailed) {
-          _logStreamController.add(
-            liquid_sdk.LogEntry(line: "Payment Failed. ${event.details}", level: "WARN"),
-          );
-          _paymentResultStream.addError(PaymentException(event.details));
-        }
-        if (event is liquid_sdk.SdkEvent_PaymentPending) {
-          _logStreamController.add(
-            liquid_sdk.LogEntry(line: "Payment Pending. ${event.details}", level: "INFO"),
-          );
-          _paymentResultStream.add(event.details);
-        }
-        if (event is liquid_sdk.SdkEvent_PaymentRefunded) {
-          _logStreamController.add(
-            liquid_sdk.LogEntry(line: "Payment Refunded. ${event.details}", level: "INFO"),
-          );
-          _paymentResultStream.add(event.details);
-        }
-        if (event is liquid_sdk.SdkEvent_PaymentRefundPending) {
-          _logStreamController.add(
-            liquid_sdk.LogEntry(line: "Pending Payment Refund. ${event.details}", level: "INFO"),
-          );
-          _paymentResultStream.add(event.details);
-        }
-        if (event is liquid_sdk.SdkEvent_PaymentSucceeded) {
-          _logStreamController.add(
-            liquid_sdk.LogEntry(line: "Payment Succeeded. ${event.details}", level: "INFO"),
-          );
-          _paymentResultStream.add(event.details);
-        }
-        if (event is liquid_sdk.SdkEvent_PaymentWaitingConfirmation) {
-          _logStreamController.add(
-            liquid_sdk.LogEntry(line: "Payment Waiting Confirmation. ${event.details}", level: "INFO"),
-          );
-          _paymentResultStream.add(event.details);
-        }
-        if (event is liquid_sdk.SdkEvent_Synced) {
-          _logStreamController.add(const liquid_sdk.LogEntry(line: "Received Synced event.", level: "INFO"));
+        if (event.isPaymentEvent) {
+          _paymentEventStream.add(PaymentEvent.fromSdkEvent(event));
+        } else if (event is liquid_sdk.SdkEvent_PaymentFailed) {
+          _paymentEventStream.addError(event);
         }
         await _fetchWalletData(sdk);
       },
@@ -176,9 +141,24 @@ class BreezSDKLiquid {
   }
 }
 
-// TODO: Liquid - Return this exception from the SDK directly
-class PaymentException {
-  final liquid_sdk.Payment details;
+extension PaymentEventExtension on liquid_sdk.SdkEvent {
+  bool get isPaymentEvent {
+    return this is liquid_sdk.SdkEvent_PaymentFailed ||
+        this is liquid_sdk.SdkEvent_PaymentPending ||
+        this is liquid_sdk.SdkEvent_PaymentRefunded ||
+        this is liquid_sdk.SdkEvent_PaymentRefundPending ||
+        this is liquid_sdk.SdkEvent_PaymentSucceeded ||
+        this is liquid_sdk.SdkEvent_PaymentWaitingConfirmation;
+  }
+}
 
-  const PaymentException(this.details);
+class PaymentEvent {
+  final liquid_sdk.SdkEvent sdkEvent;
+  final liquid_sdk.Payment payment;
+
+  PaymentEvent({required this.sdkEvent, required this.payment});
+
+  factory PaymentEvent.fromSdkEvent(liquid_sdk.SdkEvent event) {
+    return PaymentEvent(sdkEvent: event, payment: (event as dynamic).details);
+  }
 }
