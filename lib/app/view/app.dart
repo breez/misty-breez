@@ -28,6 +28,9 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => sdkConnectivityCubit,
         ),
+        BlocProvider<RefundCubit>(
+          create: (BuildContext context) => RefundCubit(injector.liquidSDK),
+        ),
         BlocProvider<ConnectivityCubit>(
           create: (BuildContext context) => ConnectivityCubit(),
         ),

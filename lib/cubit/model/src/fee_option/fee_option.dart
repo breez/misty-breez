@@ -10,21 +10,13 @@ enum ProcessingSpeed {
   final Duration waitingTime;
 }
 
-extension PreparePayOnchainResponseAffordable on PreparePayOnchainResponse {
-  bool isAffordable({required int balance}) {
-    return balance >= (receiverAmountSat + totalFeesSat).toInt();
-  }
-}
-
 abstract class FeeOption {
-  final BigInt txFeeSat;
   final ProcessingSpeed processingSpeed;
-  final BigInt satPerVbyte;
+  final BigInt feeRateSatPerVbyte;
 
   FeeOption({
-    required this.txFeeSat,
     required this.processingSpeed,
-    required this.satPerVbyte,
+    required this.feeRateSatPerVbyte,
   });
 
   String getDisplayName(BreezTranslations texts) {
@@ -42,19 +34,47 @@ abstract class FeeOption {
 }
 
 class SendChainSwapFeeOption extends FeeOption {
-  final PreparePayOnchainResponse pairInfo;
+  final PreparePayOnchainResponse preparePayOnchainResponse;
 
   SendChainSwapFeeOption({
-    required this.pairInfo,
-    required super.txFeeSat,
+    required this.preparePayOnchainResponse,
     required super.processingSpeed,
-    required super.satPerVbyte,
+    required super.feeRateSatPerVbyte,
   });
 
   @override
   bool isAffordable({int? balanceSat, int? walletBalanceSat, required int amountSat}) {
     assert(balanceSat != null);
 
-    return pairInfo.isAffordable(balance: balanceSat!);
+    return preparePayOnchainResponse.isAffordable(balance: balanceSat!);
+  }
+}
+
+extension PreparePayOnchainResponseAffordable on PreparePayOnchainResponse {
+  bool isAffordable({required int balance}) {
+    return balance >= (receiverAmountSat + totalFeesSat).toInt();
+  }
+}
+
+class RefundFeeOption extends FeeOption {
+  final PrepareRefundResponse prepareRefundResponse;
+
+  RefundFeeOption({
+    required this.prepareRefundResponse,
+    required super.processingSpeed,
+    required super.feeRateSatPerVbyte,
+  });
+
+  @override
+  bool isAffordable({int? balanceSat, int? walletBalanceSat, required int amountSat}) {
+    assert(balanceSat != null);
+
+    return prepareRefundResponse.isAffordable(balance: balanceSat!);
+  }
+}
+
+extension PrepareRefundResponseAffordable on PrepareRefundResponse {
+  bool isAffordable({required int balance}) {
+    return balance >= (txFeeSat).toInt();
   }
 }

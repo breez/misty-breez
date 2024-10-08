@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_breakdown/fee_breakdown.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_chooser/widgets/fee_chooser_header.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_chooser/widgets/processing_speed_wait_time.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_option.dart';
 
 class FeeChooser extends StatefulWidget {
   final int amountSat;
@@ -44,7 +44,7 @@ class _FeeChooserState extends State<FeeChooser> {
           ),
           const SizedBox(height: 36.0),
           if (selectedFeeOption is SendChainSwapFeeOption) ...[
-            FeeBreakdown(feeOption: selectedFeeOption.pairInfo)
+            FeeBreakdown(feeOption: selectedFeeOption.preparePayOnchainResponse)
           ]
         ],
       ),

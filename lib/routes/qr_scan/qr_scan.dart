@@ -12,9 +12,9 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 final _log = Logger("QRScan");
 
 class QRScan extends StatefulWidget {
-  const QRScan({super.key});
-
   static const routeName = "/qr_scan";
+
+  const QRScan({super.key});
 
   @override
   State<StatefulWidget> createState() => QRScanState();

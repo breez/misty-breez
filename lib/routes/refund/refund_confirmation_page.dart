@@ -1,38 +1,45 @@
+import 'dart:async';
+
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_chooser/fee_chooser.dart';
-import 'package:l_breez/routes/chainswap/send/send_chainswap_button.dart';
+import 'package:l_breez/routes/refund/widgets/widgets.dart';
 import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 
-class SendChainSwapConfirmationPage extends StatefulWidget {
+class RefundConfirmationPage extends StatefulWidget {
   final int amountSat;
-  final String onchainRecipientAddress;
-  final bool isMaxValue;
+  final String swapAddress;
+  final String toAddress;
+  final String? originalTransaction;
 
-  const SendChainSwapConfirmationPage({
+  const RefundConfirmationPage({
     super.key,
     required this.amountSat,
-    required this.onchainRecipientAddress,
-    required this.isMaxValue,
+    required this.toAddress,
+    required this.swapAddress,
+    this.originalTransaction,
   });
 
   @override
-  State<SendChainSwapConfirmationPage> createState() => _SendChainSwapConfirmationPageState();
+  State<StatefulWidget> createState() {
+    return RefundConfirmationState();
+  }
 }
 
-class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmationPage> {
-  List<SendChainSwapFeeOption> affordableFees = <SendChainSwapFeeOption>[];
+class RefundConfirmationState extends State<RefundConfirmationPage> {
+  List<RefundFeeOption> affordableFees = [];
   int selectedFeeIndex = -1;
 
-  late Future<List<SendChainSwapFeeOption>> _fetchFeeOptionsFuture;
+  late Future<List<RefundFeeOption>> _fetchFeeOptionsFuture;
 
   @override
   void initState() {
     super.initState();
-    _fetchSendChainSwapFeeOptions();
+    _fetchRefundFeeOptions();
   }
 
   @override
@@ -48,13 +55,15 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
         builder: (context, snapshot) {
           if (snapshot.error != null) {
             return _ErrorMessage(
-              message: (snapshot.error is PaymentError_InsufficientFunds)
-                  ? texts.reverse_swap_confirmation_error_funds_fee
-                  : texts.reverse_swap_confirmation_error_fetch_fee,
+              message: texts.sweep_all_coins_error_retrieve_fees,
             );
           }
           if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: Loader());
+            return const Center(
+              child: Loader(
+                color: Colors.white,
+              ),
+            );
           }
 
           if (affordableFees.isNotEmpty) {
@@ -67,42 +76,39 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
               }),
             );
           } else {
-            return _ErrorMessage(message: texts.reverse_swap_confirmation_error_funds_fee);
+            return _ErrorMessage(
+              message: texts.sweep_all_coins_error_amount_small,
+            );
           }
         },
       ),
       bottomNavigationBar:
           (affordableFees.isNotEmpty && selectedFeeIndex >= 0 && selectedFeeIndex < affordableFees.length)
-              ? SafeArea(
-                  child: SendChainSwapButton(
-                    recipientAddress: widget.onchainRecipientAddress,
-                    preparePayOnchainResponse: affordableFees[selectedFeeIndex].preparePayOnchainResponse,
+              ? RefundButton(
+                  req: RefundRequest(
+                    feeRateSatPerVbyte: affordableFees[selectedFeeIndex].feeRateSatPerVbyte.toInt(),
+                    refundAddress: widget.toAddress,
+                    swapAddress: widget.swapAddress,
                   ),
                 )
-              : null,
+              : SingleButtonBottomBar(
+                  text: texts.sweep_all_coins_action_retry,
+                  onPressed: () => _fetchRefundFeeOptions,
+                  stickToBottom: true,
+                ),
     );
   }
 
-  void _fetchSendChainSwapFeeOptions() {
-    final chainSwapCubit = context.read<ChainSwapCubit>();
-    _fetchFeeOptionsFuture = chainSwapCubit.fetchSendChainSwapFeeOptions(
-      amountSat: widget.amountSat,
-      isDrain: widget.isMaxValue,
+  void _fetchRefundFeeOptions() {
+    final refundCubit = context.read<RefundCubit>();
+    _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(
+      toAddress: widget.toAddress,
+      swapAddress: widget.swapAddress,
     );
     _fetchFeeOptionsFuture.then((feeOptions) {
-      if (mounted) {
-        final accountCubit = context.read<AccountCubit>();
-        final accountState = accountCubit.state;
-        setState(() {
-          affordableFees = feeOptions
-              .where((f) => f.isAffordable(balanceSat: accountState.balance, amountSat: widget.amountSat))
-              .toList();
-          selectedFeeIndex = (affordableFees.length / 2).floor();
-        });
-      }
-    }, onError: (error, stackTrace) {
       setState(() {
-        affordableFees = <SendChainSwapFeeOption>[];
+        affordableFees = feeOptions.where((f) => f.isAffordable(amountSat: widget.amountSat)).toList();
+        selectedFeeIndex = (affordableFees.length / 2).floor();
       });
     });
   }

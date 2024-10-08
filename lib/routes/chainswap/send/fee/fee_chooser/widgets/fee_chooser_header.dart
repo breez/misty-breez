@@ -1,9 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/account/account_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/chainswap/send/fee/fee_chooser/widgets/fee_option_button.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_option.dart';
 
 class FeeChooserHeader extends StatefulWidget {
   final int amountSat;
