@@ -1,8 +1,10 @@
-import 'dart:io';
+import 'dart:io' as io;
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/file.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -11,8 +13,15 @@ class BreezAvatar extends StatelessWidget {
   final String? avatarURL;
   final double radius;
   final Color? backgroundColor;
+  final bool isPreview;
 
-  const BreezAvatar(this.avatarURL, {super.key, this.radius = 20.0, this.backgroundColor});
+  const BreezAvatar(
+    this.avatarURL, {
+    super.key,
+    this.radius = 20.0,
+    this.backgroundColor,
+    this.isPreview = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,7 @@ class BreezAvatar extends StatelessWidget {
         return _DataImageAvatar(avatarURL!, radius);
       }
 
-      return _FileImageAvatar(radius, avatarURL!);
+      return _FileImageAvatar(radius, avatarURL!, isPreview: isPreview);
     }
 
     return _UnknownAvatar(radius, avatarBgColor);
@@ -89,21 +98,29 @@ class _GeneratedAvatar extends StatelessWidget {
 class _FileImageAvatar extends StatelessWidget {
   final double radius;
   final String filePath;
+  final bool isPreview;
 
-  const _FileImageAvatar(this.radius, this.filePath);
+  const _FileImageAvatar(this.radius, this.filePath, {this.isPreview = false});
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      backgroundColor: Colors.yellow,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: Image(
-          image: FileImage(
-            File(filePath),
-          ),
-        ),
+        child: isPreview
+            ? Image.file(
+                io.File(filePath),
+              )
+            : FutureBuilder<File?>(
+                future: DefaultCacheManager().getSingleFile(profileImageCacheKey),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Image.file(snapshot.data!);
+                  }
+                  return Image.file(io.File(filePath));
+                },
+              ),
       ),
     );
   }

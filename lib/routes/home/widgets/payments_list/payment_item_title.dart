@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 
 class PaymentItemTitle extends StatelessWidget {
   final PaymentData paymentData;
@@ -12,8 +15,14 @@ class PaymentItemTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var title = paymentData.title;
+    if (paymentData.paymentType == PaymentType.receive && title.isDefaultTitleWithLiquidNaming) {
+      final userProfileCubit = context.read<UserProfileCubit>();
+      final userProfileState = userProfileCubit.state;
+      title = "Payment to ${userProfileState.profileSettings.name}";
+    }
     return Text(
-      paymentData.title,
+      title,
       style: Theme.of(context).paymentItemTitleTextStyle,
       overflow: TextOverflow.ellipsis,
     );

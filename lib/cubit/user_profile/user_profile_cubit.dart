@@ -1,19 +1,20 @@
 library user_profile_cubit;
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter_cache_manager/file.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/model/models.dart';
 import 'package:l_breez/cubit/user_profile/user_profile_cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
 import 'package:logging/logging.dart';
-import 'package:path_provider/path_provider.dart';
 
 export 'user_profile_state.dart';
 
-const profileDataFolderPath = "profile";
+const profileImageCacheKey = "profile_image";
 
 final _log = Logger("UserProfileCubit");
 
@@ -40,11 +41,9 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     emit(profile);
   }
 
-  Future<String> uploadImage(List<int> bytes) async {
-    _log.info("uploadImage ${bytes.length}");
+  Future<File> cacheImage(Uint8List bytes) async {
+    _log.info("cacheImage ${bytes.length}");
     try {
-      // TODO upload image to server
-      // return await _breezServer.uploadLogo(bytes);
       return await _saveImage(bytes);
     } catch (error) {
       rethrow;
@@ -61,8 +60,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     AppMode? appMode,
     bool? expandPreferences,
   }) {
-    _log.info(
-        "updateProfile $name $color $animal $image $registrationRequested $hideBalance $appMode $expandPreferences");
+    _log.info("updateProfile");
     var profile = state.profileSettings;
     profile = profile.copyWith(
       name: name ?? profile.name,
@@ -90,18 +88,14 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     return state.profileSettings.toJson();
   }
 
-  Future<String> _saveImage(List<int> logoBytes) {
-    return getApplicationDocumentsDirectory()
-        .then(
-          (docDir) => Directory(
-            [docDir.path, profileDataFolderPath].join("/"),
-          ).create(recursive: true),
-        )
-        .then(
-          (profileDir) => File(
-            [profileDir.path, 'profile-${DateTime.now().millisecondsSinceEpoch}-.png'].join("/"),
-          ).writeAsBytes(logoBytes, flush: true),
-        )
-        .then((file) => file.path);
+  Future<File> _saveImage(Uint8List logoBytes) async {
+    try {
+      final cache = DefaultCacheManager();
+      await cache.removeFile(profileImageCacheKey);
+      return await cache.putFile(profileImageCacheKey, logoBytes);
+    } catch (e) {
+      _log.warning('Error saving image: $e');
+      rethrow;
+    }
   }
 }

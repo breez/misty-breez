@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -133,14 +134,13 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   Future<void> saveAvatarChanges() async {
-    _log.fine("saveAvatarChanges");
+    _log.info("saveAvatarChanges");
     final navigator = Navigator.of(context);
     final texts = context.texts();
     try {
       setState(() {
         isUploading = true;
       });
-      await Future.delayed(const Duration(seconds: 15));
       var userName = nameInputController.text.isNotEmpty
           ? nameInputController.text
           : userProfileCubit.state.profileSettings.name;
@@ -164,7 +164,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   void generateRandomProfile() {
-    _log.fine("generateRandomProfile");
+    _log.info("generateRandomProfile");
     final DefaultProfile randomUser = generateDefaultProfile();
     setState(() {
       nameInputController.text = "${randomUser.color} ${randomUser.animal}";
@@ -176,13 +176,14 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   pickImageFromGallery() async {
-    _log.fine("pickImageFromGallery");
+    _log.info("pickImageFromGallery");
     ImagePicker().pickImage(source: ImageSource.gallery).then((pickedFile) {
       final pickedFilePath = pickedFile?.path;
-      _log.fine("pickedFile $pickedFilePath");
+      _log.info("pickedFile $pickedFilePath");
       if (pickedFilePath != null) {
         ImageCropper().cropImage(
           sourcePath: pickedFilePath,
+          aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
           uiSettings: [
             AndroidUiSettings(
               cropStyle: CropStyle.circle,
@@ -211,17 +212,18 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   Future<void> uploadAvatar() async {
-    _log.fine("uploadAvatar ${pickedImage?.path} $randomAvatarPath");
+    _log.info("uploadAvatar ${pickedImage?.path} $randomAvatarPath");
     if (pickedImage != null) {
-      String imageUrl = await userProfileCubit.uploadImage(await scaleAndFormatPNG());
+      final imageFile = await userProfileCubit.cacheImage(await scaleAndFormatPNG());
+      String imageUrl = imageFile.path;
       userProfileCubit.updateProfile(image: imageUrl);
     } else if (randomAvatarPath != null) {
       userProfileCubit.updateProfile(image: randomAvatarPath);
     }
   }
 
-  Future<List<int>> scaleAndFormatPNG() async {
-    _log.fine("scaleAndFormatPNG");
+  Future<Uint8List> scaleAndFormatPNG() async {
+    _log.info("scaleAndFormatPNG");
     const int scaledSize = 200;
     try {
       final image = dart_image.decodeImage(await pickedImage!.readAsBytes());
@@ -318,6 +320,7 @@ class AvatarPreview extends StatelessWidget {
                 child: BreezAvatar(
                   pickedImage?.path ?? randomAvatarPath ?? userModel.profileSettings.avatarURL,
                   radius: 36.0,
+                  isPreview: pickedImage != null,
                 ),
               ),
             ),
