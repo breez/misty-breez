@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
-import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
-import 'package:l_breez/routes/create_invoice/widgets/successful_payment.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
+import 'package:l_breez/routes/receive_payment/lnurl/lnurl_withdraw_page.dart';
+import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment.dart';
+import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
@@ -21,16 +22,26 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   LnUrlWithdrawRequestData requestData,
 ) async {
   Completer<LNURLPageResult?> completer = Completer();
+  final texts = context.texts();
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (_) => BlocProvider(
         create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
-        child: CreateInvoicePage(
-          requestData: requestData,
-          onFinish: (LNURLPageResult? response) {
-            completer.complete(response);
-            Navigator.of(context).popUntil((route) => route.settings.name == Home.routeName);
-          },
+        child: Scaffold(
+          appBar: AppBar(
+            leading: const back_button.BackButton(),
+            title: Text("Receive via ${texts.lnurl_payment_page_title}"),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+            child: LnUrlWithdrawPage(
+              requestData: requestData,
+              onFinish: (LNURLPageResult? response) {
+                completer.complete(response);
+                Navigator.of(context).popUntil((route) => route.settings.name == Home.routeName);
+              },
+            ),
+          ),
         ),
       ),
     ),

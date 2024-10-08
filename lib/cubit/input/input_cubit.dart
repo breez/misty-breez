@@ -46,8 +46,8 @@ class InputCubit extends Cubit<InputState> {
       final receivedPaymentDestination = payment.destination ?? "";
       final doesDestinationMatch =
           paymentDestinationIsEmpty || receivedPaymentDestination == paymentDestination;
-      final isPaymentReceived =
-          payment.status == PaymentState.pending || payment.status == PaymentState.complete;
+      final isPaymentReceived = payment.paymentType == PaymentType.receive &&
+          (payment.status == PaymentState.pending || payment.status == PaymentState.complete);
 
       if (doesDestinationMatch && isPaymentReceived) {
         _log.info("Payment Received! Destination: ${payment.destination}, Status: ${payment.status}");

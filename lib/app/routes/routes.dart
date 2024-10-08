@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
-import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:l_breez/routes/dev/developers_view.dart';
 import 'package:l_breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
-import 'package:l_breez/routes/ln_address/ln_address_page.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
+import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
+import 'package:l_breez/routes/receive_payment/ln_address/receive_lightning_address_page.dart';
+import 'package:l_breez/routes/receive_payment/onchain/bitcoin_address/receive_bitcoin_address_payment_page.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment_page.dart';
 import 'package:l_breez/routes/security/lock_screen.dart';
 import 'package:l_breez/routes/security/secured_page.dart';
 import 'package:l_breez/routes/security/security_page.dart';
@@ -68,24 +69,34 @@ Route? onGenerateRoute({
                     builder: (_) => const Home(),
                     settings: settings,
                   );
-                case CreateInvoicePage.routeName:
+                case ReceivePaymentPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
-                      child: const CreateInvoicePage(),
+                      child: ReceivePaymentPage(
+                        initialPageIndex: settings.arguments as int? ?? 0,
+                      ),
                     ),
                     settings: settings,
                   );
-                case LnAddressPage.routeName:
+                case ReceiveLightningAddressPage.routeName:
                   return FadeInRoute(
-                    builder: (_) => const LnAddressPage(),
+                    builder: (_) => const ReceiveLightningAddressPage(),
                     settings: settings,
                   );
-                case ReceiveChainSwapPage.routeName:
+                case ReceiveLightningPaymentPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
-                      child: const ReceiveChainSwapPage(),
+                      child: const ReceiveLightningPaymentPage(),
+                    ),
+                    settings: settings,
+                  );
+                case ReceiveBitcoinAddressPaymentPage.routeName:
+                  return FadeInRoute(
+                    builder: (_) => BlocProvider(
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      child: const ReceiveBitcoinAddressPaymentPage(),
                     ),
                     settings: settings,
                   );

@@ -47,23 +47,20 @@ var _versionsToMaxCharacters = [
 class CompactQRImage extends StatelessWidget {
   final String data;
   final double? size;
-  final bool bip21;
 
-  const CompactQRImage({super.key, required this.data, this.size, this.bip21 = false});
+  const CompactQRImage({super.key, required this.data, this.size});
 
   @override
   Widget build(BuildContext context) {
     return QrImageView(
       backgroundColor: Colors.white,
       version: _calculateVersion(),
-      /*
-         Bech32 addresses consisting of uppercase and digits results in more compact QR codes.
-         NB. If we ever generate BIP21 URI's that have query parameters, this will have to be fixed so that
-         we will not change the case of the parameters because BIP21 parameters are case sensitive.
-         Ref. https://bitcoinops.org/en/bech32-sending-support/#creating-more-efficient-qr-codes-with-bech32-addresses
-      */
-      data: bip21 ? data : data.toUpperCase(),
+      data: data,
       size: size,
+      embeddedImage: const AssetImage("assets/icons/app_icon.png"),
+      embeddedImageStyle: const QrEmbeddedImageStyle(
+        size: Size.square(68.0),
+      ),
     );
   }
 

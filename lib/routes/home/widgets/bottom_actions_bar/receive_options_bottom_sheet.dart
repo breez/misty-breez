@@ -1,8 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/chainswap/receive/receive_chainswap_page.dart';
-import 'package:l_breez/routes/create_invoice/create_invoice_page.dart';
-import 'package:l_breez/routes/ln_address/ln_address_page.dart';
+import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
+import 'package:l_breez/routes/receive_payment/ln_address/receive_lightning_address_page.dart';
+import 'package:l_breez/routes/receive_payment/onchain/bitcoin_address/receive_bitcoin_address_payment_page.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment_page.dart';
 import 'package:l_breez/theme/theme.dart';
 
 import 'bottom_action_item_image.dart';
@@ -31,7 +32,10 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
           onTap: () {
             final navigatorState = Navigator.of(context);
             navigatorState.pop();
-            navigatorState.pushNamed(LnAddressPage.routeName);
+            navigatorState.pushNamed(
+              ReceivePaymentPage.routeName,
+              arguments: ReceiveLightningAddressPage.pageIndex,
+            );
           },
         ),
         Divider(
@@ -50,7 +54,10 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
           onTap: () {
             final navigatorState = Navigator.of(context);
             navigatorState.pop();
-            navigatorState.pushNamed(CreateInvoicePage.routeName);
+            navigatorState.pushNamed(
+              ReceivePaymentPage.routeName,
+              arguments: ReceiveLightningPaymentPage.pageIndex,
+            );
           },
         ),
         Divider(
@@ -69,7 +76,10 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
           onTap: () {
             final navigatorState = Navigator.of(context);
             navigatorState.pop();
-            navigatorState.pushNamed(ReceiveChainSwapPage.routeName);
+            navigatorState.pushNamed(
+              ReceivePaymentPage.routeName,
+              arguments: ReceiveBitcoinAddressPaymentPage.pageIndex,
+            );
           },
         ),
       ],

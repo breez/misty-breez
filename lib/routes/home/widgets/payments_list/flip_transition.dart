@@ -37,13 +37,18 @@ class FlipTransitionState extends State<FlipTransition> with TickerProviderState
       ),
     );
 
-    _flipAnimationController!.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _flipAnimationController!.reverse();
-      }
-    });
-    _flipAnimationController!.forward().whenCompleteOrCancel(() {
-      widget.onComplete();
+    /// 0.4s Slide In + 2s Wait + 0.4s Slide Out + 3 seconds Particles
+    /// Show flip transition as particles animation is half fade-out
+    const successfulPaymentRouteAnimation = Duration(seconds: 4, milliseconds: 300);
+    Future.delayed(successfulPaymentRouteAnimation, () {
+      _flipAnimationController!.forward().whenCompleteOrCancel(() {
+        if (!mounted) return;
+        _flipAnimationController!.reverse().whenCompleteOrCancel(() {
+          if (mounted) {
+            widget.onComplete();
+          }
+        });
+      });
     });
   }
 

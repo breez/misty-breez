@@ -54,8 +54,8 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   void initState() {
     super.initState();
     if (widget.invoice.amountMsat == BigInt.zero) {
-      // TODO: Breez-Translations - Add message to Breez-Translations
-      widget._onCancel("Zero-amount lightning payments are not supported.");
+      final texts = context.texts();
+      widget._onCancel(texts.payment_request_zero_amount_not_supported);
     }
     _invoiceAmountController.addListener(() {
       setState(() {});

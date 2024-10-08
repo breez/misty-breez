@@ -137,8 +137,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: a564088448149e9c28b4a2eb82fa0a3536698d24
-      resolved-ref: a564088448149e9c28b4a2eb82fa0a3536698d24
+      ref: "121f878dd843ea99dca371e537a063f4c9521c31"
+      resolved-ref: "121f878dd843ea99dca371e537a063f4c9521c31"
       url: "https://github.com/breez/Breez-Translations"
     source: git
     version: "1.0.0"
@@ -504,10 +504,10 @@ packages:
     dependency: transitive
     description:
       name: file_selector_windows
-      sha256: "2ad726953f6e8affbc4df8dc78b77c3b4a060967a291e528ef72ae846c60fb69"
+      sha256: "8f5d2f6590d51ecd9179ba39c64f722edc15226cc93dcc8698466ad36a4a85a4"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.3+2"
+    version: "0.9.3+3"
   firebase_core:
     dependency: "direct main"
     description:

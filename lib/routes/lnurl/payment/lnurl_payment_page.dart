@@ -11,283 +11,294 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:l_breez/utils/always_disabled_focus_node.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
+import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
-import 'package:logging/logging.dart';
 
-final _log = Logger("LNURLPaymentPage");
+class LnUrlPaymentPage extends StatefulWidget {
+  final LnUrlPayRequestData requestData;
 
-class LNURLPaymentPage extends StatefulWidget {
-  final LnUrlPayRequestData data;
-  /*TODO: Add domain information to parse results #118(https://github.com/breez/breez-sdk/issues/118)
-  final String domain;
-  TODO: Add support for LUD-18: Payer identity in payRequest protocol(https://github.com/breez/breez-sdk/issues/117)
-  final PayerDataRecordField? name;
-  final AuthRecord? auth;
-  final PayerDataRecordField? email;
-  final PayerDataRecordField? identifier;
- */
-
-  const LNURLPaymentPage({
-    required this.data,
-    /*
-    required this.domain,
-    this.name,
-    this.auth,
-    this.email,
-    this.identifier,
-     */
-
-    super.key,
-  });
+  const LnUrlPaymentPage({super.key, required this.requestData});
 
   @override
-  State<StatefulWidget> createState() => LNURLPaymentPageState();
+  State<StatefulWidget> createState() => LnUrlPaymentPageState();
 }
 
-class LNURLPaymentPageState extends State<LNURLPaymentPage> {
+class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
-  final _commentController = TextEditingController();
-  /*
-  final _nameController = TextEditingController();
-  final _k1Controller = TextEditingController();
-  final _emailController = TextEditingController();
-  final _identifierController = TextEditingController();
-   */
-  late final bool fixedAmount;
-  late LightningPaymentLimitsResponse _lightningLimits;
+  final _amountFocusNode = FocusNode();
+  var _doneAction = KeyboardDoneAction();
+
+  bool _isFixedAmount = false;
+  bool _loading = true;
+  String? _errorMessage;
+  LightningPaymentLimitsResponse? _lightningLimits;
 
   @override
   void initState() {
     super.initState();
+    _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
+
+    _isFixedAmount = widget.requestData.minSendable == widget.requestData.maxSendable;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _fetchLightningLimits();
+    });
+  }
+
+  Future<void> _fetchLightningLimits() async {
     final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
-    final paymentLimitsState = paymentLimitsCubit.state;
-    final minSat = paymentLimitsState.lightningPaymentLimits?.send.minSat.toInt();
-    if (minSat != null && widget.data.maxSendable.toInt() ~/ 1000 < minSat) {
-      throw Exception("Payment is below network limit of $minSat sats.");
+    try {
+      final response = await paymentLimitsCubit.fetchLightningLimits();
+      _handleLightningPaymentLimitsResponse(response);
+    } catch (error) {
+      setState(() {
+        _errorMessage = error.toString();
+        _loading = false;
+      });
     }
-    fixedAmount = widget.data.minSendable == widget.data.maxSendable;
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) async {
-        if (fixedAmount) {
-          final currencyCubit = context.read<CurrencyCubit>();
-          final currencyState = currencyCubit.state;
-          _amountController.text = currencyState.bitcoinCurrency.format(
-            (widget.data.maxSendable.toInt() ~/ 1000),
-            includeDisplayName: false,
-          );
-        }
-      },
-    );
+  }
+
+  void _handleLightningPaymentLimitsResponse(LightningPaymentLimitsResponse response) {
+    final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
+    final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
+    final effectiveMinSat = max(response.send.minSat.toInt(), minSendableSat);
+    final effectiveMaxSat = min(response.send.maxSat.toInt(), maxSendableSat);
+
+    _validateEffectiveLimits(effectiveMinSat: effectiveMinSat, effectiveMaxSat: effectiveMaxSat);
+
+    _updateFormFields(effectiveMaxSat: effectiveMaxSat);
+
+    setState(() {
+      _lightningLimits = response;
+      _loading = false;
+    });
+  }
+
+  void _validateEffectiveLimits({
+    required int effectiveMinSat,
+    required int effectiveMaxSat,
+  }) {
+    if (effectiveMaxSat < effectiveMinSat) {
+      final texts = context.texts();
+      final currencyCubit = context.read<CurrencyCubit>();
+      final currencyState = currencyCubit.state;
+
+      final isFixedAmountWithinLimits = _isFixedAmount && (effectiveMinSat == effectiveMaxSat);
+      if (!isFixedAmountWithinLimits) {
+        final effMinWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+        final effMaxWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
+        throw Exception(
+          "Payment amount is outside the allowed limits, which range from $effMinWithdrawableFormatted to $effMaxWithdrawableFormatted",
+        );
+      }
+
+      final networkLimit = currencyState.bitcoinCurrency.format(
+        effectiveMinSat,
+        includeDisplayName: true,
+      );
+      throw Exception(texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit));
+    }
+  }
+
+  void _updateFormFields({
+    required int effectiveMaxSat,
+  }) {
+    if (_isFixedAmount) {
+      final currencyCubit = context.read<CurrencyCubit>();
+      final currencyState = currencyCubit.state;
+
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        effectiveMaxSat,
+        includeDisplayName: false,
+      );
+    } else if (_amountFocusNode.canRequestFocus) {
+      _amountFocusNode.requestFocus();
+    }
+  }
+
+  @override
+  void dispose() {
+    _doneAction.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final currencyCubit = context.read<CurrencyCubit>();
-    final currencyState = currencyCubit.state;
-    final metadataMap = {
-      for (var v in json.decode(widget.data.metadataStr)) v[0] as String: v[1],
-    };
-    String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        // Todo: Use domain from request data
-        title: Text(texts.lnurl_fetch_invoice_pay_to_payee(Uri.parse(widget.data.callback).host)),
+        title: Text(texts.lnurl_fetch_invoice_pay_to_payee(widget.requestData.domain)),
       ),
-      body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
-        builder: (BuildContext context, PaymentLimitsState snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                child: Text(
-                  texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
-          if (snapshot.lightningPaymentLimits == null) {
-            final themeData = Theme.of(context);
+      body: BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, currencyState) {
+        if (_loading) {
+          final themeData = Theme.of(context);
 
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
-              ),
-            );
-          }
+          return Center(
+            child: Loader(
+              color: themeData.primaryColor.withOpacity(0.5),
+            ),
+          );
+        }
 
-          _lightningLimits = snapshot.lightningPaymentLimits!;
-
-          return Form(
-            key: _formKey,
+        if (_errorMessage != null) {
+          return Center(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 0.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.data.commentAllowed > 0) ...[
-                    TextFormField(
-                      controller: _commentController,
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.done,
-                      maxLines: null,
-                      maxLength: widget.data.commentAllowed.toInt(),
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      decoration: InputDecoration(
-                        labelText: texts.lnurl_payment_page_comment,
-                      ),
-                    )
-                  ],
-                  AmountFormField(
-                    context: context,
-                    texts: texts,
-                    bitcoinCurrency: currencyState.bitcoinCurrency,
-                    controller: _amountController,
-                    validatorFn: validatePayment,
-                    autofocus: !fixedAmount,
-                    enabled: !fixedAmount,
-                    readOnly: fixedAmount,
-                  ),
-                  if (!fixedAmount) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: RichText(
-                        text: TextSpan(
-                          style: FieldTextStyle.labelStyle,
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: texts.lnurl_fetch_invoice_min(
-                                currencyState.bitcoinCurrency.format(
-                                  max(
-                                    _lightningLimits.send.minSat.toInt(),
-                                    widget.data.minSendable.toInt() ~/ 1000,
-                                  ),
-                                ),
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  _amountController.text = currencyState.bitcoinCurrency.format(
-                                    (widget.data.minSendable.toInt() ~/ 1000),
-                                    includeDisplayName: false,
-                                  );
-                                },
-                            ),
-                            TextSpan(
-                              text: texts.lnurl_fetch_invoice_and(
-                                currencyState.bitcoinCurrency.format(
-                                  (widget.data.maxSendable.toInt() ~/ 1000),
-                                ),
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  _amountController.text = currencyState.bitcoinCurrency.format(
-                                    (widget.data.maxSendable.toInt() ~/ 1000),
-                                    includeDisplayName: false,
-                                  );
-                                },
-                            )
-                          ],
-                        ),
-                      ),
+              padding: const EdgeInsets.all(32.0),
+              child: Text(
+                _errorMessage!,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+
+        final metadataMap = {
+          for (var v in json.decode(widget.requestData.metadataStr)) v[0] as String: v[1],
+        };
+        String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
+
+        final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
+        final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
+        final effectiveMinSat = max(_lightningLimits!.send.minSat.toInt(), minSendableSat);
+        final effectiveMaxSat = min(_lightningLimits!.send.maxSat.toInt(), maxSendableSat);
+        final effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+        final effMaxSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
+
+        return Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 0.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.requestData.commentAllowed > 0) ...[
+                  TextFormField(
+                    controller: _descriptionController,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.done,
+                    maxLines: null,
+                    maxLength: widget.requestData.commentAllowed.toInt(),
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    decoration: InputDecoration(
+                      labelText: texts.lnurl_payment_page_comment,
                     ),
-                  ],
-                  /*
-                  if (widget.name?.mandatory == true) ...[
-                    TextFormField(
-                      controller: _nameController,
-                      keyboardType: TextInputType.name,
-                      validator: (value) => value != null ? null : texts.breez_avatar_dialog_your_name,
-                    )
-                  ],
-                  if (widget.auth?.mandatory == true) ...[
-                    TextFormField(
-                      controller: _k1Controller,
-                      keyboardType: TextInputType.text,
-                      validator: (value) => value != null ? null : texts.lnurl_payment_page_enter_k1,
-                    )
-                  ],
-                  if (widget.email?.mandatory == true) ...[
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) => value != null
-                          ? EmailValidator.validate(value)
-                              ? null
-                              : texts.order_card_country_email_invalid
-                          : texts.order_card_country_email_empty,
-                    )
-                  ],
-                  if (widget.identifier?.mandatory == true) ...[
-                    TextFormField(
-                      controller: _identifierController,
-                    )
-                  ],
-                   */
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 48,
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: LNURLMetadataText(metadataMap: metadataMap),
+                    style: FieldTextStyle.textStyle,
+                  )
+                ],
+                AmountFormField(
+                  context: context,
+                  texts: texts,
+                  bitcoinCurrency: currencyState.bitcoinCurrency,
+                  focusNode: _isFixedAmount ? AlwaysDisabledFocusNode() : _amountFocusNode,
+                  autofocus: !_isFixedAmount,
+                  readOnly: _isFixedAmount,
+                  controller: _amountController,
+                  validatorFn: (amount) => validatePayment(
+                    amount: amount,
+                    effectiveMinSat: effectiveMinSat,
+                    effectiveMaxSat: effectiveMaxSat,
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 22),
-                      child: Center(
-                        child: LNURLMetadataImage(
-                          base64String: base64String,
-                        ),
+                  style: FieldTextStyle.textStyle,
+                ),
+                if (!_isFixedAmount) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: RichText(
+                      text: TextSpan(
+                        style: FieldTextStyle.labelStyle,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: texts.lnurl_fetch_invoice_min(
+                              effMinSendableFormatted,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => _pasteAmount(currencyState, effectiveMinSat),
+                          ),
+                          TextSpan(
+                            text: texts.lnurl_fetch_invoice_and(
+                              effMaxSendableFormatted,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => _pasteAmount(currencyState, effectiveMaxSat),
+                          )
+                        ],
                       ),
                     ),
                   ),
                 ],
-              ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 48,
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: LNURLMetadataText(metadataMap: metadataMap),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 22),
+                    child: Center(
+                      child: LNURLMetadataImage(
+                        base64String: base64String,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          );
-        },
-      ),
-      bottomNavigationBar: SingleButtonBottomBar(
-        stickToBottom: true,
-        text: texts.lnurl_fetch_invoice_action_continue,
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            final currencyCubit = context.read<CurrencyCubit>();
-            final amount = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
-            final comment = _commentController.text;
-            _log.info("LNURL payment of $amount sats where "
-                "min is ${widget.data.minSendable.toInt() ~/ 1000} sats "
-                "and max is ${widget.data.maxSendable.toInt() ~/ 1000} sats."
-                "with comment $comment");
-            Navigator.pop(context, LNURLPaymentInfo(amount: amount, comment: comment));
-          }
-        },
-      ),
+          ),
+        );
+      }),
+      bottomNavigationBar: _loading
+          ? null
+          : _errorMessage != null
+              ? SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.qr_code_dialog_action_close,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              : SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.lnurl_fetch_invoice_action_continue,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final currencyCubit = context.read<CurrencyCubit>();
+                      final amount = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
+                      final comment = _descriptionController.text;
+                      // TODO: Instead of popping LNURLPaymentInfo to show Processing Payment Dialog. Call LNURL pay and consequently payment success animation.
+                      Navigator.pop(context, LNURLPaymentInfo(amount: amount, comment: comment));
+                    }
+                  },
+                ),
     );
   }
 
-  String? validatePayment(int amount) {
+  String? validatePayment({
+    required int amount,
+    required int effectiveMinSat,
+    required int effectiveMaxSat,
+  }) {
     final texts = context.texts();
     final currencyCubit = context.read<CurrencyCubit>();
     final currencyState = currencyCubit.state;
 
-    final maxSendable = widget.data.maxSendable.toInt() ~/ 1000;
-    if (amount > maxSendable) {
-      return texts.lnurl_payment_page_error_exceeds_limit(maxSendable);
+    if (amount > effectiveMaxSat) {
+      return texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat);
     }
 
-    final minSendable = widget.data.minSendable.toInt() ~/ 1000;
-    if (amount < minSendable) {
-      return texts.lnurl_payment_page_error_below_limit(minSendable);
+    if (amount < effectiveMinSat) {
+      return texts.lnurl_payment_page_error_below_limit(effectiveMinSat);
     }
 
     return PaymentValidator(
@@ -302,6 +313,15 @@ class LNURLPaymentPageState extends State<LNURLPaymentPage> {
     final accountState = accountCubit.state;
     final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);
+    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+  }
+
+  void _pasteAmount(CurrencyState currencyState, int amountSat) {
+    setState(() {
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        amountSat,
+        includeDisplayName: false,
+      );
+    });
   }
 }

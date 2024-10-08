@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AddressWidgetPlaceholder extends StatelessWidget {
-  const AddressWidgetPlaceholder({
+class DestinationWidgetPlaceholder extends StatelessWidget {
+  const DestinationWidgetPlaceholder({
     super.key,
   });
 
