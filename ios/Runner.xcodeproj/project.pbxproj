@@ -21,7 +21,7 @@
 		732A3D362C6CD974007563A8 /* SdkLogListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732A3D332C6CD974007563A8 /* SdkLogListener.swift */; };
 		732A3D372C6CD974007563A8 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732A3D342C6CD974007563A8 /* KeychainHelper.swift */; };
 		732A3D382C6CD974007563A8 /* KeyChainAccessGroupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732A3D352C6CD974007563A8 /* KeyChainAccessGroupHelper.swift */; };
-		73A4C6CC2CA1905200F38394 /* breez_sdk_liquidFFI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A4C6CB2CA1905200F38394 /* breez_sdk_liquidFFI.xcframework */; };
+		733E91342CB6656A00616BBD /* breez_sdk_liquidFFI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733E91332CB6656A00616BBD /* breez_sdk_liquidFFI.xcframework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -113,7 +113,7 @@
 		732A3D332C6CD974007563A8 /* SdkLogListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SdkLogListener.swift; sourceTree = "<group>"; };
 		732A3D342C6CD974007563A8 /* KeychainHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		732A3D352C6CD974007563A8 /* KeyChainAccessGroupHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyChainAccessGroupHelper.swift; sourceTree = "<group>"; };
-		73A4C6CB2CA1905200F38394 /* breez_sdk_liquidFFI.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = breez_sdk_liquidFFI.xcframework; path = "../../breez-sdk-liquid/packages/flutter/ios/Frameworks/breez_sdk_liquidFFI.xcframework"; sourceTree = "<group>"; };
+		733E91332CB6656A00616BBD /* breez_sdk_liquidFFI.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = breez_sdk_liquidFFI.xcframework; path = ".symlinks/plugins/flutter_breez_liquid/ios/Frameworks/breez_sdk_liquidFFI.xcframework"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73A4C6CC2CA1905200F38394 /* breez_sdk_liquidFFI.xcframework in Frameworks */,
+				733E91342CB6656A00616BBD /* breez_sdk_liquidFFI.xcframework in Frameworks */,
 				D4C739E48636480220D6264F /* Pods_NotificationService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,7 +215,7 @@
 		7E01A696FB05CBBA0BCC4F86 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				73A4C6CB2CA1905200F38394 /* breez_sdk_liquidFFI.xcframework */,
+				733E91332CB6656A00616BBD /* breez_sdk_liquidFFI.xcframework */,
 				3CE09830B5AA1194ABCBFAA9 /* Pods_NotificationService.framework */,
 				3512672A4D419C343EE98C95 /* Pods_Runner.framework */,
 				E0937162EF1CF6AB9561B7E6 /* Pods_RunnerTests.framework */,
