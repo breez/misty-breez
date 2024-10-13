@@ -33,8 +33,13 @@ class AppConfig {
     liquid_sdk.LiquidNetwork network = liquid_sdk.LiquidNetwork.mainnet,
   }) {
     _log.info("Getting default SDK config for network: $network");
+    const breezApiKey = String.fromEnvironment("API_KEY");
+    if (breezApiKey.isEmpty) {
+      throw Exception("API_KEY is not set in environment variables");
+    }
     return liquid_sdk.defaultConfig(
       network: network,
+      breezApiKey: breezApiKey,
     );
   }
 
@@ -42,13 +47,8 @@ class AppConfig {
     liquid_sdk.Config defaultConf,
   ) async {
     _log.info("Getting SDK config");
-    const breezApiKey = String.fromEnvironment("API_KEY");
-    if (breezApiKey.isEmpty) {
-      throw Exception("API_KEY is not set in environment variables");
-    }
     return defaultConf.copyWith(
       workingDir: await _workingDir(),
-      breezApiKey: breezApiKey,
     );
   }
 
