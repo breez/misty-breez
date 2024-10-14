@@ -54,14 +54,17 @@ Future<LNURLPageResult?> handlePayRequest(
     builder: (_) => ProcessingPaymentDialog(
       isLnUrlPayment: true,
       firstPaymentItemKey: firstPaymentItemKey,
-      paymentFunc: () {
+      paymentFunc: () async {
         final lnurlCubit = context.read<LnUrlCubit>();
-        final req = LnUrlPayRequest(
-          amountMsat: BigInt.from(paymentInfo!.amount * 1000),
-          comment: paymentInfo.comment,
+        final amountMsat = BigInt.from(paymentInfo!.amount * 1000);
+        final prepareReq = PrepareLnUrlPayRequest(
           data: data,
+          amountMsat: amountMsat,
+          comment: paymentInfo.comment,
         );
-        return lnurlCubit.lnurlPay(req: req);
+        final prepareResponse = await lnurlCubit.prepareLnurlPay(req: prepareReq);
+        final req = LnUrlPayRequest(prepareResponse: prepareResponse);
+        return await lnurlCubit.lnurlPay(req: req);
       },
     ),
   ).then((result) {

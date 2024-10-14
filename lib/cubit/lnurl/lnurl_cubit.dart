@@ -29,6 +29,17 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     }
   }
 
+  Future<PrepareLnUrlPayResponse> prepareLnurlPay({
+    required PrepareLnUrlPayRequest req,
+  }) async {
+    try {
+      return await _liquidSdk.instance!.prepareLnurlPay(req: req);
+    } catch (e) {
+      _log.severe("prepareLnurlPay error", e);
+      rethrow;
+    }
+  }
+
   Future<LnUrlPayResult> lnurlPay({
     required LnUrlPayRequest req,
   }) async {
