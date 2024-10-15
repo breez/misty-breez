@@ -14,9 +14,8 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
+export 'user_profile_image_cache.dart';
 export 'user_profile_state.dart';
-
-const profileImagesDirName = "ProfileImages";
 
 final _log = Logger("UserProfileCubit");
 
@@ -48,6 +47,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
       _log.info("Saving profile image, size: ${bytes.length} bytes");
       final profileImageFilePath = await _createProfileImageFilePath();
       await io.File(profileImageFilePath).writeAsBytes(bytes, flush: true);
+      await UserProfileImageCache().cacheProfileImage(bytes);
       return path.basename(profileImageFilePath);
     } catch (e) {
       _log.warning('Error saving profile image: $e');
@@ -61,17 +61,6 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     await profileImagesDir.create(recursive: true);
     final fileName = 'profile-${DateTime.now().millisecondsSinceEpoch}.png';
     return path.join(profileImagesDir.path, fileName);
-  }
-
-  Future<File?> getProfileImageFile() async {
-    final imageUrl = state.profileSettings.image;
-    if (imageUrl != null) {
-      final directory = await getApplicationDocumentsDirectory();
-      final profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
-      final profileImageFilePath = "${profileImagesDir.path}/$imageUrl";
-      return io.File(profileImageFilePath);
-    }
-    return null;
   }
 
   void updateProfile({

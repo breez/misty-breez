@@ -1,10 +1,8 @@
-import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -104,17 +102,16 @@ class _FileImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProfileCubit = context.read<UserProfileCubit>();
     return CircleAvatar(
       radius: radius,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
         child: isPreview
-            ? Image.file(io.File(filePath))
+            ? Image.file(File(filePath))
             : FutureBuilder(
-                future: userProfileCubit.getProfileImageFile(),
+                future: UserProfileImageCache().getProfileImageFile(fileName: filePath),
                 builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData && snapshot.data != null) {
                     return Image.file(snapshot.data!);
                   }
                   return const SizedBox.shrink();
