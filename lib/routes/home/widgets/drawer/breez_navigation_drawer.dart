@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:l_breez/models/user_profile.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_avatar_dialog.dart';
 import 'package:l_breez/routes/home/widgets/drawer/breez_drawer_header.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:l_breez/widgets/breez_avatar.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 const double _kBreezBottomSheetHeight = 60.0;
@@ -171,13 +174,33 @@ class BreezNavigationDrawer extends StatelessWidget {
     UserProfileSettings user,
     BuildContext context,
   ) {
+    final texts = context.texts();
+
     List<Widget> drawerHeaderContent = [];
     drawerHeaderContent.add(_buildThemeSwitch(context, user));
-    // TODO: Re-enable when UserProfile information is being used on payments
-    /*drawerHeaderContent
-      ..add(_buildAvatarButton(user))
-      ..add(_buildBottomRow(user, context));
-     */
+    drawerHeaderContent
+      ..add(
+        Row(
+          children: [
+            BreezAvatar(user.avatarURL, radius: 24.0),
+          ],
+        ),
+      )
+      ..add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: AutoSizeText(
+                user.name ?? texts.home_drawer_error_no_name,
+                style: navigationDrawerHandleStyle,
+              ),
+            ),
+          ],
+        ),
+      );
+
     return GestureDetector(
       onTap: () {
         showDialog<bool>(
@@ -285,43 +308,6 @@ GestureDetector _buildThemeSwitch(
     ),
   );
 }
-
-/*
-Row _buildAvatarButton(UserProfileSettings user) {
-  return Row(
-    children: [
-      BreezAvatar(user.avatarURL, radius: 24.0),
-    ],
-  );
-}
-
-Row _buildBottomRow(
-  UserProfileSettings user,
-  BuildContext context,
-) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      _buildUsername(context, user),
-    ],
-  );
-}
-
-Padding _buildUsername(
-  BuildContext context,
-  UserProfileSettings user,
-) {
-  final texts = context.texts();
-
-  return Padding(
-    padding: const EdgeInsets.only(top: 8.0),
-    child: AutoSizeText(
-      user.name ?? texts.home_drawer_error_no_name,
-      style:navigationDrawerHandleStyle,
-    ),
-  );
-}
- */
 
 Widget _actionTile(
   DrawerItemConfig action,

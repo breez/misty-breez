@@ -11,8 +11,15 @@ class BreezAvatar extends StatelessWidget {
   final String? avatarURL;
   final double radius;
   final Color? backgroundColor;
+  final bool isPreview;
 
-  const BreezAvatar(this.avatarURL, {super.key, this.radius = 20.0, this.backgroundColor});
+  const BreezAvatar(
+    this.avatarURL, {
+    super.key,
+    this.radius = 20.0,
+    this.backgroundColor,
+    this.isPreview = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class BreezAvatar extends StatelessWidget {
         return _DataImageAvatar(avatarURL!, radius);
       }
 
-      return _FileImageAvatar(radius, avatarURL!);
+      return _FileImageAvatar(radius, avatarURL!, isPreview: isPreview);
     }
 
     return _UnknownAvatar(radius, avatarBgColor);
@@ -89,21 +96,27 @@ class _GeneratedAvatar extends StatelessWidget {
 class _FileImageAvatar extends StatelessWidget {
   final double radius;
   final String filePath;
+  final bool isPreview;
 
-  const _FileImageAvatar(this.radius, this.filePath);
+  const _FileImageAvatar(this.radius, this.filePath, {this.isPreview = false});
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      backgroundColor: Colors.yellow,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: Image(
-          image: FileImage(
-            File(filePath),
-          ),
-        ),
+        child: isPreview
+            ? Image.file(File(filePath))
+            : FutureBuilder(
+                future: UserProfileImageCache().getProfileImageFile(fileName: filePath),
+                builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    return Image.file(snapshot.data!);
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
       ),
     );
   }

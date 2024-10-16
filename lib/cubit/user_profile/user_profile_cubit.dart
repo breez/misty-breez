@@ -1,7 +1,9 @@
 library user_profile_cubit;
 
 import 'dart:async';
+import 'dart:io' as io;
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -9,11 +11,11 @@ import 'package:l_breez/cubit/model/models.dart';
 import 'package:l_breez/cubit/user_profile/user_profile_cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
+export 'user_profile_image_cache.dart';
 export 'user_profile_state.dart';
-
-const profileDataFolderPath = "profile";
 
 final _log = Logger("UserProfileCubit");
 
@@ -40,15 +42,25 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     emit(profile);
   }
 
-  Future<String> uploadImage(List<int> bytes) async {
-    _log.info("uploadImage ${bytes.length}");
+  Future<String> saveProfileImage(Uint8List bytes) async {
     try {
-      // TODO upload image to server
-      // return await _breezServer.uploadLogo(bytes);
-      return await _saveImage(bytes);
-    } catch (error) {
+      _log.info("Saving profile image, size: ${bytes.length} bytes");
+      final profileImageFilePath = await _createProfileImageFilePath();
+      await io.File(profileImageFilePath).writeAsBytes(bytes, flush: true);
+      await UserProfileImageCache().cacheProfileImage(bytes);
+      return path.basename(profileImageFilePath);
+    } catch (e) {
+      _log.warning('Error saving profile image: $e');
       rethrow;
     }
+  }
+
+  Future<String> _createProfileImageFilePath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
+    await profileImagesDir.create(recursive: true);
+    final fileName = 'profile-${DateTime.now().millisecondsSinceEpoch}.png';
+    return path.join(profileImagesDir.path, fileName);
   }
 
   void updateProfile({
@@ -61,8 +73,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     AppMode? appMode,
     bool? expandPreferences,
   }) {
-    _log.info(
-        "updateProfile $name $color $animal $image $registrationRequested $hideBalance $appMode $expandPreferences");
+    _log.info("updateProfile");
     var profile = state.profileSettings;
     profile = profile.copyWith(
       name: name ?? profile.name,
@@ -88,20 +99,5 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
   @override
   Map<String, dynamic> toJson(UserProfileState state) {
     return state.profileSettings.toJson();
-  }
-
-  Future<String> _saveImage(List<int> logoBytes) {
-    return getApplicationDocumentsDirectory()
-        .then(
-          (docDir) => Directory(
-            [docDir.path, profileDataFolderPath].join("/"),
-          ).create(recursive: true),
-        )
-        .then(
-          (profileDir) => File(
-            [profileDir.path, 'profile-${DateTime.now().millisecondsSinceEpoch}-.png'].join("/"),
-          ).writeAsBytes(logoBytes, flush: true),
-        )
-        .then((file) => file.path);
   }
 }
