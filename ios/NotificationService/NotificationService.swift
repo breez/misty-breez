@@ -38,12 +38,20 @@ class NotificationService: SDKNotificationService {
             return nil
         }
         self.logger.log(tag: TAG, line: "API_KEY: \(apiKey)", level: "TRACE")
-        var config = defaultConfig(network: LiquidNetwork.mainnet, apiKey: apiKey)
+        
+        var config: Config
+        do {
+            config = try defaultConfig(network: LiquidNetwork.mainnet, breezApiKey: apiKey)
+        } catch {
+            self.logger.log(tag: TAG, line: "Failed to get default config: \(error)", level: "ERROR")
+            return nil
+        }
+        
         config.workingDir = FileManager
             .default.containerURL(forSecurityApplicationGroupIdentifier: accessGroup)!
-            .path        
+            .path
         
-        // Construct the ConnectRequest 
+        // Construct the ConnectRequest
         guard let mnemonic = KeychainHelper.shared.getFlutterString(accessGroup: accessGroup, key: accountMnemonic) else {
             self.logger.log(tag: TAG, line: "Mnemonic not found", level: "ERROR")
             return nil
