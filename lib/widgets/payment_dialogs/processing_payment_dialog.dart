@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:l_breez/utils/exceptions.dart';
@@ -168,10 +169,17 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
             transitionAnimation: transitionAnimation!,
             child: const ProcessingPaymentContent(),
           )
-        : Dialog(
-            child: Container(
-              constraints: BoxConstraints(minHeight: widget.minHeight),
-              child: ProcessingPaymentContent(dialogKey: _dialogKey),
+        : AnnotatedRegion<SystemUiOverlayStyle>(
+            value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
+                  systemNavigationBarColor: Theme.of(context).colorScheme.surface,
+                ),
+            child: Dialog.fullscreen(
+              child: Container(
+                constraints: BoxConstraints(minHeight: widget.minHeight),
+                child: Center(
+                  child: ProcessingPaymentContent(dialogKey: _dialogKey),
+                ),
+              ),
             ),
           );
   }
