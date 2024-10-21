@@ -6,15 +6,15 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 
 class LNURLMetadataText extends StatelessWidget {
-  const LNURLMetadataText({super.key, required this.metadataMap});
+  const LNURLMetadataText({super.key, required this.metadataText});
 
-  final Map<String, dynamic> metadataMap;
+  final String metadataText;
 
   @override
   Widget build(BuildContext context) {
     return AutoSizeText(
-      metadataMap['text/long-desc'] ?? metadataMap['text/plain'],
-      style: FieldTextStyle.textStyle,
+      metadataText,
+      style: Theme.of(context).paymentItemSubtitleTextStyle,
       maxLines: 1,
       minFontSize: MinFontSize(context).minFontSize,
     );
