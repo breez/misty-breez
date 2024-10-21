@@ -209,6 +209,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           for (var v in json.decode(widget.requestData.metadataStr)) v[0] as String: v[1],
         };
         String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
+        String? metadataText = metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
 
         final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
         final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
@@ -235,6 +236,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     decoration: InputDecoration(
                       labelText: texts.lnurl_payment_page_comment,
+                if (base64String != null && base64String.isNotEmpty) ...[
+                  Padding(
+                    padding: EdgeInsets.zero,
+                    child: Center(child: LNURLMetadataImage(base64String: base64String)),
+                  ),
+                ],
                     ),
                     style: FieldTextStyle.textStyle,
                   )
@@ -280,22 +287,31 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     ),
                   ),
                 ],
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 48,
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: LNURLMetadataText(metadataMap: metadataMap),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 22),
-                    child: Center(
-                      child: LNURLMetadataImage(
-                        base64String: base64String,
-                      ),
                     ),
                   ),
                 ),
+                if (metadataText != null && metadataText.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        AutoSizeText(
+                          texts.utils_print_pdf_header_description,
+                          style: themeData.primaryTextTheme.headlineMedium,
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: LNURLMetadataText(metadataText: metadataText),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
