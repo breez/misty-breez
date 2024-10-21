@@ -226,16 +226,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.requestData.commentAllowed > 0) ...[
-                  TextFormField(
-                    controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.done,
-                    maxLines: null,
-                    maxLength: widget.requestData.commentAllowed.toInt(),
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    decoration: InputDecoration(
-                      labelText: texts.lnurl_payment_page_comment,
                 if (base64String != null && base64String.isNotEmpty) ...[
                   Padding(
                     padding: EdgeInsets.zero,
@@ -311,6 +301,21 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       ],
                     ),
                   ),
+                ],
+                if (widget.requestData.commentAllowed > 0) ...[
+                  TextFormField(
+                    controller: _descriptionController,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.done,
+                    maxLines: null,
+                    maxLength: widget.requestData.commentAllowed.toInt(),
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    decoration: InputDecoration(
+                      labelText: "${texts.lnurl_payment_page_comment}:",
+                      labelStyle: themeData.primaryTextTheme.headlineMedium,
+                    ),
+                    style: themeData.paymentItemSubtitleTextStyle,
+                  )
                 ],
               ],
             ),
