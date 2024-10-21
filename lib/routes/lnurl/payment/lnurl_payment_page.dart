@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/always_disabled_focus_node.dart';
@@ -21,6 +20,9 @@ import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 
 class LnUrlPaymentPage extends StatefulWidget {
   final LnUrlPayRequestData requestData;
+
+  static const routeName = "/lnurl_payment";
+  static const paymentMethod = PaymentMethod.lightning;
 
   const LnUrlPaymentPage({super.key, required this.requestData});
 
@@ -41,6 +43,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   String? _errorMessage;
   LightningPaymentLimitsResponse? _lightningLimits;
 
+  PrepareLnUrlPayResponse? _prepareResponse;
+
   @override
   void initState() {
     super.initState();
@@ -56,16 +60,19 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
     try {
       final response = await paymentLimitsCubit.fetchLightningLimits();
-      _handleLightningPaymentLimitsResponse(response);
+      await _handleLightningPaymentLimitsResponse(response);
     } catch (error) {
       setState(() {
         _errorMessage = error.toString();
+      });
+    } finally {
+      setState(() {
         _loading = false;
       });
     }
   }
 
-  void _handleLightningPaymentLimitsResponse(LightningPaymentLimitsResponse response) {
+  Future<void> _handleLightningPaymentLimitsResponse(LightningPaymentLimitsResponse response) async {
     final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
     final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
     final effectiveMinSat = max(response.send.minSat.toInt(), minSendableSat);
@@ -73,8 +80,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
     _validateEffectiveLimits(effectiveMinSat: effectiveMinSat, effectiveMaxSat: effectiveMaxSat);
 
-    _updateFormFields(effectiveMaxSat: effectiveMaxSat);
-
+    await _updateFormFields(effectiveMaxSat: effectiveMaxSat);
     setState(() {
       _lightningLimits = response;
       _loading = false;
@@ -107,9 +113,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     }
   }
 
-  void _updateFormFields({
+  Future<void> _updateFormFields({
     required int effectiveMaxSat,
-  }) {
+  }) async {
     if (_isFixedAmount) {
       final currencyCubit = context.read<CurrencyCubit>();
       final currencyState = currencyCubit.state;
@@ -118,8 +124,45 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         effectiveMaxSat,
         includeDisplayName: false,
       );
+      await _prepareLnUrlPayment(effectiveMaxSat);
     } else if (_amountFocusNode.canRequestFocus) {
       _amountFocusNode.requestFocus();
+    }
+  }
+
+  Future<void> _prepareLnUrlPayment(int amountSat) async {
+    final texts = context.texts();
+    final lnUrlCubit = context.read<LnUrlCubit>();
+    try {
+      setState(() {
+        _isCalculatingFees = true;
+        _prepareResponse = null;
+        validatorErrorMessage = "";
+      });
+      final req = PrepareLnUrlPayRequest(
+        data: widget.requestData,
+        amountMsat: BigInt.from(amountSat * 1000),
+      );
+      final response = await lnUrlCubit.prepareLnurlPay(req: req);
+      setState(() {
+        _prepareResponse = response;
+      });
+    } catch (error) {
+      if (_isFixedAmount) {
+        setState(() {
+          _errorMessage = error.toString();
+        });
+      }
+      setState(() {
+        _prepareResponse = null;
+        validatorErrorMessage = extractExceptionMessage(error, texts);
+        _loading = false;
+      });
+    } finally {
+      setState(() {
+        _isCalculatingFees = false;
+      });
+      _formKey.currentState?.validate();
     }
   }
 
@@ -270,15 +313,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 )
               : SingleButtonBottomBar(
                   stickToBottom: true,
-                  text: texts.lnurl_fetch_invoice_action_continue,
+                  text: texts.lnurl_payment_page_action_pay,
                   onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      final currencyCubit = context.read<CurrencyCubit>();
-                      final amount = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
-                      final comment = _descriptionController.text;
-                      // TODO: Instead of popping LNURLPaymentInfo to show Processing Payment Dialog. Call LNURL pay and consequently payment success animation.
-                      Navigator.pop(context, LNURLPaymentInfo(amount: amount, comment: comment));
-                    }
+                    Navigator.pop(context, _prepareResponse);
                   },
                 ),
     );
