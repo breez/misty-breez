@@ -40,6 +40,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
   bool _isFixedAmount = false;
   bool _loading = true;
+  bool _isCalculatingFees = false;
   String? _errorMessage;
   LightningPaymentLimitsResponse? _lightningLimits;
 
@@ -189,9 +190,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         title: Text(texts.lnurl_fetch_invoice_pay_to_payee(widget.requestData.domain)),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, currencyState) {
+        final themeData = Theme.of(context);
         if (_loading) {
-          final themeData = Theme.of(context);
-
           return Center(
             child: Loader(
               color: themeData.primaryColor.withOpacity(0.5),
@@ -285,6 +285,54 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 ],
                     ),
                   ),
+                ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: AutoSizeText(
+                          "${texts.csv_exporter_fee}:",
+                          style: themeData.primaryTextTheme.headlineMedium,
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                        ),
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          child: (_isCalculatingFees)
+                              ? Center(
+                                  child: SizedBox(
+                                    height: 16,
+                                    width: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                      color: themeData.primaryColor.withOpacity(0.5),
+                                    ),
+                                  ),
+                                )
+                              : (_prepareResponse != null)
+                                  ? AutoSizeText(
+                                      texts.payment_details_dialog_amount_positive(
+                                        currencyState.bitcoinCurrency.format(
+                                          _prepareResponse!.feesSat.toInt(),
+                                        ),
+                                      ),
+                                      style: TextStyle(
+                                        color: themeData.colorScheme.error.withOpacity(0.4),
+                                      ),
+                                      textAlign: TextAlign.right,
+                                      maxLines: 1,
+                                    )
+                                  : const SizedBox.shrink(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 if (metadataText != null && metadataText.isNotEmpty) ...[
                   Padding(
@@ -328,7 +376,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           ),
         );
       }),
-      bottomNavigationBar: _loading
+      bottomNavigationBar: _loading || _isCalculatingFees || _prepareResponse == null
           ? null
           : _errorMessage != null
               ? SingleButtonBottomBar(
