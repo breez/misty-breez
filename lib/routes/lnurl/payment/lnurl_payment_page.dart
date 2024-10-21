@@ -42,6 +42,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   bool _loading = true;
   bool _isCalculatingFees = false;
   String? _errorMessage;
+  String validatorErrorMessage = "";
   LightningPaymentLimitsResponse? _lightningLimits;
 
   PrepareLnUrlPayResponse? _prepareResponse;
@@ -401,6 +402,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     required int effectiveMinSat,
     required int effectiveMaxSat,
   }) {
+    if (validatorErrorMessage.isNotEmpty) {
+      return validatorErrorMessage;
+    }
     final texts = context.texts();
     final currencyCubit = context.read<CurrencyCubit>();
     final currencyState = currencyCubit.state;
