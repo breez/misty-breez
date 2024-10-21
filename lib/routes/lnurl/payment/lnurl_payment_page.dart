@@ -157,16 +157,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         _prepareResponse = response;
       });
     } catch (error) {
-      if (_isFixedAmount) {
-        setState(() {
-          _errorMessage = error.toString();
-        });
-      }
       setState(() {
         _prepareResponse = null;
         validatorErrorMessage = extractExceptionMessage(error, texts);
         _loading = false;
       });
+      rethrow;
     } finally {
       setState(() {
         _isCalculatingFees = false;
@@ -451,23 +447,23 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           ),
         );
       }),
-      bottomNavigationBar: _loading || _isCalculatingFees || _prepareResponse == null
-          ? null
-          : _errorMessage != null
+      bottomNavigationBar: _errorMessage != null
+          ? SingleButtonBottomBar(
+              stickToBottom: true,
+              text: texts.qr_code_dialog_action_close,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          : _prepareResponse != null
               ? SingleButtonBottomBar(
-                  stickToBottom: true,
-                  text: texts.qr_code_dialog_action_close,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              : SingleButtonBottomBar(
                   stickToBottom: true,
                   text: texts.lnurl_payment_page_action_pay,
                   onPressed: () async {
                     Navigator.pop(context, _prepareResponse);
                   },
-                ),
+                )
+              : const SizedBox.shrink(),
     );
   }
 
