@@ -87,7 +87,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     await _updateFormFields(effectiveMaxSat: effectiveMaxSat);
     setState(() {
       _lightningLimits = response;
-      _loading = false;
     });
   }
 
