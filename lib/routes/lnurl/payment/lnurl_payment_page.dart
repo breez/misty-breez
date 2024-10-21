@@ -259,18 +259,18 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         style: FieldTextStyle.labelStyle,
                         children: <TextSpan>[
                           TextSpan(
-                            text: texts.lnurl_fetch_invoice_min(
-                              effMinSendableFormatted,
-                            ),
+                            text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () => _pasteAmount(currencyState, effectiveMinSat),
+                              ..onTap = () async {
+                                await _pasteAmount(currencyState, effectiveMinSat);
+                              },
                           ),
                           TextSpan(
-                            text: texts.lnurl_fetch_invoice_and(
-                              effMaxSendableFormatted,
-                            ),
+                            text: texts.lnurl_fetch_invoice_and(effMaxSendableFormatted),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () => _pasteAmount(currencyState, effectiveMaxSat),
+                              ..onTap = () async {
+                                await _pasteAmount(currencyState, effectiveMaxSat);
+                              },
                           )
                         ],
                       ),
@@ -374,12 +374,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
   }
 
-  void _pasteAmount(CurrencyState currencyState, int amountSat) {
+  Future<void> _pasteAmount(CurrencyState currencyState, int amountSat) async {
     setState(() {
       _amountController.text = currencyState.bitcoinCurrency.format(
         amountSat,
         includeDisplayName: false,
       );
     });
+    await _prepareLnUrlPayment(amountSat);
   }
 }
