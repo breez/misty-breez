@@ -1,17 +1,14 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/lnurl/payment/widgets/widgets.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/always_disabled_focus_node.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
@@ -181,6 +178,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
+    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -189,7 +187,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         title: Text(texts.lnurl_fetch_invoice_pay_to_payee(widget.requestData.domain)),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(builder: (context, currencyState) {
-        final themeData = Theme.of(context);
         if (_loading) {
           return Center(
             child: Loader(
@@ -224,8 +221,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
         final effectiveMinSat = max(_lightningLimits!.send.minSat.toInt(), minSendableSat);
         final effectiveMaxSat = min(_lightningLimits!.send.maxSat.toInt(), maxSendableSat);
-        final effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
-        final effMaxSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
 
         return Form(
           key: _formKey,
@@ -244,43 +239,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 if (_isFixedAmount && _prepareResponse != null) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            payeeName,
-                            style: Theme.of(context).primaryTextTheme.headlineMedium!.copyWith(fontSize: 16),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            payeeName.isEmpty
-                                ? texts.payment_request_dialog_requested
-                                : texts.payment_request_dialog_requesting,
-                            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16),
-                            textAlign: TextAlign.center,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              style: balanceAmountTextStyle.copyWith(
-                                color: themeData.colorScheme.onSecondary,
-                              ),
-                              text: currencyState.bitcoinCurrency.format(
-                                effectiveMaxSat + _prepareResponse!.feesSat.toInt(),
-                                removeTrailingZeros: true,
-                                includeDisplayName: false,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: " ${currencyState.bitcoinCurrency.displayName}",
-                                  style: balanceCurrencyTextStyle.copyWith(
-                                    color: themeData.colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: LnUrlPaymentHeader(
+                      payeeName: payeeName,
+                      totalAmount: effectiveMaxSat + _prepareResponse!.feesSat.toInt(),
                     ),
                   ),
                 ],
@@ -289,9 +250,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     context: context,
                     texts: texts,
                     bitcoinCurrency: currencyState.bitcoinCurrency,
-                    focusNode: _isFixedAmount ? AlwaysDisabledFocusNode() : _amountFocusNode,
-                    autofocus: !_isFixedAmount,
-                    readOnly: _isFixedAmount,
+                    focusNode: _amountFocusNode,
+                    autofocus: true,
                     controller: _amountController,
                     validatorFn: (amount) => validatePayment(
                       amount: amount,
@@ -307,152 +267,46 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 if (!_isFixedAmount) ...[
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: RichText(
-                      text: TextSpan(
-                        style: FieldTextStyle.labelStyle,
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                await _pasteAmount(currencyState, effectiveMinSat);
-                              },
-                          ),
-                          TextSpan(
-                            text: texts.lnurl_fetch_invoice_and(effMaxSendableFormatted),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                await _pasteAmount(currencyState, effectiveMaxSat);
-                              },
-                          )
-                        ],
-                      ),
+                    child: LnUrlPaymentLimits(
+                      effectiveMinSat: effectiveMinSat,
+                      effectiveMaxSat: effectiveMaxSat,
+                      onTap: (amountSat) async {
+                        setState(() {
+                          _amountController.text = currencyState.bitcoinCurrency.format(
+                            amountSat,
+                            includeDisplayName: false,
+                          );
+                        });
+                        await _prepareLnUrlPayment(amountSat);
+                      },
                     ),
                   ),
                 ],
                 if (_prepareResponse != null && _isFixedAmount) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: AutoSizeText(
-                            texts.send_on_chain_amount,
-                            style: themeData.primaryTextTheme.headlineMedium,
-                            textAlign: TextAlign.left,
-                            maxLines: 1,
-                          ),
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            reverse: true,
-                            child: AutoSizeText(
-                              currencyState.bitcoinCurrency.format(effectiveMaxSat),
-                              style: TextStyle(color: themeData.colorScheme.error),
-                              textAlign: TextAlign.right,
-                              maxLines: 1,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: LnUrlPaymentAmount(amountSat: effectiveMaxSat),
                   ),
                 ],
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: AutoSizeText(
-                          "${texts.csv_exporter_fee}:",
-                          style: themeData.primaryTextTheme.headlineMedium,
-                          textAlign: TextAlign.left,
-                          maxLines: 1,
-                        ),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          reverse: true,
-                          child: (_isCalculatingFees)
-                              ? Center(
-                                  child: SizedBox(
-                                    height: 16,
-                                    width: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.0,
-                                      color: themeData.primaryColor.withOpacity(0.5),
-                                    ),
-                                  ),
-                                )
-                              : (_prepareResponse != null)
-                                  ? AutoSizeText(
-                                      texts.payment_details_dialog_amount_positive(
-                                        currencyState.bitcoinCurrency.format(
-                                          _prepareResponse!.feesSat.toInt(),
-                                        ),
-                                      ),
-                                      style: TextStyle(
-                                        color: themeData.colorScheme.error.withOpacity(0.4),
-                                      ),
-                                      textAlign: TextAlign.right,
-                                      maxLines: 1,
-                                    )
-                                  : AutoSizeText(
-                                      texts.payment_details_dialog_amount_positive(
-                                        "? ${currencyState.bitcoinCurrency.displayName}",
-                                      ),
-                                      style: TextStyle(
-                                        color: themeData.colorScheme.error.withOpacity(0.4),
-                                      ),
-                                      textAlign: TextAlign.right,
-                                      maxLines: 1,
-                                    ),
-                        ),
-                      ),
-                    ],
+                  child: LnUrlPaymentFee(
+                    isCalculatingFees: _isCalculatingFees,
+                    feesSat: _prepareResponse?.feesSat.toInt(),
                   ),
                 ),
                 if (metadataText != null && metadataText.isNotEmpty) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        AutoSizeText(
-                          texts.utils_print_pdf_header_description,
-                          style: themeData.primaryTextTheme.headlineMedium,
-                          textAlign: TextAlign.left,
-                          maxLines: 1,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: LNURLMetadataText(metadataText: metadataText),
-                        ),
-                      ],
+                    child: LnUrlPaymentDescription(
+                      metadataText: metadataText,
                     ),
                   ),
                 ],
                 if (widget.requestData.commentAllowed > 0) ...[
-                  TextFormField(
-                    controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.done,
-                    maxLines: null,
-                    maxLength: widget.requestData.commentAllowed.toInt(),
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    decoration: InputDecoration(
-                      labelText: "${texts.lnurl_payment_page_comment}:",
-                      labelStyle: themeData.primaryTextTheme.headlineMedium,
-                    ),
-                    style: themeData.paymentItemSubtitleTextStyle,
+                  LnUrlPaymentComment(
+                    descriptionController: _descriptionController,
+                    maxCommentLength: widget.requestData.commentAllowed.toInt(),
                   )
                 ],
               ],
@@ -513,15 +367,5 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
-  }
-
-  Future<void> _pasteAmount(CurrencyState currencyState, int amountSat) async {
-    setState(() {
-      _amountController.text = currencyState.bitcoinCurrency.format(
-        amountSat,
-        includeDisplayName: false,
-      );
-    });
-    await _prepareLnUrlPayment(amountSat);
   }
 }
