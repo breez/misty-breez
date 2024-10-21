@@ -98,10 +98,16 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
       final isFixedAmountWithinLimits = _isFixedAmount && (effectiveMinSat == effectiveMaxSat);
       if (!isFixedAmountWithinLimits) {
-        final effMinWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
-        final effMaxWithdrawableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
+        final effMinWithdrawableFormatted = currencyState.bitcoinCurrency.format(
+          effectiveMinSat,
+          removeTrailingZeros: true,
+        );
+        final effMaxWithdrawableFormatted = currencyState.bitcoinCurrency.format(
+          effectiveMaxSat,
+          removeTrailingZeros: true,
+        );
         throw Exception(
-          "Payment amount is outside the allowed limits, which range from $effMinWithdrawableFormatted to $effMaxWithdrawableFormatted",
+          "Payment amount($effMaxWithdrawableFormatted) is below minimum accepted amount of $effMinWithdrawableFormatted.",
         );
       }
 
