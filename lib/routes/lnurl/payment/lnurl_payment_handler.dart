@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/lnurl/payment/lnurl_payment_dialog.dart';
-import 'package:l_breez/routes/lnurl/payment/lnurl_payment_info.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_page.dart';
 import 'package:l_breez/routes/lnurl/payment/success_action/success_action_dialog.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
-import 'package:l_breez/widgets/route.dart';
 import 'package:logging/logging.dart';
-import 'package:service_injector/service_injector.dart';
 
 final _log = Logger("HandleLNURLPayRequest");
 
@@ -19,33 +15,15 @@ Future<LNURLPageResult?> handlePayRequest(
   GlobalKey firstPaymentItemKey,
   LnUrlPayRequestData data,
 ) async {
-  LNURLPaymentInfo? paymentInfo;
-  bool fixedAmount = data.minSendable == data.maxSendable;
-  final paymentLimitsCubit = PaymentLimitsCubit(ServiceInjector().liquidSDK);
-  if (fixedAmount && !(data.commentAllowed > 0)) {
-    // Show dialog if payment is of fixed amount with no payer comment allowed
-    paymentInfo = await showDialog<LNURLPaymentInfo>(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => BlocProvider(
-        create: (BuildContext context) => paymentLimitsCubit,
-        child: LNURLPaymentDialog(data: data),
-      ),
-    );
-  } else {
-    paymentInfo = await Navigator.of(context).push<LNURLPaymentInfo>(
-      FadeInRoute(
-        builder: (_) => BlocProvider(
-          create: (BuildContext context) => paymentLimitsCubit,
-          child: LnUrlPaymentPage(requestData: data),
-        ),
-      ),
-    );
-  }
-  if (paymentInfo == null || !context.mounted) {
+  final navigator = Navigator.of(context);
+  PrepareLnUrlPayResponse? prepareResponse = await navigator.pushNamed<PrepareLnUrlPayResponse?>(
+    LnUrlPaymentPage.routeName,
+    arguments: data,
+  );
+  if (prepareResponse == null || !context.mounted) {
     return Future.value();
   }
+
   // Show Processing Payment Dialog
   return await showDialog(
     useRootNavigator: false,
@@ -56,13 +34,6 @@ Future<LNURLPageResult?> handlePayRequest(
       firstPaymentItemKey: firstPaymentItemKey,
       paymentFunc: () async {
         final lnurlCubit = context.read<LnUrlCubit>();
-        final amountMsat = BigInt.from(paymentInfo!.amount * 1000);
-        final prepareReq = PrepareLnUrlPayRequest(
-          data: data,
-          amountMsat: amountMsat,
-          comment: paymentInfo.comment,
-        );
-        final prepareResponse = await lnurlCubit.prepareLnurlPay(req: prepareReq);
         final req = LnUrlPayRequest(prepareResponse: prepareResponse);
         return await lnurlCubit.lnurlPay(req: req);
       },
