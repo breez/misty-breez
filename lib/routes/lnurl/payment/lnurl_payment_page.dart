@@ -229,7 +229,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         return Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 0.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
