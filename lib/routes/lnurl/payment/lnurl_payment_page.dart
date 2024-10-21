@@ -241,7 +241,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     child: Center(child: LNURLMetadataImage(base64String: base64String)),
                   ),
                 ],
-                if (_isFixedAmount) ...[
+                if (_isFixedAmount && _prepareResponse != null) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
