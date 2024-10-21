@@ -329,6 +329,34 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     ),
                   ),
                 ],
+                if (_prepareResponse != null && _isFixedAmount) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: AutoSizeText(
+                            texts.send_on_chain_amount,
+                            style: themeData.primaryTextTheme.headlineMedium,
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                          ),
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            reverse: true,
+                            child: AutoSizeText(
+                              currencyState.bitcoinCurrency.format(effectiveMaxSat),
+                              style: TextStyle(color: themeData.colorScheme.error),
+                              textAlign: TextAlign.right,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
