@@ -403,7 +403,16 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                       textAlign: TextAlign.right,
                                       maxLines: 1,
                                     )
-                                  : const SizedBox.shrink(),
+                                  : AutoSizeText(
+                                      texts.payment_details_dialog_amount_positive(
+                                        "? ${currencyState.bitcoinCurrency.displayName}",
+                                      ),
+                                      style: TextStyle(
+                                        color: themeData.colorScheme.error.withOpacity(0.4),
+                                      ),
+                                      textAlign: TextAlign.right,
+                                      maxLines: 1,
+                                    ),
                         ),
                       ),
                     ],
