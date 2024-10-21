@@ -216,6 +216,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           for (var v in json.decode(widget.requestData.metadataStr)) v[0] as String: v[1],
         };
         String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
+        String payeeName = metadataMap["text/identifier"] ?? widget.requestData.domain;
         String? metadataText = metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
 
         final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
@@ -239,9 +240,48 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     child: Center(child: LNURLMetadataImage(base64String: base64String)),
                   ),
                 ],
+                if (_isFixedAmount) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            payeeName,
+                            style: Theme.of(context).primaryTextTheme.headlineMedium!.copyWith(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            payeeName.isEmpty
+                                ? texts.payment_request_dialog_requested
+                                : texts.payment_request_dialog_requesting,
+                            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style: balanceAmountTextStyle.copyWith(
+                                color: themeData.colorScheme.onSecondary,
+                              ),
+                              text: currencyState.bitcoinCurrency.format(
+                                effectiveMaxSat + _prepareResponse!.feesSat.toInt(),
+                                removeTrailingZeros: true,
+                                includeDisplayName: false,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: " ${currencyState.bitcoinCurrency.displayName}",
+                                  style: balanceCurrencyTextStyle.copyWith(
+                                    color: themeData.colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     style: FieldTextStyle.textStyle,
-                  )
                 ],
                 AmountFormField(
                   context: context,
