@@ -19,6 +19,7 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/warning_box.dart';
 
 class LnUrlPaymentPage extends StatefulWidget {
   final LnUrlPayRequestData requestData;
@@ -201,9 +202,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(32.0),
-              child: Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
+              child: WarningBox(
+                boxPadding: EdgeInsets.zero,
+                child: Text(
+                  _errorMessage!,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           );
