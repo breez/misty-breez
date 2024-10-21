@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/always_disabled_focus_node.dart';
+import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
