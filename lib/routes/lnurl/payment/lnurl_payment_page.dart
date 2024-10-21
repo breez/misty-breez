@@ -281,23 +281,28 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ],
                       ),
                     ),
-                    style: FieldTextStyle.textStyle,
-                ],
-                AmountFormField(
-                  context: context,
-                  texts: texts,
-                  bitcoinCurrency: currencyState.bitcoinCurrency,
-                  focusNode: _isFixedAmount ? AlwaysDisabledFocusNode() : _amountFocusNode,
-                  autofocus: !_isFixedAmount,
-                  readOnly: _isFixedAmount,
-                  controller: _amountController,
-                  validatorFn: (amount) => validatePayment(
-                    amount: amount,
-                    effectiveMinSat: effectiveMinSat,
-                    effectiveMaxSat: effectiveMaxSat,
                   ),
-                  style: FieldTextStyle.textStyle,
-                ),
+                ],
+                if (!_isFixedAmount) ...[
+                  AmountFormField(
+                    context: context,
+                    texts: texts,
+                    bitcoinCurrency: currencyState.bitcoinCurrency,
+                    focusNode: _isFixedAmount ? AlwaysDisabledFocusNode() : _amountFocusNode,
+                    autofocus: !_isFixedAmount,
+                    readOnly: _isFixedAmount,
+                    controller: _amountController,
+                    validatorFn: (amount) => validatePayment(
+                      amount: amount,
+                      effectiveMinSat: effectiveMinSat,
+                      effectiveMaxSat: effectiveMaxSat,
+                    ),
+                    onFieldSubmitted: (amount) async {
+                      await _prepareLnUrlPayment(currencyState.bitcoinCurrency.parse(amount));
+                    },
+                    style: FieldTextStyle.textStyle,
+                  ),
+                ],
                 if (!_isFixedAmount) ...[
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
