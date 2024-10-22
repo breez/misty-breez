@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,11 +8,13 @@ import 'package:l_breez/theme/src/theme.dart';
 class LnUrlPaymentHeader extends StatelessWidget {
   final String payeeName;
   final int totalAmount;
+  final String errorMessage;
 
   const LnUrlPaymentHeader({
     super.key,
     required this.payeeName,
     required this.totalAmount,
+    required this.errorMessage,
   });
 
   @override
@@ -57,6 +60,17 @@ class LnUrlPaymentHeader extends StatelessWidget {
               ],
             ),
           ),
+          if (errorMessage.isNotEmpty) ...[
+            AutoSizeText(
+              errorMessage,
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              style: themeData.primaryTextTheme.displaySmall?.copyWith(
+                fontSize: 14.3,
+                color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
+              ),
+            ),
+          ]
         ],
       ),
     );
