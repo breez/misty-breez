@@ -38,6 +38,7 @@ class AmountFormField extends TextFormField {
     super.onChanged,
     bool? readOnly,
     bool? autofocus,
+    int? errorMaxLines,
   }) : super(
           keyboardType: TextInputType.numberWithOptions(
             decimal: bitcoinCurrency != BitcoinCurrency.sat,
@@ -47,6 +48,7 @@ class AmountFormField extends TextFormField {
             labelText: texts.amount_form_denomination(
               bitcoinCurrency.displayName,
             ),
+            errorMaxLines: errorMaxLines,
             suffixIcon: (readOnly ?? false)
                 ? null
                 : IconButton(

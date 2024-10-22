@@ -249,6 +249,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           await _prepareLnUrlPayment(currencyState.bitcoinCurrency.parse(amount));
                         },
                         style: FieldTextStyle.textStyle,
+                        errorMaxLines: 3,
                       ),
                     ],
                     if (!_isFixedAmount) ...[
