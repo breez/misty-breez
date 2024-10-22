@@ -16,7 +16,6 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
-import 'package:l_breez/widgets/warning_box.dart';
 
 class LnUrlPaymentPage extends StatefulWidget {
   final LnUrlPayRequestData requestData;
@@ -196,21 +195,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
             );
           }
 
-          if (_errorMessage != null) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: WarningBox(
-                  boxPadding: EdgeInsets.zero,
-                  child: Text(
-                    _errorMessage!,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            );
-          }
-
           final metadataMap = {
             for (var v in json.decode(widget.requestData.metadataStr)) v[0] as String: v[1],
           };
@@ -238,12 +222,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         child: Center(child: LNURLMetadataImage(base64String: base64String)),
                       ),
                     ],
-                    if (_isFixedAmount && _prepareResponse != null) ...[
+                    if (_isFixedAmount) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: LnUrlPaymentHeader(
                           payeeName: payeeName,
-                          totalAmount: effectiveMaxSat + _prepareResponse!.feesSat.toInt(),
+                          totalAmount: maxSendableSat + (_prepareResponse?.feesSat.toInt() ?? 0),
+                          validatorErrorMessage: validatorErrorMessage,
                         ),
                       ),
                     ],
