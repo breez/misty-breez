@@ -225,15 +225,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ),
                         onFieldSubmitted: (amountStr) async {
                           final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
-                          final errorMessage = validatePayment(
-                            amountSat: amountSat,
-                            effectiveMinSat: effectiveMinSat,
-                            effectiveMaxSat: effectiveMaxSat,
-                          );
-                          if (errorMessage == null) {
+                          if (_formKey.currentState?.validate() ?? false) {
                             await _prepareLnUrlPayment(amountSat);
                           }
-                          _formKey.currentState?.validate();
                         },
                         style: FieldTextStyle.textStyle,
                         errorMaxLines: 3,
@@ -247,18 +241,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           minSendableSat: minSendableSat,
                           maxSendableSat: maxSendableSat,
                           onTap: (amountSat) async {
-                            final errorMessage = validatePayment(
-                              amountSat: amountSat,
-                              effectiveMinSat: effectiveMinSat,
-                              effectiveMaxSat: effectiveMaxSat,
-                            );
                             setState(() {
                               _amountController.text = currencyState.bitcoinCurrency.format(
                                 amountSat,
                                 includeDisplayName: false,
                               );
                             });
-                            if (errorMessage == null) {
+                            if (_formKey.currentState?.validate() ?? false) {
                               await _prepareLnUrlPayment(amountSat);
                             }
                           },
@@ -354,7 +343,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         texts: context.texts(),
       ).validateOutgoing(amountSat);
     }
-
     if (message != null && throwError) {
       throw message;
     }
