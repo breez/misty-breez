@@ -179,7 +179,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
           final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
           final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
-          final effectiveMinSat = max(_lightningLimits!.send.minSat.toInt(), minSendableSat);
+          final effectiveMinSat = min(
+            max(_lightningLimits!.send.minSat.toInt(), minSendableSat),
+            _lightningLimits!.send.maxSat.toInt(),
+          );
           final effectiveMaxSat = min(_lightningLimits!.send.maxSat.toInt(), maxSendableSat);
 
           return Form(
@@ -240,8 +243,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: LnUrlPaymentLimits(
-                          effectiveMinSat: effectiveMinSat,
-                          effectiveMaxSat: effectiveMaxSat,
+                          limitsResponse: _lightningLimits,
+                          minSendableSat: minSendableSat,
+                          maxSendableSat: maxSendableSat,
                           onTap: (amountSat) async {
                             final errorMessage = validatePayment(
                               amountSat: amountSat,
