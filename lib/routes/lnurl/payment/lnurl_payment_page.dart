@@ -268,7 +268,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     if (_prepareResponse != null && _isFixedAmount) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnUrlPaymentAmount(amountSat: effectiveMaxSat),
+                        child: LnUrlPaymentAmount(amountSat: maxSendableSat),
                       ),
                     ],
                     Padding(
