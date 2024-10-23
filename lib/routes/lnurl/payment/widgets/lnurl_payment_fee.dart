@@ -29,7 +29,7 @@ class LnUrlPaymentFee extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
             "${texts.csv_exporter_fee}:",
-            style: themeData.primaryTextTheme.headlineMedium,
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,
           ),

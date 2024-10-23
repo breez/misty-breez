@@ -20,7 +20,7 @@ class LnUrlPaymentDescription extends StatelessWidget {
       children: [
         AutoSizeText(
           texts.utils_print_pdf_header_description,
-          style: themeData.primaryTextTheme.headlineMedium,
+          style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
           textAlign: TextAlign.left,
           maxLines: 1,
         ),

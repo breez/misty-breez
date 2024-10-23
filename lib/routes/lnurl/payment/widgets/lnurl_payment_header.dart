@@ -30,20 +30,23 @@ class LnUrlPaymentHeader extends StatelessWidget {
         children: [
           Text(
             payeeName,
-            style: Theme.of(context).primaryTextTheme.headlineMedium!.copyWith(fontSize: 16),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .headlineMedium!
+                .copyWith(fontSize: 16, color: Colors.white),
             textAlign: TextAlign.center,
           ),
           Text(
             payeeName.isEmpty
                 ? texts.payment_request_dialog_requested
                 : texts.payment_request_dialog_requesting,
-            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white),
             textAlign: TextAlign.center,
           ),
           RichText(
             text: TextSpan(
               style: balanceAmountTextStyle.copyWith(
-                color: themeData.colorScheme.onSecondary,
+                color: themeData.colorScheme.onSurface,
               ),
               text: currencyState.bitcoinCurrency.format(
                 totalAmount,
@@ -54,7 +57,7 @@ class LnUrlPaymentHeader extends StatelessWidget {
                 TextSpan(
                   text: " ${currencyState.bitcoinCurrency.displayName}",
                   style: balanceCurrencyTextStyle.copyWith(
-                    color: themeData.colorScheme.onSecondary,
+                    color: themeData.colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -67,7 +70,7 @@ class LnUrlPaymentHeader extends StatelessWidget {
               textAlign: TextAlign.center,
               style: themeData.primaryTextTheme.displaySmall?.copyWith(
                 fontSize: 14.3,
-                color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
+                color: themeData.colorScheme.error,
               ),
             ),
           ]

@@ -27,9 +27,9 @@ class LnUrlPaymentComment extends StatelessWidget {
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
       decoration: InputDecoration(
         labelText: "${texts.lnurl_payment_page_comment}:",
-        labelStyle: themeData.primaryTextTheme.headlineMedium,
+        labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
       ),
-      style: themeData.paymentItemSubtitleTextStyle,
+      style: themeData.paymentItemSubtitleTextStyle.copyWith(color: Colors.white70),
     );
   }
 }
