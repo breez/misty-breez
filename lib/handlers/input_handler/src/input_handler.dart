@@ -131,9 +131,13 @@ class InputHandler extends Handler {
           return await paymentsCubit.sendPayment(prepareResponse);
         },
       ),
-    ).then((message) {
-      if (message != null && context.mounted) {
-        showFlushbar(context, message: message);
+    ).then((result) {
+      if (result is String && context.mounted) {
+        showFlushbar(context, message: result);
+      }
+      // TODO: Handle SendPaymentResponse results, return a SendPaymentResult to be handled by handleResult()
+      if (result is SendPaymentResponse) {
+        _log.info("SendPaymentResponse result - payment status: ${result.payment.status}");
       }
     });
   }
