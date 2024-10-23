@@ -257,6 +257,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           minSendableSat: minSendableSat,
                           maxSendableSat: maxSendableSat,
                           onTap: (amountSat) async {
+                            _amountFocusNode.unfocus();
                             setState(() {
                               _amountController.text = currencyState.bitcoinCurrency.format(
                                 amountSat,
