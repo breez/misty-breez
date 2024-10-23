@@ -7,9 +7,8 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/payment_dialogs/payment_request_dialog.dart';
-import 'package:l_breez/widgets/payment_dialogs/processing_payment/processing_payment_animated_content.dart';
-import 'package:l_breez/widgets/payment_dialogs/processing_payment/processing_payment_content.dart';
+import 'package:l_breez/widgets/processing_payment/processing_payment_animated_content.dart';
+import 'package:l_breez/widgets/processing_payment/processing_payment_content.dart';
 
 const _kPaymentListItemHeight = 72.0;
 
@@ -19,7 +18,6 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final bool popOnCompletion;
   final bool isLnUrlPayment;
   final Future Function() paymentFunc;
-  final Function(PaymentRequestState state)? onStateChange;
 
   const ProcessingPaymentDialog({
     this.firstPaymentItemKey,
@@ -27,7 +25,6 @@ class ProcessingPaymentDialog extends StatefulWidget {
     this.popOnCompletion = false,
     this.isLnUrlPayment = false,
     required this.paymentFunc,
-    this.onStateChange,
     super.key,
   });
 
@@ -65,7 +62,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         if (widget.popOnCompletion) {
           Navigator.of(context).removeRoute(_currentRoute!);
         }
-        widget.onStateChange?.call(PaymentRequestState.paymentCompleted);
       }
     });
   }
@@ -103,7 +99,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       if (widget.popOnCompletion) {
         navigator.removeRoute(_currentRoute!);
       }
-      widget.onStateChange?.call(PaymentRequestState.paymentCompleted);
       if (widget.isLnUrlPayment) {
         navigator.pop(err);
       }

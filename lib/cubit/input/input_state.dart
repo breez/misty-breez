@@ -1,7 +1,6 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/model/src/input/input_printer.dart';
 import 'package:l_breez/cubit/model/src/input/input_source.dart';
-import 'package:l_breez/models/invoice.dart';
 
 class InputState {
   const InputState._();
@@ -11,9 +10,9 @@ class InputState {
   const factory InputState.loading() = LoadingInputState;
 
   const factory InputState.invoice(
-    Invoice invoice,
+    LNInvoice invoice,
     InputSource source,
-  ) = InvoiceInputState;
+  ) = LnInvoiceInputState;
 
   const factory InputState.lnUrlPay(
     LnUrlPayRequestData data,
@@ -83,30 +82,30 @@ class LoadingInputState extends InputState {
   int get hashCode => 0;
 }
 
-class InvoiceInputState extends InputState {
-  const InvoiceInputState(
-    this.invoice,
+class LnInvoiceInputState extends InputState {
+  const LnInvoiceInputState(
+    this.lnInvoice,
     this.source,
   ) : super._();
 
-  final Invoice invoice;
+  final LNInvoice lnInvoice;
   final InputSource source;
 
   @override
   String toString() {
-    return 'InvoiceInputState{invoice: $invoice, source: $source}';
+    return 'InvoiceInputState{lnInvoice: $lnInvoice, source: $source}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is InvoiceInputState &&
+      other is LnInvoiceInputState &&
           runtimeType == other.runtimeType &&
-          invoice == other.invoice &&
+          lnInvoice == other.lnInvoice &&
           source == other.source;
 
   @override
-  int get hashCode => invoice.hashCode ^ source.hashCode;
+  int get hashCode => lnInvoice.hashCode ^ source.hashCode;
 }
 
 class LnUrlPayInputState extends InputState {

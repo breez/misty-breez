@@ -6,7 +6,6 @@ import 'package:device_client/device_client.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/models/invoice.dart';
 import 'package:lightning_links/lightning_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
@@ -86,16 +85,7 @@ class InputCubit extends Cubit<InputState> {
 
   Future<InputState> handlePaymentRequest(InputType_Bolt11 inputData, InputSource source) async {
     _log.info("handlePaymentRequest: $inputData source: $source");
-    final LNInvoice lnInvoice = inputData.invoice;
-
-    final invoice = Invoice(
-      bolt11: lnInvoice.bolt11,
-      paymentHash: lnInvoice.paymentHash,
-      description: lnInvoice.description ?? "",
-      amountMsat: lnInvoice.amountMsat ?? BigInt.zero,
-      expiry: lnInvoice.expiry,
-    );
-    return InputState.invoice(invoice, source);
+    return InputState.invoice(inputData.invoice, source);
   }
 
   Future<InputState> _handleParsedInput(InputType parsedInput, InputSource source) async {

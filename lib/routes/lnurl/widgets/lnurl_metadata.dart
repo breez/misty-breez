@@ -12,13 +12,22 @@ class LNURLMetadataText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AutoSizeText(
-      metadataText,
-      style: Theme.of(context).paymentItemSubtitleTextStyle.copyWith(
-            color: Colors.white70,
+    return Container(
+      constraints: const BoxConstraints(
+        maxHeight: 200,
+        minWidth: double.infinity,
+      ),
+      child: Scrollbar(
+        radius: const Radius.circular(16.0),
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          child: AutoSizeText(
+            metadataText,
+            style: Theme.of(context).paymentItemSubtitleTextStyle.copyWith(color: Colors.white70),
+            minFontSize: MinFontSize(context).minFontSize,
           ),
-      maxLines: 1,
-      minFontSize: MinFontSize(context).minFontSize,
+        ),
+      ),
     );
   }
 }

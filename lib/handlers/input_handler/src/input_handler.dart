@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/handlers/handler/handler.dart';
-import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
+import 'package:l_breez/routes/ln_invoice/ln_invoice_payment_page.dart';
 import 'package:l_breez/routes/lnurl/auth/lnurl_auth_handler.dart';
 import 'package:l_breez/routes/lnurl/lnurl_invoice_delegate.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_handler.dart';
@@ -15,7 +16,7 @@ import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_handler.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/payment_dialogs/payment_request_dialog.dart';
+import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("InputHandler");
@@ -89,8 +90,8 @@ class InputHandler extends Handler {
       return;
     }
 
-    if (inputState is InvoiceInputState) {
-      return handleInvoice(context, inputState.invoice);
+    if (inputState is LnInvoiceInputState) {
+      return handleLnInvoice(context, inputState.lnInvoice);
     } else if (inputState is LnUrlPayInputState) {
       return handlePayRequest(context, firstPaymentItemKey, inputState.data);
     } else if (inputState is LnUrlWithdrawInputState) {
@@ -106,15 +107,29 @@ class InputHandler extends Handler {
     }
   }
 
-  Future handleInvoice(BuildContext context, Invoice invoice) async {
-    _log.info("handle invoice $invoice");
+  Future handleLnInvoice(BuildContext context, LNInvoice lnInvoice) async {
+    _log.info("handle LnInvoice $lnInvoice");
+    final navigator = Navigator.of(context);
+    PrepareSendResponse? prepareResponse = await navigator.pushNamed<PrepareSendResponse?>(
+      LNInvoicePaymentPage.routeName,
+      arguments: lnInvoice,
+    );
+    if (prepareResponse == null || !context.mounted) {
+      return Future.value();
+    }
+
+    // Show Processing Payment Dialog
     return await showDialog(
       useRootNavigator: false,
       context: context,
       barrierDismissible: false,
-      builder: (_) => PaymentRequestDialog(
-        invoice,
-        firstPaymentItemKey,
+      builder: (_) => ProcessingPaymentDialog(
+        isLnUrlPayment: true,
+        firstPaymentItemKey: firstPaymentItemKey,
+        paymentFunc: () async {
+          final paymentsCubit = context.read<PaymentsCubit>();
+          return await paymentsCubit.sendPayment(prepareResponse);
+        },
       ),
     ).then((message) {
       if (message != null && context.mounted) {
@@ -126,7 +141,10 @@ class InputHandler extends Handler {
   Future handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
     _log.fine("handle bitcoin address $inputState");
     if (inputState.source == InputSource.qrcodeReader) {
-      return await Navigator.of(context).pushNamed(SendChainSwapPage.routeName, arguments: inputState.data);
+      return await Navigator.of(context).pushNamed(
+        SendChainSwapPage.routeName,
+        arguments: inputState.data,
+      );
     }
   }
 
