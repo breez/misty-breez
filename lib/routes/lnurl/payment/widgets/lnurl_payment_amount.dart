@@ -24,7 +24,7 @@ class LnUrlPaymentAmount extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
             texts.send_on_chain_amount,
-            style: themeData.primaryTextTheme.headlineMedium,
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,
           ),

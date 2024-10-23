@@ -14,7 +14,9 @@ class LNURLMetadataText extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       metadataText,
-      style: Theme.of(context).paymentItemSubtitleTextStyle,
+      style: Theme.of(context).paymentItemSubtitleTextStyle.copyWith(
+            color: Colors.white70,
+          ),
       maxLines: 1,
       minFontSize: MinFontSize(context).minFontSize,
     );
