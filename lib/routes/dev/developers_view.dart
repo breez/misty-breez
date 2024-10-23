@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:breez_logger/breez_logger.dart';
 import 'package:breez_preferences/breez_preferences.dart';
+import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/chain_swap/chain_swap_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/dev/command_line_interface.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -130,6 +131,9 @@ class _DevelopersViewState extends State<DevelopersView> {
   }
 
   void _exportKeys(BuildContext context) async {
+    final accountCubit = context.read<AccountCubit>();
+    final accountState = accountCubit.state;
+
     final credentialsManager = ServiceInjector().credentialsManager;
     final appDir = await getApplicationDocumentsDirectory();
     final encoder = ZipFileEncoder();
@@ -142,7 +146,11 @@ class _DevelopersViewState extends State<DevelopersView> {
         ArchiveFile(basename(credentialFile.path), bytes.length, bytes),
       );
     }
-    final storageFilePath = "${appDir.path}/storage.sql";
+
+    final config = await AppConfig.instance();
+    final sdkDir = Directory(config.sdkConfig.workingDir);
+    final walletStoragePath = "${sdkDir.path}/${config.sdkConfig.network.name}/${accountState.fingerprint}";
+    final storageFilePath = "$walletStoragePath/storage.sql";
     final storageFile = File(storageFilePath);
     encoder.addFile(storageFile);
     encoder.close();
