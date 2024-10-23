@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/src/theme.dart';
+import 'package:l_breez/utils/fiat_conversion.dart';
 
-class LnUrlPaymentHeader extends StatelessWidget {
+class LnUrlPaymentHeader extends StatefulWidget {
   final String payeeName;
   final int totalAmount;
   final String errorMessage;
@@ -18,6 +19,13 @@ class LnUrlPaymentHeader extends StatelessWidget {
   });
 
   @override
+  State<LnUrlPaymentHeader> createState() => _LnUrlPaymentHeaderState();
+}
+
+class _LnUrlPaymentHeaderState extends State<LnUrlPaymentHeader> {
+  bool _showFiatCurrency = false;
+
+  @override
   Widget build(BuildContext context) {
     final currencyCubit = context.read<CurrencyCubit>();
     final currencyState = currencyCubit.state;
@@ -25,11 +33,16 @@ class LnUrlPaymentHeader extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
+    FiatConversion? fiatConversion;
+    if (currencyState.fiatEnabled) {
+      fiatConversion = FiatConversion(currencyState.fiatCurrency!, currencyState.fiatExchangeRate!);
+    }
+
     return Center(
       child: Column(
-        children: [
+        children: <Widget>[
           Text(
-            payeeName,
+            widget.payeeName,
             style: Theme.of(context)
                 .primaryTextTheme
                 .headlineMedium!
@@ -37,35 +50,73 @@ class LnUrlPaymentHeader extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           Text(
-            payeeName.isEmpty
+            widget.payeeName.isEmpty
                 ? texts.payment_request_dialog_requested
                 : texts.payment_request_dialog_requesting,
             style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white),
             textAlign: TextAlign.center,
           ),
-          RichText(
-            text: TextSpan(
-              style: balanceAmountTextStyle.copyWith(
-                color: themeData.colorScheme.onSurface,
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onLongPressStart: (_) {
+              setState(() {
+                _showFiatCurrency = true;
+              });
+            },
+            onLongPressEnd: (_) {
+              setState(() {
+                _showFiatCurrency = false;
+              });
+            },
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minWidth: double.infinity,
               ),
-              text: currencyState.bitcoinCurrency.format(
-                totalAmount,
-                removeTrailingZeros: true,
-                includeDisplayName: false,
-              ),
-              children: [
-                TextSpan(
-                  text: " ${currencyState.bitcoinCurrency.displayName}",
-                  style: balanceCurrencyTextStyle.copyWith(
-                    color: themeData.colorScheme.onSurface,
-                  ),
-                ),
-              ],
+              child: _showFiatCurrency && fiatConversion != null
+                  ? Text(
+                      fiatConversion.format(widget.totalAmount),
+                      style: balanceAmountTextStyle.copyWith(
+                        color: themeData.colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                  : RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: balanceAmountTextStyle.copyWith(
+                          color: themeData.colorScheme.onSurface,
+                        ),
+                        text: currencyState.bitcoinCurrency.format(
+                          widget.totalAmount,
+                          removeTrailingZeros: true,
+                          includeDisplayName: false,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: " ${currencyState.bitcoinCurrency.displayName}",
+                            style: balanceCurrencyTextStyle.copyWith(
+                              color: themeData.colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
             ),
           ),
-          if (errorMessage.isNotEmpty) ...[
+          /*
+          if (fiatConversion != null) ...[
             AutoSizeText(
-              errorMessage,
+              "≈ ${fiatConversion.format(widget.totalAmount)}",
+              style: balanceFiatConversionTextStyle.copyWith(
+                color: themeData.colorScheme.onSurface.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+           */
+          if (widget.errorMessage.isNotEmpty) ...[
+            AutoSizeText(
+              widget.errorMessage,
               maxLines: 3,
               textAlign: TextAlign.center,
               style: themeData.primaryTextTheme.displaySmall?.copyWith(
