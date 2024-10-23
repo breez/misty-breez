@@ -223,10 +223,26 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           effectiveMinSat: effectiveMinSat,
                           effectiveMaxSat: effectiveMaxSat,
                         ),
+                        returnFN: (amountStr) async {
+                          if (amountStr.isNotEmpty) {
+                            final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
+                            setState(() {
+                              _amountController.text = currencyState.bitcoinCurrency.format(
+                                amountSat,
+                                includeDisplayName: false,
+                              );
+                            });
+                            if (_formKey.currentState?.validate() ?? false) {
+                              await _prepareLnUrlPayment(amountSat);
+                            }
+                          }
+                        },
                         onFieldSubmitted: (amountStr) async {
-                          final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
-                          if (_formKey.currentState?.validate() ?? false) {
-                            await _prepareLnUrlPayment(amountSat);
+                          if (amountStr.isNotEmpty) {
+                            final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
+                            if (_formKey.currentState?.validate() ?? false) {
+                              await _prepareLnUrlPayment(amountSat);
+                            }
                           }
                         },
                         style: FieldTextStyle.textStyle,
