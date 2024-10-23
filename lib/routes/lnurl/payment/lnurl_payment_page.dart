@@ -280,7 +280,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: LnUrlPaymentFee(
                         isCalculatingFees: _isCalculatingFees,
-                        feesSat: _prepareResponse?.feesSat.toInt(),
+                        feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
                       ),
                     ),
                     if (metadataText != null && metadataText.isNotEmpty) ...[
@@ -359,6 +359,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         texts: context.texts(),
       ).validateOutgoing(amountSat);
     }
+    setState(() {
+      errorMessage = message ?? "";
+    });
     if (message != null && throwError) {
       throw message;
     }
