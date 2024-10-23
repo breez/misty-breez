@@ -37,18 +37,17 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
   @override
   void initState() {
     super.initState();
-    final amountMsat = widget.lnInvoice.amountMsat;
-    if ((amountMsat == null || amountMsat == BigInt.zero) && context.mounted) {
-      final texts = context.texts();
-      Navigator.pop(context);
-      showFlushbar(context, message: texts.payment_request_zero_amount_not_supported);
-    }
-
-    setState(() {
-      amountSat = amountMsat!.toInt() ~/ 1000;
-    });
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final amountMsat = widget.lnInvoice.amountMsat;
+      if ((amountMsat == null || amountMsat == BigInt.zero) && context.mounted) {
+        final texts = context.texts();
+        Navigator.pop(context);
+        showFlushbar(context, message: texts.payment_request_zero_amount_not_supported);
+      }
+
+      setState(() {
+        amountSat = amountMsat!.toInt() ~/ 1000;
+      });
       await _fetchLightningLimits();
     });
   }
