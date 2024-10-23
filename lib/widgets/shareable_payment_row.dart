@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 class ShareablePaymentRow extends StatelessWidget {
   final String title;
+  final Widget? titleWidget;
   final String sharedValue;
   final String? urlValue;
   final bool isURL;
@@ -23,6 +24,7 @@ class ShareablePaymentRow extends StatelessWidget {
   const ShareablePaymentRow({
     super.key,
     required this.title,
+    this.titleWidget,
     required this.sharedValue,
     this.urlValue,
     this.isURL = false,
@@ -51,12 +53,13 @@ class ShareablePaymentRow extends StatelessWidget {
         collapsedIconColor: color,
         initiallyExpanded: isExpanded,
         tilePadding: tilePadding,
-        title: AutoSizeText(
-          title,
-          style: titleTextStyle ?? themeData.primaryTextTheme.headlineMedium,
-          maxLines: 2,
-          group: labelAutoSizeGroup,
-        ),
+        title: titleWidget ??
+            AutoSizeText(
+              title,
+              style: titleTextStyle ?? themeData.primaryTextTheme.headlineMedium,
+              maxLines: 2,
+              group: labelAutoSizeGroup,
+            ),
         children: [
           Row(
             mainAxisSize: MainAxisSize.max,

@@ -6,17 +6,28 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 
 class LNURLMetadataText extends StatelessWidget {
-  const LNURLMetadataText({super.key, required this.metadataMap});
+  const LNURLMetadataText({super.key, required this.metadataText});
 
-  final Map<String, dynamic> metadataMap;
+  final String metadataText;
 
   @override
   Widget build(BuildContext context) {
-    return AutoSizeText(
-      metadataMap['text/long-desc'] ?? metadataMap['text/plain'],
-      style: FieldTextStyle.textStyle,
-      maxLines: 1,
-      minFontSize: MinFontSize(context).minFontSize,
+    return Container(
+      constraints: const BoxConstraints(
+        maxHeight: 200,
+        minWidth: double.infinity,
+      ),
+      child: Scrollbar(
+        radius: const Radius.circular(16.0),
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          child: AutoSizeText(
+            metadataText,
+            style: Theme.of(context).paymentItemSubtitleTextStyle.copyWith(color: Colors.white70),
+            minFontSize: MinFontSize(context).minFontSize,
+          ),
+        ),
+      ),
     );
   }
 }

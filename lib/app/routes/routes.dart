@@ -9,6 +9,8 @@ import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
+import 'package:l_breez/routes/ln_invoice/ln_invoice_payment_page.dart';
+import 'package:l_breez/routes/lnurl/payment/lnurl_payment_page.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
 import 'package:l_breez/routes/receive_payment/ln_address/receive_lightning_address_page.dart';
@@ -120,6 +122,26 @@ Route? onGenerateRoute({
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
                       child: SendChainSwapPage(
                         btcAddressData: settings.arguments as BitcoinAddressData?,
+                      ),
+                    ),
+                    settings: settings,
+                  );
+                case LNInvoicePaymentPage.routeName:
+                  return FadeInRoute<PrepareSendResponse?>(
+                    builder: (_) => BlocProvider(
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      child: LNInvoicePaymentPage(
+                        lnInvoice: settings.arguments as LNInvoice,
+                      ),
+                    ),
+                    settings: settings,
+                  );
+                case LnUrlPaymentPage.routeName:
+                  return FadeInRoute<PrepareLnUrlPayResponse?>(
+                    builder: (_) => BlocProvider(
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      child: LnUrlPaymentPage(
+                        requestData: settings.arguments as LnUrlPayRequestData,
                       ),
                     ),
                     settings: settings,
