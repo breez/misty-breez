@@ -8,7 +8,9 @@ import 'package:l_breez/handlers/handler/handler.dart';
 import 'package:l_breez/models/invoice.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/lnurl/auth/lnurl_auth_handler.dart';
+import 'package:l_breez/routes/lnurl/lnurl_invoice_delegate.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_handler.dart';
+import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_handler.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
@@ -61,7 +63,10 @@ class InputHandler extends Handler {
     _handlingRequest = isLoading;
     _setLoading(isLoading);
 
-    handleInputData(inputState).whenComplete(() => _handlingRequest = false).onError((error, _) {
+    handleInputData(inputState)
+        .then((result) => handleResult(result))
+        .whenComplete(() => _handlingRequest = false)
+        .onError((error, _) {
       _log.severe("Input state error", error);
       _handlingRequest = false;
       _setLoading(false);
@@ -122,6 +127,18 @@ class InputHandler extends Handler {
     _log.fine("handle bitcoin address $inputState");
     if (inputState.source == InputSource.qrcodeReader) {
       return await Navigator.of(context).pushNamed(SendChainSwapPage.routeName, arguments: inputState.data);
+    }
+  }
+
+  void handleResult(result) {
+    _log.info("Input state handled: $result");
+    if (result is LNURLPageResult && result.protocol != null) {
+      final context = contextProvider?.getBuildContext();
+      if (context != null) {
+        handleLNURLPageResult(context, result);
+      } else {
+        _log.info("Skipping handling of result: $result because context is null");
+      }
     }
   }
 
