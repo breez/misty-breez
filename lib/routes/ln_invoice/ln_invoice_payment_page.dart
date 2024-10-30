@@ -150,12 +150,10 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
                         errorMessage: errorMessage,
                       ),
                     ),
-                    if (_prepareResponse != null) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnUrlPaymentAmount(amountSat: amountSat!),
-                      ),
-                    ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: LnUrlPaymentAmount(amountSat: amountSat!),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: LnUrlPaymentFee(
