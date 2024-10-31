@@ -211,7 +211,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
   void _validateSwap(int amount, bool outgoing) {
     final accountState = context.read<AccountCubit>().state;
-    final balance = accountState.balance;
+    final balance = accountState.walletInfo!.balanceSat.toInt();
     final chainSwapCubit = context.read<ChainSwapCubit>();
     return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, _onchainPaymentLimits, balance);
   }

@@ -105,7 +105,7 @@ class _AppViewState extends State<AppView> {
               },
               initialRoute: securityState.pinStatus == PinStatus.enabled
                   ? LockScreen.routeName
-                  : accountState.initial
+                  : accountState.isInitial
                       ? SplashPage.routeName
                       : Home.routeName,
               onGenerateRoute: (RouteSettings settings) => onGenerateRoute(

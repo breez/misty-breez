@@ -242,7 +242,7 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
   void _validateLnUrlPayment(int amount, bool outgoing) {
     final accountCubit = context.read<AccountCubit>();
     final accountState = accountCubit.state;
-    final balance = accountState.balance;
+    final balance = accountState.walletInfo!.balanceSat.toInt();
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
   }

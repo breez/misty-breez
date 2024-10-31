@@ -48,7 +48,7 @@ class _WalletDashboardState extends State<WalletDashboard> {
                         color: themeData.customData.dashboardBgColor,
                       ),
                     ),
-                    if (!accountState.initial) ...[
+                    if (!accountState.isInitial) ...[
                       Positioned(
                         top: 60 - _kBalanceOffsetTransition * widget.offsetFactor,
                         child: Center(

@@ -22,12 +22,8 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     _log.info("Listening to account changes");
     _liquidSdk.walletInfoStream.distinct().listen((walletInfo) {
       final newState = state.copyWith(
-        id: walletInfo.pubkey,
-        fingerprint: walletInfo.fingerprint,
-        initial: false,
-        balance: walletInfo.balanceSat.toInt(),
-        pendingReceive: walletInfo.pendingReceiveSat.toInt(),
-        pendingSend: walletInfo.pendingSendSat.toInt(),
+        isInitial: false,
+        walletInfo: walletInfo,
       );
       _log.info("AccountState changed: $newState");
       emit(newState);

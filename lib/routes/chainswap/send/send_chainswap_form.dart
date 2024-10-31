@@ -108,7 +108,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
                     if (value) {
                       final accountCubit = context.read<AccountCubit>();
                       final accountState = accountCubit.state;
-                      _setAmount(accountState.balance);
+                      _setAmount(accountState.walletInfo!.balanceSat.toInt());
                     } else {
                       widget.amountController.text = "";
                     }
