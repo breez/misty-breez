@@ -39,7 +39,7 @@ class FiatBalanceText extends StatelessWidget {
       ),
       onPressed: () => _changeFiatCurrency(context),
       child: Text(
-        currencyState.fiatConversion()?.format(accountState.balance) ?? "",
+        currencyState.fiatConversion()?.format(accountState.walletInfo!.balanceSat.toInt()) ?? "",
         style: balanceFiatConversionTextStyle.copyWith(
           color: themeData.colorScheme.onSecondary.withOpacity(pow(1.00 - offsetFactor, 2).toDouble()),
         ),
@@ -83,7 +83,7 @@ class FiatBalanceText extends StatelessWidget {
     final fiatConversion = currencyState.fiatConversion();
     if (fiatConversion == null) return false;
 
-    double fiatValue = fiatConversion.satToFiat(accountState.balance);
+    double fiatValue = fiatConversion.satToFiat(accountState.walletInfo!.balanceSat.toInt());
     int fractionSize = fiatConversion.currencyData.info.fractionSize;
     double minimumAmount = 1 / pow(10, fractionSize);
 

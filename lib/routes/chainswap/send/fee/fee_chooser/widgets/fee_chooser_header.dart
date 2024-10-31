@@ -44,8 +44,7 @@ class _FeeChooserHeaderState extends State<FeeChooserHeader> {
                 index: index,
                 text: feeOption.getDisplayName(texts),
                 isAffordable: feeOption.isAffordable(
-                  balanceSat: accountState.balance,
-                  walletBalanceSat: accountState.walletBalance,
+                  balanceSat: accountState.walletInfo!.balanceSat.toInt(),
                   amountSat: widget.amountSat,
                 ),
                 isSelected: widget.selectedFeeIndex == index,
