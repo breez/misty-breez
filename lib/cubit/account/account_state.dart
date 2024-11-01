@@ -6,19 +6,19 @@ import 'package:logging/logging.dart';
 final _log = Logger("AccountState");
 
 class AccountState {
-  final bool isInitial;
+  final bool isOnboardingComplete;
   final GetInfoResponse? walletInfo;
 
-  const AccountState({required this.isInitial, required this.walletInfo});
+  const AccountState({required this.isOnboardingComplete, required this.walletInfo});
 
-  AccountState.initial() : this(isInitial: true, walletInfo: null);
+  AccountState.initial() : this(isOnboardingComplete: false, walletInfo: null);
 
   AccountState copyWith({
-    bool? isInitial,
+    bool? isOnboardingComplete,
     GetInfoResponse? walletInfo,
   }) {
     return AccountState(
-      isInitial: isInitial ?? this.isInitial,
+      isOnboardingComplete: isOnboardingComplete ?? this.isOnboardingComplete,
       walletInfo: walletInfo ?? this.walletInfo,
     );
   }
@@ -27,14 +27,14 @@ class AccountState {
 
   Map<String, dynamic>? toJson() {
     return {
-      "isInitial": isInitial,
+      "isOnboardingComplete": isOnboardingComplete,
       "walletInfo": walletInfo?.toJson(),
     };
   }
 
   factory AccountState.fromJson(Map<String, dynamic> json) {
     return AccountState(
-      isInitial: json["isInitial"] ?? true,
+      isOnboardingComplete: json["isOnboardingComplete"] ?? false,
       walletInfo: GetInfoResponseFromJson.fromJson(json['walletInfo']),
     );
   }

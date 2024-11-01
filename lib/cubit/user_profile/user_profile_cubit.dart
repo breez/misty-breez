@@ -68,7 +68,6 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     String? color,
     String? animal,
     String? image,
-    bool? registrationRequested,
     bool? hideBalance,
     AppMode? appMode,
     bool? expandPreferences,

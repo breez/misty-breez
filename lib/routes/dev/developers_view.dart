@@ -150,7 +150,7 @@ class _DevelopersViewState extends State<DevelopersView> {
     final config = await AppConfig.instance();
     final sdkDirPath = Directory(config.sdkConfig.workingDir).path;
     final networkName = config.sdkConfig.network.name;
-    var fingerprint = accountState.walletInfo!.fingerprint;
+    final fingerprint = accountState.walletInfo!.fingerprint;
     final walletStoragePath = "$sdkDirPath/$networkName/$fingerprint";
     final storageFilePath = "$walletStoragePath/storage.sql";
     final storageFile = File(storageFilePath);
