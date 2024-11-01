@@ -12,15 +12,21 @@ import 'package:theme_provider/theme_provider.dart';
 
 class App extends StatelessWidget {
   final ServiceInjector injector;
+  final AccountCubit accountCubit;
   final SdkConnectivityCubit sdkConnectivityCubit;
-  const App({super.key, required this.injector, required this.sdkConnectivityCubit});
+  const App({
+    super.key,
+    required this.injector,
+    required this.accountCubit,
+    required this.sdkConnectivityCubit,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AccountCubit>(
-          create: (BuildContext context) => AccountCubit(injector.liquidSDK, injector.keychain),
+          create: (BuildContext context) => accountCubit,
         ),
         BlocProvider<PaymentsCubit>(
           create: (BuildContext context) => PaymentsCubit(injector.liquidSDK),

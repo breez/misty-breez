@@ -13,10 +13,10 @@ final _log = Logger("AccountCubit");
 const String accountIsOnboardingComplete = "account_is_onboarding_complete";
 
 class AccountCubit extends Cubit<AccountState> with HydratedMixin {
-  final BreezSDKLiquid liquidSdk;
+  final BreezSDKLiquid liquidSDK;
   final KeyChain keyChain;
 
-  AccountCubit(this.liquidSdk, this.keyChain) : super(AccountState.initial()) {
+  AccountCubit({required this.liquidSDK, required this.keyChain}) : super(AccountState.initial()) {
     hydrate();
     restoreIsOnboardingCompleteFlag();
     _listenAccountChanges();
@@ -24,7 +24,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
 
   void _listenAccountChanges() {
     _log.info("Listening to account changes");
-    liquidSdk.walletInfoStream.distinct().listen((walletInfo) {
+    liquidSDK.walletInfoStream.distinct().listen((walletInfo) {
       final newState = state.copyWith(walletInfo: walletInfo);
       _log.info("AccountState changed: $newState");
       emit(newState);
