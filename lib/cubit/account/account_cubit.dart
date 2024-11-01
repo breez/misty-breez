@@ -46,6 +46,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   }) async {
     try {
       await keyChain.write(accountIsOnboardingComplete, isOnboardingComplete.toString());
+      emit(state.copyWith(isOnboardingComplete: isOnboardingComplete));
     } catch (err) {
       throw Exception(err.toString());
     }
@@ -55,8 +56,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     try {
       String? isOnboardingCompleteStr = await keyChain.read(accountIsOnboardingComplete);
       bool isOnboardingComplete = isOnboardingCompleteStr == null ? false : isOnboardingCompleteStr == 'true';
-      final newState = state.copyWith(isOnboardingComplete: isOnboardingComplete);
-      emit(newState);
+      emit(state.copyWith(isOnboardingComplete: isOnboardingComplete));
       return isOnboardingComplete;
     } catch (err) {
       throw Exception(err.toString());
