@@ -14,6 +14,7 @@ class App extends StatelessWidget {
   final ServiceInjector injector;
   final AccountCubit accountCubit;
   final SdkConnectivityCubit sdkConnectivityCubit;
+
   const App({
     super.key,
     required this.injector,
@@ -26,6 +27,7 @@ class App extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AccountCubit>(
+          lazy: false,
           create: (BuildContext context) => accountCubit,
         ),
         BlocProvider<PaymentsCubit>(
