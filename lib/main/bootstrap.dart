@@ -50,6 +50,7 @@ Future<void> bootstrap(AppBuilder builder) async {
     if (Firebase.apps.isEmpty) {
       _log.info("List of Firebase apps: ${Firebase.apps}");
       await Firebase.initializeApp(
+        name: "breez-technology",
         // ignore: undefined_identifier
         options: DefaultFirebaseOptions.currentPlatform,
       );
