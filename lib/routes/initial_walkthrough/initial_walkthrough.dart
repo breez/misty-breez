@@ -168,6 +168,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void connect({String? mnemonic}) async {
     final connectionService = context.read<SdkConnectivityCubit>();
     final securityCubit = context.read<SecurityCubit>();
+    final accountCubit = context.read<AccountCubit>();
 
     final isRestore = mnemonic != null;
     _log.info("${isRestore ? "Restore" : "Starting new"} wallet");
@@ -184,6 +185,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       } else {
         await connectionService.register();
       }
+      accountCubit.storeIsOnboardingCompleteFlag(isOnboardingComplete: true);
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {

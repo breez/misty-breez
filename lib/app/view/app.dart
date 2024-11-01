@@ -20,7 +20,7 @@ class App extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AccountCubit>(
-          create: (BuildContext context) => AccountCubit(injector.liquidSDK),
+          create: (BuildContext context) => AccountCubit(injector.liquidSDK, injector.keychain),
         ),
         BlocProvider<PaymentsCubit>(
           create: (BuildContext context) => PaymentsCubit(injector.liquidSDK),
@@ -105,7 +105,7 @@ class _AppViewState extends State<AppView> {
               },
               initialRoute: securityState.pinStatus == PinStatus.enabled
                   ? LockScreen.routeName
-                  : accountState.isInitial
+                  : !accountState.isOnboardingComplete
                       ? SplashPage.routeName
                       : Home.routeName,
               onGenerateRoute: (RouteSettings settings) => onGenerateRoute(

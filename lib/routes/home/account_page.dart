@@ -89,7 +89,7 @@ class AccountPage extends StatelessWidget {
                   ),
                 ),
               );
-            } else if (!accountState.isInitial && nonFilteredPayments.isEmpty) {
+            } else if (accountState.isOnboardingComplete && nonFilteredPayments.isEmpty) {
               slivers.add(
                 SliverPersistentHeader(
                   delegate: FixedSliverDelegate(
