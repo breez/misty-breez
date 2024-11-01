@@ -47,10 +47,13 @@ Future<void> bootstrap(AppBuilder builder) async {
     final breezLogger = injector.breezLogger;
     breezLogger.registerBreezSdkLiquidLogs(injector.liquidSDK);
     BreezDateUtils.setupLocales();
-    await Firebase.initializeApp(
-      // ignore: undefined_identifier
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if (Firebase.apps.isEmpty) {
+      _log.info("List of Firebase apps: ${Firebase.apps}");
+      await Firebase.initializeApp(
+        // ignore: undefined_identifier
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
 
     final appDir = await getApplicationDocumentsDirectory();
     HydratedBloc.storage = await HydratedStorage.build(
