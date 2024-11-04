@@ -15,15 +15,18 @@ import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/route.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:service_injector/service_injector.dart';
 
 class LnUrlPaymentPage extends StatefulWidget {
   final LnUrlPayRequestData requestData;
+  final String? comment;
 
   static const routeName = "/lnurl_payment";
   static const paymentMethod = PaymentMethod.lightning;
 
-  const LnUrlPaymentPage({super.key, required this.requestData});
+  const LnUrlPaymentPage({super.key, required this.requestData, this.comment});
 
   @override
   State<StatefulWidget> createState() => LnUrlPaymentPageState();
@@ -105,6 +108,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         amountSat,
         includeDisplayName: false,
       );
+      _descriptionController.text = widget.comment ?? "";
       await _prepareLnUrlPayment(amountSat);
     } else if (_amountFocusNode.canRequestFocus) {
       _amountFocusNode.requestFocus();
@@ -232,17 +236,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                 includeDisplayName: false,
                               );
                             });
-                            if (_formKey.currentState?.validate() ?? false) {
-                              await _prepareLnUrlPayment(amountSat);
-                            }
+                            _formKey.currentState?.validate();
                           }
                         },
                         onFieldSubmitted: (amountStr) async {
                           if (amountStr.isNotEmpty) {
-                            final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
-                            if (_formKey.currentState?.validate() ?? false) {
-                              await _prepareLnUrlPayment(amountSat);
-                            }
+                            _formKey.currentState?.validate();
                           }
                         },
                         style: FieldTextStyle.textStyle,
@@ -264,9 +263,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                 includeDisplayName: false,
                               );
                             });
-                            if (_formKey.currentState?.validate() ?? false) {
-                              await _prepareLnUrlPayment(amountSat);
-                            }
+                            _formKey.currentState?.validate();
                           },
                         ),
                       ),
@@ -277,13 +274,15 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         child: LnUrlPaymentAmount(amountSat: maxSendableSat),
                       ),
                     ],
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnUrlPaymentFee(
-                        isCalculatingFees: _isCalculatingFees,
-                        feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                    if (_isFixedAmount) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: LnUrlPaymentFee(
+                          isCalculatingFees: _isCalculatingFees,
+                          feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                        ),
                       ),
-                    ),
+                    ],
                     if (metadataText != null && metadataText.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -313,15 +312,48 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 Navigator.of(context).pop();
               },
             )
-          : _prepareResponse != null
+          : !_isFixedAmount
               ? SingleButtonBottomBar(
                   stickToBottom: true,
-                  text: texts.lnurl_payment_page_action_pay,
+                  text: texts.lnurl_fetch_invoice_action_continue,
                   onPressed: () async {
-                    Navigator.pop(context, _prepareResponse);
+                    if (_formKey.currentState?.validate() ?? false) {
+                      final currencyCubit = context.read<CurrencyCubit>();
+                      final currencyState = currencyCubit.state;
+                      final amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
+                      final amountMsat = BigInt.from(amountSat * 1000);
+                      final requestData = widget.requestData.copyWith(
+                        minSendable: amountMsat,
+                        maxSendable: amountMsat,
+                      );
+                      PrepareLnUrlPayResponse? prepareResponse =
+                          await Navigator.of(context).push<PrepareLnUrlPayResponse?>(
+                        FadeInRoute<PrepareLnUrlPayResponse?>(
+                          builder: (_) => BlocProvider(
+                            create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                            child: LnUrlPaymentPage(
+                              requestData: requestData,
+                              comment: _descriptionController.text,
+                            ),
+                          ),
+                        ),
+                      );
+                      if (prepareResponse == null || !context.mounted) {
+                        return Future.value();
+                      }
+                      Navigator.pop(context, prepareResponse);
+                    }
                   },
                 )
-              : const SizedBox.shrink(),
+              : _prepareResponse != null
+                  ? SingleButtonBottomBar(
+                      stickToBottom: true,
+                      text: texts.lnurl_payment_page_action_pay,
+                      onPressed: () async {
+                        Navigator.pop(context, _prepareResponse);
+                      },
+                    )
+                  : const SizedBox.shrink(),
     );
   }
 
@@ -375,5 +407,24 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final balance = accountState.balance;
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+  }
+}
+
+extension LnUrlPayRequestDataCopyWith on LnUrlPayRequestData {
+  LnUrlPayRequestData copyWith({
+    BigInt? minSendable,
+    BigInt? maxSendable,
+  }) {
+    return LnUrlPayRequestData(
+      callback: callback,
+      minSendable: minSendable ?? this.minSendable,
+      maxSendable: maxSendable ?? this.maxSendable,
+      metadataStr: metadataStr,
+      commentAllowed: commentAllowed,
+      domain: domain,
+      allowsNostr: allowsNostr,
+      nostrPubkey: nostrPubkey,
+      lnAddress: lnAddress,
+    );
   }
 }
