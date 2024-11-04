@@ -126,8 +126,11 @@ class _DestinationWidgetState extends State<DestinationWidget> {
           ),
         );
       } else {
-        if (widget.isLnAddress) _paymentStateSubscription?.cancel();
-        showFlushbar(context, title: "", message: "Payment failed.");
+        if (widget.isLnAddress) {
+          _paymentStateSubscription?.cancel();
+        } else {
+          showFlushbar(context, title: "", message: "Payment failed.");
+        }
       }
     });
   }
