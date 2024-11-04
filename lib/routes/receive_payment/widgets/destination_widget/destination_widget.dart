@@ -113,16 +113,18 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void _onPaymentFinished(bool isSuccess) {
     Timer(const Duration(milliseconds: 1000), () {
       if (!mounted) return;
-      if (isSuccess == true) {
-        // Close the page and show successful payment route
-        Navigator.of(context)
-          ..pop()
-          ..push(
-            PageRouteBuilder(
-              opaque: false,
-              pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(),
-            ),
-          );
+      if (isSuccess) {
+        final navigator = Navigator.of(context);
+        if (!widget.isLnAddress) {
+          navigator.pop(); // Only pop if destination is not an LN Address
+        }
+        // Show successful payment route
+        navigator.push(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(),
+          ),
+        );
       } else {
         if (widget.isLnAddress) _paymentStateSubscription?.cancel();
         showFlushbar(context, title: "", message: "Payment failed.");
