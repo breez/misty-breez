@@ -84,7 +84,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     );
     final effectiveMaxSat = min(_lightningLimits!.send.maxSat.toInt(), maxSendableSat);
     final errorMessage = validatePayment(
-      amountSat: minSendableSat,
+      amountSat: _isFixedAmount ? minSendableSat : effectiveMinSat,
       effectiveMinSat: effectiveMinSat,
       effectiveMaxSat: effectiveMaxSat,
       throwError: true,
