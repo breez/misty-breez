@@ -6,7 +6,7 @@ import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/dev/developers_view.dart';
 import 'package:l_breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:l_breez/routes/home/home_page.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_dialog.dart';
+import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
