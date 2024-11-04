@@ -20,6 +20,7 @@ class DestinationWidget extends StatefulWidget {
   final String? title;
   final void Function()? onLongPress;
   final Widget? infoWidget;
+  final bool isLnAddress;
 
   const DestinationWidget({
     super.key,
@@ -28,6 +29,7 @@ class DestinationWidget extends StatefulWidget {
     this.title,
     this.onLongPress,
     this.infoWidget,
+    this.isLnAddress = false,
   });
 
   @override
@@ -35,64 +37,97 @@ class DestinationWidget extends StatefulWidget {
 }
 
 class _DestinationWidgetState extends State<DestinationWidget> {
+  StreamSubscription<PaymentsState>? _paymentStateSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isLnAddress) _trackNewPayments();
+  }
+
   @override
   void didUpdateWidget(covariant DestinationWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    String? destination = _getDestination(oldWidget);
-    _trackPayment(destination);
-  }
 
-  String? _getDestination(DestinationWidget oldWidget) {
-    String? destination;
-    if (widget.destination != null) {
-      if (widget.destination != oldWidget.destination) {
-        destination = widget.destination!;
-      }
-    } else if ((widget.snapshot != null && widget.snapshot!.hasData) &&
-        (oldWidget.snapshot != null && oldWidget.snapshot!.hasData)) {
-      if (widget.snapshot!.data!.destination != oldWidget.snapshot!.data!.destination) {
-        destination = widget.snapshot!.data!.destination;
+    /// Receive pages other than LN Address wait for user input for invoice to be created, hence they rely on didUpdateWidget and not initState
+    if (!widget.isLnAddress) {
+      final hasUpdatedDestination = widget.destination != oldWidget.destination;
+      if (hasUpdatedDestination || _hasNewDestination(widget.snapshot, oldWidget.snapshot)) {
+        _trackPaymentEvents(widget.destination ?? widget.snapshot?.data?.destination);
       }
     }
-    return destination;
   }
 
-  void _trackPayment(String? destination) {
+  @override
+  void dispose() {
+    _paymentStateSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _trackNewPayments() {
+    final paymentsCubit = context.read<PaymentsCubit>();
+    _paymentStateSubscription?.cancel();
+    _paymentStateSubscription = paymentsCubit.stream
+        .distinct((previous, next) => previous.payments.first == next.payments.first)
+        .listen((paymentState) => handleNewPayment(paymentState), onError: (e) => _onTrackPaymentError(e));
+  }
+
+  void handleNewPayment(PaymentsState paymentState) {
+    final latestPayment = paymentState.payments.first;
+    final isPendingOrComplete =
+        (latestPayment.status == PaymentState.pending || latestPayment.status == PaymentState.complete);
+    final isPaymentReceived = latestPayment.paymentType == PaymentType.receive && isPendingOrComplete;
+
+    if (isPaymentReceived) {
+      _log.info(
+          "Payment Received! Destination: ${latestPayment.destination}, Status: ${latestPayment.status}");
+    }
+    _onPaymentFinished(isPaymentReceived);
+  }
+
+  bool _hasNewDestination(
+    AsyncSnapshot<ReceivePaymentResponse>? newSnapshot,
+    AsyncSnapshot<ReceivePaymentResponse>? oldSnapshot,
+  ) {
+    return newSnapshot?.hasData == true &&
+        oldSnapshot?.hasData == true &&
+        newSnapshot!.data!.destination != oldSnapshot!.data!.destination;
+  }
+
+  void _trackPaymentEvents(String? destination) {
     final inputCubit = context.read<InputCubit>();
-    inputCubit.trackPayment(destination).then((value) {
-      Timer(const Duration(milliseconds: 1000), () {
-        if (mounted) {
-          _onPaymentFinished(true);
-        }
-      });
-    }).catchError((e) {
-      _log.warning("Failed to track payment", e);
-      if (mounted) {
-        showFlushbar(context, message: extractExceptionMessage(e, context.texts()));
-      }
-      _onPaymentFinished(false);
-    });
+    inputCubit
+        .trackPayment(destination)
+        .then((_) => _onPaymentFinished(true))
+        .catchError((e) => _onTrackPaymentError(e));
   }
 
-  void _onPaymentFinished(dynamic result) {
-    _log.info("Payment finished: $result");
-    if (result == true) {
-      // Close the page and show successful payment route
-      if (mounted) {
-        final navigatorState = Navigator.of(context);
-        navigatorState.pop();
-        navigatorState.push(
-          PageRouteBuilder(
-            opaque: false,
-            pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(),
-          ),
-        );
-      }
-    } else {
-      if (result is String) {
-        showFlushbar(context, title: "", message: result);
-      }
+  void _onTrackPaymentError(dynamic e) {
+    _log.warning("Failed to track payment", e);
+    if (mounted) {
+      showFlushbar(context, message: extractExceptionMessage(e, context.texts()));
     }
+    _onPaymentFinished(false);
+  }
+
+  void _onPaymentFinished(bool isSuccess) {
+    Timer(const Duration(milliseconds: 1000), () {
+      if (!mounted) return;
+      if (isSuccess == true) {
+        // Close the page and show successful payment route
+        Navigator.of(context)
+          ..pop()
+          ..push(
+            PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(),
+            ),
+          );
+      } else {
+        if (widget.isLnAddress) _paymentStateSubscription?.cancel();
+        showFlushbar(context, title: "", message: "Payment failed.");
+      }
+    });
   }
 
   @override
