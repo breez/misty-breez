@@ -38,6 +38,7 @@ class DestinationWidget extends StatefulWidget {
 
 class _DestinationWidgetState extends State<DestinationWidget> {
   StreamSubscription<PaymentsState>? _paymentStateSubscription;
+  final Set<String> _processedPayments = {};
 
   @override
   void initState() {
@@ -61,6 +62,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void dispose() {
     _paymentStateSubscription?.cancel();
+    _processedPayments.clear();
     super.dispose();
   }
 
@@ -68,19 +70,28 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     final paymentsCubit = context.read<PaymentsCubit>();
     _paymentStateSubscription?.cancel();
     _paymentStateSubscription = paymentsCubit.stream
+        .skip(1)
         .distinct((previous, next) => previous.payments.first == next.payments.first)
-        .listen((paymentState) => handleNewPayment(paymentState), onError: (e) => _onTrackPaymentError(e));
+        .listen(
+          (paymentState) => handleNewPayment(paymentState),
+          onError: (e) => _onTrackPaymentError(e),
+        );
   }
 
   void handleNewPayment(PaymentsState paymentState) {
     final latestPayment = paymentState.payments.first;
+    final paymentId = latestPayment.id;
+    if (_processedPayments.contains(paymentId)) return;
+
     final isPendingOrComplete =
         (latestPayment.status == PaymentState.pending || latestPayment.status == PaymentState.complete);
     final isPaymentReceived = latestPayment.paymentType == PaymentType.receive && isPendingOrComplete;
 
     if (isPaymentReceived) {
       _log.info(
-          "Payment Received! Destination: ${latestPayment.destination}, Status: ${latestPayment.status}");
+        "Payment Received! Destination: ${latestPayment.destination}, Status: ${latestPayment.status}",
+      );
+      _processedPayments.add(paymentId);
     }
     _onPaymentFinished(isPaymentReceived);
   }
@@ -126,9 +137,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
           ),
         );
       } else {
-        if (widget.isLnAddress) {
-          _paymentStateSubscription?.cancel();
-        } else {
+        if (!widget.isLnAddress) {
           showFlushbar(context, title: "", message: "Payment failed.");
         }
       }
