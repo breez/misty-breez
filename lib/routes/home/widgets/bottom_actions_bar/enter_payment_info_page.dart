@@ -151,25 +151,23 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
 
   Future<void> _onApprovePressed() async {
     final inputCubit = context.read<InputCubit>();
-    _setLoading(true);
 
     try {
+      _setLoading(true);
       await _validateInput();
       if (_formKey.currentState!.validate()) {
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
+        _setLoading(false);
+        if (mounted) Navigator.pop(context);
         inputCubit.addIncomingInput(_paymentInfoController.text, InputSource.inputField);
       }
     } catch (error) {
+      _setLoading(false);
       _log.warning(error.toString(), error);
       if (mounted) {
         setState(() {
           errorMessage = context.texts().payment_info_dialog_error;
         });
       }
-    } finally {
-      _setLoading(false);
     }
   }
 
