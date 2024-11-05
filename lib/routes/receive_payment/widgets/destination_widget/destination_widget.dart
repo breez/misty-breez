@@ -52,11 +52,23 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
     /// Receive pages other than LN Address wait for user input for invoice to be created, hence they rely on didUpdateWidget and not initState
     if (!widget.isLnAddress) {
-      final hasUpdatedDestination = widget.destination != oldWidget.destination;
-      if (hasUpdatedDestination || _hasNewDestination(widget.snapshot, oldWidget.snapshot)) {
-        _trackPaymentEvents(widget.destination ?? widget.snapshot?.data?.destination);
-      }
+      _trackPaymentEvents(getUpdatedDestination(oldWidget));
     }
+  }
+
+  String? getUpdatedDestination(DestinationWidget oldWidget) {
+    final hasUpdatedDestination = widget.destination != oldWidget.destination;
+    if (widget.destination != null && hasUpdatedDestination) {
+      return widget.destination!;
+    }
+
+    final newSnapshotDestination = widget.snapshot?.data?.destination;
+    final oldSnapshotDestination = oldWidget.snapshot?.data?.destination;
+    if (newSnapshotDestination != null && newSnapshotDestination != oldSnapshotDestination) {
+      return newSnapshotDestination;
+    }
+
+    return null;
   }
 
   @override
@@ -94,15 +106,6 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       _processedPayments.add(paymentId);
     }
     _onPaymentFinished(isPaymentReceived);
-  }
-
-  bool _hasNewDestination(
-    AsyncSnapshot<ReceivePaymentResponse>? newSnapshot,
-    AsyncSnapshot<ReceivePaymentResponse>? oldSnapshot,
-  ) {
-    return newSnapshot?.hasData == true &&
-        oldSnapshot?.hasData == true &&
-        newSnapshot!.data!.destination != oldSnapshot!.data!.destination;
   }
 
   void _trackPaymentEvents(String? destination) {
