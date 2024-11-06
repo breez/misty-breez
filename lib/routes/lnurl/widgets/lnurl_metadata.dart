@@ -5,10 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 
-class LNURLMetadataText extends StatelessWidget {
+class LNURLMetadataText extends StatefulWidget {
   const LNURLMetadataText({super.key, required this.metadataText});
 
   final String metadataText;
+
+  @override
+  State<LNURLMetadataText> createState() => _LNURLMetadataTextState();
+}
+
+class _LNURLMetadataTextState extends State<LNURLMetadataText> {
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +25,13 @@ class LNURLMetadataText extends StatelessWidget {
         minWidth: double.infinity,
       ),
       child: Scrollbar(
+        controller: _scrollController,
         radius: const Radius.circular(16.0),
         thumbVisibility: true,
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: AutoSizeText(
-            metadataText,
+            widget.metadataText,
             style: Theme.of(context).paymentItemSubtitleTextStyle.copyWith(color: Colors.white70),
             minFontSize: MinFontSize(context).minFontSize,
           ),
