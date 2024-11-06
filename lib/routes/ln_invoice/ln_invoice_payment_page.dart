@@ -62,7 +62,7 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
       await _handleLightningPaymentLimitsResponse();
     } catch (error) {
       setState(() {
-        errorMessage = error.toString();
+        errorMessage = extractExceptionMessage(error, getSystemAppLocalizations());
       });
     } finally {
       setState(() {

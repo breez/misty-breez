@@ -29,7 +29,8 @@ class WebhookCubit extends Cubit<WebhookState> {
   }
 
   Future refreshLnurlPay({GetInfoResponse? walletInfo}) async {
-    emit(state.copyWith(isLoading: true));
+    _log.info("Refreshing Lightning Address");
+    emit(WebhookState(isLoading: true));
     try {
       final getInfoResponse = walletInfo ?? await _liquidSDK.instance?.getInfo();
       if (getInfoResponse != null) {
@@ -39,7 +40,12 @@ class WebhookCubit extends Cubit<WebhookState> {
       }
     } catch (err) {
       _log.warning("Failed to refresh lnurlpay: $err");
-      emit(state.copyWith(lnurlPayError: err.toString()));
+      emit(
+        state.copyWith(
+          lnurlPayErrorTitle: "Failed to refresh Lightning Address:",
+          lnurlPayError: err.toString(),
+        ),
+      );
     } finally {
       emit(state.copyWith(isLoading: false));
     }
@@ -51,10 +57,10 @@ class WebhookCubit extends Cubit<WebhookState> {
       await _liquidSDK.instance?.registerWebhook(webhookUrl: webhookUrl);
       _log.info("SDK webhook registered: $webhookUrl");
       final lnurl = await _registerLnurlpay(walletInfo, webhookUrl);
-      emit(state.copyWith(lnurlPayUrl: lnurl));
+      emit(WebhookState(lnurlPayUrl: lnurl));
     } catch (err) {
       _log.warning("Failed to register webhooks: $err");
-      emit(state.copyWith(lnurlPayError: err.toString()));
+      emit(state.copyWith(lnurlPayErrorTitle: "Failed to register webhooks:", lnurlPayError: err.toString()));
       rethrow;
     }
   }

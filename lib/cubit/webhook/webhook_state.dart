@@ -1,22 +1,26 @@
 class WebhookState {
   final String? lnurlPayUrl;
   final String? lnurlPayError;
+  final String? lnurlPayErrorTitle;
   final bool isLoading;
 
   WebhookState({
     this.lnurlPayUrl,
     this.lnurlPayError,
+    this.lnurlPayErrorTitle,
     this.isLoading = false,
   });
 
   WebhookState copyWith({
     String? lnurlPayUrl,
     String? lnurlPayError,
+    String? lnurlPayErrorTitle,
     bool? isLoading,
   }) {
     return WebhookState(
       lnurlPayUrl: lnurlPayUrl ?? this.lnurlPayUrl,
       lnurlPayError: lnurlPayError ?? this.lnurlPayError,
+      lnurlPayErrorTitle: lnurlPayErrorTitle ?? this.lnurlPayErrorTitle,
       isLoading: isLoading ?? this.isLoading,
     );
   }

@@ -79,10 +79,17 @@ class SuccessActionDialogState extends State<SuccessActionDialog> {
   }
 }
 
-class Message extends StatelessWidget {
+class Message extends StatefulWidget {
   final String message;
 
   const Message(this.message, {super.key});
+
+  @override
+  State<Message> createState() => _MessageState();
+}
+
+class _MessageState extends State<Message> {
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -95,13 +102,17 @@ class Message extends StatelessWidget {
           minWidth: double.infinity,
         ),
         child: Scrollbar(
+          controller: _scrollController,
           radius: const Radius.circular(16.0),
           thumbVisibility: true,
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: AutoSizeText(
-              message,
+              widget.message,
               style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16),
-              textAlign: message.length > 40 && !message.contains("\n") ? TextAlign.start : TextAlign.left,
+              textAlign: widget.message.length > 40 && !widget.message.contains("\n")
+                  ? TextAlign.start
+                  : TextAlign.left,
             ),
           ),
         ),

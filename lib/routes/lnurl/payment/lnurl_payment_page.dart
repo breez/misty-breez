@@ -68,8 +68,16 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       });
       await _handleLightningPaymentLimitsResponse();
     } catch (error) {
+      final texts = getSystemAppLocalizations();
+      String message = extractExceptionMessage(error, texts);
+      if (error is LnUrlPayError_ServiceConnectivity) {
+        message = texts.lnurl_fetch_invoice_error_message(
+          widget.requestData.domain,
+          message,
+        );
+      }
       setState(() {
-        errorMessage = error.toString();
+        errorMessage = message;
       });
     } finally {
       setState(() {

@@ -16,6 +16,7 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
@@ -71,11 +72,9 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
       body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
         builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
-                textAlign: TextAlign.center,
-              ),
+            return ScrollableErrorMessageWidget(
+              title: "Failed to retrieve payment limits:",
+              message: texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
             );
           }
           if (snapshot.lightningPaymentLimits == null) {
@@ -99,23 +98,36 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           );
         },
       ),
-      bottomNavigationBar: (receivePaymentResponse == null && !isBelowPaymentLimit)
-          ? SingleButtonBottomBar(
-              stickToBottom: true,
-              text: texts.invoice_action_create,
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  _createInvoice();
-                }
-              },
-            )
-          : SingleButtonBottomBar(
-              stickToBottom: true,
-              text: texts.qr_code_dialog_action_close,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+      bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
+          return (snapshot.hasError)
+              ? SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.invoice_btc_address_action_retry,
+                  onPressed: () {
+                    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                    paymentLimitsCubit.fetchLightningLimits();
+                  },
+                )
+              : (receivePaymentResponse == null && !isBelowPaymentLimit)
+                  ? SingleButtonBottomBar(
+                      stickToBottom: true,
+                      text: texts.invoice_action_create,
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _createInvoice();
+                        }
+                      },
+                    )
+                  : SingleButtonBottomBar(
+                      stickToBottom: true,
+                      text: texts.qr_code_dialog_action_close,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+        },
+      ),
     );
   }
 
