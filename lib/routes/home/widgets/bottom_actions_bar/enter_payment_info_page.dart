@@ -56,7 +56,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                       alignment: Alignment.bottomRight,
                       icon: Image(
                         image: const AssetImage("assets/icons/qr_scan.png"),
-                        color: themeData.primaryIconTheme.color,
+                        color: themeData.iconTheme.color,
                         width: 24.0,
                         height: 24.0,
                       ),
@@ -64,7 +64,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                       onPressed: () => _scanBarcode(),
                     ),
                   ),
-                  style: TextStyle(color: themeData.primaryTextTheme.headlineMedium!.color),
+                  style: FieldTextStyle.textStyle,
                   validator: (value) => errorMessage.isNotEmpty ? errorMessage : null,
                   onFieldSubmitted: (input) async {
                     if (input.isNotEmpty) {
@@ -81,7 +81,6 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                     texts.payment_info_dialog_hint_expanded,
                     style: FieldTextStyle.labelStyle.copyWith(
                       fontSize: 13.0,
-                      color: themeData.isLightTheme ? BreezColors.grey[500] : BreezColors.white[200],
                     ),
                   ),
                 ),
