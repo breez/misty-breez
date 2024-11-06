@@ -38,8 +38,8 @@ class InputCubit extends Cubit<InputState> {
     _decodeInvoiceController.add(InputData(data: input, source: source));
   }
 
-  Future<void> trackPayment(String? paymentDestination) async {
-    _log.info("Tracking incoming payment: $paymentDestination");
+  Future<void> trackPaymentEvents(String? paymentDestination) async {
+    _log.info("Tracking incoming payment events for: $paymentDestination");
     final paymentDestinationIsEmpty = paymentDestination == null || paymentDestination.isEmpty;
     await ServiceInjector().liquidSDK.paymentEventStream.firstWhere((paymentEvent) {
       final payment = paymentEvent.payment;

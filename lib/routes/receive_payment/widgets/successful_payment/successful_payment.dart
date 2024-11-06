@@ -3,7 +3,9 @@ import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widget
 import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment_message.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
-  const SuccessfulPaymentRoute({super.key});
+  final bool particlesEnabled;
+
+  const SuccessfulPaymentRoute({super.key, this.particlesEnabled = true});
 
   @override
   State<StatefulWidget> createState() => SuccessfulPaymentRouteState();
@@ -53,7 +55,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute> with Tic
       if (status == AnimationStatus.reverse) {
         Future.delayed(const Duration(milliseconds: 400), () {
           setState(() {
-            showParticles = true;
+            showParticles = widget.particlesEnabled;
           });
           _particlesController.forward();
         });

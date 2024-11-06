@@ -49,6 +49,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                       children: [
                         if (webhookState.lnurlPayUrl != null)
                           DestinationWidget(
+                            isLnAddress: true,
                             destination: webhookState.lnurlPayUrl!,
                             title: texts.receive_payment_method_lightning_address,
                             infoWidget: const PaymentLimitsMessageBox(),
