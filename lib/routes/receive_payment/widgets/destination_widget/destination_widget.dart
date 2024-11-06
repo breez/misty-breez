@@ -49,8 +49,9 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void didUpdateWidget(covariant DestinationWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    /// Receive pages other than LN Address wait for user input for invoice to be created, hence they rely on didUpdateWidget and not initState
+    // For receive payment pages other than LN Address, user input is required before creating an invoice.
+    // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
+    // initial widget setup.
     if (!widget.isLnAddress) {
       _trackPaymentEvents(getUpdatedDestination(oldWidget));
     }
@@ -128,10 +129,9 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     if (!mounted) return;
     if (isSuccess) {
       final navigator = Navigator.of(context);
-      if (!widget.isLnAddress) {
-        navigator.pop(); // Only pop if destination is not an LN Address
-      }
-      // Show successful payment route
+      // Only pop if the destination is not an LN Address,
+      // as there's no way to 1:1 match payments on the LN Address page.
+      if (!widget.isLnAddress) navigator.pop();
       navigator.push(
         PageRouteBuilder(
           opaque: false,
