@@ -130,7 +130,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       navigator.push(
         PageRouteBuilder(
           opaque: false,
-          pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(),
+          pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(particlesEnabled: false),
         ),
       );
     } else {
