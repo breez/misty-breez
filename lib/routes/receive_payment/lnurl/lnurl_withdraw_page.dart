@@ -19,6 +19,7 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
@@ -63,6 +64,9 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
   }
 
   Future<void> _fetchLightningLimits() async {
+    setState(() {
+      errorMessage = "";
+    });
     final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
     try {
       final response = await paymentLimitsCubit.fetchLightningLimits();
@@ -142,6 +146,20 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
               ),
+            );
+          }
+
+          if (_lightningLimits == null) {
+            if (errorMessage.isEmpty) {
+              return Center(
+                child: Loader(
+                  color: themeData.primaryColor.withOpacity(0.5),
+                ),
+              );
+            }
+            return ScrollableErrorMessageWidget(
+              title: "Failed to retrieve payment limits:",
+              message: texts.reverse_swap_upstream_generic_error_message(errorMessage),
             );
           }
 
@@ -260,23 +278,31 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       ),
       bottomNavigationBar: _loading
           ? null
-          : errorMessage.isNotEmpty
+          : _lightningLimits == null
               ? SingleButtonBottomBar(
                   stickToBottom: true,
-                  text: texts.qr_code_dialog_action_close,
+                  text: texts.invoice_ln_address_action_retry,
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    _fetchLightningLimits();
                   },
                 )
-              : SingleButtonBottomBar(
-                  stickToBottom: true,
-                  text: texts.invoice_action_redeem,
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _withdraw();
-                    }
-                  },
-                ),
+              : errorMessage.isNotEmpty
+                  ? SingleButtonBottomBar(
+                      stickToBottom: true,
+                      text: texts.qr_code_dialog_action_close,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  : SingleButtonBottomBar(
+                      stickToBottom: true,
+                      text: texts.invoice_action_redeem,
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _withdraw();
+                        }
+                      },
+                    ),
     );
   }
 
