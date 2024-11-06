@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/loading_animated_text.dart';
-import 'package:l_breez/widgets/payment_dialogs/processing_payment/processing_payment_title.dart';
+import 'package:l_breez/widgets/processing_payment/processing_payment_title.dart';
 
 class ProcessingPaymentContent extends StatelessWidget {
   final GlobalKey? dialogKey;
