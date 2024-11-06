@@ -95,7 +95,8 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
         final accountState = accountCubit.state;
         setState(() {
           affordableFees = feeOptions
-              .where((f) => f.isAffordable(balanceSat: accountState.balance, amountSat: widget.amountSat))
+              .where((f) => f.isAffordable(
+                  balanceSat: accountState.walletInfo!.balanceSat.toInt(), amountSat: widget.amountSat))
               .toList();
           selectedFeeIndex = (affordableFees.length / 2).floor();
         });

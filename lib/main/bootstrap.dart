@@ -23,6 +23,7 @@ final _log = Logger("Bootstrap");
 
 typedef AppBuilder = Widget Function(
   ServiceInjector serviceInjector,
+  AccountCubit accountCubit,
   SdkConnectivityCubit sdkConnectivityCubit,
 );
 
@@ -46,25 +47,33 @@ Future<void> bootstrap(AppBuilder builder) async {
     final breezLogger = injector.breezLogger;
     breezLogger.registerBreezSdkLiquidLogs(injector.liquidSDK);
     BreezDateUtils.setupLocales();
-    await Firebase.initializeApp(
-      // ignore: undefined_identifier
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if (Firebase.apps.isEmpty) {
+      _log.info("List of Firebase apps: ${Firebase.apps}");
+      await Firebase.initializeApp(
+        name: "breez-technology",
+        // ignore: undefined_identifier
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
 
     final appDir = await getApplicationDocumentsDirectory();
     HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: Directory(p.join(appDir.path, "bloc_storage")),
     );
-    var sdkConnectivityCubit = SdkConnectivityCubit(
+    final accountCubit = AccountCubit(liquidSDK: injector.liquidSDK);
+    final sdkConnectivityCubit = SdkConnectivityCubit(
       liquidSDK: injector.liquidSDK,
       credentialsManager: injector.credentialsManager,
     );
-    _log.info("Reconnect if secure storage has mnemonic.");
-    String? mnemonic = await injector.credentialsManager.restoreMnemonic();
-    if (mnemonic != null) {
-      await sdkConnectivityCubit.reconnect(mnemonic: mnemonic);
+    final isOnboardingComplete = accountCubit.state.isOnboardingComplete;
+    if (isOnboardingComplete) {
+      _log.info("Reconnect if secure storage has mnemonic.");
+      String? mnemonic = await injector.credentialsManager.restoreMnemonic();
+      if (mnemonic != null) {
+        await sdkConnectivityCubit.reconnect(mnemonic: mnemonic);
+      }
     }
-    runApp(builder(injector, sdkConnectivityCubit));
+    runApp(builder(injector, accountCubit, sdkConnectivityCubit));
   }, (error, stackTrace) async {
     if (error is! FlutterErrorDetails) {
       _log.severe("FlutterError: $error", error, stackTrace);

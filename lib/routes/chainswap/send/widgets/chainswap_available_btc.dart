@@ -25,7 +25,7 @@ class WithdrawFundsAvailableBtc extends StatelessWidget {
               child: BlocBuilder<CurrencyCubit, CurrencyState>(
                 builder: (context, currencyState) {
                   return Text(
-                    currencyState.bitcoinCurrency.format(account.balance),
+                    currencyState.bitcoinCurrency.format(account.walletInfo!.balanceSat.toInt()),
                     style: textStyle,
                   );
                 },

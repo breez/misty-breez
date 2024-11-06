@@ -10,25 +10,19 @@ export 'account_state.dart';
 final _log = Logger("AccountCubit");
 
 class AccountCubit extends Cubit<AccountState> with HydratedMixin {
-  final BreezSDKLiquid _liquidSdk;
+  final BreezSDKLiquid liquidSDK;
 
-  AccountCubit(this._liquidSdk) : super(AccountState.initial()) {
+  AccountCubit({
+    required this.liquidSDK,
+  }) : super(AccountState.initial()) {
     hydrate();
-
     _listenAccountChanges();
   }
 
   void _listenAccountChanges() {
     _log.info("Listening to account changes");
-    _liquidSdk.walletInfoStream.distinct().listen((walletInfo) {
-      final newState = state.copyWith(
-        id: walletInfo.pubkey,
-        fingerprint: walletInfo.fingerprint,
-        initial: false,
-        balance: walletInfo.balanceSat.toInt(),
-        pendingReceive: walletInfo.pendingReceiveSat.toInt(),
-        pendingSend: walletInfo.pendingSendSat.toInt(),
-      );
+    liquidSDK.walletInfoStream.distinct().listen((walletInfo) {
+      final newState = state.copyWith(walletInfo: walletInfo);
       _log.info("AccountState changed: $newState");
       emit(newState);
     });
@@ -42,5 +36,9 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   @override
   Map<String, dynamic>? toJson(AccountState state) {
     return state.toJson();
+  }
+
+  void setOnboardingComplete(bool isComplete) {
+    emit(state.copyWith(isOnboardingComplete: isComplete));
   }
 }

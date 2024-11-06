@@ -225,7 +225,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
   void _validatePayment(int amount, bool outgoing) {
     final accountState = context.read<AccountCubit>().state;
-    final balance = accountState.balance;
+    final balance = accountState.walletInfo!.balanceSat.toInt();
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);
   }
