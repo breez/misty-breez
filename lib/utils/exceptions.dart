@@ -28,6 +28,9 @@ String extractExceptionMessage(
   if (exception is PaymentError) {
     return _getPaymentErrorMessage(exception, texts);
   }
+  if (exception is LnUrlPayError) {
+    return _getLnUrlPayErrorMessage(exception, texts);
+  }
   return _extractInnerErrorMessage(exception.toString()) ?? defaultErrorMsg ?? exception.toString();
 }
 
@@ -71,6 +74,36 @@ String _getPaymentErrorMessage(PaymentError error, BreezTranslations texts) {
     message = error.err;
   } else if (error is PaymentError_SignerError) {
     message = "Could not sign the transaction: ${error.err}";
+  }
+  return message;
+}
+
+String _getLnUrlPayErrorMessage(LnUrlPayError error, BreezTranslations texts) {
+  String message = error.toString();
+  if (error is LnUrlPayError_AlreadyPaid) {
+    message = "Invoice already paid";
+  } else if (error is LnUrlPayError_Generic) {
+    message = "Generic error: ${error.err}";
+  } else if (error is LnUrlPayError_InvalidAmount) {
+    message = "Invalid amount: ${error.err}";
+  } else if (error is LnUrlPayError_InvalidInvoice) {
+    message = "Invalid invoice: ${error.err}";
+  } else if (error is LnUrlPayError_InvalidNetwork) {
+    message = "Invalid network: ${error.err}";
+  } else if (error is LnUrlPayError_InvalidUri) {
+    message = "Invalid uri: ${error.err}";
+  } else if (error is LnUrlPayError_InvoiceExpired) {
+    message = "Invoice expired: ${error.err}";
+  } else if (error is LnUrlPayError_PaymentFailed) {
+    message = "Payment failed ${error.err}";
+  } else if (error is LnUrlPayError_PaymentTimeout) {
+    message = "Payment timeout: ${error.err}";
+  } else if (error is LnUrlPayError_RouteNotFound) {
+    message = "Route not found: ${error.err}";
+  } else if (error is LnUrlPayError_RouteTooExpensive) {
+    message = "Route too expensive: ${error.err}";
+  } else if (error is LnUrlPayError_ServiceConnectivity) {
+    message = "Service connectivity: ${error.err}";
   }
   return message;
 }
