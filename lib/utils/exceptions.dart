@@ -31,6 +31,9 @@ String extractExceptionMessage(
   if (exception is LnUrlPayError) {
     return _getLnUrlPayErrorMessage(exception, texts);
   }
+  if (exception is LnUrlWithdrawError) {
+    return _getLnUrlWithdrawErrorMessage(exception, texts);
+  }
   return _extractInnerErrorMessage(exception.toString()) ?? defaultErrorMsg ?? exception.toString();
 }
 
@@ -103,6 +106,24 @@ String _getLnUrlPayErrorMessage(LnUrlPayError error, BreezTranslations texts) {
   } else if (error is LnUrlPayError_RouteTooExpensive) {
     message = "Route too expensive: ${error.err}";
   } else if (error is LnUrlPayError_ServiceConnectivity) {
+    message = "Service connectivity: ${error.err}";
+  }
+  return message;
+}
+
+String _getLnUrlWithdrawErrorMessage(LnUrlWithdrawError error, BreezTranslations texts) {
+  String message = error.toString();
+  if (error is LnUrlWithdrawError_Generic) {
+    message = "LNURL Withdraw error: ${error.err}";
+  } else if (error is LnUrlWithdrawError_InvalidAmount) {
+    message = "Invalid amount: ${error.err}";
+  } else if (error is LnUrlWithdrawError_InvalidInvoice) {
+    message = "Invalid invoice: ${error.err}";
+  } else if (error is LnUrlWithdrawError_InvalidUri) {
+    message = "Invalid uri: ${error.err}";
+  } else if (error is LnUrlWithdrawError_InvoiceNoRoutingHints) {
+    message = "No routing hints: ${error.err}";
+  } else if (error is LnUrlWithdrawError_ServiceConnectivity) {
     message = "Service connectivity: ${error.err}";
   }
   return message;
