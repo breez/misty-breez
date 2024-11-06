@@ -78,6 +78,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   }
 
   void _trackNewPayments() {
+    _log.info("Tracking new payments.");
     final paymentsCubit = context.read<PaymentsCubit>();
     _receivedPaymentSubscription?.cancel();
     _receivedPaymentSubscription = paymentsCubit.stream
@@ -106,7 +107,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void _trackPaymentEvents(String? destination) {
     final inputCubit = context.read<InputCubit>();
     inputCubit
-        .trackPayment(destination)
+        .trackPaymentEvents(destination)
         .then((_) => _onPaymentFinished(true))
         .catchError((e) => _onTrackPaymentError(e));
   }
