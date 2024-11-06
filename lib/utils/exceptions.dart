@@ -45,9 +45,9 @@ String _getPaymentErrorMessage(PaymentError error, BreezTranslations texts) {
   } else if (error is PaymentError_AmountOutOfRange) {
     message = "Amount is out of range";
   } else if (error is PaymentError_AmountMissing) {
-    message = "Amount is missing ${error.err}";
+    message = "Amount is missing: ${error.err}";
   } else if (error is PaymentError_InvalidNetwork) {
-    message = "Invalid network ${error.err}";
+    message = "Invalid network: ${error.err}";
   } else if (error is PaymentError_Generic) {
     message = "Payment error: ${error.err}";
   } else if (error is PaymentError_InvalidOrExpiredFees) {
@@ -55,7 +55,7 @@ String _getPaymentErrorMessage(PaymentError error, BreezTranslations texts) {
   } else if (error is PaymentError_InsufficientFunds) {
     message = texts.invoice_payment_validator_error_insufficient_local_balance;
   } else if (error is PaymentError_InvalidDescription) {
-    message = "Invalid description ${error.err}";
+    message = "Invalid description: ${error.err}";
   } else if (error is PaymentError_InvalidInvoice) {
     message = "The specified invoice is not valid: ${error.err}";
   } else if (error is PaymentError_InvalidPreimage) {
@@ -95,7 +95,7 @@ String _getLnUrlPayErrorMessage(LnUrlPayError error, BreezTranslations texts) {
   } else if (error is LnUrlPayError_InvoiceExpired) {
     message = "Invoice expired: ${error.err}";
   } else if (error is LnUrlPayError_PaymentFailed) {
-    message = "Payment failed ${error.err}";
+    message = "Payment failed: ${error.err}";
   } else if (error is LnUrlPayError_PaymentTimeout) {
     message = "Payment timeout: ${error.err}";
   } else if (error is LnUrlPayError_RouteNotFound) {
