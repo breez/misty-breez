@@ -49,7 +49,7 @@ String _getPaymentErrorMessage(PaymentError error, BreezTranslations texts) {
   } else if (error is PaymentError_InvalidNetwork) {
     message = "Invalid network ${error.err}";
   } else if (error is PaymentError_Generic) {
-    message = "Generic error: ${error.err}";
+    message = "Payment error: ${error.err}";
   } else if (error is PaymentError_InvalidOrExpiredFees) {
     message = "The provided fees have expired";
   } else if (error is PaymentError_InsufficientFunds) {
@@ -83,7 +83,7 @@ String _getLnUrlPayErrorMessage(LnUrlPayError error, BreezTranslations texts) {
   if (error is LnUrlPayError_AlreadyPaid) {
     message = "Invoice already paid";
   } else if (error is LnUrlPayError_Generic) {
-    message = "Generic error: ${error.err}";
+    message = "LNURL Payment error: ${error.err}";
   } else if (error is LnUrlPayError_InvalidAmount) {
     message = "Invalid amount: ${error.err}";
   } else if (error is LnUrlPayError_InvalidInvoice) {
