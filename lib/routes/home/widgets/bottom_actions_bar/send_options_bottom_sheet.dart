@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_action_item_image.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_dialog.dart';
+import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_page.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class SendOptionsBottomSheet extends StatefulWidget {
@@ -38,7 +38,11 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
                 texts.bottom_action_bar_paste_invoice,
                 style: bottomSheetTextStyle,
               ),
-              onTap: () => _showEnterPaymentInfoDialog(context, widget.firstPaymentItemKey),
+              onTap: () {
+                final navigatorState = Navigator.of(context);
+                navigatorState.pop();
+                navigatorState.pushNamed(EnterPaymentInfoPage.routeName);
+              },
             ),
             Divider(
               height: 0.0,
@@ -64,21 +68,6 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
           ],
         );
       },
-    );
-  }
-
-  Future<void> _showEnterPaymentInfoDialog(
-    BuildContext context,
-    GlobalKey<State<StatefulWidget>> firstPaymentItemKey,
-  ) async {
-    Navigator.of(context).pop();
-    await showDialog(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => EnterPaymentInfoDialog(
-        paymentItemKey: firstPaymentItemKey,
-      ),
     );
   }
 }
