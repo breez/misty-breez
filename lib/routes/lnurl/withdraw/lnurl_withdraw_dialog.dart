@@ -1,5 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -7,6 +8,8 @@ import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/loading_animated_text.dart';
+import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
+import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
 final _log = Logger("LNURLWithdrawDialog");
@@ -81,55 +84,74 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return FadeTransition(
-      opacity: _opacityAnimation,
-      child: AlertDialog(
-        title: Text(
-          texts.lnurl_withdraw_dialog_title,
-          style: themeData.dialogTheme.titleTextStyle,
-          textAlign: TextAlign.center,
-        ),
-        content: FutureBuilder(
-          future: _future,
-          builder: (context, snapshot) {
-            final data = snapshot.data;
-            final error = snapshot.error ?? data?.error;
-            _log.info("Building with data $data, error $error");
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
+            systemNavigationBarColor: Theme.of(context).colorScheme.surface,
+          ),
+      child: FadeTransition(
+        opacity: _opacityAnimation,
+        child: Dialog.fullscreen(
+          child: FutureBuilder(
+            future: _future,
+            builder: (context, snapshot) {
+              final data = snapshot.data;
+              final error = snapshot.error ?? data?.error;
+              _log.info("Building with data $data, error $error");
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                error != null
-                    ? Text(
-                        texts.lnurl_withdraw_dialog_error(extractExceptionMessage(error, texts)),
-                        style: themeData.dialogTheme.contentTextStyle,
-                        textAlign: TextAlign.center,
-                      )
-                    : LoadingAnimatedText(
-                        loadingMessage: texts.lnurl_withdraw_dialog_wait,
-                        textStyle: themeData.dialogTheme.contentTextStyle,
-                        textAlign: TextAlign.center,
+              final errorMessage = extractExceptionMessage(error ?? "", texts);
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Expanded(child: SizedBox.expand()),
+                    Text(
+                      texts.lnurl_withdraw_dialog_title,
+                      style: themeData.dialogTheme.titleTextStyle,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24.0, bottom: 8.0),
+                      child: Column(
+                        children: [
+                          if (error == null) ...[
+                            LoadingAnimatedText(
+                              loadingMessage: texts.lnurl_withdraw_dialog_wait,
+                              textStyle: themeData.dialogTheme.contentTextStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                              child: Image.asset(
+                                themeData.customData.loaderAssetPath,
+                                gaplessPlayback: true,
+                              ),
+                            ),
+                          ],
+                          if (error != null) ...[
+                            ScrollableErrorMessageWidget(
+                              title: "${texts.lnurl_withdraw_dialog_error_unknown}:",
+                              message: errorMessage,
+                              padding: EdgeInsets.zero,
+                            ),
+                          ]
+                        ],
                       ),
-                error != null
-                    ? const SizedBox(height: 16.0)
-                    : Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                        child: Image.asset(
-                          themeData.customData.loaderAssetPath,
-                          gaplessPlayback: true,
-                        ),
+                    ),
+                    const Expanded(child: SizedBox.expand()),
+                    Theme(
+                      data: breezDarkTheme,
+                      child: SingleButtonBottomBar(
+                        text: texts.lnurl_withdraw_dialog_action_close,
+                        stickToBottom: false,
+                        onPressed: () => _onFinish(null),
                       ),
-                TextButton(
-                  onPressed: () => _onFinish(null),
-                  child: Text(
-                    texts.lnurl_withdraw_dialog_action_close,
-                    style: themeData.primaryTextTheme.labelLarge,
-                  ),
-                )
-              ],
-            );
-          },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
