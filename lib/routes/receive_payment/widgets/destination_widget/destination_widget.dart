@@ -37,8 +37,7 @@ class DestinationWidget extends StatefulWidget {
 }
 
 class _DestinationWidgetState extends State<DestinationWidget> {
-  StreamSubscription<PaymentsState>? _paymentStateSubscription;
-  final Set<String> _processedPayments = {};
+  StreamSubscription<PaymentData?>? _receivedPaymentSubscription;
 
   @override
   void initState() {
@@ -74,39 +73,34 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   @override
   void dispose() {
-    _paymentStateSubscription?.cancel();
-    _processedPayments.clear();
+    _receivedPaymentSubscription?.cancel();
     super.dispose();
   }
 
   void _trackNewPayments() {
     final paymentsCubit = context.read<PaymentsCubit>();
-    _paymentStateSubscription?.cancel();
-    _paymentStateSubscription = paymentsCubit.stream
-        .skip(1)
-        .distinct((previous, next) => previous.payments.first == next.payments.first)
+    _receivedPaymentSubscription?.cancel();
+    _receivedPaymentSubscription = paymentsCubit.stream
+        .skip(1) // Skips the initial state
+        .distinct((previous, next) => previous.payments.first.id == next.payments.first.id)
+        .map((paymentState) => paymentState.payments.isNotEmpty ? paymentState.payments.first : null)
+        .where(
+          (payment) =>
+              payment != null &&
+              payment.paymentType == PaymentType.receive &&
+              payment.status == PaymentState.pending,
+        )
         .listen(
-          (paymentState) => handleNewPayment(paymentState),
-          onError: (e) => _onTrackPaymentError(e),
+      (payment) {
+        // Null cases are filtered out on where clause
+        final newPayment = payment!;
+        _log.info(
+          "Payment Received! Id: ${newPayment.id} Destination: ${newPayment.destination}, Status: ${newPayment.status}",
         );
-  }
-
-  void handleNewPayment(PaymentsState paymentState) {
-    final latestPayment = paymentState.payments.first;
-    final paymentId = latestPayment.id;
-    if (_processedPayments.contains(paymentId)) return;
-
-    final isPendingOrComplete =
-        (latestPayment.status == PaymentState.pending || latestPayment.status == PaymentState.complete);
-    final isPaymentReceived = latestPayment.paymentType == PaymentType.receive && isPendingOrComplete;
-
-    if (isPaymentReceived) {
-      _log.info(
-        "Payment Received! Destination: ${latestPayment.destination}, Status: ${latestPayment.status}",
-      );
-      _processedPayments.add(paymentId);
-    }
-    _onPaymentFinished(isPaymentReceived);
+        _onPaymentFinished(true);
+      },
+      onError: (e) => _onTrackPaymentError(e),
+    );
   }
 
   void _trackPaymentEvents(String? destination) {
