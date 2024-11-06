@@ -117,7 +117,6 @@ class _LnUrlPaymentHeaderState extends State<LnUrlPaymentHeader> {
           if (widget.errorMessage.isNotEmpty) ...[
             AutoSizeText(
               widget.errorMessage,
-              maxLines: 3,
               textAlign: TextAlign.center,
               style: themeData.primaryTextTheme.displaySmall?.copyWith(
                 fontSize: 14.3,
