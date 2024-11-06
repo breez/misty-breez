@@ -180,4 +180,11 @@ extension ThemeExtensions on ThemeData {
           height: 1.16,
           letterSpacing: 0.39,
         );
+
+  TextStyle get errorTextStyle => TextStyle(
+        color: colorScheme.error,
+        fontSize: 10.5,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+      );
 }

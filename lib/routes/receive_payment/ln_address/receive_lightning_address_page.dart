@@ -7,6 +7,7 @@ import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destin
 import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget_placeholder.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_limits_message_box.dart';
 import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 
 class ReceiveLightningAddressPage extends StatefulWidget {
@@ -42,31 +43,32 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
         return Scaffold(
           body: webhookState.isLoading
               ? const DestinationWidgetPlaceholder()
-              : Padding(
-                  padding: const EdgeInsets.only(bottom: 40.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        if (webhookState.lnurlPayUrl != null)
-                          DestinationWidget(
-                            isLnAddress: true,
-                            destination: webhookState.lnurlPayUrl!,
-                            title: texts.receive_payment_method_lightning_address,
-                            infoWidget: const PaymentLimitsMessageBox(),
-                          ),
-                        if (webhookState.lnurlPayError != null)
-                          _ErrorMessage(
-                            message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
-                          ),
-                      ],
+              : (webhookState.lnurlPayError != null)
+                  ? ScrollableErrorMessageWidget(
+                      title: webhookState.lnurlPayErrorTitle ?? "LN Service error:",
+                      message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(bottom: 40.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            if (webhookState.lnurlPayUrl != null)
+                              DestinationWidget(
+                                isLnAddress: true,
+                                destination: webhookState.lnurlPayUrl!,
+                                title: texts.receive_payment_method_lightning_address,
+                                infoWidget: const PaymentLimitsMessageBox(),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
           bottomNavigationBar: webhookState.lnurlPayError != null
               ? SingleButtonBottomBar(
                   stickToBottom: true,
                   text: texts.invoice_ln_address_action_retry,
-                  onPressed: () => _refreshLnurlPay,
+                  onPressed: () => _refreshLnurlPay(),
                 )
               : SingleButtonBottomBar(
                   stickToBottom: true,
@@ -77,27 +79,6 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                 ),
         );
       },
-    );
-  }
-}
-
-class _ErrorMessage extends StatelessWidget {
-  final String message;
-
-  const _ErrorMessage({
-    required this.message,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40.0),
-        child: Text(
-          message,
-          textAlign: TextAlign.center,
-        ),
-      ),
     );
   }
 }

@@ -47,6 +47,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   }
 
   Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
+    emit(state.copyWith(errorMessage: ""));
     try {
       final lightningPaymentLimits = await _liquidSdk.instance!.fetchLightningLimits();
       emit(state.copyWith(lightningPaymentLimits: lightningPaymentLimits, errorMessage: ""));
@@ -60,6 +61,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   }
 
   Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() async {
+    emit(state.copyWith(errorMessage: ""));
     try {
       final onchainPaymentLimits = await _liquidSdk.instance!.fetchOnchainLimits();
       emit(state.copyWith(onchainPaymentLimits: onchainPaymentLimits, errorMessage: ""));

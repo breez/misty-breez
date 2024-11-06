@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_info_message_box.dart';
 import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 
 class PaymentLimitsMessageBox extends StatelessWidget {
   const PaymentLimitsMessageBox({super.key});
@@ -16,14 +17,10 @@ class PaymentLimitsMessageBox extends StatelessWidget {
     return BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
       builder: (BuildContext context, PaymentLimitsState snapshot) {
         if (snapshot.hasError) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 0),
-              child: Text(
-                texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
-                textAlign: TextAlign.center,
-              ),
-            ),
+          return ScrollableErrorMessageWidget(
+            title: "Failed to retrieve payment limits:",
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+            message: texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
           );
         }
         if (snapshot.lightningPaymentLimits == null) {
