@@ -100,11 +100,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       maxNetworkLimit,
     );
     final rawMaxSat = min(maxNetworkLimit, maxSendableSat);
+    final effectiveMaxSat = max(minNetworkLimit, rawMaxSat);
     _updateFormFields(amountSat: minSendableSat);
     final errorMessage = validatePayment(
       amountSat: _isFixedAmount ? minSendableSat : effectiveMinSat,
       effectiveMinSat: effectiveMinSat,
-      effectiveMaxSat: rawMaxSat,
+      rawMaxSat: rawMaxSat,
+      effectiveMaxSat: effectiveMaxSat,
       throwError: true,
     );
     if (errorMessage == null && _isFixedAmount) {
@@ -389,6 +391,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   String? validatePayment({
     required int amountSat,
     required int effectiveMinSat,
+    int? rawMaxSat,
     required int effectiveMaxSat,
     bool throwError = false,
   }) {
@@ -408,7 +411,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
       message =
           "Payment amount is outside the allowed limits, which range from $minNetworkLimitFormatted to $maxNetworkLimitFormatted";
-    } else if (effectiveMaxSat < effectiveMinSat) {
+    } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
       final networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,
         includeDisplayName: true,
