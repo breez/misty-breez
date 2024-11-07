@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,44 +33,48 @@ class LNURLWithdrawDialog extends StatefulWidget {
 }
 
 class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTickerProviderStateMixin {
-  late Animation<double> _opacityAnimation;
-  Future<LNURLPageResult>? _future;
-  var finishCalled = false;
+  late final AnimationController _controller;
+  late final Animation<double> _opacityAnimation;
+  Future<LNURLPageResult>? _lnurlWithdrawFuture;
+  bool finishCalled = false;
 
   @override
   void initState() {
     super.initState();
-    final controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(
+    _setupAnimation();
+    _startWithdrawProcess();
+  }
+
+  void _setupAnimation() {
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1))..value = 1.0;
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: controller,
+        parent: _controller,
         curve: Curves.ease,
       ),
     );
-    controller.value = 1.0;
+  }
+
+  void _startWithdrawProcess() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _future = _withdraw(context).then((result) {
-          if (result.error == null && mounted) {
-            controller.addStatusListener((status) {
-              _log.info("Animation status $status");
-              if (status == AnimationStatus.dismissed && mounted) {
-                finishCalled = true;
-                widget.onFinish(result);
-              }
-            });
-            controller.reverse();
-          }
-          return result;
-        });
+        _lnurlWithdrawFuture = _lnurlWithdraw().then(
+          _processResultWithAnimation,
+        );
       });
     });
+  }
+
+  FutureOr<LNURLPageResult> _processResultWithAnimation(result) {
+    if (mounted && result.error == null) {
+      _controller.addStatusListener((status) {
+        if (status == AnimationStatus.dismissed) {
+          _onFinish(result);
+        }
+      });
+      _controller.reverse();
+    }
+    return result;
   }
 
   @override
@@ -85,59 +91,49 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     final themeData = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
-            systemNavigationBarColor: Theme.of(context).colorScheme.surface,
-          ),
+      value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
+        systemNavigationBarColor: themeData.colorScheme.surface,
+      ),
       child: FadeTransition(
         opacity: _opacityAnimation,
         child: Dialog.fullscreen(
-          child: FutureBuilder(
-            future: _future,
+          child: FutureBuilder<LNURLPageResult>(
+            future: _lnurlWithdrawFuture,
             builder: (context, snapshot) {
-              final data = snapshot.data;
-              final error = snapshot.error ?? data?.error;
-              _log.info("Building with data $data, error $error");
+              final snapshotError = snapshot.error ?? snapshot.data?.error;
 
-              final errorMessage = extractExceptionMessage(error ?? "", texts);
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Expanded(child: SizedBox.expand()),
                     Text(
                       texts.lnurl_withdraw_dialog_title,
                       style: themeData.dialogTheme.titleTextStyle,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 24.0, bottom: 8.0),
-                      child: Column(
+                    const SizedBox(height: 24),
+                    if (snapshotError == null)
+                      Column(
                         children: [
-                          if (error == null) ...[
-                            LoadingAnimatedText(
-                              loadingMessage: texts.lnurl_withdraw_dialog_wait,
-                              textStyle: themeData.dialogTheme.contentTextStyle,
-                              textAlign: TextAlign.center,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                              child: Image.asset(
-                                themeData.customData.loaderAssetPath,
-                                gaplessPlayback: true,
-                              ),
-                            ),
-                          ],
-                          if (error != null) ...[
-                            ScrollableErrorMessageWidget(
-                              title: "${texts.lnurl_withdraw_dialog_error_unknown}:",
-                              message: errorMessage,
-                              padding: EdgeInsets.zero,
-                            ),
-                          ]
+                          LoadingAnimatedText(
+                            loadingMessage: texts.lnurl_withdraw_dialog_wait,
+                            textStyle: themeData.dialogTheme.contentTextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          Image.asset(
+                            themeData.customData.loaderAssetPath,
+                            gaplessPlayback: true,
+                          ),
                         ],
+                      )
+                    else
+                      ScrollableErrorMessageWidget(
+                        title: "${texts.lnurl_withdraw_dialog_error_unknown}:",
+                        message: extractExceptionMessage(snapshotError, texts),
+                        padding: EdgeInsets.zero,
                       ),
-                    ),
                     const Expanded(child: SizedBox.expand()),
                     Theme(
                       data: breezDarkTheme,
@@ -157,45 +153,39 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     );
   }
 
-  Future<LNURLPageResult> _withdraw(BuildContext context) async {
-    _log.info("Withdraw ${widget.amountSats} sats");
-    final texts = context.texts();
+  Future<LNURLPageResult> _lnurlWithdraw() async {
     final lnurlCubit = context.read<LnUrlCubit>();
-    final description = widget.requestData.defaultDescription;
-
+    _log.info(
+      "LNURL withdraw of ${widget.amountSats} sats where "
+      "min is ${widget.requestData.minWithdrawable.toInt() ~/ 1000} sats "
+      "and max is ${widget.requestData.maxWithdrawable.toInt() ~/ 1000} sats.",
+    );
     try {
-      _log.info(
-        "LNURL withdraw of ${widget.amountSats} sats where "
-        "min is ${widget.requestData.minWithdrawable.toInt() ~/ 1000} sats "
-        "and max is ${widget.requestData.maxWithdrawable.toInt() ~/ 1000} sats.",
-      );
       final req = LnUrlWithdrawRequest(
         amountMsat: BigInt.from(widget.amountSats * 1000),
         data: widget.requestData,
-        description: description,
+        description: widget.requestData.defaultDescription,
       );
-      final resp = await lnurlCubit.lnurlWithdraw(req: req);
-      if (resp is LnUrlWithdrawResult_Ok) {
-        final paymentHash = resp.data.invoice.paymentHash;
-        _log.info("LNURL withdraw success for $paymentHash");
-        return const LNURLPageResult(protocol: LnUrlProtocol.withdraw);
-      } else if (resp is LnUrlWithdrawResult_ErrorStatus) {
-        final reason = resp.data.reason;
-        _log.info("LNURL withdraw failed: $reason");
-        return LNURLPageResult(
-          protocol: LnUrlProtocol.withdraw,
-          error: reason,
-        );
-      } else {
-        _log.warning("Unknown response from lnurlWithdraw: $resp");
-        return LNURLPageResult(
-          protocol: LnUrlProtocol.withdraw,
-          error: texts.lnurl_payment_page_unknown_error,
-        );
-      }
+      final result = await lnurlCubit.lnurlWithdraw(req: req);
+      return _handleLnUrlWithdrawResult(result);
     } catch (e) {
       _log.warning("Error withdrawing LNURL payment", e);
       return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: e);
+    }
+  }
+
+  LNURLPageResult _handleLnUrlWithdrawResult(LnUrlWithdrawResult result) {
+    final texts = context.texts();
+
+    if (result is LnUrlWithdrawResult_Ok) {
+      _log.info("LNURL withdraw success for ${result.data.invoice.paymentHash}");
+      return const LNURLPageResult(protocol: LnUrlProtocol.withdraw);
+    } else if (result is LnUrlWithdrawResult_ErrorStatus) {
+      _log.warning("LNURL withdraw failed: ${result.data.reason}");
+      return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: result.data.reason);
+    } else {
+      _log.warning("Unknown response from lnurlWithdraw: $result");
+      return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: texts.lnurl_payment_page_unknown_error);
     }
   }
 
@@ -203,7 +193,9 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     if (finishCalled) {
       return;
     }
-    finishCalled = true;
+    setState(() {
+      finishCalled = true;
+    });
     _log.info("Finishing with result $result");
     widget.onFinish(result);
   }
