@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,6 +43,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
   bool _isFixedAmount = false;
   bool _loading = true;
+  bool _isFormEnabled = true;
   bool _isCalculatingFees = false;
   String errorMessage = "";
   LightningPaymentLimitsResponse? _lightningLimits;
@@ -87,28 +89,31 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   }
 
   Future<void> _handleLightningPaymentLimitsResponse() async {
+    final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
+    final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
     final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
     final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
     final effectiveMinSat = min(
-      max(_lightningLimits!.send.minSat.toInt(), minSendableSat),
-      _lightningLimits!.send.maxSat.toInt(),
+      max(minNetworkLimit, minSendableSat),
+      maxNetworkLimit,
     );
-    final effectiveMaxSat = min(_lightningLimits!.send.maxSat.toInt(), maxSendableSat);
+    final rawMaxSat = min(maxNetworkLimit, maxSendableSat);
+    _updateFormFields(amountSat: minSendableSat);
     final errorMessage = validatePayment(
       amountSat: _isFixedAmount ? minSendableSat : effectiveMinSat,
       effectiveMinSat: effectiveMinSat,
-      effectiveMaxSat: effectiveMaxSat,
+      effectiveMaxSat: rawMaxSat,
       throwError: true,
     );
-    if (errorMessage == null) {
-      await _updateFormFields(amountSat: effectiveMaxSat);
+    if (errorMessage == null && _isFixedAmount) {
+      await _prepareLnUrlPayment(rawMaxSat);
     }
   }
 
-  Future<void> _updateFormFields({
+  void _updateFormFields({
     required int amountSat,
-  }) async {
-    if (_isFixedAmount) {
+  }) {
+    if (!_isFixedAmount) {
       final currencyCubit = context.read<CurrencyCubit>();
       final currencyState = currencyCubit.state;
 
@@ -116,11 +121,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         amountSat,
         includeDisplayName: false,
       );
-      _descriptionController.text = widget.comment ?? "";
-      await _prepareLnUrlPayment(amountSat);
-    } else if (_amountFocusNode.canRequestFocus) {
-      _amountFocusNode.requestFocus();
     }
+    _descriptionController.text = widget.comment ?? "";
   }
 
   Future<void> _prepareLnUrlPayment(int amountSat) async {
@@ -189,13 +191,18 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           String payeeName = metadataMap["text/identifier"] ?? widget.requestData.domain;
           String? metadataText = metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
 
+          final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
+          final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
           final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
           final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
           final effectiveMinSat = min(
-            max(_lightningLimits!.send.minSat.toInt(), minSendableSat),
-            _lightningLimits!.send.maxSat.toInt(),
+            max(minNetworkLimit, minSendableSat),
+            maxNetworkLimit,
           );
-          final effectiveMaxSat = min(_lightningLimits!.send.maxSat.toInt(), maxSendableSat);
+          final effectiveMaxSat = max(
+            minNetworkLimit,
+            min(maxNetworkLimit, maxSendableSat),
+          );
 
           return Form(
             key: _formKey,
@@ -228,7 +235,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         texts: texts,
                         bitcoinCurrency: currencyState.bitcoinCurrency,
                         focusNode: _amountFocusNode,
-                        autofocus: true,
+                        autofocus: _isFormEnabled && errorMessage.isEmpty,
+                        enabled: _isFormEnabled,
                         controller: _amountController,
                         validatorFn: (amountSat) => validatePayment(
                           amountSat: amountSat,
@@ -275,6 +283,17 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           },
                         ),
                       ),
+                      if (errorMessage.isNotEmpty) ...[
+                        const SizedBox(height: 8.0),
+                        AutoSizeText(
+                          errorMessage,
+                          maxLines: 3,
+                          textAlign: TextAlign.left,
+                          style: FieldTextStyle.labelStyle.copyWith(
+                            color: themeData.colorScheme.error,
+                          ),
+                        ),
+                      ],
                     ],
                     if (_prepareResponse != null && _isFixedAmount) ...[
                       Padding(
@@ -301,6 +320,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     ],
                     if (widget.requestData.commentAllowed > 0) ...[
                       LnUrlPaymentComment(
+                        enabled: _isFormEnabled,
                         descriptionController: _descriptionController,
                         maxCommentLength: widget.requestData.commentAllowed.toInt(),
                       )
@@ -380,7 +400,23 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       message = "Failed to retrieve network payment limits. Please try again later.";
     }
 
-    if (amountSat > effectiveMaxSat) {
+    if (_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
+      final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
+      final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
+      final minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
+      final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
+      message =
+          "Payment amount is outside the allowed limits, which range from $minNetworkLimitFormatted to $maxNetworkLimitFormatted";
+    } else if (effectiveMaxSat < effectiveMinSat) {
+      final networkLimit = currencyState.bitcoinCurrency.format(
+        effectiveMinSat,
+        includeDisplayName: true,
+      );
+      message = texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit);
+      setState(() {
+        _isFormEnabled = false;
+      });
+    } else if (amountSat > effectiveMaxSat) {
       final networkLimit = "(${currencyState.bitcoinCurrency.format(
         effectiveMaxSat,
         includeDisplayName: true,
