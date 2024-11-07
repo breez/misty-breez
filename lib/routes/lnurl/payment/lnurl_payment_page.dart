@@ -345,56 +345,41 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           );
         },
       ),
-      bottomNavigationBar: errorMessage.isNotEmpty
+      bottomNavigationBar: _lightningLimits == null
           ? SingleButtonBottomBar(
               stickToBottom: true,
-              text: texts.qr_code_dialog_action_close,
+              text: texts.invoice_ln_address_action_retry,
               onPressed: () {
-                Navigator.of(context).pop();
+                _fetchLightningLimits();
               },
             )
-          : !_isFixedAmount
+          : errorMessage.isNotEmpty
               ? SingleButtonBottomBar(
                   stickToBottom: true,
-                  text: texts.lnurl_fetch_invoice_action_continue,
-                  onPressed: () async {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      final currencyCubit = context.read<CurrencyCubit>();
-                      final currencyState = currencyCubit.state;
-                      final amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
-                      final amountMsat = BigInt.from(amountSat * 1000);
-                      final requestData = widget.requestData.copyWith(
-                        minSendable: amountMsat,
-                        maxSendable: amountMsat,
-                      );
-                      PrepareLnUrlPayResponse? prepareResponse =
-                          await Navigator.of(context).push<PrepareLnUrlPayResponse?>(
-                        FadeInRoute<PrepareLnUrlPayResponse?>(
-                          builder: (_) => BlocProvider(
-                            create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
-                            child: LnUrlPaymentPage(
-                              requestData: requestData,
-                              comment: _descriptionController.text,
-                            ),
-                          ),
-                        ),
-                      );
-                      if (prepareResponse == null || !context.mounted) {
-                        return Future.value();
-                      }
-                      Navigator.pop(context, prepareResponse);
-                    }
+                  text: texts.qr_code_dialog_action_close,
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
                 )
-              : _prepareResponse != null
+              : !_isFixedAmount
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
-                      text: texts.lnurl_payment_page_action_pay,
+                      text: texts.lnurl_fetch_invoice_action_continue,
                       onPressed: () async {
-                        Navigator.pop(context, _prepareResponse);
+                        if (_formKey.currentState?.validate() ?? false) {
+                          await _openConfirmationPage();
+                        }
                       },
                     )
-                  : const SizedBox.shrink(),
+                  : _prepareResponse != null
+                      ? SingleButtonBottomBar(
+                          stickToBottom: true,
+                          text: texts.lnurl_payment_page_action_pay,
+                          onPressed: () async {
+                            Navigator.pop(context, _prepareResponse);
+                          },
+                        )
+                      : const SizedBox.shrink(),
     );
   }
 
@@ -464,6 +449,34 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final balance = accountState.walletInfo!.balanceSat.toInt();
     final lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+  }
+
+  Future<void> _openConfirmationPage() async {
+    final currencyCubit = context.read<CurrencyCubit>();
+    final currencyState = currencyCubit.state;
+    final amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
+    final amountMsat = BigInt.from(amountSat * 1000);
+    final requestData = widget.requestData.copyWith(
+      minSendable: amountMsat,
+      maxSendable: amountMsat,
+    );
+    PrepareLnUrlPayResponse? prepareResponse = await Navigator.of(context).push<PrepareLnUrlPayResponse?>(
+      FadeInRoute<PrepareLnUrlPayResponse?>(
+        builder: (_) => BlocProvider(
+          create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+          child: LnUrlPaymentPage(
+            requestData: requestData,
+            comment: _descriptionController.text,
+          ),
+        ),
+      ),
+    );
+    if (prepareResponse == null || !context.mounted) {
+      return Future.value();
+    }
+    if (mounted) {
+      Navigator.pop(context, prepareResponse);
+    }
   }
 }
 
