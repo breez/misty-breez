@@ -109,6 +109,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       effectiveMaxSat: effectiveMaxSat,
       throwError: true,
     );
+    _updateFormFields(amountSat: effectiveMinSat);
     if (errorMessage == null && _isFixedAmount) {
       await _prepareLnUrlPayment(rawMaxSat);
     }
