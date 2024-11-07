@@ -72,8 +72,9 @@ class AccountPage extends StatelessWidget {
             if (showSliver) {
               slivers.add(
                 PaymentsList(
-                  _kPaymentListItemHeight,
-                  firstPaymentItemKey,
+                  paymentsList: filteredPayments,
+                  paymentItemHeight: _kPaymentListItemHeight,
+                  firstPaymentItemKey: firstPaymentItemKey,
                 ),
               );
               slivers.add(
