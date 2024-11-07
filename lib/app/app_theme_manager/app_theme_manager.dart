@@ -17,20 +17,20 @@ class AppThemeManager extends StatelessWidget {
         if (savedTheme != null) {
           controller.setTheme(savedTheme);
         } else {
-          controller.setTheme('light');
+          controller.setTheme('dark');
           controller.forgetSavedTheme();
         }
       },
       themes: <AppTheme>[
         AppTheme(
-          id: 'light',
-          data: breezLightTheme,
-          description: 'Blue Theme',
-        ),
-        AppTheme(
           id: 'dark',
           data: breezDarkTheme,
           description: 'Dark Theme',
+        ),
+        AppTheme(
+          id: 'light',
+          data: breezLightTheme,
+          description: 'Blue Theme',
         ),
       ],
       child: ThemeConsumer(
