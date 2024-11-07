@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
+import 'package:flutter_svg/svg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 // ignore: uri_does_not_exist
@@ -31,6 +32,7 @@ Future<void> bootstrap(AppBuilder builder) async {
   // runZonedGuarded wrapper is required to log Dart errors.
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
+    await _precacheSvgImages();
     SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
     );
@@ -87,5 +89,16 @@ Future<void> _initializeLiquidSdk() async {
   } catch (error, stackTrace) {
     _log.severe("Failed to initialize Liquid SDK: $error", error, stackTrace);
     runApp(BootstrapErrorPage(error: error, stackTrace: stackTrace));
+  }
+}
+
+Future<void> _precacheSvgImages() async {
+  final assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+  final assets = assetManifest.listAssets();
+
+  final svgPaths = assets.where((path) => path.endsWith('.svg'));
+  for (final svgPath in svgPaths) {
+    final loader = SvgAssetLoader(svgPath);
+    await svg.cache.putIfAbsent(loader.cacheKey(null), () => loader.loadBytes(null));
   }
 }
