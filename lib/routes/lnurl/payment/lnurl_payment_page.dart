@@ -345,41 +345,43 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           );
         },
       ),
-      bottomNavigationBar: _lightningLimits == null
-          ? SingleButtonBottomBar(
-              stickToBottom: true,
-              text: texts.invoice_ln_address_action_retry,
-              onPressed: () {
-                _fetchLightningLimits();
-              },
-            )
-          : errorMessage.isNotEmpty
+      bottomNavigationBar: _loading
+          ? null
+          : _lightningLimits == null
               ? SingleButtonBottomBar(
                   stickToBottom: true,
-                  text: texts.qr_code_dialog_action_close,
+                  text: texts.invoice_ln_address_action_retry,
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    _fetchLightningLimits();
                   },
                 )
-              : !_isFixedAmount
+              : errorMessage.isNotEmpty
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
-                      text: texts.lnurl_fetch_invoice_action_continue,
-                      onPressed: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          await _openConfirmationPage();
-                        }
+                      text: texts.qr_code_dialog_action_close,
+                      onPressed: () {
+                        Navigator.of(context).pop();
                       },
                     )
-                  : _prepareResponse != null
+                  : !_isFixedAmount
                       ? SingleButtonBottomBar(
                           stickToBottom: true,
-                          text: texts.lnurl_payment_page_action_pay,
+                          text: texts.lnurl_fetch_invoice_action_continue,
                           onPressed: () async {
-                            Navigator.pop(context, _prepareResponse);
+                            if (_formKey.currentState?.validate() ?? false) {
+                              await _openConfirmationPage();
+                            }
                           },
                         )
-                      : const SizedBox.shrink(),
+                      : _prepareResponse != null
+                          ? SingleButtonBottomBar(
+                              stickToBottom: true,
+                              text: texts.lnurl_payment_page_action_pay,
+                              onPressed: () async {
+                                Navigator.pop(context, _prepareResponse);
+                              },
+                            )
+                          : const SizedBox.shrink(),
     );
   }
 
