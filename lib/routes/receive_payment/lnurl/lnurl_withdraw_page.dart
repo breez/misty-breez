@@ -288,7 +288,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : errorMessage.isNotEmpty
+              : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
                       text: texts.qr_code_dialog_action_close,

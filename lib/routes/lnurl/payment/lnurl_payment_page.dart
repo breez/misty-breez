@@ -300,7 +300,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           },
                         ),
                       ),
-                      if (errorMessage.isNotEmpty) ...[
+                      if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...[
                         const SizedBox(height: 8.0),
                         AutoSizeText(
                           errorMessage,
@@ -359,7 +359,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : errorMessage.isNotEmpty
+              : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
                       text: texts.qr_code_dialog_action_close,
@@ -370,7 +370,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                   : !_isFixedAmount
                       ? SingleButtonBottomBar(
                           stickToBottom: true,
-                          text: texts.lnurl_fetch_invoice_action_continue,
+                          text: texts.withdraw_funds_action_next,
                           onPressed: () async {
                             if (_formKey.currentState?.validate() ?? false) {
                               await _openConfirmationPage();
@@ -380,7 +380,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       : _prepareResponse != null
                           ? SingleButtonBottomBar(
                               stickToBottom: true,
-                              text: texts.lnurl_payment_page_action_pay,
+                              text: texts.bottom_action_bar_send,
                               onPressed: () async {
                                 Navigator.pop(context, _prepareResponse);
                               },

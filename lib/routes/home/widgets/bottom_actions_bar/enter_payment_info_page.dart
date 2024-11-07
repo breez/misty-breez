@@ -29,6 +29,14 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
   ModalRoute? _loaderRoute;
 
   @override
+  void initState() {
+    super.initState();
+    _paymentInfoController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final texts = context.texts();
     final themeData = Theme.of(context);
@@ -89,14 +97,13 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
           ),
         ),
       ),
-      bottomNavigationBar: SingleButtonBottomBar(
-        text: _paymentInfoController.text.isNotEmpty && errorMessage.isEmpty
-            ? texts.payment_info_dialog_action_approve
-            : texts.payment_info_dialog_action_cancel,
-        onPressed: _paymentInfoController.text.isNotEmpty && errorMessage.isEmpty
-            ? _onApprovePressed
-            : () => Navigator.pop(context),
-      ),
+      bottomNavigationBar: _paymentInfoController.text.isNotEmpty
+          ? SingleButtonBottomBar(
+              stickToBottom: true,
+              text: texts.withdraw_funds_action_next,
+              onPressed: _onApprovePressed,
+            )
+          : const SizedBox.shrink(),
     );
   }
 
@@ -157,7 +164,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
       if (_formKey.currentState!.validate()) {
         _setLoading(false);
         if (mounted) Navigator.pop(context);
-        inputCubit.addIncomingInput(_paymentInfoController.text, InputSource.inputField);
+        inputCubit.addIncomingInput(_paymentInfoController.text.trim(), InputSource.inputField);
       }
     } catch (error) {
       _setLoading(false);
@@ -167,6 +174,8 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
           errorMessage = context.texts().payment_info_dialog_error;
         });
       }
+    } finally {
+      _setLoading(false);
     }
   }
 
