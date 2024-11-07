@@ -86,22 +86,18 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
             exit(0);
           }
         },
-        child: SizedBox(
-          height: mediaSize.height,
-          width: mediaSize.width,
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            key: _scaffoldKey,
-            appBar: HomeAppBar(themeData: themeData, scaffoldKey: _scaffoldKey),
-            drawerEnableOpenDragGesture: true,
-            drawerDragStartBehavior: DragStartBehavior.down,
-            drawerEdgeDragWidth: mediaSize.width,
-            drawer: const HomeDrawer(),
-            bottomNavigationBar: BottomActionsBar(firstPaymentItemKey),
-            floatingActionButton: QrActionButton(firstPaymentItemKey),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: AccountPage(firstPaymentItemKey, scrollController),
-          ),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          key: _scaffoldKey,
+          appBar: HomeAppBar(themeData: themeData, scaffoldKey: _scaffoldKey),
+          drawerEnableOpenDragGesture: true,
+          drawerDragStartBehavior: DragStartBehavior.down,
+          drawerEdgeDragWidth: mediaSize.width,
+          drawer: const HomeDrawer(),
+          bottomNavigationBar: BottomActionsBar(firstPaymentItemKey),
+          floatingActionButton: QrActionButton(firstPaymentItemKey),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          body: AccountPage(firstPaymentItemKey, scrollController),
         ),
       ),
     );
