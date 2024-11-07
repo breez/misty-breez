@@ -17,6 +17,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   }) : super(AccountState.initial()) {
     hydrate();
     _listenAccountChanges();
+    _listenInitialSyncEvent();
   }
 
   void _listenAccountChanges() {
@@ -25,6 +26,14 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
       final newState = state.copyWith(walletInfo: walletInfo);
       _log.info("AccountState changed: $newState");
       emit(newState);
+    });
+  }
+
+  void _listenInitialSyncEvent() {
+    _log.info("Listening to initial sync event.");
+    liquidSDK.didCompleteInitialSyncStream.listen((_) {
+      _log.info("Initial sync complete.");
+      emit(state.copyWith(didCompleteInitialSync: true));
     });
   }
 

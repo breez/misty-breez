@@ -14,7 +14,7 @@ class StatusText extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AccountCubit, AccountState>(
       builder: (context, accountState) {
-        return (accountState.walletInfo == null)
+        return (!accountState.didCompleteInitialSync)
             ? const LoadingAnimatedText()
             : const SdkConnectivityStatusText();
       },

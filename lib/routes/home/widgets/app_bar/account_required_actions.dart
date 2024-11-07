@@ -39,7 +39,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
 
             List<Widget> warnings = [];
 
-            if (accountState.walletInfo == null) {
+            if (!accountState.didCompleteInitialSync) {
               _log.info("Adding sync warning.");
               warnings.add(
                 WarningAction(

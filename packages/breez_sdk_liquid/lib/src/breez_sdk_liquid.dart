@@ -10,8 +10,13 @@ class BreezSDKLiquid {
 
   factory BreezSDKLiquid() => _singleton;
 
+  late final Stream<void> didCompleteInitialSyncStream;
+
+  final StreamController<void> _didCompleteInitialSyncController = StreamController<void>.broadcast();
+
   BreezSDKLiquid._internal() {
     initializeLogStream();
+    didCompleteInitialSyncStream = _didCompleteInitialSyncController.stream.take(1);
   }
 
   liquid_sdk.BindingLiquidSdk? _instance;
@@ -115,6 +120,8 @@ class BreezSDKLiquid {
           _paymentEventStream.add(PaymentEvent.fromSdkEvent(event));
         } else if (event is liquid_sdk.SdkEvent_PaymentFailed) {
           _paymentEventStream.addError(event);
+        } else if (event is liquid_sdk.SdkEvent_Synced) {
+          _didCompleteInitialSyncController.add(null);
         }
         await _fetchWalletData(sdk);
       },
