@@ -48,7 +48,7 @@ class _WalletDashboardState extends State<WalletDashboard> {
                         color: themeData.customData.dashboardBgColor,
                       ),
                     ),
-                    if (accountState.isOnboardingComplete) ...[
+                    if (accountState.walletInfo != null) ...[
                       Positioned(
                         top: 60 - _kBalanceOffsetTransition * widget.offsetFactor,
                         child: Center(
@@ -91,7 +91,9 @@ class _WalletDashboardState extends State<WalletDashboard> {
                         ),
                       ),
                     ],
-                    if (currencyState.fiatEnabled && !profileSettings.hideBalance) ...[
+                    if (accountState.walletInfo != null &&
+                        currencyState.fiatEnabled &&
+                        !profileSettings.hideBalance) ...[
                       Positioned(
                         top: 100 - _kBalanceOffsetTransition * widget.offsetFactor,
                         child: Center(
