@@ -17,6 +17,7 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/keyboard_done_action.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/route.dart';
+import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:service_injector/service_injector.dart';
 
@@ -190,6 +191,20 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
           String payeeName = metadataMap["text/identifier"] ?? widget.requestData.domain;
           String? metadataText = metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
+
+          if (_lightningLimits == null) {
+            if (errorMessage.isEmpty) {
+              return Center(
+                child: Loader(
+                  color: themeData.primaryColor.withOpacity(0.5),
+                ),
+              );
+            }
+            return ScrollableErrorMessageWidget(
+              title: "Failed to retrieve payment limits:",
+              message: texts.reverse_swap_upstream_generic_error_message(errorMessage),
+            );
+          }
 
           final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
           final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
