@@ -44,8 +44,8 @@ class AccountPage extends StatelessWidget {
               ),
             );
 
-            final bool showSliver =
-                nonFilteredPayments.isNotEmpty || paymentFilters.filters != PaymentType.values;
+            final bool showSliver = accountState.walletInfo != null &&
+                (nonFilteredPayments.isNotEmpty || paymentFilters.filters != PaymentType.values);
             int? startDate = paymentFilters.fromTimestamp;
             int? endDate = paymentFilters.toTimestamp;
             bool hasDateFilter = startDate != null && endDate != null;
@@ -89,7 +89,7 @@ class AccountPage extends StatelessWidget {
                   ),
                 ),
               );
-            } else if (accountState.isOnboardingComplete && nonFilteredPayments.isEmpty) {
+            } else if (nonFilteredPayments.isEmpty) {
               slivers.add(
                 SliverPersistentHeader(
                   delegate: FixedSliverDelegate(
