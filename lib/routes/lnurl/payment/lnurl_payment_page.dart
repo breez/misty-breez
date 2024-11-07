@@ -22,13 +22,14 @@ import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:service_injector/service_injector.dart';
 
 class LnUrlPaymentPage extends StatefulWidget {
+  final bool isConfirmation;
   final LnUrlPayRequestData requestData;
   final String? comment;
 
   static const routeName = "/lnurl_payment";
   static const paymentMethod = PaymentMethod.lightning;
 
-  const LnUrlPaymentPage({super.key, required this.requestData, this.comment});
+  const LnUrlPaymentPage({super.key, this.isConfirmation = false, required this.requestData, this.comment});
 
   @override
   State<StatefulWidget> createState() => LnUrlPaymentPageState();
@@ -400,7 +401,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       message = "Failed to retrieve network payment limits. Please try again later.";
     }
 
-    if (_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
+    if (!widget.isConfirmation && _isFixedAmount && effectiveMinSat == effectiveMaxSat) {
       final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
       final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
       final minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
@@ -467,6 +468,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         builder: (_) => BlocProvider(
           create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
           child: LnUrlPaymentPage(
+            isConfirmation: true,
             requestData: requestData,
             comment: _descriptionController.text,
           ),
