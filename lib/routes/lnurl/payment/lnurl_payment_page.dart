@@ -213,12 +213,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (base64String != null && base64String.isNotEmpty) ...[
-                      Padding(
-                        padding: EdgeInsets.zero,
-                        child: Center(child: LNURLMetadataImage(base64String: base64String)),
-                      ),
-                    ],
+                    Padding(
+                      padding: EdgeInsets.zero,
+                      child: Center(child: LNURLMetadataImage(base64String: base64String)),
+                    ),
                     if (_isFixedAmount) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
