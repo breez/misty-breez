@@ -7,12 +7,14 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 
 class FiatBalanceText extends StatelessWidget {
+  final bool hiddenBalance;
   final CurrencyState currencyState;
   final AccountState accountState;
   final double offsetFactor;
 
   const FiatBalanceText({
     super.key,
+    required this.hiddenBalance,
     required this.currencyState,
     required this.accountState,
     required this.offsetFactor,
@@ -22,7 +24,7 @@ class FiatBalanceText extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    if (!isAboveMinAmount(currencyState, accountState)) {
+    if (!currencyState.fiatEnabled || hiddenBalance || !isAboveMinAmount(currencyState, accountState)) {
       return const SizedBox.shrink();
     }
 
@@ -30,7 +32,7 @@ class FiatBalanceText extends StatelessWidget {
       style: ButtonStyle(
         overlayColor: WidgetStateProperty.resolveWith<Color?>(
           (states) {
-            if (states.contains(WidgetState.focused) || states.contains(WidgetState.hovered)) {
+            if ({WidgetState.focused, WidgetState.hovered}.any(states.contains)) {
               return themeData.customData.paymentListBgColor;
             }
             return null;
