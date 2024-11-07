@@ -95,14 +95,14 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
         max(minNetworkLimit, minWithdrawableSat),
         maxNetworkLimit,
       );
-      final effectiveMaxSat = min(maxNetworkLimit, maxWithdrawableSat);
+      final rawMaxSat = min(maxNetworkLimit, maxWithdrawableSat);
       _updateFormFields(
         amountSat: _isFixedAmount ? minWithdrawableSat : effectiveMinSat,
       );
       validatePayment(
         amountSat: _isFixedAmount ? minWithdrawableSat : effectiveMinSat,
         effectiveMinSat: effectiveMinSat,
-        effectiveMaxSat: effectiveMaxSat,
+        effectiveMaxSat: rawMaxSat,
         throwError: true,
       );
     } catch (e) {
