@@ -121,6 +121,7 @@ class BreezSDKLiquid {
         } else if (event is liquid_sdk.SdkEvent_PaymentFailed) {
           _paymentEventStream.addError(event);
         } else if (event is liquid_sdk.SdkEvent_Synced) {
+          await _listPayments(sdk: _instance!);
           _didCompleteInitialSyncController.add(null);
         }
         await _fetchWalletData(sdk);
