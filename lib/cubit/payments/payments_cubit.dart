@@ -53,11 +53,17 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
 
   Future<PrepareSendResponse> prepareSendPayment({
     required String destination,
+    bool isDrain = false,
     BigInt? amountSat,
   }) async {
     _log.info("prepareSendPayment\nPreparing send payment for destination: $destination");
     try {
-      final req = PrepareSendRequest(destination: destination, amountSat: amountSat);
+      final payOnchainAmount = isDrain
+          ? const PayOnchainAmount_Drain()
+          : amountSat != null
+              ? PayOnchainAmount_Receiver(amountSat: amountSat)
+              : null;
+      final req = PrepareSendRequest(destination: destination, amount: payOnchainAmount);
       return await _liquidSdk.instance!.prepareSendPayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment\nError preparing send payment", e);
