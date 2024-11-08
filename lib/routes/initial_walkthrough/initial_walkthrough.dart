@@ -182,6 +182,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (isRestore) {
         await connectionService.restore(mnemonic: mnemonic);
         securityCubit.mnemonicsValidated();
+        accountCubit.setIsRestoring(true);
       } else {
         await connectionService.register();
       }
