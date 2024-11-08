@@ -12,21 +12,6 @@ class StatusText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AccountCubit, AccountState>(
-      builder: (context, accountState) {
-        return (!accountState.didCompleteInitialSync)
-            ? const LoadingAnimatedText()
-            : const SdkConnectivityStatusText();
-      },
-    );
-  }
-}
-
-class SdkConnectivityStatusText extends StatelessWidget {
-  const SdkConnectivityStatusText({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     return BlocBuilder<SdkConnectivityCubit, SdkConnectivityState>(
       builder: (context, sdkConnectivityState) {
         switch (sdkConnectivityState) {

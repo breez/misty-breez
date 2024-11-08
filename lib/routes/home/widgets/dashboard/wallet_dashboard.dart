@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/home/widgets/dashboard/fiat_balance_text.dart';
+import 'package:l_breez/routes/home/widgets/dashboard/placeholder_balance_text.dart';
 import 'package:l_breez/theme/theme.dart';
 
 import 'balance_text.dart';
@@ -34,7 +35,7 @@ class _WalletDashboardState extends State<WalletDashboard> {
             return BlocBuilder<AccountCubit, AccountState>(
               builder: (context, accountState) {
                 final hiddenBalance = userProfileState.profileSettings.hideBalance;
-                final showBalance = accountState.walletInfo != null;
+                final showBalance = !accountState.isRestoring && accountState.walletInfo != null;
 
                 return Stack(
                   alignment: AlignmentDirectional.topCenter,
@@ -46,17 +47,19 @@ class _WalletDashboardState extends State<WalletDashboard> {
                         color: themeData.customData.dashboardBgColor,
                       ),
                     ),
-                    if (showBalance) ...[
-                      Positioned(
-                        top: 60 - _kBalanceOffsetTransition * widget.offsetFactor,
-                        child: BalanceText(
-                          hiddenBalance: hiddenBalance,
-                          currencyState: currencyState,
-                          accountState: accountState,
-                          offsetFactor: widget.offsetFactor,
-                        ),
-                      ),
-                    ],
+                    Positioned(
+                      top: 60 - _kBalanceOffsetTransition * widget.offsetFactor,
+                      child: showBalance
+                          ? BalanceText(
+                              hiddenBalance: hiddenBalance,
+                              currencyState: currencyState,
+                              accountState: accountState,
+                              offsetFactor: widget.offsetFactor,
+                            )
+                          : PlaceholderBalanceText(
+                              offsetFactor: widget.offsetFactor,
+                            ),
+                    ),
                     Positioned(
                       top: 100 - _kBalanceOffsetTransition * widget.offsetFactor,
                       child: FiatBalanceText(
