@@ -34,7 +34,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final themeProvider = ThemeProvider.controllerOf(context);
+      themeProvider.setTheme('light');
+    });
+    _startBreezLogoAnimation();
+  }
 
+  void _startBreezLogoAnimation() {
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2720),
