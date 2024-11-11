@@ -58,8 +58,8 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
     _log.info("prepareSendPayment\nPreparing send payment for destination: $destination");
     try {
       // TODO: Handle the drain option for PrepareSendRequest
-      final payOnchainAmount = amountSat != null ? PayOnchainAmount_Receiver(amountSat: amountSat) : null;
-      final req = PrepareSendRequest(destination: destination, amount: payOnchainAmount);
+      final payAmount = amountSat != null ? PayAmount_Receiver(amountSat: amountSat) : null;
+      final req = PrepareSendRequest(destination: destination, amount: payAmount);
       return await _liquidSdk.instance!.prepareSendPayment(req: req);
     } catch (e) {
       _log.severe("prepareSendPayment\nError preparing send payment", e);
