@@ -137,7 +137,9 @@ class AccountPage extends StatelessWidget {
                 key: const Key("account_sliver"),
                 fit: StackFit.expand,
                 children: [
-                  if (!showPaymentsList) CustomPaint(painter: BubblePainter(context)),
+                  if (!showPaymentsList && !(accountState.isRestoring && nonFilteredPayments.isEmpty)) ...[
+                    CustomPaint(painter: BubblePainter(context)),
+                  ],
                   CustomScrollView(
                     controller: scrollController,
                     slivers: slivers,
