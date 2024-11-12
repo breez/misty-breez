@@ -50,7 +50,10 @@ class PaymentsState {
 
   factory PaymentsState.fromJson(Map<String, dynamic> json) {
     return PaymentsState(
-      payments: json['payments'].map((paymentJson) => PaymentData.fromJson(paymentJson)).toList(),
+      payments: (json['payments'] as List<dynamic>?)
+              ?.map((paymentJson) => PaymentData.fromJson(paymentJson))
+              .toList() ??
+          [],
       paymentFilters: PaymentFilters.fromJson(json["paymentFilters"]),
     );
   }
