@@ -104,6 +104,8 @@ class InputHandler extends Handler {
       return handleBitcoinAddress(context, inputState);
     } else if (inputState is UrlInputState) {
       throw context.texts().payment_info_dialog_error_unsupported_input;
+    } else if (inputState is EmptyInputState) {
+      throw "Failed to parse input.";
     }
   }
 

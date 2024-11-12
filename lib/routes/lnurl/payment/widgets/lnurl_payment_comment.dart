@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:l_breez/theme/src/theme.dart';
 
 class LnUrlPaymentComment extends StatelessWidget {
+  final bool enabled;
   final int maxCommentLength;
   final TextEditingController descriptionController;
 
   const LnUrlPaymentComment({
     super.key,
+    required this.enabled,
     required this.descriptionController,
     required this.maxCommentLength,
   });
@@ -19,6 +21,8 @@ class LnUrlPaymentComment extends StatelessWidget {
     final themeData = Theme.of(context);
 
     return TextFormField(
+      enabled: enabled,
+      readOnly: !enabled,
       controller: descriptionController,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.done,

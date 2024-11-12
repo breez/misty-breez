@@ -9,17 +9,17 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/src/theme.dart';
 
-class LnUrlPaymentLimits extends StatelessWidget {
+class LnUrlWithdrawLimits extends StatelessWidget {
   final LightningPaymentLimitsResponse? limitsResponse;
-  final int minSendableSat;
-  final int maxSendableSat;
+  final int minWithdrawableSat;
+  final int maxWithdrawableSat;
   final Future<void> Function(dynamic amount) onTap;
 
-  const LnUrlPaymentLimits({
+  const LnUrlWithdrawLimits({
     super.key,
     required this.limitsResponse,
-    required this.minSendableSat,
-    required this.maxSendableSat,
+    required this.minWithdrawableSat,
+    required this.maxWithdrawableSat,
     required this.onTap,
   });
 
@@ -45,39 +45,44 @@ class LnUrlPaymentLimits extends StatelessWidget {
       );
     }
 
-    var minNetworkLimit = limitsResponse!.send.minSat.toInt();
-    var maxNetworkLimit = limitsResponse!.send.maxSat.toInt();
+    final minNetworkLimit = limitsResponse!.receive.minSat.toInt();
+    final maxNetworkLimit = limitsResponse!.receive.maxSat.toInt();
     final effectiveMinSat = min(
-      max(minNetworkLimit, minSendableSat),
+      max(minNetworkLimit, minWithdrawableSat),
       maxNetworkLimit,
     );
     final effectiveMaxSat = max(
       minNetworkLimit,
-      min(maxNetworkLimit, maxSendableSat),
+      min(maxNetworkLimit, maxWithdrawableSat),
     );
 
     // Displays the original range if range is outside payment limits
     final effMinSendableFormatted = currencyState.bitcoinCurrency.format(
-      (effectiveMinSat == effectiveMaxSat) ? minSendableSat : effectiveMinSat,
+      (effectiveMinSat == effectiveMaxSat) ? minWithdrawableSat : effectiveMinSat,
     );
     final effMaxSendableFormatted = currencyState.bitcoinCurrency.format(
-      (effectiveMinSat == effectiveMaxSat) ? maxSendableSat : effectiveMaxSat,
+      (effectiveMinSat == effectiveMaxSat) ? maxWithdrawableSat : effectiveMaxSat,
     );
 
-    return RichText(
-      text: TextSpan(
-        style: FieldTextStyle.labelStyle,
-        children: <TextSpan>[
-          TextSpan(
-            text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),
-            recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMinSat),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(
+          text: TextSpan(
+            style: FieldTextStyle.labelStyle,
+            children: <TextSpan>[
+              TextSpan(
+                text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),
+                recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMinSat),
+              ),
+              TextSpan(
+                text: texts.lnurl_fetch_invoice_and(effMaxSendableFormatted),
+                recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMaxSat),
+              )
+            ],
           ),
-          TextSpan(
-            text: texts.lnurl_fetch_invoice_and(effMaxSendableFormatted),
-            recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMaxSat),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
