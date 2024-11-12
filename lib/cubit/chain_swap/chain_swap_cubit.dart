@@ -80,11 +80,10 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     ];
     final feeOptions = await Future.wait(
       List.generate(3, (index) async {
-        final payOnchainAmount = isDrain
-            ? const PayOnchainAmount_Drain()
-            : PayOnchainAmount_Receiver(amountSat: BigInt.from(amountSat));
+        final payAmount =
+            isDrain ? const PayAmount_Drain() : PayAmount_Receiver(amountSat: BigInt.from(amountSat));
         final preparePayOnchainRequest = PreparePayOnchainRequest(
-          amount: payOnchainAmount,
+          amount: payAmount,
           feeRateSatPerVbyte: recommendedFeeList[index].toInt(),
         );
         final preparePayOnchainResponse = await _preparePayOnchain(preparePayOnchainRequest);
