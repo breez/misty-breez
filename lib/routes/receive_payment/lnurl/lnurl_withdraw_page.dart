@@ -96,13 +96,15 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
         maxNetworkLimit,
       );
       final rawMaxSat = min(maxNetworkLimit, maxWithdrawableSat);
+      final effectiveMaxSat = max(minNetworkLimit, rawMaxSat);
       _updateFormFields(
         amountSat: _isFixedAmount ? minWithdrawableSat : effectiveMinSat,
       );
       validatePayment(
         amountSat: _isFixedAmount ? minWithdrawableSat : effectiveMinSat,
         effectiveMinSat: effectiveMinSat,
-        effectiveMaxSat: rawMaxSat,
+        rawMaxSat: rawMaxSat,
+        effectiveMaxSat: effectiveMaxSat,
         throwError: true,
       );
     } catch (e) {
@@ -286,7 +288,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : errorMessage.isNotEmpty
+              : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
                       text: texts.qr_code_dialog_action_close,
@@ -334,6 +336,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
   String? validatePayment({
     required int amountSat,
     required int effectiveMinSat,
+    int? rawMaxSat,
     required int effectiveMaxSat,
     bool throwError = false,
   }) {
@@ -357,7 +360,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
       message =
           "Payment amount is outside the allowed limits, which range from $minNetworkLimitFormatted to $maxNetworkLimitFormatted";
-    } else if (effectiveMaxSat < effectiveMinSat) {
+    } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
       final networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,
         includeDisplayName: true,

@@ -44,13 +44,25 @@ class LnUrlPaymentLimits extends StatelessWidget {
         ),
       );
     }
+
+    var minNetworkLimit = limitsResponse!.send.minSat.toInt();
+    var maxNetworkLimit = limitsResponse!.send.maxSat.toInt();
     final effectiveMinSat = min(
-      max(limitsResponse!.send.minSat.toInt(), minSendableSat),
-      limitsResponse!.send.maxSat.toInt(),
+      max(minNetworkLimit, minSendableSat),
+      maxNetworkLimit,
     );
-    final effectiveMaxSat = min(limitsResponse!.send.maxSat.toInt(), maxSendableSat);
-    final effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
-    final effMaxSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMaxSat);
+    final effectiveMaxSat = max(
+      minNetworkLimit,
+      min(maxNetworkLimit, maxSendableSat),
+    );
+
+    // Displays the original range if range is outside payment limits
+    final effMinSendableFormatted = currencyState.bitcoinCurrency.format(
+      (effectiveMinSat == effectiveMaxSat) ? minSendableSat : effectiveMinSat,
+    );
+    final effMaxSendableFormatted = currencyState.bitcoinCurrency.format(
+      (effectiveMinSat == effectiveMaxSat) ? maxSendableSat : effectiveMaxSat,
+    );
 
     return RichText(
       text: TextSpan(

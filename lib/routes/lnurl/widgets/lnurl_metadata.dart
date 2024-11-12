@@ -54,6 +54,8 @@ class LNURLMetadataImage extends StatelessWidget {
         const imageSize = 128.0;
         return ConstrainedBox(
           constraints: const BoxConstraints(
+            minHeight: imageSize,
+            minWidth: imageSize,
             maxWidth: imageSize,
             maxHeight: imageSize,
           ),
@@ -65,6 +67,6 @@ class LNURLMetadataImage extends StatelessWidget {
         );
       }
     }
-    return Container();
+    return const SizedBox.shrink();
   }
 }
