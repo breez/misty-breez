@@ -8,11 +8,13 @@ import 'package:l_breez/routes/home/widgets/payments_filter/fixed_sliver_delegat
 import 'package:l_breez/routes/home/widgets/payments_filter/header_filter_chip.dart';
 import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_sliver.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/payments_list.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/placeholder_payment_item.dart';
 import 'package:l_breez/routes/home/widgets/status_text.dart';
 import 'package:l_breez/theme/theme.dart';
 
 const _kFilterMaxSize = 64.0;
 const _kPaymentListItemHeight = 72.0;
+const _kPlaceholderListItemCount = 8;
 
 class AccountPage extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
@@ -44,17 +46,17 @@ class AccountPage extends StatelessWidget {
               ),
             );
 
-            final bool showSliver = accountState.walletInfo != null &&
-                (nonFilteredPayments.isNotEmpty || paymentFilters.filters != PaymentType.values);
+            bool showPaymentsList = filteredPayments.isNotEmpty;
+            bool hasTypeFilter = paymentFilters.filters != PaymentType.values;
             int? startDate = paymentFilters.fromTimestamp;
             int? endDate = paymentFilters.toTimestamp;
             bool hasDateFilter = startDate != null && endDate != null;
-            if (showSliver) {
+            if (showPaymentsList || hasTypeFilter) {
               slivers.add(
                 PaymentsFilterSliver(
                   maxSize: _kFilterMaxSize,
                   scrollController: scrollController,
-                  hasFilter: paymentFilters.filters != PaymentType.values || hasDateFilter,
+                  hasFilter: hasTypeFilter || hasDateFilter,
                 ),
               );
             }
@@ -69,7 +71,7 @@ class AccountPage extends StatelessWidget {
               );
             }
 
-            if (showSliver) {
+            if (showPaymentsList) {
               slivers.add(
                 PaymentsList(
                   paymentsList: filteredPayments,
@@ -84,13 +86,36 @@ class AccountPage extends StatelessWidget {
                     _bottomPlaceholderSpace(
                       context,
                       paymentFilters.hasDateFilters,
-                      filteredPayments.length,
+                      nonFilteredPayments.isEmpty ? _kPlaceholderListItemCount : filteredPayments.length,
                     ),
                     child: const SizedBox.expand(),
                   ),
                 ),
               );
-            } else if (nonFilteredPayments.isEmpty) {
+            } else if (accountState.isRestoring && nonFilteredPayments.isEmpty) {
+              slivers.add(
+                SliverFixedExtentList(
+                  itemExtent: _kPaymentListItemHeight + 8.0,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => const PlaceholderPaymentItem(),
+                    childCount: _kPlaceholderListItemCount,
+                  ),
+                ),
+              );
+              slivers.add(
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: FixedSliverDelegate(
+                    _bottomPlaceholderSpace(
+                      context,
+                      paymentFilters.hasDateFilters,
+                      nonFilteredPayments.isEmpty ? _kPlaceholderListItemCount : filteredPayments.length,
+                    ),
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+              );
+            } else {
               slivers.add(
                 SliverPersistentHeader(
                   delegate: FixedSliverDelegate(
@@ -112,7 +137,7 @@ class AccountPage extends StatelessWidget {
                 key: const Key("account_sliver"),
                 fit: StackFit.expand,
                 children: [
-                  if (!showSliver) ...[
+                  if (!showPaymentsList && !(accountState.isRestoring && nonFilteredPayments.isEmpty)) ...[
                     CustomPaint(painter: BubblePainter(context)),
                   ],
                   CustomScrollView(

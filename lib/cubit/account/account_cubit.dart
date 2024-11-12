@@ -33,7 +33,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
     _log.info("Listening to initial sync event.");
     liquidSDK.didCompleteInitialSyncStream.listen((_) {
       _log.info("Initial sync complete.");
-      emit(state.copyWith(didCompleteInitialSync: true));
+      emit(state.copyWith(isRestoring: false, didCompleteInitialSync: true));
     });
   }
 
@@ -45,6 +45,10 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   @override
   Map<String, dynamic>? toJson(AccountState state) {
     return state.toJson();
+  }
+
+  void setIsRestoring(bool isRestoring) {
+    emit(state.copyWith(isRestoring: isRestoring));
   }
 
   void setOnboardingComplete(bool isComplete) {
