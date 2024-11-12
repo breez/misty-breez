@@ -106,6 +106,7 @@ dependencies:
   share_plus: ^10.1.1
   shared_preferences: ^2.3.2
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
+  shimmer: ^3.0.0
   simple_animations: ^5.0.2
   synchronized: <3.2.0
   theme_provider: ^0.6.0
