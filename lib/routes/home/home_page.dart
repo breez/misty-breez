@@ -10,7 +10,6 @@ import 'package:l_breez/routes/home/account_page.dart';
 import 'package:l_breez/routes/home/widgets/app_bar/home_app_bar.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_actions_bar.dart';
 import 'package:l_breez/routes/home/widgets/drawer/home_drawer.dart';
-import 'package:l_breez/routes/home/widgets/fade_in_widget.dart';
 import 'package:l_breez/routes/home/widgets/qr_action_button.dart';
 import 'package:l_breez/routes/security/auto_lock_mixin.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
@@ -60,9 +59,9 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
     final mediaSize = MediaQuery.of(context).size;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
-            systemNavigationBarColor: Theme.of(context).bottomAppBarTheme.color,
-          ),
+      value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
+        systemNavigationBarColor: themeData.bottomAppBarTheme.color,
+      ),
       child: PopScope(
         canPop: false,
         onPopInvoked: (bool didPop) async {
@@ -87,24 +86,18 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
             exit(0);
           }
         },
-        child: SizedBox(
-          height: mediaSize.height,
-          width: mediaSize.width,
-          child: FadeInWidget(
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              key: _scaffoldKey,
-              appBar: HomeAppBar(themeData: themeData, scaffoldKey: _scaffoldKey),
-              drawerEnableOpenDragGesture: true,
-              drawerDragStartBehavior: DragStartBehavior.down,
-              drawerEdgeDragWidth: mediaSize.width,
-              drawer: const HomeDrawer(),
-              bottomNavigationBar: BottomActionsBar(firstPaymentItemKey),
-              floatingActionButton: QrActionButton(firstPaymentItemKey),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-              body: AccountPage(firstPaymentItemKey, scrollController),
-            ),
-          ),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          key: _scaffoldKey,
+          appBar: HomeAppBar(themeData: themeData, scaffoldKey: _scaffoldKey),
+          drawerEnableOpenDragGesture: true,
+          drawerDragStartBehavior: DragStartBehavior.down,
+          drawerEdgeDragWidth: mediaSize.width,
+          drawer: const HomeDrawer(),
+          bottomNavigationBar: BottomActionsBar(firstPaymentItemKey),
+          floatingActionButton: QrActionButton(firstPaymentItemKey),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          body: AccountPage(firstPaymentItemKey, scrollController),
         ),
       ),
     );
