@@ -17,15 +17,45 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
+
+    return BlocBuilder<AccountCubit, AccountState>(
+      builder: (context, accountState) {
+        return _buildContentWithAccountState(themeData, accountState);
+      },
+    );
+  }
+
+  Widget _buildContentWithAccountState(
+    ThemeData themeData,
+    AccountState accountState,
+  ) {
     return BlocBuilder<SecurityCubit, SecurityState>(
       builder: (context, securityState) {
         return BlocBuilder<BackupCubit, BackupState?>(
           builder: (context, backupState) {
-            _log.fine("Building with: securityState: $securityState backupState: $backupState");
+            _log.fine(
+              "Building with: securityState: $securityState backupState: $backupState accountState: $accountState",
+            );
 
             List<Widget> warnings = [];
 
+            if (!accountState.didCompleteInitialSync) {
+              _log.info("Adding sync warning.");
+              warnings.add(
+                WarningAction(
+                  onTap: () async {},
+                  iconWidget: Rotator(
+                    child: Image(
+                      image: const AssetImage("assets/icons/sync.png"),
+                      color: themeData.appBarTheme.actionsIconTheme?.color,
+                    ),
+                  ),
+                ),
+              );
+            }
+
             if (securityState.verificationStatus == VerificationStatus.unverified) {
+              _log.info("Adding mnemonic verification warning.");
               warnings.add(
                 WarningAction(
                   onTap: () async {
@@ -47,6 +77,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
             }
 
             if (backupState != null && backupState.status == BackupStatus.inProgress) {
+              _log.info("Adding backup in progress warning.");
               warnings.add(
                 WarningAction(
                   onTap: () {
@@ -68,6 +99,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
             }
 
             if (backupState?.status == BackupStatus.failed) {
+              _log.info("Adding backup error warning.");
               warnings.add(
                 WarningAction(
                   onTap: () {
@@ -82,7 +114,10 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
               );
             }
 
-            if (warnings.isEmpty) {}
+            _log.info("Total # of warnings: ${warnings.length}");
+            if (warnings.isEmpty) {
+              return const SizedBox.shrink();
+            }
 
             return Row(
               mainAxisAlignment: MainAxisAlignment.end,
