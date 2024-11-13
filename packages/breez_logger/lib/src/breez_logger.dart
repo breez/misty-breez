@@ -11,7 +11,7 @@ import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
 final _logger = Logger("BreezLogger");
-final _breezSdkLiquidLogger = Logger("Breez SDK - Liquid");
+final _breezSdkLiquidLogger = Logger("BreezSdkLiquid");
 
 class BreezLogger {
   BreezLogger() {

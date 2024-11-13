@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger("SyncManager");
 
 const syncIntervalSeconds = 60;
 
@@ -16,11 +19,13 @@ class SyncManager {
   SyncManager(this.wallet);
 
   void startSyncing() {
+    _logger.info("Starting Sync Manager.");
     _lifecycleSubscription = FGBGEvents.stream.skip(1).listen((event) async {
       if (event == FGBGType.foreground && _shouldSync()) {
         await _sync();
       }
     });
+    _logger.info("Subscribed to lifecycle events.");
 
     // Force a sync after Network is back
     // TODO: Liquid SDK - This sync should happen on SDK layer after re-establishing connection
@@ -31,19 +36,28 @@ class SyncManager {
               (result) => result == ConnectivityResult.vpn,
             ));
         if (hasNetworkConnection) {
+          _logger.info("Re-established network connection.");
           await _sync();
         }
       },
     );
+    _logger.info("Subscribed to network events.");
   }
 
   bool _shouldSync() => DateTime.now().difference(_lastSync).inSeconds > syncIntervalSeconds;
 
   Future<void> _sync() async {
     if (wallet != null) {
-      await wallet!.sync();
-      _lastSync = DateTime.now();
+      try {
+        _logger.info("Syncing.");
+        await wallet!.sync();
+        _lastSync = DateTime.now();
+        _logger.info("Synced successfully.");
+      } catch (e) {
+        _logger.warning("Failed to sync. Reason: $e");
+      }
     } else {
+      _logger.info("Wallet has disconnected. Shutting down Sync Manager.");
       disconnect();
     }
   }
