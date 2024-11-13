@@ -13,12 +13,12 @@ import 'package:logging/logging.dart';
 
 export 'payment_limits_state.dart';
 
-final _log = Logger("PaymentLimitsCubit");
+final _logger = Logger("PaymentLimitsCubit");
 
 class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
-  final BreezSDKLiquid _liquidSdk;
+  final BreezSDKLiquid _breezSdkLiquid;
 
-  PaymentLimitsCubit(this._liquidSdk) : super(PaymentLimitsState.initial()) {
+  PaymentLimitsCubit(this._breezSdkLiquid) : super(PaymentLimitsState.initial()) {
     _fetchPaymentLimits();
     _refreshPaymentLimitsOnResume();
   }
@@ -34,7 +34,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   }
 
   void _fetchPaymentLimits() {
-    _liquidSdk.walletInfoStream.first.then((walletInfo) {
+    _breezSdkLiquid.walletInfoStream.first.then((walletInfo) {
       fetchLightningLimits();
       fetchOnchainLimits();
     });
@@ -49,11 +49,11 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
     emit(state.copyWith(errorMessage: ""));
     try {
-      final lightningPaymentLimits = await _liquidSdk.instance!.fetchLightningLimits();
+      final lightningPaymentLimits = await _breezSdkLiquid.instance!.fetchLightningLimits();
       emit(state.copyWith(lightningPaymentLimits: lightningPaymentLimits, errorMessage: ""));
       return lightningPaymentLimits;
     } catch (e) {
-      _log.severe("fetchLightningLimits error", e);
+      _logger.severe("fetchLightningLimits error", e);
       final texts = getSystemAppLocalizations();
       emit(state.copyWith(lightningPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
       rethrow;
@@ -63,11 +63,11 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() async {
     emit(state.copyWith(errorMessage: ""));
     try {
-      final onchainPaymentLimits = await _liquidSdk.instance!.fetchOnchainLimits();
+      final onchainPaymentLimits = await _breezSdkLiquid.instance!.fetchOnchainLimits();
       emit(state.copyWith(onchainPaymentLimits: onchainPaymentLimits, errorMessage: ""));
       return onchainPaymentLimits;
     } catch (e) {
-      _log.severe("fetchOnchainLimits error", e);
+      _logger.severe("fetchOnchainLimits error", e);
       final texts = getSystemAppLocalizations();
       emit(state.copyWith(onchainPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
       rethrow;

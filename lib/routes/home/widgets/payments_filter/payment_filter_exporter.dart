@@ -9,7 +9,7 @@ import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _log = Logger("PaymentFilterExporter");
+final _logger = Logger("PaymentFilterExporter");
 
 class PaymentFilterExporter extends StatelessWidget {
   final List<PaymentType>? filter;
@@ -85,7 +85,7 @@ class PaymentFilterExporter extends StatelessWidget {
         if (loaderRoute.isActive) {
           navigator.removeRoute(loaderRoute);
         }
-        _log.severe("Received error: $error");
+        _logger.severe("Received error: $error");
         if (!context.mounted) return;
         showFlushbar(
           context,

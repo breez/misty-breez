@@ -35,7 +35,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
                 enabled: hasBalance,
               ),
               title: Text(
-                texts.bottom_action_bar_paste_invoice,
+                texts.bottom_action_bar_enter_payment_info,
                 style: bottomSheetTextStyle,
               ),
               onTap: () {

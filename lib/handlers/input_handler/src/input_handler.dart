@@ -7,7 +7,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/handlers/handler/handler.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
-import 'package:l_breez/routes/ln_invoice/ln_invoice_payment_page.dart';
+import 'package:l_breez/routes/lightning/ln_payment_page.dart';
 import 'package:l_breez/routes/lnurl/auth/lnurl_auth_handler.dart';
 import 'package:l_breez/routes/lnurl/lnurl_invoice_delegate.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_handler.dart';
@@ -19,7 +19,7 @@ import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("InputHandler");
+final _logger = Logger("InputHandler");
 
 class InputHandler extends Handler {
   final GlobalKey firstPaymentItemKey;
@@ -54,9 +54,9 @@ class InputHandler extends Handler {
   }
 
   void _listen(InputState inputState) {
-    _log.info("Input state changed: $inputState");
+    _logger.info("Input state changed: $inputState");
     if (_handlingRequest) {
-      _log.info("Already handling request, skipping state change");
+      _logger.info("Already handling request, skipping state change");
       return;
     }
 
@@ -68,7 +68,7 @@ class InputHandler extends Handler {
         .then((result) => handleResult(result))
         .whenComplete(() => _handlingRequest = false)
         .onError((error, _) {
-      _log.severe("Input state error", error);
+      _logger.severe("Input state error", error);
       _handlingRequest = false;
       _setLoading(false);
       if (error != null) {
@@ -76,17 +76,17 @@ class InputHandler extends Handler {
         if (context != null && context.mounted) {
           showFlushbar(context, message: extractExceptionMessage(error, context.texts()));
         } else {
-          _log.info("Skipping handling of error: $error because context is null");
+          _logger.info("Skipping handling of error: $error because context is null");
         }
       }
     });
   }
 
   Future handleInputData(InputState inputState) async {
-    _log.info("handle input $inputState");
+    _logger.info("handle input $inputState");
     final context = contextProvider?.getBuildContext();
     if (context == null) {
-      _log.info("Not handling input $inputState because context is null");
+      _logger.info("Not handling input $inputState because context is null");
       return;
     }
 
@@ -110,10 +110,10 @@ class InputHandler extends Handler {
   }
 
   Future handleLnInvoice(BuildContext context, LNInvoice lnInvoice) async {
-    _log.info("handle LnInvoice $lnInvoice");
+    _logger.info("handle LnInvoice $lnInvoice");
     final navigator = Navigator.of(context);
     PrepareSendResponse? prepareResponse = await navigator.pushNamed<PrepareSendResponse?>(
-      LNInvoicePaymentPage.routeName,
+      LnPaymentPage.routeName,
       arguments: lnInvoice,
     );
     if (prepareResponse == null || !context.mounted) {
@@ -139,13 +139,13 @@ class InputHandler extends Handler {
       }
       // TODO: Handle SendPaymentResponse results, return a SendPaymentResult to be handled by handleResult()
       if (result is SendPaymentResponse) {
-        _log.info("SendPaymentResponse result - payment status: ${result.payment.status}");
+        _logger.info("SendPaymentResponse result - payment status: ${result.payment.status}");
       }
     });
   }
 
   Future handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
-    _log.fine("handle bitcoin address $inputState");
+    _logger.fine("handle bitcoin address $inputState");
     if (inputState.source == InputSource.qrcodeReader) {
       return await Navigator.of(context).pushNamed(
         SendChainSwapPage.routeName,
@@ -155,13 +155,13 @@ class InputHandler extends Handler {
   }
 
   void handleResult(result) {
-    _log.info("Input state handled: $result");
+    _logger.info("Input state handled: $result");
     if (result is LNURLPageResult && result.protocol != null) {
       final context = contextProvider?.getBuildContext();
       if (context != null) {
         handleLNURLPageResult(context, result);
       } else {
-        _log.info("Skipping handling of result: $result because context is null");
+        _logger.info("Skipping handling of result: $result because context is null");
       }
     }
   }

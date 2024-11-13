@@ -31,13 +31,13 @@ class App extends StatelessWidget {
           create: (BuildContext context) => accountCubit,
         ),
         BlocProvider<PaymentsCubit>(
-          create: (BuildContext context) => PaymentsCubit(injector.liquidSDK),
+          create: (BuildContext context) => PaymentsCubit(injector.breezSdkLiquid),
         ),
         BlocProvider(
           create: (BuildContext context) => sdkConnectivityCubit,
         ),
         BlocProvider<RefundCubit>(
-          create: (BuildContext context) => RefundCubit(injector.liquidSDK),
+          create: (BuildContext context) => RefundCubit(injector.breezSdkLiquid),
         ),
         BlocProvider<ConnectivityCubit>(
           create: (BuildContext context) => ConnectivityCubit(),
@@ -54,25 +54,25 @@ class App extends StatelessWidget {
         BlocProvider<WebhookCubit>(
           lazy: false,
           create: (BuildContext context) => WebhookCubit(
-            injector.liquidSDK,
+            injector.breezSdkLiquid,
             injector.breezPreferences,
             injector.notifications,
           ),
         ),
         BlocProvider<CurrencyCubit>(
-          create: (BuildContext context) => CurrencyCubit(injector.liquidSDK),
+          create: (BuildContext context) => CurrencyCubit(injector.breezSdkLiquid),
         ),
         BlocProvider<SecurityCubit>(
           create: (BuildContext context) => SecurityCubit(injector.keychain),
         ),
         BlocProvider<BackupCubit>(
-          create: (BuildContext context) => BackupCubit(injector.liquidSDK),
+          create: (BuildContext context) => BackupCubit(injector.breezSdkLiquid),
         ),
         BlocProvider<LnUrlCubit>(
-          create: (BuildContext context) => LnUrlCubit(injector.liquidSDK),
+          create: (BuildContext context) => LnUrlCubit(injector.breezSdkLiquid),
         ),
         BlocProvider<ChainSwapCubit>(
-          create: (BuildContext context) => ChainSwapCubit(injector.liquidSDK),
+          create: (BuildContext context) => ChainSwapCubit(injector.breezSdkLiquid),
         ),
       ],
       child: const AppView(),

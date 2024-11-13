@@ -11,7 +11,7 @@ import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("EnterPaymentInfoPage");
+final _logger = Logger("EnterPaymentInfoPage");
 
 class EnterPaymentInfoPage extends StatefulWidget {
   static const routeName = "/enter_payment_info";
@@ -44,7 +44,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        title: Text(texts.payment_info_dialog_title),
+        title: Text(texts.enter_payment_info_page_title),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -58,7 +58,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                 TextFormField(
                   controller: _paymentInfoController,
                   decoration: InputDecoration(
-                    labelText: texts.payment_info_dialog_hint,
+                    labelText: texts.enter_payment_info_page_label,
                     suffixIcon: IconButton(
                       padding: const EdgeInsets.only(top: 21.0),
                       alignment: Alignment.bottomRight,
@@ -68,7 +68,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                         width: 24.0,
                         height: 24.0,
                       ),
-                      tooltip: texts.payment_info_dialog_barcode,
+                      tooltip: texts.enter_payment_info_page_scan_tooltip,
                       onPressed: () => _scanBarcode(),
                     ),
                   ),
@@ -86,7 +86,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    texts.payment_info_dialog_hint_expanded,
+                    texts.enter_payment_info_page_label_expanded,
                     style: FieldTextStyle.labelStyle.copyWith(
                       fontSize: 13.0,
                     ),
@@ -100,7 +100,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
       bottomNavigationBar: _paymentInfoController.text.isNotEmpty
           ? SingleButtonBottomBar(
               stickToBottom: true,
-              text: texts.withdraw_funds_action_next,
+              text: texts.enter_payment_info_page_action_next,
               onPressed: _onApprovePressed,
             )
           : const SizedBox.shrink(),
@@ -113,7 +113,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     Focus.maybeOf(context)?.unfocus();
     Navigator.pushNamed<String>(context, QRScan.routeName).then((barcode) async {
       if (barcode == null || barcode.isEmpty) {
-        if (context.mounted) showFlushbar(context, message: texts.payment_info_dialog_error_qrcode);
+        if (context.mounted) showFlushbar(context, message: texts.qr_code_not_detected_error);
         return;
       }
       setState(() {
@@ -168,7 +168,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
       }
     } catch (error) {
       _setLoading(false);
-      _log.warning(error.toString(), error);
+      _logger.warning(error.toString(), error);
       if (mounted) {
         setState(() {
           errorMessage = context.texts().payment_info_dialog_error;

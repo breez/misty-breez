@@ -66,8 +66,8 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
         builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
             return ScrollableErrorMessageWidget(
-              title: "Failed to retrieve payment limits:",
-              message: texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
+              title: texts.payment_limits_generic_error_title,
+              message: texts.payment_limits_generic_error_message(snapshot.errorMessage),
             );
           }
           if (snapshot.onchainPaymentLimits == null) {

@@ -20,7 +20,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:shared_preference_app_group/shared_preference_app_group.dart';
 
-final _log = Logger("Bootstrap");
+final _logger = Logger("Bootstrap");
 
 typedef AppBuilder = Widget Function(
   ServiceInjector serviceInjector,
@@ -44,13 +44,13 @@ Future<void> bootstrap(AppBuilder builder) async {
     }
 
     // Initialize library
-    await _initializeLiquidSdk();
+    await _initializeBreezSdkLiquid();
     final injector = ServiceInjector();
     final breezLogger = injector.breezLogger;
-    breezLogger.registerBreezSdkLiquidLogs(injector.liquidSDK);
+    breezLogger.registerBreezSdkLiquidLogs(injector.breezSdkLiquid);
     BreezDateUtils.setupLocales();
     if (Firebase.apps.isEmpty) {
-      _log.info("List of Firebase apps: ${Firebase.apps}");
+      _logger.info("List of Firebase apps: ${Firebase.apps}");
       await Firebase.initializeApp(
         name: "breez-technology",
         // ignore: undefined_identifier
@@ -62,14 +62,14 @@ Future<void> bootstrap(AppBuilder builder) async {
     HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: Directory(p.join(appDir.path, "bloc_storage")),
     );
-    final accountCubit = AccountCubit(liquidSDK: injector.liquidSDK);
+    final accountCubit = AccountCubit(breezSdkLiquid: injector.breezSdkLiquid);
     final sdkConnectivityCubit = SdkConnectivityCubit(
-      liquidSDK: injector.liquidSDK,
+      breezSdkLiquid: injector.breezSdkLiquid,
       credentialsManager: injector.credentialsManager,
     );
     final isOnboardingComplete = accountCubit.state.isOnboardingComplete;
     if (isOnboardingComplete) {
-      _log.info("Reconnect if secure storage has mnemonic.");
+      _logger.info("Reconnect if secure storage has mnemonic.");
       String? mnemonic = await injector.credentialsManager.restoreMnemonic();
       if (mnemonic != null) {
         await sdkConnectivityCubit.reconnect(mnemonic: mnemonic);
@@ -78,16 +78,16 @@ Future<void> bootstrap(AppBuilder builder) async {
     runApp(builder(injector, accountCubit, sdkConnectivityCubit));
   }, (error, stackTrace) async {
     if (error is! FlutterErrorDetails) {
-      _log.severe("FlutterError: $error", error, stackTrace);
+      _logger.severe("FlutterError: $error", error, stackTrace);
     }
   });
 }
 
-Future<void> _initializeLiquidSdk() async {
+Future<void> _initializeBreezSdkLiquid() async {
   try {
     await liquid_sdk.initialize();
   } catch (error, stackTrace) {
-    _log.severe("Failed to initialize Liquid SDK: $error", error, stackTrace);
+    _logger.severe("Failed to initialize Breez SDK - Liquid: $error", error, stackTrace);
     runApp(BootstrapErrorPage(error: error, stackTrace: stackTrace));
   }
 }

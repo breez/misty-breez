@@ -11,19 +11,19 @@ import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 
-class LNInvoicePaymentPage extends StatefulWidget {
+class LnPaymentPage extends StatefulWidget {
   final LNInvoice lnInvoice;
 
   static const routeName = "/ln_invoice_payment";
   static const paymentMethod = PaymentMethod.lightning;
 
-  const LNInvoicePaymentPage({super.key, required this.lnInvoice});
+  const LnPaymentPage({super.key, required this.lnInvoice});
 
   @override
-  State<StatefulWidget> createState() => LNInvoicePaymentPageState();
+  State<StatefulWidget> createState() => LnPaymentPageState();
 }
 
-class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
+class LnPaymentPageState extends State<LnPaymentPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool _loading = true;
@@ -121,7 +121,7 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        title: Text(texts.spontaneous_payment_send_payment_title),
+        title: Text(texts.ln_payment_send_payment_title),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (context, currencyState) {
@@ -144,7 +144,7 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: LnUrlPaymentHeader(
+                      child: LnPaymentHeader(
                         payeeName: "",
                         totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
                         errorMessage: errorMessage,
@@ -152,11 +152,11 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnUrlPaymentAmount(amountSat: amountSat!),
+                      child: LnPaymentAmount(amountSat: amountSat!),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnUrlPaymentFee(
+                      child: LnPaymentFee(
                         isCalculatingFees: _isCalculatingFees,
                         feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
                       ),
@@ -164,7 +164,7 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
                     if (widget.lnInvoice.description != null && widget.lnInvoice.description!.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnUrlPaymentDescription(
+                        child: LnPaymentDescription(
                           metadataText: widget.lnInvoice.description!,
                         ),
                       ),
@@ -176,23 +176,33 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
           );
         },
       ),
-      bottomNavigationBar: errorMessage.isNotEmpty
-          ? SingleButtonBottomBar(
-              stickToBottom: true,
-              text: texts.qr_code_dialog_action_close,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          : _prepareResponse != null
+      bottomNavigationBar: _loading
+          ? null
+          : _lightningLimits == null
               ? SingleButtonBottomBar(
                   stickToBottom: true,
-                  text: texts.lnurl_payment_page_action_pay,
-                  onPressed: () async {
-                    Navigator.pop(context, _prepareResponse);
+                  text: texts.ln_payment_action_retry,
+                  onPressed: () {
+                    _fetchLightningLimits();
                   },
                 )
-              : const SizedBox.shrink(),
+              : errorMessage.isNotEmpty
+                  ? SingleButtonBottomBar(
+                      stickToBottom: true,
+                      text: texts.ln_payment_action_close,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  : _prepareResponse != null
+                      ? SingleButtonBottomBar(
+                          stickToBottom: true,
+                          text: texts.ln_payment_action_send,
+                          onPressed: () async {
+                            Navigator.pop(context, _prepareResponse);
+                          },
+                        )
+                      : const SizedBox.shrink(),
     );
   }
 
@@ -206,7 +216,7 @@ class LNInvoicePaymentPageState extends State<LNInvoicePaymentPage> {
 
     String? message;
     if (_lightningLimits == null) {
-      message = "Failed to retrieve network payment limits. Please try again later.";
+      message = texts.payment_limits_fetch_error_message;
     }
     final effectiveMinSat = _lightningLimits!.send.minSat.toInt();
     final effectiveMaxSat = _lightningLimits!.send.maxSat.toInt();

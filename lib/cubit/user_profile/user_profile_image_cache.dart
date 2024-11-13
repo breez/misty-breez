@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 const String profileImageCacheKey = 'profileImageCache';
 const String profileImagesDirName = 'ProfileImages';
 
-final _log = Logger("UserProfileImageCache");
+final _logger = Logger("UserProfileImageCache");
 
 class UserProfileImageCache {
   final DefaultCacheManager _cacheManager = DefaultCacheManager();
@@ -48,7 +48,7 @@ class UserProfileImageCache {
         return profileImageFile;
       }
     } catch (e) {
-      _log.warning('Error loading profile image file: $e');
+      _logger.warning('Error loading profile image file: $e');
     }
 
     return null;
@@ -56,7 +56,7 @@ class UserProfileImageCache {
 
   Future<void> cacheProfileImage(Uint8List bytes) async {
     try {
-      _log.info("Caching profile image, size: ${bytes.length} bytes");
+      _logger.info("Caching profile image, size: ${bytes.length} bytes");
       await _cacheManager.removeFile(profileImageCacheKey);
       await _cacheManager.putFile(
         profileImageCacheKey,
@@ -65,7 +65,7 @@ class UserProfileImageCache {
         eTag: profileImageCacheKey,
       );
     } catch (e) {
-      _log.warning('Error caching profile image: $e');
+      _logger.warning('Error caching profile image: $e');
       rethrow;
     }
   }

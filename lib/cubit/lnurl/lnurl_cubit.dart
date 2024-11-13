@@ -11,20 +11,20 @@ import 'package:logging/logging.dart';
 
 export 'lnurl_state.dart';
 
-final _log = Logger("LnUrlCubit");
+final _logger = Logger("LnUrlCubit");
 
 class LnUrlCubit extends Cubit<LnUrlState> {
-  final BreezSDKLiquid _liquidSdk;
+  final BreezSDKLiquid _breezSdkLiquid;
 
-  LnUrlCubit(this._liquidSdk) : super(LnUrlState.initial());
+  LnUrlCubit(this._breezSdkLiquid) : super(LnUrlState.initial());
 
   Future<LnUrlWithdrawResult> lnurlWithdraw({
     required LnUrlWithdrawRequest req,
   }) async {
     try {
-      return await _liquidSdk.instance!.lnurlWithdraw(req: req);
+      return await _breezSdkLiquid.instance!.lnurlWithdraw(req: req);
     } catch (e) {
-      _log.severe("lnurlWithdraw error", e);
+      _logger.severe("lnurlWithdraw error", e);
       rethrow;
     }
   }
@@ -33,9 +33,9 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     required PrepareLnUrlPayRequest req,
   }) async {
     try {
-      return await _liquidSdk.instance!.prepareLnurlPay(req: req);
+      return await _breezSdkLiquid.instance!.prepareLnurlPay(req: req);
     } catch (e) {
-      _log.severe("prepareLnurlPay error", e);
+      _logger.severe("prepareLnurlPay error", e);
       rethrow;
     }
   }
@@ -44,9 +44,9 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     required LnUrlPayRequest req,
   }) async {
     try {
-      return await _liquidSdk.instance!.lnurlPay(req: req);
+      return await _breezSdkLiquid.instance!.lnurlPay(req: req);
     } catch (e) {
-      _log.severe("lnurlPay error", e);
+      _logger.severe("lnurlPay error", e);
       rethrow;
     }
   }
@@ -55,9 +55,9 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     required LnUrlAuthRequestData reqData,
   }) async {
     try {
-      return await _liquidSdk.instance!.lnurlAuth(reqData: reqData);
+      return await _breezSdkLiquid.instance!.lnurlAuth(reqData: reqData);
     } catch (e) {
-      _log.severe("lnurlAuth error", e);
+      _logger.severe("lnurlAuth error", e);
       rethrow;
     }
   }

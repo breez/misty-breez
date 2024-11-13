@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uni_links/uni_links.dart';
 
-final _log = Logger("LightningLinksService");
+final _logger = Logger("LightningLinksService");
 
 class LightningLinksService {
   final _linksNotificationsController = BehaviorSubject<String>();
@@ -36,7 +36,7 @@ class LightningLinksService {
 
   void _handleLink(String? link) {
     if (link == null) return;
-    _log.info("Got lightning link: $link");
+    _logger.info("Got lightning link: $link");
     if (link.startsWith("breez:")) {
       link = link.substring(6);
     }

@@ -6,12 +6,12 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 
-class LnUrlPaymentHeader extends StatefulWidget {
+class LnPaymentHeader extends StatefulWidget {
   final String payeeName;
   final int totalAmount;
   final String errorMessage;
 
-  const LnUrlPaymentHeader({
+  const LnPaymentHeader({
     super.key,
     required this.payeeName,
     required this.totalAmount,
@@ -19,10 +19,10 @@ class LnUrlPaymentHeader extends StatefulWidget {
   });
 
   @override
-  State<LnUrlPaymentHeader> createState() => _LnUrlPaymentHeaderState();
+  State<LnPaymentHeader> createState() => _LnPaymentHeaderState();
 }
 
-class _LnUrlPaymentHeaderState extends State<LnUrlPaymentHeader> {
+class _LnPaymentHeaderState extends State<LnPaymentHeader> {
   bool _showFiatCurrency = false;
 
   @override

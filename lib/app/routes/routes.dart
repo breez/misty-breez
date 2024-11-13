@@ -10,7 +10,7 @@ import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_inf
 import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
-import 'package:l_breez/routes/ln_invoice/ln_invoice_payment_page.dart';
+import 'package:l_breez/routes/lightning/ln_payment_page.dart';
 import 'package:l_breez/routes/lnurl/payment/lnurl_payment_page.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
@@ -27,13 +27,13 @@ import 'package:l_breez/widgets/route.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
-final _log = Logger("Routes");
+final _logger = Logger("Routes");
 
 Route? onGenerateRoute({
   required RouteSettings settings,
   required GlobalKey<NavigatorState> homeNavigatorKey,
 }) {
-  _log.info("New route: ${settings.name}");
+  _logger.info("New route: ${settings.name}");
   switch (settings.name) {
     case InitialWalkthroughPage.routeName:
       return FadeInRoute(
@@ -67,7 +67,7 @@ Route? onGenerateRoute({
             initialRoute: Home.routeName,
             key: homeNavigatorKey,
             onGenerateRoute: (RouteSettings settings) {
-              _log.info("New inner route: ${settings.name}");
+              _logger.info("New inner route: ${settings.name}");
               switch (settings.name) {
                 case Home.routeName:
                   return FadeInRoute(
@@ -77,7 +77,7 @@ Route? onGenerateRoute({
                 case ReceivePaymentPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: ReceivePaymentPage(
                         initialPageIndex: settings.arguments as int? ?? 0,
                       ),
@@ -92,7 +92,7 @@ Route? onGenerateRoute({
                 case ReceiveLightningPaymentPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: const ReceiveLightningPaymentPage(),
                     ),
                     settings: settings,
@@ -100,7 +100,7 @@ Route? onGenerateRoute({
                 case ReceiveBitcoinAddressPaymentPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: const ReceiveBitcoinAddressPaymentPage(),
                     ),
                     settings: settings,
@@ -125,18 +125,18 @@ Route? onGenerateRoute({
                 case SendChainSwapPage.routeName:
                   return FadeInRoute(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: SendChainSwapPage(
                         btcAddressData: settings.arguments as BitcoinAddressData?,
                       ),
                     ),
                     settings: settings,
                   );
-                case LNInvoicePaymentPage.routeName:
+                case LnPaymentPage.routeName:
                   return FadeInRoute<PrepareSendResponse?>(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
-                      child: LNInvoicePaymentPage(
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                      child: LnPaymentPage(
                         lnInvoice: settings.arguments as LNInvoice,
                       ),
                     ),
@@ -145,7 +145,7 @@ Route? onGenerateRoute({
                 case LnUrlPaymentPage.routeName:
                   return FadeInRoute<PrepareLnUrlPayResponse?>(
                     builder: (_) => BlocProvider(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: LnUrlPaymentPage(
                         requestData: settings.arguments as LnUrlPayRequestData,
                       ),

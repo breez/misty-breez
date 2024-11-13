@@ -35,7 +35,7 @@ class SuccessActionDialogState extends State<SuccessActionDialog> {
             children: [
               const Expanded(child: SizedBox.expand()),
               Text(
-                texts.ln_url_success_action_title,
+                texts.processing_payment_dialog_payment_sent,
                 style: themeData.dialogTheme.titleTextStyle,
               ),
               Column(

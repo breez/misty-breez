@@ -10,8 +10,8 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _log = Logger("BreezLogger");
-final _liquidSdkLog = Logger("BreezSdkLiquid");
+final _logger = Logger("BreezLogger");
+final _breezSdkLiquidLogger = Logger("Breez SDK - Liquid");
 
 class BreezLogger {
   BreezLogger() {
@@ -32,14 +32,14 @@ class BreezLogger {
       FlutterError.presentError(details);
       final name = details.context?.name ?? "FlutterError";
       final exception = details.exceptionAsString();
-      _log.severe("$exception -- $name", details, details.stack);
+      _logger.severe("$exception -- $name", details, details.stack);
     };
 
     DeviceInfoPlugin().deviceInfo.then((deviceInfo) {
-      _log.info("Device info:");
-      deviceInfo.data.forEach((key, value) => _log.info("$key: $value"));
+      _logger.info("Device info:");
+      deviceInfo.data.forEach((key, value) => _logger.info("$key: $value"));
     }, onError: (error) {
-      _log.severe("Failed to get device info", error);
+      _logger.severe("Failed to get device info", error);
     });
   }
 
@@ -62,7 +62,7 @@ class BreezLogger {
         },
       );
     } catch (e) {
-      _log.severe("Failed to create log file", e);
+      _logger.severe("Failed to create log file", e);
     }
   }
 
@@ -87,11 +87,11 @@ class BreezLogger {
     }
   }
 
-  void registerBreezSdkLiquidLogs(BreezSDKLiquid liquidSdk) {
-    liquidSdk.logStream.listen((e) => _logLiquidSdkEntries(e, _liquidSdkLog));
+  void registerBreezSdkLiquidLogs(BreezSDKLiquid breezSdkLiquid) {
+    breezSdkLiquid.logStream.listen((e) => _logBreezSdkLiquidEntries(e, _breezSdkLiquidLogger));
   }
 
-  void _logLiquidSdkEntries(liquid_sdk.LogEntry log, Logger logger) {
+  void _logBreezSdkLiquidEntries(liquid_sdk.LogEntry log, Logger logger) {
     switch (log.level) {
       case "ERROR":
         logger.severe(log.line);

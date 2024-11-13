@@ -9,7 +9,7 @@ import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("HandleLNURLAuthRequest");
+final _logger = Logger("HandleLNURLAuthRequest");
 
 Future<LNURLPageResult?> handleAuthRequest(
   BuildContext context,
@@ -26,20 +26,20 @@ Future<LNURLPageResult?> handleAuthRequest(
           final lnurlCubit = context.read<LnUrlCubit>();
           final resp = await lnurlCubit.lnurlAuth(reqData: reqData);
           if (resp is LnUrlCallbackStatus_Ok) {
-            _log.info("LNURL auth success");
+            _logger.info("LNURL auth success");
             return const LNURLPageResult(protocol: LnUrlProtocol.auth);
           } else if (resp is LnUrlCallbackStatus_ErrorStatus) {
-            _log.info("LNURL auth failed: ${resp.data.reason}");
+            _logger.info("LNURL auth failed: ${resp.data.reason}");
             return LNURLPageResult(protocol: LnUrlProtocol.auth, error: resp.data.reason);
           } else {
-            _log.warning("Unknown response from lnurlAuth: $resp");
+            _logger.warning("Unknown response from lnurlAuth: $resp");
             return LNURLPageResult(
               protocol: LnUrlProtocol.auth,
               error: texts.lnurl_payment_page_unknown_error,
             );
           }
         } catch (e) {
-          _log.warning("Error authenticating LNURL auth", e);
+          _logger.warning("Error authenticating LNURL auth", e);
           if (loaderRoute.isActive) {
             navigator.removeRoute(loaderRoute);
           }
@@ -57,7 +57,7 @@ Future<LNURLPageResult?> handleAuthRequest(
 
 void handleLNURLAuthPageResult(BuildContext context, LNURLPageResult result) {
   if (result.hasError) {
-    _log.info("Handle LNURL auth page result with error '${result.error}'");
+    _logger.info("Handle LNURL auth page result with error '${result.error}'");
     promptError(
       context,
       context.texts().lnurl_webview_error_title,

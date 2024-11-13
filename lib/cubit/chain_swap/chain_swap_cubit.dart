@@ -12,25 +12,25 @@ import 'package:logging/logging.dart';
 
 export 'chain_swap_state.dart';
 
-final _log = Logger("ChainSwapCubit");
+final _logger = Logger("ChainSwapCubit");
 
 class ChainSwapCubit extends Cubit<ChainSwapState> {
-  final BreezSDKLiquid _liquidSdk;
+  final BreezSDKLiquid _breezSdkLiquid;
 
-  ChainSwapCubit(this._liquidSdk) : super(ChainSwapState.initial()) {
+  ChainSwapCubit(this._breezSdkLiquid) : super(ChainSwapState.initial()) {
     _initializeChainSwapCubit();
   }
 
   void _initializeChainSwapCubit() {
-    _liquidSdk.walletInfoStream.first.then((_) => rescanOnchainSwaps());
+    _breezSdkLiquid.walletInfoStream.first.then((_) => rescanOnchainSwaps());
   }
 
   Future<void> rescanOnchainSwaps() async {
     try {
-      _log.info("Rescanning onchain swaps");
-      return await _liquidSdk.instance!.rescanOnchainSwaps();
+      _logger.info("Rescanning onchain swaps");
+      return await _breezSdkLiquid.instance!.rescanOnchainSwaps();
     } catch (e) {
-      _log.severe("Failed to rescan onchain swaps", e);
+      _logger.severe("Failed to rescan onchain swaps", e);
       rethrow;
     }
   }
@@ -39,12 +39,12 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     required PayOnchainRequest req,
   }) async {
     try {
-      _log.info(
+      _logger.info(
         "Paying onchain ${req.address} to ${req.prepareResponse.receiverAmountSat} with fee ${req.prepareResponse.totalFeesSat}",
       );
-      return await _liquidSdk.instance!.payOnchain(req: req);
+      return await _breezSdkLiquid.instance!.payOnchain(req: req);
     } catch (e) {
-      _log.severe("Failed to pay onchain", e);
+      _logger.severe("Failed to pay onchain", e);
       emit(state.copyWith(error: extractExceptionMessage(e, getSystemAppLocalizations())));
       rethrow;
     }
@@ -56,7 +56,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     required bool isDrain,
   }) async {
     try {
-      final recommendedFees = await _liquidSdk.instance!.recommendedFees();
+      final recommendedFees = await _breezSdkLiquid.instance!.recommendedFees();
       return _constructFeeOptionList(
         amountSat: amountSat,
         isDrain: isDrain,
@@ -101,12 +101,12 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
 
   Future<PreparePayOnchainResponse> _preparePayOnchain(PreparePayOnchainRequest req) async {
     try {
-      _log.info(
+      _logger.info(
         "Preparing pay onchain for amount: ${req.amount} with fee ${req.feeRateSatPerVbyte}",
       );
-      return await _liquidSdk.instance!.preparePayOnchain(req: req);
+      return await _breezSdkLiquid.instance!.preparePayOnchain(req: req);
     } catch (e) {
-      _log.severe("Failed to prepare pay onchain", e);
+      _logger.severe("Failed to prepare pay onchain", e);
       rethrow;
     }
   }

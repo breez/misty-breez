@@ -35,7 +35,7 @@ class LnUrlWithdrawLimits extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: AutoSizeText(
-          "Failed to fetch payment limits.",
+          texts.payment_limits_fetch_error_message,
           maxLines: 3,
           textAlign: TextAlign.left,
           style: FieldTextStyle.labelStyle.copyWith(

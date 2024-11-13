@@ -11,15 +11,15 @@ import 'currency_state.dart';
 export 'currency_state.dart';
 
 class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin {
-  final BreezSDKLiquid liquidSdk;
+  final BreezSDKLiquid breezSdkLiquid;
 
-  CurrencyCubit(this.liquidSdk) : super(CurrencyState.initial()) {
+  CurrencyCubit(this.breezSdkLiquid) : super(CurrencyState.initial()) {
     hydrate();
     _initializeCurrencyCubit();
   }
 
   void _initializeCurrencyCubit() {
-    liquidSdk.walletInfoStream.first.then(
+    breezSdkLiquid.walletInfoStream.first.then(
       (walletInfo) {
         listFiatCurrencies();
         fetchExchangeRates();
@@ -28,7 +28,7 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   void listFiatCurrencies() {
-    liquidSdk.instance!.listFiatCurrencies().then(
+    breezSdkLiquid.instance!.listFiatCurrencies().then(
       (fiatCurrencies) {
         emit(state.copyWith(
           fiatCurrenciesData: _sortedFiatCurrenciesList(
@@ -62,7 +62,7 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin {
   }
 
   Future<Map<String, Rate>> fetchExchangeRates() async {
-    final List<Rate> rates = await liquidSdk.instance!.fetchFiatRates();
+    final List<Rate> rates = await breezSdkLiquid.instance!.fetchFiatRates();
     final exchangeRates = rates.fold<Map<String, Rate>>({}, (map, rate) {
       map[rate.coin] = rate;
       return map;

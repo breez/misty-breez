@@ -8,7 +8,7 @@ import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/widgets/payment_dialogs/processing_payment_dialog.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("HandleLNURLPayRequest");
+final _logger = Logger("HandleLNURLPayRequest");
 
 Future<LNURLPageResult?> handlePayRequest(
   BuildContext context,
@@ -41,26 +41,26 @@ Future<LNURLPageResult?> handlePayRequest(
   ).then((result) {
     if (result is LnUrlPayResult) {
       if (result is LnUrlPayResult_EndpointSuccess) {
-        _log.info("LNURL payment success, action: ${result.data}");
+        _logger.info("LNURL payment success, action: ${result.data}");
         return LNURLPageResult(
           protocol: LnUrlProtocol.pay,
           successAction: result.data.successAction,
         );
       } else if (result is LnUrlPayResult_PayError) {
-        _log.info("LNURL payment for ${result.data.paymentHash} failed: ${result.data.reason}");
+        _logger.info("LNURL payment for ${result.data.paymentHash} failed: ${result.data.reason}");
         return LNURLPageResult(
           protocol: LnUrlProtocol.pay,
           error: result.data.reason,
         );
       } else if (result is LnUrlPayResult_EndpointError) {
-        _log.info("LNURL payment failed: ${result.data.reason}");
+        _logger.info("LNURL payment failed: ${result.data.reason}");
         return LNURLPageResult(
           protocol: LnUrlProtocol.pay,
           error: result.data.reason,
         );
       }
     }
-    _log.warning("Error sending LNURL payment", result);
+    _logger.warning("Error sending LNURL payment", result);
     throw LNURLPageResult(error: result).errorMessage;
   });
 }
@@ -69,7 +69,7 @@ void handleLNURLPaymentPageResult(BuildContext context, LNURLPageResult result) 
   if (result.successAction != null) {
     _handleSuccessAction(context, result.successAction!);
   } else if (result.hasError) {
-    _log.info("Handle LNURL payment page result with error '${result.error}'");
+    _logger.info("Handle LNURL payment page result with error '${result.error}'");
     throw Exception(result.errorMessage);
   }
 }
@@ -79,16 +79,16 @@ Future _handleSuccessAction(BuildContext context, SuccessActionProcessed success
   String? url;
   if (successAction is SuccessActionProcessed_Message) {
     message = successAction.data.message;
-    _log.info("Handle LNURL payment page result with message action '$message'");
+    _logger.info("Handle LNURL payment page result with message action '$message'");
   } else if (successAction is SuccessActionProcessed_Url) {
     message = successAction.data.description;
     url = successAction.data.url;
-    _log.info("Handle LNURL payment page result with url action '$message', '$url'");
+    _logger.info("Handle LNURL payment page result with url action '$message', '$url'");
   } else if (successAction is SuccessActionProcessed_Aes) {
     final result = successAction.result;
     if (result is AesSuccessActionDataResult_Decrypted) {
       message = "${result.data.description} ${result.data.plaintext}";
-      _log.info("Handle LNURL payment page result with aes action '$message'");
+      _logger.info("Handle LNURL payment page result with aes action '$message'");
     } else if (result is AesSuccessActionDataResult_ErrorStatus) {
       throw Exception(result.reason);
     }

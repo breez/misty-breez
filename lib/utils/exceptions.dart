@@ -3,14 +3,14 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import "package:flutter_rust_bridge/flutter_rust_bridge.dart";
 import 'package:logging/logging.dart';
 
-final _log = Logger("Exceptions");
+final _logger = Logger("Exceptions");
 
 String extractExceptionMessage(
   Object exception,
   BreezTranslations texts, {
   String? defaultErrorMsg,
 }) {
-  _log.info("extractExceptionMessage: $exception");
+  _logger.info("extractExceptionMessage: $exception");
   if (exception is AnyhowException) {
     if (exception.message.isNotEmpty) {
       var message = exception.message.replaceAll("\n", " ").trim();
@@ -130,7 +130,7 @@ String _getLnUrlWithdrawErrorMessage(LnUrlWithdrawError error, BreezTranslations
 }
 
 String? _extractInnerErrorMessage(String content) {
-  _log.info("extractInnerErrorMessage: $content");
+  _logger.info("extractInnerErrorMessage: $content");
   final innerMessageRegex = RegExp(r'((?<=message: \\")(.*)(?=.*\\"))');
   final messageRegex = RegExp(r'((?<=message: ")(.*)(?=.*"))');
   final causedByRegex = RegExp(r'((?<=Caused by: )(.*)(?=.*))');
@@ -146,7 +146,7 @@ String _localizedExceptionMessage(
   BreezTranslations texts,
   String originalMessage,
 ) {
-  _log.info("localizedExceptionMessage: $originalMessage");
+  _logger.info("localizedExceptionMessage: $originalMessage");
   final messageToLower = originalMessage.toLowerCase();
   if (messageToLower.contains("transport error")) {
     return texts.generic_network_error;

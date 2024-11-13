@@ -9,7 +9,7 @@ import 'package:l_breez/routes/qr_scan/scan_overlay.dart';
 import 'package:logging/logging.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-final _log = Logger("QRScan");
+final _logger = Logger("QRScan");
 
 class QRScan extends StatefulWidget {
   static const routeName = "/qr_scan";
@@ -40,17 +40,17 @@ class QRScanState extends State<QRScan> {
   void onDetect(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
     for (final barcode in barcodes) {
-      _log.info("Barcode detected. ${barcode.displayValue}");
+      _logger.info("Barcode detected. ${barcode.displayValue}");
       if (popped || !mounted) {
-        _log.info("Skipping, already popped or not mounted");
+        _logger.info("Skipping, already popped or not mounted");
         return;
       }
       final code = barcode.rawValue;
       if (code == null) {
-        _log.warning("Failed to scan QR code.");
+        _logger.warning("Failed to scan QR code.");
       } else {
         popped = true;
-        _log.info("Popping read QR code: $code");
+        _logger.info("Popping read QR code: $code");
         Navigator.of(context).pop(code);
       }
     }
@@ -131,24 +131,24 @@ class ImagePickerButton extends StatelessWidget {
         final ImagePicker picker = ImagePicker();
 
         final XFile? image = await picker.pickImage(source: ImageSource.gallery).catchError((err) {
-          _log.warning("Failed to pick image", err);
+          _logger.warning("Failed to pick image", err);
           return null;
         });
 
         if (image == null) return;
 
         var filePath = image.path;
-        _log.info("Picked image: $filePath");
+        _logger.info("Picked image: $filePath");
 
         final BarcodeCapture? barcodes = await cameraController.analyzeImage(filePath).catchError(
           (err) {
-            _log.warning("Failed to analyze image", err);
+            _logger.warning("Failed to analyze image", err);
             return null;
           },
         );
 
         if (barcodes == null) {
-          _log.info("No QR code found in image");
+          _logger.info("No QR code found in image");
           scaffoldMessenger.showSnackBar(SnackBar(content: Text(texts.qr_scan_gallery_failed)));
         }
       },

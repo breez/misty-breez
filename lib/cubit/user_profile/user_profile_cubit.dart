@@ -17,16 +17,16 @@ import 'package:path_provider/path_provider.dart';
 export 'user_profile_image_cache.dart';
 export 'user_profile_state.dart';
 
-final _log = Logger("UserProfileCubit");
+final _logger = Logger("UserProfileCubit");
 
 class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
   UserProfileCubit() : super(UserProfileState.initial()) {
     hydrate();
     var profile = state;
-    _log.info("State: ${profile.profileSettings.toJson()}");
+    _logger.info("State: ${profile.profileSettings.toJson()}");
     final settings = profile.profileSettings;
     if (settings.color == null || settings.animal == null || settings.name == null) {
-      _log.info("Profile is missing fields, generating new random ones…");
+      _logger.info("Profile is missing fields, generating new random ones…");
       final defaultProfile = generateDefaultProfile();
       final color = settings.color ?? defaultProfile.color;
       final animal = settings.animal ?? defaultProfile.animal;
@@ -44,13 +44,13 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
 
   Future<String> saveProfileImage(Uint8List bytes) async {
     try {
-      _log.info("Saving profile image, size: ${bytes.length} bytes");
+      _logger.info("Saving profile image, size: ${bytes.length} bytes");
       final profileImageFilePath = await _createProfileImageFilePath();
       await io.File(profileImageFilePath).writeAsBytes(bytes, flush: true);
       await UserProfileImageCache().cacheProfileImage(bytes);
       return path.basename(profileImageFilePath);
     } catch (e) {
-      _log.warning('Error saving profile image: $e');
+      _logger.warning('Error saving profile image: $e');
       rethrow;
     }
   }
@@ -72,7 +72,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin {
     AppMode? appMode,
     bool? expandPreferences,
   }) {
-    _log.info("updateProfile");
+    _logger.info("updateProfile");
     var profile = state.profileSettings;
     profile = profile.copyWith(
       name: name ?? profile.name,

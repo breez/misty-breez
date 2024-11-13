@@ -11,7 +11,7 @@ import 'package:l_breez/routes/chainswap/send/withdraw_funds_model.dart';
 import 'package:l_breez/widgets/amount_form_field/sat_amount_form_field_formatter.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("SendChainSwapForm");
+final _logger = Logger("SendChainSwapForm");
 
 class SendChainSwapForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -51,7 +51,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
   }
 
   void _fillBtcAddressData(BitcoinAddressData addressData) {
-    _log.info("Filling BTC Address data for ${addressData.address}");
+    _logger.info("Filling BTC Address data for ${addressData.address}");
     widget.addressController.text = addressData.address;
     if (addressData.amountSat != null) {
       _setAmount(addressData.amountSat!.toInt());

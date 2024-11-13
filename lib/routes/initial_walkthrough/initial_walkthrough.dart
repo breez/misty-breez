@@ -13,7 +13,7 @@ import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-final _log = Logger("InitialWalkthrough");
+final _logger = Logger("InitialWalkthrough");
 
 class InitialWalkthroughPage extends StatefulWidget {
   static const routeName = "/intro";
@@ -160,7 +160,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void _letsBreez() async {
-    _log.info("Lets breez");
+    _logger.info("Lets breez");
     bool approved = await showDialog(
       useRootNavigator: false,
       context: context,
@@ -178,7 +178,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final accountCubit = context.read<AccountCubit>();
 
     final isRestore = mnemonic != null;
-    _log.info("${isRestore ? "Restore" : "Starting new"} wallet");
+    _logger.info("${isRestore ? "Restore" : "Starting new"} wallet");
     final texts = context.texts();
     final navigator = Navigator.of(context);
     var loaderRoute = createLoaderRoute(context);
@@ -197,7 +197,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {
-      _log.info("Failed to ${isRestore ? "restore" : "register"} wallet", error);
+      _logger.info("Failed to ${isRestore ? "restore" : "register"} wallet", error);
       if (isRestore) {
         _restoreWalletFromMnemonicSeed(initialWords: mnemonic.split(" "));
       }
@@ -212,7 +212,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void _restoreWalletFromMnemonicSeed({
     List<String>? initialWords,
   }) async {
-    _log.info("Restore wallet from mnemonic seed");
+    _logger.info("Restore wallet from mnemonic seed");
     String? mnemonic = await _getMnemonic(initialWords: initialWords);
     if (mnemonic != null) {
       connect(mnemonic: mnemonic);
@@ -222,7 +222,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Future<String?> _getMnemonic({
     List<String>? initialWords,
   }) async {
-    _log.info("Get mnemonic, initialWords: ${initialWords?.length}");
+    _logger.info("Get mnemonic, initialWords: ${initialWords?.length}");
     return await Navigator.of(context).pushNamed<String>(
       EnterMnemonicsPage.routeName,
       arguments: initialWords,

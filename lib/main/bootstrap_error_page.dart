@@ -23,16 +23,17 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts();
+
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) async {
         if (didPop) return;
 
-        final texts = context.texts();
         final bool? shouldPop = await promptAreYouSure(
           context,
-          texts.close_popup_title,
-          Text(texts.close_popup_message),
+          texts.bootstrap_error_page_close_popup_title,
+          Text(texts.bootstrap_error_page_close_popup_message),
         );
         if (shouldPop ?? false) exit(0);
       },
@@ -63,7 +64,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
-                        "Failed to initialize Breez SDK - Liquid",
+                        texts.bootstrap_error_page_initialization_error_title,
                         style: breezLightTheme.textTheme.headlineSmall?.copyWith(color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
@@ -79,7 +80,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Error:",
+                            texts.bootstrap_error_page_error_label,
                             style: breezLightTheme.textTheme.labelLarge?.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -131,7 +132,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Stack Trace:",
+                            texts.bootstrap_error_page_stack_trace_label,
                             style: breezLightTheme.textTheme.labelLarge?.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -176,7 +177,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
           ),
           bottomNavigationBar: SingleButtonBottomBar(
             stickToBottom: true,
-            text: "EXIT",
+            text: texts.bootstrap_error_page_action_exit,
             onPressed: () {
               exit(1);
             },

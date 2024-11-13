@@ -18,8 +18,7 @@ class ServiceInjector {
   FirebaseNotificationsClient? _notifications;
   DeepLinkClient? _deepLinkClient;
 
-  // breez sdk
-  BreezSDKLiquid? _liquidSDK;
+  BreezSDKLiquid? _breezSdkLiquid;
   LightningLinksService? _lightningLinksService;
 
   DeviceClient? _deviceClient;
@@ -53,5 +52,5 @@ class ServiceInjector {
 
   BreezLogger get breezLogger => _breezLogger ??= BreezLogger();
 
-  BreezSDKLiquid get liquidSDK => _liquidSDK ??= BreezSDKLiquid();
+  BreezSDKLiquid get breezSdkLiquid => _breezSdkLiquid ??= BreezSDKLiquid();
 }

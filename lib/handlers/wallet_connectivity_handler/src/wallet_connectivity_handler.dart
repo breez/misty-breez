@@ -9,7 +9,7 @@ import 'package:l_breez/handlers/handler/handler.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("WalletConnectivityHandler");
+final _logger = Logger("WalletConnectivityHandler");
 
 class WalletConnectivityHandler extends Handler {
   StreamSubscription<SdkConnectivityState?>? _subscription;
@@ -35,7 +35,7 @@ class WalletConnectivityHandler extends Handler {
   }
 
   void _listen(SdkConnectivityState? connectionStatus) async {
-    _log.info("Received accountState $connectionStatus");
+    _logger.info("Received accountState $connectionStatus");
     if (connectionStatus == SdkConnectivityState.disconnected) {
       showDisconnectedFlushbar();
     } else if (connectionStatus == SdkConnectivityState.connected) {
@@ -47,7 +47,7 @@ class WalletConnectivityHandler extends Handler {
     dismissFlushbarIfNeed();
     final context = contextProvider?.getBuildContext();
     if (context == null) {
-      _log.info("Skipping connection flushbar as context is null");
+      _logger.info("Skipping connection flushbar as context is null");
       return;
     }
     _flushbar = _getDisconnectedFlushbar(context);
@@ -61,7 +61,7 @@ class WalletConnectivityHandler extends Handler {
     if (flushbar.flushbarRoute != null && flushbar.flushbarRoute!.isActive) {
       final context = contextProvider?.getBuildContext();
       if (context == null) {
-        _log.info("Skipping dismissing wallet connectivity flushbar as context is null");
+        _logger.info("Skipping dismissing wallet connectivity flushbar as context is null");
         return;
       }
       Navigator.of(context).removeRoute(flushbar.flushbarRoute!);
@@ -107,7 +107,7 @@ class WalletConnectivityHandler extends Handler {
                   try {
                     await sdkConnectivityCubit.reconnect();
                   } catch (error) {
-                    _log.severe("Failed to reconnect");
+                    _logger.severe("Failed to reconnect");
                     rethrow;
                   }
                 });

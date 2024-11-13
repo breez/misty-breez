@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 
-class LnUrlPaymentAmount extends StatelessWidget {
+class LnPaymentAmount extends StatelessWidget {
   final int amountSat;
 
-  const LnUrlPaymentAmount({super.key, required this.amountSat});
+  const LnPaymentAmount({super.key, required this.amountSat});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class LnUrlPaymentAmount extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
-            texts.send_on_chain_amount,
+            texts.ln_payment_amount_label,
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,

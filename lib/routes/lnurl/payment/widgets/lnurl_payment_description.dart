@@ -3,10 +3,10 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
 
-class LnUrlPaymentDescription extends StatelessWidget {
+class LnPaymentDescription extends StatelessWidget {
   final String metadataText;
 
-  const LnUrlPaymentDescription({super.key, required this.metadataText});
+  const LnPaymentDescription({super.key, required this.metadataText});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class LnUrlPaymentDescription extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         AutoSizeText(
-          texts.utils_print_pdf_header_description,
+          texts.ln_payment_description_label,
           style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
           textAlign: TextAlign.left,
           maxLines: 1,

@@ -29,7 +29,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        title: Text(texts.bottom_action_bar_send_btc_address),
+        title: Text(texts.reverse_swap_title),
       ),
       body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
         builder: (BuildContext context, PaymentLimitsState snapshot) {

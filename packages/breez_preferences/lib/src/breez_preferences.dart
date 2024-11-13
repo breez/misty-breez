@@ -15,7 +15,7 @@ const _kPaymentOptionChannelSetupFeeLimit = "payment_options_channel_setup_fee_l
 const _kReportPrefKey = "report_preference_key";
 const _kLnUrlPayKey = "lnurlpay_key";
 
-final _log = Logger("BreezPreferences");
+final _logger = Logger("BreezPreferences");
 
 class BreezPreferences {
   const BreezPreferences();
@@ -35,7 +35,7 @@ class BreezPreferences {
   }
 
   Future<void> setMempoolSpaceUrl(String url) async {
-    _log.info("set mempool space url: $url");
+    _logger.info("set mempool space url: $url");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_mempoolSpaceUrlKey, url);
   }
@@ -51,7 +51,7 @@ class BreezPreferences {
   }
 
   Future<void> setPaymentOptionsProportionalFee(double fee) async {
-    _log.info("set payment options proportional fee: $fee");
+    _logger.info("set payment options proportional fee: $fee");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(_kPaymentOptionProportionalFee, fee);
   }
@@ -62,7 +62,7 @@ class BreezPreferences {
   }
 
   Future<void> setPaymentOptionsExemptFee(int exemptFeeMsat) async {
-    _log.info("set payment options exempt fee : $exemptFeeMsat");
+    _logger.info("set payment options exempt fee : $exemptFeeMsat");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_kPaymentOptionExemptFee, exemptFeeMsat);
   }
@@ -73,7 +73,7 @@ class BreezPreferences {
   }
 
   Future<void> setPaymentOptionsChannelSetupFeeLimit(int channelFeeLimitMsat) async {
-    _log.info("set payment options channel setup limit fee : $channelFeeLimitMsat");
+    _logger.info("set payment options channel setup limit fee : $channelFeeLimitMsat");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_kPaymentOptionChannelSetupFeeLimit, channelFeeLimitMsat);
     // iOS Extension requirement
@@ -92,7 +92,7 @@ class BreezPreferences {
   }
 
   Future<void> setBugReportBehavior(BugReportBehavior behavior) async {
-    _log.info("set bug report behavior: $behavior");
+    _logger.info("set bug report behavior: $behavior");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_kReportPrefKey, behavior.index);
   }
@@ -103,7 +103,7 @@ class BreezPreferences {
   }
 
   Future<void> setLnUrlPayKey(String webhookUrl) async {
-    _log.info("set lnurl pay key: $webhookUrl");
+    _logger.info("set lnurl pay key: $webhookUrl");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kLnUrlPayKey, webhookUrl);
   }

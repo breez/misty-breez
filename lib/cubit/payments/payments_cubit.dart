@@ -14,7 +14,7 @@ import 'package:rxdart/rxdart.dart';
 export 'models/models.dart';
 export 'payments_state.dart';
 
-final _log = Logger("PaymentsCubit");
+final _logger = Logger("PaymentsCubit");
 
 class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
   static const String paymentFilterSettingsKey = "payment_filter_settings";
@@ -23,10 +23,10 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
 
   Stream<PaymentFilters> get paymentFiltersStream => _paymentFiltersStreamController.stream;
 
-  final BreezSDKLiquid _liquidSdk;
+  final BreezSDKLiquid _breezSdkLiquid;
 
   PaymentsCubit(
-    this._liquidSdk,
+    this._breezSdkLiquid,
   ) : super(PaymentsState.initial()) {
     hydrate();
 
@@ -36,11 +36,11 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
   }
 
   void _listenPaymentChanges() {
-    _log.info("_listenPaymentChanges\nListening to changes in payments");
+    _logger.info("_listenPaymentChanges\nListening to changes in payments");
     final texts = getSystemAppLocalizations();
 
     Rx.combineLatest2<List<Payment>, PaymentFilters, PaymentsState>(
-      _liquidSdk.paymentsStream,
+      _breezSdkLiquid.paymentsStream,
       paymentFiltersStream,
       (payments, paymentFilters) {
         return state.copyWith(
@@ -55,25 +55,25 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
     required String destination,
     BigInt? amountSat,
   }) async {
-    _log.info("prepareSendPayment\nPreparing send payment for destination: $destination");
+    _logger.info("prepareSendPayment\nPreparing send payment for destination: $destination");
     try {
       // TODO: Handle the drain option for PrepareSendRequest
       final payAmount = amountSat != null ? PayAmount_Receiver(amountSat: amountSat) : null;
       final req = PrepareSendRequest(destination: destination, amount: payAmount);
-      return await _liquidSdk.instance!.prepareSendPayment(req: req);
+      return await _breezSdkLiquid.instance!.prepareSendPayment(req: req);
     } catch (e) {
-      _log.severe("prepareSendPayment\nError preparing send payment", e);
+      _logger.severe("prepareSendPayment\nError preparing send payment", e);
       return Future.error(e);
     }
   }
 
   Future<SendPaymentResponse> sendPayment(PrepareSendResponse prepareResponse) async {
-    _log.info("sendPayment\nSending payment for $prepareResponse");
+    _logger.info("sendPayment\nSending payment for $prepareResponse");
     try {
       final req = SendPaymentRequest(prepareResponse: prepareResponse);
-      return await _liquidSdk.instance!.sendPayment(req: req);
+      return await _breezSdkLiquid.instance!.sendPayment(req: req);
     } catch (e) {
-      _log.severe("sendPayment\nError sending payment", e);
+      _logger.severe("sendPayment\nError sending payment", e);
       return Future.error(e);
     }
   }
@@ -82,15 +82,15 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
     required PaymentMethod paymentMethod,
     BigInt? payerAmountSat,
   }) async {
-    _log.info("prepareReceivePayment\nPreparing receive payment for $payerAmountSat sats");
+    _logger.info("prepareReceivePayment\nPreparing receive payment for $payerAmountSat sats");
     try {
       final req = PrepareReceiveRequest(
         paymentMethod: paymentMethod,
         payerAmountSat: payerAmountSat,
       );
-      return _liquidSdk.instance!.prepareReceivePayment(req: req);
+      return _breezSdkLiquid.instance!.prepareReceivePayment(req: req);
     } catch (e) {
-      _log.severe("prepareSendPayment\nError preparing receive payment", e);
+      _logger.severe("prepareSendPayment\nError preparing receive payment", e);
       return Future.error(e);
     }
   }
@@ -99,15 +99,15 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
     required PrepareReceiveResponse prepareResponse,
     String? description,
   }) async {
-    _log.info(
+    _logger.info(
       "receivePayment\nReceive ${prepareResponse.paymentMethod.name} payment for amount: "
       "${prepareResponse.payerAmountSat} (sats), fees: ${prepareResponse.feesSat} (sats), description: $description",
     );
     try {
       final req = ReceivePaymentRequest(prepareResponse: prepareResponse, description: description);
-      return _liquidSdk.instance!.receivePayment(req: req);
+      return _breezSdkLiquid.instance!.receivePayment(req: req);
     } catch (e) {
-      _log.severe("receivePayment\nError receiving payment", e);
+      _logger.severe("receivePayment\nError receiving payment", e);
       return Future.error(e);
     }
   }
@@ -122,13 +122,13 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin {
       fromTimestamp: fromTimestamp,
       toTimestamp: toTimestamp,
     );
-    _log.info("changePaymentFilter\nChanging payment filter: $newPaymentFilters");
+    _logger.info("changePaymentFilter\nChanging payment filter: $newPaymentFilters");
     _paymentFiltersStreamController.add(newPaymentFilters);
   }
 
   // TODO: Liquid SDK - Canceling payments are not yet supported
   Future cancelPayment(String invoice) async {
-    _log.info("cancelPayment\nCanceling payment for invoice: $invoice");
+    _logger.info("cancelPayment\nCanceling payment for invoice: $invoice");
     throw Exception("Canceling payments are not yet supported");
   }
 

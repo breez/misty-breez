@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 
-class LnUrlPaymentFee extends StatelessWidget {
+class LnPaymentFee extends StatelessWidget {
   final bool isCalculatingFees;
   final int? feesSat;
 
-  const LnUrlPaymentFee({
+  const LnPaymentFee({
     super.key,
     required this.isCalculatingFees,
     required this.feesSat,
@@ -28,7 +28,7 @@ class LnUrlPaymentFee extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
-            "${texts.csv_exporter_fee}:",
+            texts.ln_payment_fee_label,
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,
@@ -51,7 +51,7 @@ class LnUrlPaymentFee extends StatelessWidget {
                   )
                 : (feesSat != null)
                     ? AutoSizeText(
-                        texts.payment_details_dialog_amount_positive(
+                        texts.ln_payment_fee_amount_positive(
                           currencyState.bitcoinCurrency.format(
                             feesSat!,
                           ),
@@ -63,9 +63,7 @@ class LnUrlPaymentFee extends StatelessWidget {
                         maxLines: 1,
                       )
                     : AutoSizeText(
-                        texts.payment_details_dialog_amount_positive(
-                          "? ${currencyState.bitcoinCurrency.displayName}",
-                        ),
+                        texts.ln_payment_fee_amount_unknown(currencyState.bitcoinCurrency.displayName),
                         style: TextStyle(
                           color: themeData.colorScheme.error.withOpacity(0.4),
                         ),

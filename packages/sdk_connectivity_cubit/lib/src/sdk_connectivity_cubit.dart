@@ -10,11 +10,11 @@ import 'package:sdk_connectivity_cubit/sdk_connectivity_cubit.dart';
 
 class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
   final CredentialsManager credentialsManager;
-  final BreezSDKLiquid liquidSDK;
+  final BreezSDKLiquid breezSdkLiquid;
 
   SdkConnectivityCubit({
     required this.credentialsManager,
-    required this.liquidSDK,
+    required this.breezSdkLiquid,
   }) : super(SdkConnectivityState.disconnected);
 
   Future<void> register() async {
@@ -45,7 +45,7 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
 
       final config = await AppConfig.instance();
       final req = ConnectRequest(mnemonic: mnemonic, config: config.sdkConfig);
-      await liquidSDK.connect(req: req);
+      await breezSdkLiquid.connect(req: req);
 
       _startSyncing();
 
@@ -77,7 +77,7 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
   }
 
   void _startSyncing() {
-    final syncManager = SyncManager(liquidSDK.instance);
+    final syncManager = SyncManager(breezSdkLiquid.instance);
     syncManager.startSyncing();
   }
 

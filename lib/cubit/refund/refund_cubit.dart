@@ -13,44 +13,44 @@ import 'package:logging/logging.dart';
 
 export 'refund_state.dart';
 
-final _log = Logger("RefundCubit");
+final _logger = Logger("RefundCubit");
 
 class RefundCubit extends Cubit<RefundState> {
   StreamSubscription? _paymentEventSubscription;
 
-  final BreezSDKLiquid _liquidSdk;
+  final BreezSDKLiquid _breezSdkLiquid;
 
-  RefundCubit(this._liquidSdk) : super(RefundState.initial()) {
+  RefundCubit(this._breezSdkLiquid) : super(RefundState.initial()) {
     _initializeRefundCubit();
     _listenRefundEvents();
   }
 
   void _initializeRefundCubit() {
-    _liquidSdk.walletInfoStream.first.then((_) => listRefundables());
+    _breezSdkLiquid.walletInfoStream.first.then((_) => listRefundables());
   }
 
   void listRefundables() async {
     try {
-      _log.info('Refreshing refundables');
-      var refundables = await _liquidSdk.instance!.listRefundables();
-      _log.info('Refundables: $refundables');
+      _logger.info('Refreshing refundables');
+      var refundables = await _breezSdkLiquid.instance!.listRefundables();
+      _logger.info('Refundables: $refundables');
       emit(state.copyWith(refundables: refundables));
     } catch (e) {
-      _log.severe('Failed to list refundables', e);
+      _logger.severe('Failed to list refundables', e);
       emit(state.copyWith(refundables: null));
     }
   }
 
   void _listenRefundEvents() {
-    _log.info('Listening to Refund events');
-    _paymentEventSubscription = _liquidSdk.paymentEventStream.listen(
+    _logger.info('Listening to Refund events');
+    _paymentEventSubscription = _breezSdkLiquid.paymentEventStream.listen(
       (paymentEvent) {
         if (paymentEvent.sdkEvent is SdkEvent_PaymentRefunded ||
             paymentEvent.sdkEvent is SdkEvent_PaymentRefundPending) {
           listRefundables();
         }
       },
-      onError: (e) => _log.severe('Error in _listenRefundEvents', e),
+      onError: (e) => _logger.severe('Error in _listenRefundEvents', e),
     );
   }
 
@@ -61,13 +61,13 @@ class RefundCubit extends Cubit<RefundState> {
   }
 
   Future<RecommendedFees> recommendedFees() async {
-    return await _liquidSdk.instance!.recommendedFees();
+    return await _breezSdkLiquid.instance!.recommendedFees();
   }
 
   Future<PrepareRefundResponse> prepareRefund({
     required PrepareRefundRequest req,
   }) async {
-    return await _liquidSdk.instance!.prepareRefund(req: req);
+    return await _breezSdkLiquid.instance!.prepareRefund(req: req);
   }
 
   /// Fetches the current recommended fees for a refund transaction.
@@ -120,12 +120,12 @@ class RefundCubit extends Cubit<RefundState> {
 
   Future<PrepareRefundResponse> _prepareRefund(PrepareRefundRequest req) async {
     try {
-      _log.info(
+      _logger.info(
         "Preparing refund for swap ${req.swapAddress} to ${req.refundAddress} with fee ${req.feeRateSatPerVbyte}",
       );
       return await prepareRefund(req: req);
     } catch (e) {
-      _log.severe("Failed to prepare refund", e);
+      _logger.severe("Failed to prepare refund", e);
       rethrow;
     }
   }
@@ -133,15 +133,15 @@ class RefundCubit extends Cubit<RefundState> {
   /// Broadcast a refund transaction for a failed/expired swap.
   Future<RefundResponse> refund({required RefundRequest req}) async {
     try {
-      _log.info(
+      _logger.info(
         "Refunding swap ${req.swapAddress} to ${req.refundAddress} with fee ${req.feeRateSatPerVbyte}",
       );
-      final refundResponse = await _liquidSdk.instance!.refund(req: req);
-      _log.info("Refund txId: ${refundResponse.refundTxId}");
+      final refundResponse = await _breezSdkLiquid.instance!.refund(req: req);
+      _logger.info("Refund txId: ${refundResponse.refundTxId}");
       emit(state.copyWith(refundTxId: refundResponse.refundTxId, error: ""));
       return refundResponse;
     } catch (e) {
-      _log.severe("Failed to refund swap", e);
+      _logger.severe("Failed to refund swap", e);
       emit(state.copyWith(error: extractExceptionMessage(e, getSystemAppLocalizations())));
       rethrow;
     }

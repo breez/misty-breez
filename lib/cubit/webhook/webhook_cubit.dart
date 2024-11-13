@@ -10,36 +10,36 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/webhook/webhook_state.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("WebhookCubit");
+final _logger = Logger("WebhookCubit");
 
 class WebhookCubit extends Cubit<WebhookState> {
   static const notifierServiceURL = "https://notifier.breez.technology";
   static const lnurlServiceURL = "https://breez.fun";
 
-  final BreezSDKLiquid _liquidSDK;
+  final BreezSDKLiquid _breezSdkLiquid;
   final BreezPreferences _breezPreferences;
   final NotificationsClient _notifications;
 
   WebhookCubit(
-    this._liquidSDK,
+    this._breezSdkLiquid,
     this._breezPreferences,
     this._notifications,
   ) : super(WebhookState()) {
-    _liquidSDK.walletInfoStream.first.then((walletInfo) => refreshLnurlPay(walletInfo: walletInfo));
+    _breezSdkLiquid.walletInfoStream.first.then((walletInfo) => refreshLnurlPay(walletInfo: walletInfo));
   }
 
   Future refreshLnurlPay({GetInfoResponse? walletInfo}) async {
-    _log.info("Refreshing Lightning Address");
+    _logger.info("Refreshing Lightning Address");
     emit(WebhookState(isLoading: true));
     try {
-      final getInfoResponse = walletInfo ?? await _liquidSDK.instance?.getInfo();
+      final getInfoResponse = walletInfo ?? await _breezSdkLiquid.instance?.getInfo();
       if (getInfoResponse != null) {
         await _registerWebhooks(getInfoResponse);
       } else {
         throw Exception("Unable to retrieve wallet information.");
       }
     } catch (err) {
-      _log.warning("Failed to refresh lnurlpay: $err");
+      _logger.warning("Failed to refresh lnurlpay: $err");
       emit(
         state.copyWith(
           lnurlPayErrorTitle: "Failed to refresh Lightning Address:",
@@ -54,12 +54,12 @@ class WebhookCubit extends Cubit<WebhookState> {
   Future _registerWebhooks(GetInfoResponse walletInfo) async {
     try {
       String webhookUrl = await _generateWebhookURL();
-      await _liquidSDK.instance?.registerWebhook(webhookUrl: webhookUrl);
-      _log.info("SDK webhook registered: $webhookUrl");
+      await _breezSdkLiquid.instance?.registerWebhook(webhookUrl: webhookUrl);
+      _logger.info("SDK webhook registered: $webhookUrl");
       final lnurl = await _registerLnurlpay(walletInfo, webhookUrl);
       emit(WebhookState(lnurlPayUrl: lnurl));
     } catch (err) {
-      _log.warning("Failed to register webhooks: $err");
+      _logger.warning("Failed to register webhooks: $err");
       emit(state.copyWith(lnurlPayErrorTitle: "Failed to register webhooks:", lnurlPayError: err.toString()));
       rethrow;
     }
@@ -75,7 +75,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     }
     final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final req = SignMessageRequest(message: "$currentTime-$webhookUrl");
-    final signMessageRes = _liquidSDK.instance?.signMessage(req: req);
+    final signMessageRes = _breezSdkLiquid.instance?.signMessage(req: req);
     if (signMessageRes == null) {
       throw Exception("Missing signature");
     }
@@ -94,7 +94,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     if (jsonResponse.statusCode == 200) {
       final data = jsonDecode(jsonResponse.body);
       final lnurl = data['lnurl'];
-      _log.info("lnurlpay webhook registered: $webhookUrl, lnurl = $lnurl");
+      _logger.info("lnurlpay webhook registered: $webhookUrl, lnurl = $lnurl");
       await _breezPreferences.setLnUrlPayKey(webhookUrl);
       return lnurl;
     } else {
@@ -109,7 +109,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     final lnurlWebhookUrl = "$lnurlServiceURL/lnurlpay/${walletInfo.pubkey}";
     final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final req = SignMessageRequest(message: "$currentTime-$toInvalidate");
-    final signMessageRes = _liquidSDK.instance?.signMessage(req: req);
+    final signMessageRes = _breezSdkLiquid.instance?.signMessage(req: req);
     if (signMessageRes == null) {
       throw Exception("Missing signature");
     }
@@ -124,13 +124,13 @@ class WebhookCubit extends Cubit<WebhookState> {
         ).toJson(),
       ),
     );
-    _log.info("invalidate lnurl pay response: ${response.statusCode}");
+    _logger.info("invalidate lnurl pay response: ${response.statusCode}");
     await _breezPreferences.resetLnUrlPayKey();
   }
 
   Future<String> _generateWebhookURL() async {
     final token = await _notifications.getToken();
-    _log.info("Retrieved token, registering…");
+    _logger.info("Retrieved token, registering…");
     final platform = defaultTargetPlatform == TargetPlatform.iOS
         ? "ios"
         : defaultTargetPlatform == TargetPlatform.android
