@@ -5,7 +5,6 @@ import 'package:breez_logger/breez_logger.dart';
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -78,12 +77,11 @@ class _DevelopersViewState extends State<DevelopersView> {
               color: themeData.iconTheme.color,
             ),
             itemBuilder: (context) => [
-              if (kDebugMode)
-                Choice(
-                  title: texts.developers_page_menu_export_keys_title,
-                  icon: Icons.phone_android,
-                  function: _exportKeys,
-                ),
+              Choice(
+                title: texts.developers_page_menu_export_keys_title,
+                icon: Icons.phone_android,
+                function: _exportKeys,
+              ),
               Choice(
                 title: texts.developers_page_menu_share_logs_title,
                 icon: Icons.share,
