@@ -36,17 +36,14 @@ class ReceiveLightningPaymentPage extends StatefulWidget {
 class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   var _doneAction = KeyboardDoneAction();
 
-  late LightningPaymentLimitsResponse _lightningLimits;
-
-  PrepareReceiveResponse? prepareResponse;
-  Future<ReceivePaymentResponse>? receivePaymentResponse;
-
-  bool isBelowPaymentLimit = false;
+  Future<PrepareReceiveResponse>? prepareResponseFuture;
+  Future<ReceivePaymentResponse>? receivePaymentResponseFuture;
 
   @override
   void initState() {
@@ -66,6 +63,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
+    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -77,9 +75,8 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
               message: texts.payment_limits_generic_error_message(snapshot.errorMessage),
             );
           }
-          if (snapshot.lightningPaymentLimits == null) {
-            final themeData = Theme.of(context);
-
+          final lightningPaymentLimits = snapshot.lightningPaymentLimits;
+          if (lightningPaymentLimits == null) {
             return Center(
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
@@ -87,103 +84,122 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
             );
           }
 
-          _lightningLimits = snapshot.lightningPaymentLimits!;
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 40.0),
-            child: SingleChildScrollView(
-              // TODO: Extract these into widgets
-              child: receivePaymentResponse == null ? _buildForm() : _buildQRCode(),
-            ),
-          );
+          return prepareResponseFuture == null
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 40.0),
+                  child: SingleChildScrollView(
+                    child: _buildForm(lightningPaymentLimits),
+                  ),
+                )
+              : _buildQRCode();
         },
       ),
       bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
         builder: (BuildContext context, PaymentLimitsState snapshot) {
-          return (snapshot.hasError)
-              ? SingleButtonBottomBar(
-                  stickToBottom: true,
-                  text: texts.invoice_btc_address_action_retry,
-                  onPressed: () {
-                    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
-                    paymentLimitsCubit.fetchLightningLimits();
-                  },
-                )
-              : (receivePaymentResponse == null && !isBelowPaymentLimit)
+          return snapshot.lightningPaymentLimits == null
+              ? const SizedBox.shrink()
+              : snapshot.hasError
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
-                      text: texts.invoice_action_create,
+                      text: texts.invoice_btc_address_action_retry,
                       onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          _createInvoice();
-                        }
+                        final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                        paymentLimitsCubit.fetchLightningLimits();
                       },
                     )
-                  : SingleButtonBottomBar(
-                      stickToBottom: true,
-                      text: texts.qr_code_dialog_action_close,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    );
+                  : prepareResponseFuture == null && receivePaymentResponseFuture == null
+                      ? SingleButtonBottomBar(
+                          stickToBottom: true,
+                          text: texts.invoice_action_create,
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _createInvoice();
+                            }
+                          },
+                        )
+                      : FutureBuilder(
+                          future: prepareResponseFuture,
+                          builder: (
+                            BuildContext context,
+                            AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
+                          ) {
+                            if (prepareSnapshot.hasData) {
+                              return FutureBuilder(
+                                future: receivePaymentResponseFuture,
+                                builder: (
+                                  BuildContext context,
+                                  AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot,
+                                ) {
+                                  if (receiveSnapshot.hasData) {
+                                    return SingleButtonBottomBar(
+                                      stickToBottom: true,
+                                      text: texts.qr_code_dialog_action_close,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                },
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        );
         },
       ),
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(LightningPaymentLimitsResponse lightningPaymentLimits) {
     final texts = context.texts();
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, currencyState) {
         return Form(
           key: _formKey,
-          child: Scrollbar(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.done,
-                    maxLines: null,
-                    readOnly: false,
-                    maxLength: 90,
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    decoration: InputDecoration(
-                      labelText: texts.invoice_description_label,
-                    ),
-                    style: FieldTextStyle.textStyle,
-                  ),
-                  AmountFormField(
-                    context: context,
-                    texts: texts,
-                    bitcoinCurrency: currencyState.bitcoinCurrency,
-                    focusNode: _amountFocusNode,
-                    autofocus: true,
-                    readOnly: false,
-                    controller: _amountController,
-                    validatorFn: (v) => validatePayment(v),
-                    style: FieldTextStyle.textStyle,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: AutoSizeText(
-                      texts.invoice_min_payment_limit(
-                        currencyState.bitcoinCurrency.format(
-                          _lightningLimits.receive.minSat.toInt(),
-                        ),
-                      ),
-                      style: textStyle,
-                      maxLines: 1,
-                      minFontSize: MinFontSize(context).minFontSize,
-                    ),
-                  ),
-                ],
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _descriptionController,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.done,
+                maxLines: null,
+                readOnly: false,
+                maxLength: 90,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                decoration: InputDecoration(
+                  labelText: texts.invoice_description_label,
+                ),
+                style: FieldTextStyle.textStyle,
               ),
-            ),
+              AmountFormField(
+                context: context,
+                texts: texts,
+                bitcoinCurrency: currencyState.bitcoinCurrency,
+                focusNode: _amountFocusNode,
+                autofocus: true,
+                readOnly: false,
+                controller: _amountController,
+                validatorFn: (v) => validatePayment(v, lightningPaymentLimits),
+                style: FieldTextStyle.textStyle,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: AutoSizeText(
+                  texts.invoice_min_payment_limit(
+                    currencyState.bitcoinCurrency.format(
+                      lightningPaymentLimits.receive.minSat.toInt(),
+                    ),
+                  ),
+                  style: textStyle,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -191,21 +207,36 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   }
 
   Widget _buildQRCode() {
+    final themeData = Theme.of(context);
+
     return FutureBuilder(
-      future: receivePaymentResponse,
-      builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> snapshot) {
-        return DestinationWidget(
-          snapshot: snapshot,
-          title: context.texts().receive_payment_method_lightning_invoice,
-          infoWidget: PaymentFeesMessageBox(
-            feesSat: prepareResponse!.feesSat.toInt(),
+      future: prepareResponseFuture,
+      builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
+        if (prepareSnapshot.hasData) {
+          return FutureBuilder(
+            future: receivePaymentResponseFuture,
+            builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
+              return DestinationWidget(
+                snapshot: receiveSnapshot,
+                title: context.texts().receive_payment_method_lightning_invoice,
+                infoWidget: PaymentFeesMessageBox(
+                  feesSat: prepareSnapshot.data!.feesSat.toInt(),
+                ),
+              );
+            },
+          );
+        }
+
+        return Center(
+          child: Loader(
+            color: themeData.primaryColor.withOpacity(0.5),
           ),
         );
       },
     );
   }
 
-  Future _createInvoice() async {
+  void _createInvoice() {
     _doneAction.dispose();
     _logger
         .info("Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}");
@@ -213,33 +244,37 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     final currencyCubit = context.read<CurrencyCubit>();
 
     final payerAmountSat = BigInt.from(currencyCubit.state.bitcoinCurrency.parse(_amountController.text));
-    final prepareReceiveResponse = await paymentsCubit.prepareReceivePayment(
+    final prepareReceiveResponse = paymentsCubit.prepareReceivePayment(
       paymentMethod: PaymentMethod.lightning,
       payerAmountSat: payerAmountSat,
     );
 
     setState(() {
-      prepareResponse = prepareReceiveResponse;
-      receivePaymentResponse = paymentsCubit.receivePayment(
-        prepareResponse: prepareReceiveResponse,
-        description: _descriptionController.text,
-      );
+      prepareResponseFuture = prepareReceiveResponse;
+    });
+    prepareReceiveResponse.then((prepareReceiveResponse) {
+      setState(() {
+        receivePaymentResponseFuture = paymentsCubit.receivePayment(
+          prepareResponse: prepareReceiveResponse,
+          description: _descriptionController.text,
+        );
+      });
     });
   }
 
-  String? validatePayment(int amount) {
+  String? validatePayment(int amount, LightningPaymentLimitsResponse lightningPaymentLimits) {
     var currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
-      validatePayment: _validatePayment,
+      validatePayment: (amount, outgoing) => _validatePayment(amount, outgoing, lightningPaymentLimits),
       currency: currencyCubit.state.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }
 
-  void _validatePayment(int amount, bool outgoing) {
+  void _validatePayment(int amount, bool outgoing, LightningPaymentLimitsResponse lightningPaymentLimits) {
     final accountState = context.read<AccountCubit>().state;
     final balance = accountState.walletInfo!.balanceSat.toInt();
     final lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits, balance);
+    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, lightningPaymentLimits, balance);
   }
 }
