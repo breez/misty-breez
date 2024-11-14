@@ -12,7 +12,7 @@ import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("DestinationWidget");
+final _logger = Logger("DestinationWidget");
 
 class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
@@ -78,7 +78,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   }
 
   void _trackNewPayments() {
-    _log.info("Tracking new payments.");
+    _logger.info("Tracking new payments.");
     final paymentsCubit = context.read<PaymentsCubit>();
     _receivedPaymentSubscription?.cancel();
     _receivedPaymentSubscription = paymentsCubit.stream
@@ -95,7 +95,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       (payment) {
         // Null cases are filtered out on where clause
         final newPayment = payment!;
-        _log.info(
+        _logger.info(
           "Payment Received! Id: ${newPayment.id} Destination: ${newPayment.destination}, Status: ${newPayment.status}",
         );
         _onPaymentFinished(true);
@@ -113,7 +113,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   }
 
   void _onTrackPaymentError(dynamic e) {
-    _log.warning("Failed to track payment", e);
+    _logger.warning("Failed to track payment", e);
     if (mounted) {
       showFlushbar(context, message: extractExceptionMessage(e, context.texts()));
     }

@@ -20,7 +20,7 @@ import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("ReceiveLightningPaymentPage");
+final _logger = Logger("ReceiveLightningPaymentPage");
 
 class ReceiveLightningPaymentPage extends StatefulWidget {
   static const routeName = "/receive_lightning";
@@ -73,8 +73,8 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
         builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
             return ScrollableErrorMessageWidget(
-              title: "Failed to retrieve payment limits:",
-              message: texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
+              title: texts.payment_limits_generic_error_title,
+              message: texts.payment_limits_generic_error_message(snapshot.errorMessage),
             );
           }
           if (snapshot.lightningPaymentLimits == null) {
@@ -207,7 +207,8 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
   Future _createInvoice() async {
     _doneAction.dispose();
-    _log.info("Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}");
+    _logger
+        .info("Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}");
     final paymentsCubit = context.read<PaymentsCubit>();
     final currencyCubit = context.read<CurrencyCubit>();
 

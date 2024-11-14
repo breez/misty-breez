@@ -45,7 +45,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
               ? const DestinationWidgetPlaceholder()
               : (webhookState.lnurlPayError != null)
                   ? ScrollableErrorMessageWidget(
-                      title: webhookState.lnurlPayErrorTitle ?? "LN Service error:",
+                      title: webhookState.lnurlPayErrorTitle ?? texts.lightning_address_service_error_title,
                       message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
                     )
                   : Padding(

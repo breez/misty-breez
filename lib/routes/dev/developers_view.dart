@@ -5,7 +5,6 @@ import 'package:breez_logger/breez_logger.dart';
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -19,7 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _log = Logger("DevelopersView");
+final _logger = Logger("DevelopersView");
 
 bool allowRebroadcastRefunds = false;
 
@@ -53,14 +52,14 @@ class _DevelopersViewState extends State<DevelopersView> {
     super.initState();
     _preferences
         .getBugReportBehavior()
-        .then((value) => bugReportBehavior = value, onError: (e) => _log.warning(e));
+        .then((value) => bugReportBehavior = value, onError: (e) => _logger.warning(e));
   }
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-    final texts = getSystemAppLocalizations();
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Scaffold(
@@ -78,25 +77,24 @@ class _DevelopersViewState extends State<DevelopersView> {
               color: themeData.iconTheme.color,
             ),
             itemBuilder: (context) => [
-              if (kDebugMode)
-                Choice(
-                  title: "Export Keys",
-                  icon: Icons.phone_android,
-                  function: _exportKeys,
-                ),
               Choice(
-                title: "Share Logs",
+                title: texts.developers_page_menu_export_keys_title,
+                icon: Icons.phone_android,
+                function: _exportKeys,
+              ),
+              Choice(
+                title: texts.developers_page_menu_share_logs_title,
                 icon: Icons.share,
                 function: (_) => shareLog(),
               ),
               Choice(
-                title: "Rescan Onchain Swaps",
+                title: texts.developers_page_menu_rescan_swaps_title,
                 icon: Icons.radar,
                 function: _rescanOnchainSwaps,
               ),
               if (bugReportBehavior != BugReportBehavior.prompt)
                 Choice(
-                  title: "Enable Failure Prompt",
+                  title: texts.developers_page_menu_prompt_bug_report_title,
                   icon: Icons.bug_report,
                   function: (_) {
                     _preferences.setBugReportBehavior(BugReportBehavior.prompt).then(
@@ -105,7 +103,7 @@ class _DevelopersViewState extends State<DevelopersView> {
                                 bugReportBehavior = BugReportBehavior.prompt;
                               },
                             ),
-                        onError: (e) => _log.warning(e));
+                        onError: (e) => _logger.warning(e));
                   },
                 ),
             ]

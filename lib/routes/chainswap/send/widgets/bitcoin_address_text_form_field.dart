@@ -7,7 +7,7 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("BitcoinAddressTextFormField");
+final _logger = Logger("BitcoinAddressTextFormField");
 
 class BitcoinAddressTextFormField extends StatefulWidget {
   final TextEditingController controller;
@@ -49,7 +49,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
       controller: widget.controller,
       autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-        labelText: context.texts().withdraw_funds_btc_address,
+        labelText: texts.withdraw_funds_btc_address,
         suffixIcon: IconButton(
           alignment: Alignment.bottomRight,
           icon: Image(
@@ -59,17 +59,17 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
             width: 24.0,
             height: 24.0,
           ),
-          tooltip: texts.withdraw_funds_scan_barcode,
+          tooltip: texts.bitcoin_address_scan_tooltip,
           onPressed: () {
-            _log.info("Start qr code scan");
+            _logger.info("Start qr code scan");
             Navigator.pushNamed<String>(context, QRScan.routeName).then(
               (barcode) async {
-                _log.info("Scanned string: '$barcode'");
+                _logger.info("Scanned string: '$barcode'");
                 if (barcode == null) return;
                 if (barcode.isEmpty && context.mounted) {
                   showFlushbar(
                     context,
-                    message: texts.withdraw_funds_error_qr_code_not_detected,
+                    message: texts.qr_code_not_detected_error,
                   );
                   return;
                 }
@@ -84,7 +84,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
       style: FieldTextStyle.textStyle,
       onChanged: (_) => _validateAddress(),
       validator: (address) {
-        _log.info("validator called for $address");
+        _logger.info("validator called for $address");
         if (address == null || address.isEmpty) {
           return texts.withdraw_funds_error_invalid_address;
         }

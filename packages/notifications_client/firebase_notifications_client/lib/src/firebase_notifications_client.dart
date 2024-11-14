@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 
 export 'package:firebase_notifications_client/src/model/notifications_client.dart';
 
-final _log = Logger("FirebaseNotifications");
+final _logger = Logger("FirebaseNotifications");
 
 class FirebaseNotificationsClient implements NotificationsClient {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -23,7 +23,7 @@ class FirebaseNotificationsClient implements NotificationsClient {
   }
 
   Future<void> _onMessage(RemoteMessage message) async {
-    _log.info("_onMessage = ${message.data}");
+    _logger.info("_onMessage = ${message.data}");
     final data = _extractData(message.data);
     if (data != null) {
       _notificationController.add(data);
@@ -31,7 +31,7 @@ class FirebaseNotificationsClient implements NotificationsClient {
   }
 
   Future<void> _onResume(RemoteMessage message) async {
-    _log.info("_onResume = ${message.data}");
+    _logger.info("_onResume = ${message.data}");
     final data = _extractData(message.data);
     if (data != null) {
       _notificationController.add(data);
@@ -48,7 +48,7 @@ class FirebaseNotificationsClient implements NotificationsClient {
 
   @override
   Future<String?> getToken() async {
-    _log.info("getToken");
+    _logger.info("getToken");
     final firebaseNotificationSettings = await _firebaseMessaging.requestPermission(
       sound: true,
       badge: true,
@@ -59,12 +59,12 @@ class FirebaseNotificationsClient implements NotificationsClient {
       provisional: false,
     );
 
-    _log.config('User granted permission: ${firebaseNotificationSettings.authorizationStatus}');
+    _logger.config('User granted permission: ${firebaseNotificationSettings.authorizationStatus}');
     if (firebaseNotificationSettings.authorizationStatus == AuthorizationStatus.authorized) {
-      _log.info("Authorized to get token");
+      _logger.info("Authorized to get token");
       return _firebaseMessaging.getToken();
     } else {
-      _log.warning("Unauthorized to get token");
+      _logger.warning("Unauthorized to get token");
       return null;
     }
   }

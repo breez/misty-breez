@@ -7,13 +7,13 @@ import 'package:logging/logging.dart';
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 final AutoSizeGroup _valueGroup = AutoSizeGroup();
 
-final _log = Logger("PaymentDetailsDialog");
+final _logger = Logger("PaymentDetailsDialog");
 
 class PaymentDetailsDialog extends StatelessWidget {
   final PaymentData paymentData;
 
   PaymentDetailsDialog({super.key, required this.paymentData}) {
-    _log.info("PaymentDetailsDialog for payment: $paymentData");
+    _logger.info("PaymentDetailsDialog for payment: $paymentData");
   }
 
   @override

@@ -10,7 +10,7 @@ import 'package:l_breez/utils/date.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 
-final _log = Logger("CsvExporter");
+final _logger = Logger("CsvExporter");
 
 class CsvExporter {
   final PaymentsState paymentsState;
@@ -28,16 +28,16 @@ class CsvExporter {
   });
 
   Future<String> export() async {
-    _log.info("export payments started");
+    _logger.info("export payments started");
     String tmpFilePath =
         await _saveCsvFile(const ListToCsvConverter().convert(_generateList() as List<List>));
-    _log.info("export payments finished");
+    _logger.info("export payments finished");
     return tmpFilePath;
   }
 
   List _generateList() {
     // Fetch CurrencyState map values accordingly
-    _log.info("generating payment list started");
+    _logger.info("generating payment list started");
     final texts = getSystemAppLocalizations();
     final filteredPayments = paymentsState.filteredPayments;
     List<List<String>> paymentList = List.generate(filteredPayments.length, (index) {
@@ -61,31 +61,31 @@ class CsvExporter {
       texts.csv_exporter_tx_hash,
       texts.csv_exporter_fee,
     ]);
-    _log.info("generating payment finished");
+    _logger.info("generating payment finished");
     return paymentList;
   }
 
   Future<String> _saveCsvFile(String csv) async {
-    _log.info("save breez payments to csv started");
+    _logger.info("save breez payments to csv started");
     String filePath = await _createCsvFilePath();
     final file = File(filePath);
     await file.writeAsString(csv);
-    _log.info("save breez payments to csv finished");
+    _logger.info("save breez payments to csv finished");
     return file.path;
   }
 
   Future<String> _createCsvFilePath() async {
-    _log.info("create breez payments path started");
+    _logger.info("create breez payments path started");
     final directory = await getTemporaryDirectory();
     String filePath = '${directory.path}/BreezPayments';
     filePath = _appendFilterInformation(filePath);
     filePath += ".csv";
-    _log.info("create breez payments path finished");
+    _logger.info("create breez payments path finished");
     return filePath;
   }
 
   String _appendFilterInformation(String filePath) {
-    _log.info("add filter information to path started $filePath");
+    _logger.info("add filter information to path started $filePath");
     final paymentTypeFilters = paymentsState.paymentFilters.filters;
     if (paymentTypeFilters != null && paymentTypeFilters != PaymentType.values) {
       loop:
@@ -105,7 +105,7 @@ class CsvExporter {
       String dateFilter = '${dateFilterFormat.format(startDate!)}-${dateFilterFormat.format(endDate!)}';
       filePath += "_$dateFilter";
     }
-    _log.info("add filter information to path finished");
+    _logger.info("add filter information to path finished");
     return filePath;
   }
 

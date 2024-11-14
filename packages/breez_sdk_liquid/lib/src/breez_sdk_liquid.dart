@@ -27,12 +27,14 @@ class BreezSDKLiquid {
     required liquid_sdk.ConnectRequest req,
   }) async {
     try {
+      _subscribeToLogStream();
       _instance = await liquid_sdk.connect(req: req);
       _initializeEventsStream(_instance!);
-      _subscribeToSdkStreams(_instance!);
+      _subscribeToEventsStream(_instance!);
       await _fetchWalletData(_instance!);
     } catch (e) {
       _instance = null;
+      _unsubscribeFromSdkStreams();
       rethrow;
     }
   }
@@ -90,12 +92,6 @@ class BreezSDKLiquid {
 
   void _initializeEventsStream(liquid_sdk.BindingLiquidSdk sdk) {
     _breezEventsStream ??= sdk.addEventListener().asBroadcastStream();
-  }
-
-  /// Subscribes to SDK's event & log streams.
-  void _subscribeToSdkStreams(liquid_sdk.BindingLiquidSdk sdk) {
-    _subscribeToEventsStream(sdk);
-    _subscribeToLogStream();
   }
 
   final StreamController<liquid_sdk.GetInfoResponse> _walletInfoController =

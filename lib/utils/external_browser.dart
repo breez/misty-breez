@@ -5,7 +5,7 @@ import 'package:l_breez/widgets/loader.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-final _log = Logger("ExternalBrowser");
+final _logger = Logger("ExternalBrowser");
 
 Future<void> launchLinkOnExternalBrowser(
   BuildContext context, {
@@ -40,7 +40,7 @@ Future<void> launchLinkOnExternalBrowser(
       throw Exception(texts.link_launcher_failed_to_launch(linkAddress));
     }
   } catch (error) {
-    _log.warning(error.toString(), error);
+    _logger.warning(error.toString(), error);
     rethrow;
   } finally {
     navigator.removeRoute(loaderRoute);

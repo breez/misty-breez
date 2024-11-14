@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/dev/widget/command_list.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -9,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _log = Logger("CommandsList");
+final _logger = Logger("CommandsList");
 
 class CommandLineInterface extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -21,7 +22,7 @@ class CommandLineInterface extends StatefulWidget {
 }
 
 class _CommandLineInterfaceState extends State<CommandLineInterface> {
-  //final _breezSDK = ServiceInjector().breezSDK;
+  //final _breezSdkLiquid = ServiceInjector().breezSdkLiquid;
 
   final _cliInputController = TextEditingController();
   final FocusNode _cliEntryFocusNode = FocusNode();
@@ -35,6 +36,8 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
@@ -47,8 +50,8 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                 child: TextField(
                   focusNode: _cliEntryFocusNode,
                   controller: _cliInputController,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter a command or use the links below',
+                  decoration: InputDecoration(
+                    hintText: texts.developers_page_cli_hint,
                   ),
                   onSubmitted: (command) {
                     _sendCommand(command);
@@ -57,14 +60,14 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
               ),
               IconButton(
                 icon: const Icon(Icons.play_arrow),
-                tooltip: 'Run',
+                tooltip: texts.developers_page_cli_run_tooltip,
                 onPressed: () {
                   _sendCommand(_cliInputController.text);
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.clear),
-                tooltip: 'Clear',
+                tooltip: texts.developers_page_cli_clear_tooltip,
                 onPressed: () {
                   setState(() {
                     _cliInputController.clear();
@@ -102,14 +105,14 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                           children: <Widget>[
                             IconButton(
                               icon: const Icon(Icons.content_copy),
-                              tooltip: 'Copy to Clipboard',
+                              tooltip: texts.developers_page_cli_result_copy_tooltip,
                               iconSize: 19.0,
                               onPressed: () {
                                 ServiceInjector().deviceClient.setClipboardText(_cliText);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                      'Copied to clipboard.',
+                                      texts.developers_page_cli_result_copied,
                                       style: snackBarStyle,
                                     ),
                                     backgroundColor: snackBarBackgroundColor,
@@ -121,7 +124,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                             IconButton(
                               icon: const Icon(Icons.share),
                               iconSize: 19.0,
-                              tooltip: 'Share',
+                              tooltip: texts.developers_page_cli_result_share_tooltip,
                               onPressed: () {
                                 _shareFile(
                                   _lastCommand.split(" ")[0],
@@ -151,7 +154,9 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
   }
 
   void _sendCommand(String command) async {
-    _log.info("Send command: $command");
+    _logger.info("Send command: $command");
+    final texts = context.texts();
+
     if (command.isNotEmpty) {
       FocusScope.of(context).requestFocus(FocusNode());
       setState(() {
@@ -162,7 +167,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
       try {
         var commandArgs = command.split(RegExp(r"\s"));
         if (commandArgs.isEmpty) {
-          _log.info("Command args is empty, skipping");
+          _logger.info("Command args is empty, skipping");
           setState(() {
             isLoading = false;
           });
@@ -180,15 +185,15 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
           case 'closeAllChannels':
           case 'stop':
             final command = commandArgs[0].toLowerCase();
-            _log.info("executing command: $command");
+            _logger.info("executing command: $command");
             // TODO: Liquid - Add execute_commands to Dart bindings
-            const answer = ""; // await _breezSDK.executeCommand(command: command);
-            _log.info("Received answer: $answer");
+            const answer = ""; // await _breezSdkLiquid.executeCommand(command: command);
+            _logger.info("Received answer: $answer");
             reply = encoder.convert(answer);
-            _log.info("Reply: $reply");
+            _logger.info("Reply: $reply");
             break;
           default:
-            throw "This command is not supported yet.";
+            throw texts.developers_page_cli_unsupported_command;
         }
         setState(() {
           _showDefaultCommands = false;
@@ -198,7 +203,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
           isLoading = false;
         });
       } catch (error) {
-        _log.warning("Error happening", error);
+        _logger.warning("Error happening", error);
         setState(() {
           _showDefaultCommands = false;
           _cliText = error.toString();

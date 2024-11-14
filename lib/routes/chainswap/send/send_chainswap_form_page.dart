@@ -4,7 +4,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_confirmation_page.dart';
 import 'package:l_breez/routes/chainswap/send/send_chainswap_form.dart';
-import 'package:l_breez/routes/chainswap/send/widgets/chainswap_available_btc.dart';
+import 'package:l_breez/routes/chainswap/send/widgets/available_balance.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
@@ -12,7 +12,7 @@ import 'package:l_breez/widgets/route.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("SendChainSwapFormPage");
+final _logger = Logger("SendChainSwapFormPage");
 
 class SendChainSwapFormPage extends StatefulWidget {
   final BitcoinCurrency bitcoinCurrency;
@@ -59,7 +59,7 @@ class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
                 });
               },
             ),
-            const WithdrawFundsAvailableBtc(),
+            const AvailableBalance(),
             Expanded(child: Container()),
             SingleButtonBottomBar(
               text: texts.withdraw_funds_action_next,
@@ -76,7 +76,7 @@ class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
     try {
       amount = widget.bitcoinCurrency.parse(_amountController.text);
     } catch (e) {
-      _log.warning("Failed to parse the input amount", e);
+      _logger.warning("Failed to parse the input amount", e);
     }
     return amount;
   }
@@ -105,7 +105,7 @@ class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
         if (loaderRoute.isActive) {
           navigator.removeRoute(loaderRoute);
         }
-        _log.severe("Received error: $error");
+        _logger.severe("Received error: $error");
         if (!context.mounted) return;
         showFlushbar(
           context,

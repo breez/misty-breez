@@ -23,7 +23,7 @@ import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("LnUrlWithdrawPage");
+final _logger = Logger("LnUrlWithdrawPage");
 
 class LnUrlWithdrawPage extends StatefulWidget {
   final Function(LNURLPageResult? result) onFinish;
@@ -160,8 +160,8 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
               );
             }
             return ScrollableErrorMessageWidget(
-              title: "Failed to retrieve payment limits:",
-              message: texts.reverse_swap_upstream_generic_error_message(errorMessage),
+              title: texts.payment_limits_generic_error_title,
+              message: texts.payment_limits_generic_error_message(errorMessage),
             );
           }
 
@@ -310,7 +310,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
 
   Future<void> _withdraw() async {
     final data = widget.requestData;
-    _log.info(
+    _logger.info(
       "Withdraw request: description=${data.defaultDescription}, k1=${data.k1}, "
       "min=${data.minWithdrawable}, max=${data.maxWithdrawable}",
     );
@@ -358,8 +358,8 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       final maxNetworkLimit = _lightningLimits!.receive.maxSat.toInt();
       final minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
       final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
-      message =
-          "Payment amount is outside the allowed limits, which range from $minNetworkLimitFormatted to $maxNetworkLimitFormatted";
+      message = texts.invoice_payment_validator_error_payment_outside_network_limits(
+          minNetworkLimitFormatted, maxNetworkLimitFormatted);
     } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
       final networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,

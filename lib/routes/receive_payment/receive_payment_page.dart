@@ -48,7 +48,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
                     width: 24.0,
                     height: 24.0,
                   ),
-                  tooltip: texts.invoice_action_scan_barcode,
+                  tooltip: texts.lnurl_withdraw_scan_toolip,
                   onPressed: () => _scanBarcode(),
                 )
               ]

@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final _log = Logger("DeviceClient");
+final _logger = Logger("DeviceClient");
 
 class DeviceClient extends ClipboardListener {
   final _clipboardController = BehaviorSubject<String>();
@@ -20,12 +20,12 @@ class DeviceClient extends ClipboardListener {
   String? _lastFromAppClip;
 
   DeviceClient() {
-    _log.info("Initializing Device");
+    _logger.info("Initializing Device");
     var sharedPreferences = SharedPreferences.getInstance();
     sharedPreferences.then((preferences) {
       _lastFromAppClip = preferences.getString(lastFromAppClippingPreferencesKey);
       _clipboardController.add(preferences.getString(lastClippingPreferencesKey) ?? "");
-      _log.info("Last clipping: $_lastFromAppClip");
+      _logger.info("Last clipping: $_lastFromAppClip");
       fetchClipboard(preferences);
     });
     clipboardWatcher.addListener(this);
@@ -33,7 +33,7 @@ class DeviceClient extends ClipboardListener {
   }
 
   Future setClipboardText(String text) async {
-    _log.info("Setting clipboard text: $text");
+    _logger.info("Setting clipboard text: $text");
     _lastFromAppClip = text;
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(lastFromAppClippingPreferencesKey, text);
@@ -41,15 +41,15 @@ class DeviceClient extends ClipboardListener {
   }
 
   Future shareText(String text) {
-    _log.info("Sharing text: $text");
+    _logger.info("Sharing text: $text");
     return Share.share(text);
   }
 
   void fetchClipboard(SharedPreferences preferences) {
-    _log.info("Fetching clipboard");
+    _logger.info("Fetching clipboard");
     Clipboard.getData("text/plain").then((clipboardData) {
       final text = clipboardData?.text;
-      _log.info("Clipboard text: $text");
+      _logger.info("Clipboard text: $text");
       if (text != null) {
         _clipboardController.add(text);
         preferences.setString(lastClippingPreferencesKey, text);
@@ -64,7 +64,7 @@ class DeviceClient extends ClipboardListener {
 
   @override
   void onClipboardChanged() {
-    _log.info("Clipboard changed");
+    _logger.info("Clipboard changed");
     SharedPreferences.getInstance().then((preferences) {
       fetchClipboard(preferences);
     });

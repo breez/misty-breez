@@ -69,7 +69,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    var themeData = Theme.of(context);
+    final themeData = Theme.of(context);
 
     _currentRoute ??= ModalRoute.of(context);
     colorAnimation = ColorTween(
@@ -87,9 +87,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     );
   }
 
-  _payAndClose() {
+  void _payAndClose() {
     final navigator = Navigator.of(context);
-    final texts = getSystemAppLocalizations();
     widget.paymentFunc().then((payResult) async {
       await _animateClose();
       if (widget.isLnUrlPayment) {
@@ -106,6 +105,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         if (_currentRoute != null && _currentRoute!.isActive) {
           navigator.removeRoute(_currentRoute!);
         }
+        final texts = getSystemAppLocalizations();
         final message = extractExceptionMessage(err, texts);
         showFlushbar(context, message: texts.payment_error_to_send(message));
       }
@@ -153,6 +153,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     return _animating
         ? ProcessingPaymentAnimatedContent(
             color: colorAnimation?.value ?? Colors.transparent,
@@ -164,9 +166,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
             child: const ProcessingPaymentContent(),
           )
         : AnnotatedRegion<SystemUiOverlayStyle>(
-            value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
-                  systemNavigationBarColor: Theme.of(context).colorScheme.surface,
-                ),
+            value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
+              systemNavigationBarColor: themeData.colorScheme.surface,
+            ),
             child: Dialog.fullscreen(
               child: Container(
                 constraints: BoxConstraints(minHeight: widget.minHeight),

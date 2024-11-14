@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:breez_liquid/breez_liquid.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("AccountState");
+final _logger = Logger("AccountState");
 
 class AccountState {
   final bool isRestoring;
@@ -78,7 +78,7 @@ extension GetInfoResponseToJson on GetInfoResponse {
 extension GetInfoResponseFromJson on GetInfoResponse {
   static GetInfoResponse? fromJson(Map<String, dynamic>? json) {
     if (json == null) {
-      _log.info("walletInfo is missing from AccountState JSON.");
+      _logger.info("walletInfo is missing from AccountState JSON.");
       return null;
     }
 
@@ -87,7 +87,7 @@ extension GetInfoResponseFromJson on GetInfoResponse {
         json['pendingReceiveSat'] == null ||
         json['fingerprint'] == null ||
         json['pubkey'] == null) {
-      _log.warning("GetInfoResponse has missing fields on AccountState JSON.");
+      _logger.warning("GetInfoResponse has missing fields on AccountState JSON.");
       return null;
     }
 

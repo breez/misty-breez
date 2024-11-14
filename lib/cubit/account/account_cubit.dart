@@ -7,13 +7,13 @@ import 'package:logging/logging.dart';
 
 export 'account_state.dart';
 
-final _log = Logger("AccountCubit");
+final _logger = Logger("AccountCubit");
 
 class AccountCubit extends Cubit<AccountState> with HydratedMixin {
-  final BreezSDKLiquid liquidSDK;
+  final BreezSDKLiquid breezSdkLiquid;
 
   AccountCubit({
-    required this.liquidSDK,
+    required this.breezSdkLiquid,
   }) : super(AccountState.initial()) {
     hydrate();
     _listenAccountChanges();
@@ -21,18 +21,18 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   }
 
   void _listenAccountChanges() {
-    _log.info("Listening to account changes");
-    liquidSDK.walletInfoStream.distinct().listen((walletInfo) {
+    _logger.info("Listening to account changes");
+    breezSdkLiquid.walletInfoStream.distinct().listen((walletInfo) {
       final newState = state.copyWith(walletInfo: walletInfo);
-      _log.info("AccountState changed: $newState");
+      _logger.info("AccountState changed: $newState");
       emit(newState);
     });
   }
 
   void _listenInitialSyncEvent() {
-    _log.info("Listening to initial sync event.");
-    liquidSDK.didCompleteInitialSyncStream.listen((_) {
-      _log.info("Initial sync complete.");
+    _logger.info("Listening to initial sync event.");
+    breezSdkLiquid.didCompleteInitialSyncStream.listen((_) {
+      _logger.info("Initial sync complete.");
       emit(state.copyWith(isRestoring: false, didCompleteInitialSync: true));
     });
   }

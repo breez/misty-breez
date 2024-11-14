@@ -8,39 +8,39 @@ PODS:
     - FlutterMacOS
   - device_info_plus (0.0.1):
     - Flutter
-  - Firebase/CoreOnly (11.2.0):
-    - FirebaseCore (= 11.2.0)
-  - Firebase/DynamicLinks (11.2.0):
+  - Firebase/CoreOnly (11.4.0):
+    - FirebaseCore (= 11.4.0)
+  - Firebase/DynamicLinks (11.4.0):
     - Firebase/CoreOnly
-    - FirebaseDynamicLinks (~> 11.2.0)
-  - Firebase/Messaging (11.2.0):
+    - FirebaseDynamicLinks (~> 11.4.0)
+  - Firebase/Messaging (11.4.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 11.2.0)
-  - firebase_core (3.6.0):
-    - Firebase/CoreOnly (= 11.2.0)
+    - FirebaseMessaging (~> 11.4.0)
+  - firebase_core (3.8.0):
+    - Firebase/CoreOnly (= 11.4.0)
     - Flutter
-  - firebase_dynamic_links (6.0.8):
-    - Firebase/DynamicLinks (= 11.2.0)
+  - firebase_dynamic_links (6.0.10):
+    - Firebase/DynamicLinks (= 11.4.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (15.1.3):
-    - Firebase/Messaging (= 11.2.0)
+  - firebase_messaging (15.1.5):
+    - Firebase/Messaging (= 11.4.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (11.2.0):
+  - FirebaseCore (11.4.0):
     - FirebaseCoreInternal (~> 11.0)
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/Logger (~> 8.0)
-  - FirebaseCoreInternal (11.4.2):
+  - FirebaseCoreInternal (11.5.0):
     - "GoogleUtilities/NSData+zlib (~> 8.0)"
-  - FirebaseDynamicLinks (11.2.0):
+  - FirebaseDynamicLinks (11.4.0):
     - FirebaseCore (~> 11.0)
   - FirebaseInstallations (11.4.0):
     - FirebaseCore (~> 11.0)
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - FirebaseMessaging (11.2.0):
+  - FirebaseMessaging (11.4.0):
     - FirebaseCore (~> 11.0)
     - FirebaseInstallations (~> 11.0)
     - GoogleDataTransport (~> 10.0)
@@ -278,15 +278,15 @@ SPEC CHECKSUMS:
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
   connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
-  Firebase: 98e6bf5278170668a7983e12971a66b2cd57fc8c
-  firebase_core: 2bedc3136ec7c7b8561c6123ed0239387b53f2af
-  firebase_dynamic_links: 31addc071dc0e3ebd7a8f969b5e592636200b7c1
-  firebase_messaging: 15d114e1a41fc31e4fbabcd48d765a19eec94a38
-  FirebaseCore: a282032ae9295c795714ded2ec9c522fc237f8da
-  FirebaseCoreInternal: 35731192cab10797b88411be84940d2beb33a238
-  FirebaseDynamicLinks: 4fa5589f3d0c59b00235025a36690edf97559409
+  Firebase: cf1b19f21410b029b6786a54e9764a0cacad3c99
+  firebase_core: 9efc3ecf689cdbc90f13f4dc58108c83ea46b266
+  firebase_dynamic_links: 9035278f22b422f47d7825ecc225602a22b3c188
+  firebase_messaging: 6bf60adb4b33a848d135e16bc363fb4924f98fba
+  FirebaseCore: e0510f1523bc0eb21653cac00792e1e2bd6f1771
+  FirebaseCoreInternal: f47dd28ae7782e6a4738aad3106071a8fe0af604
+  FirebaseDynamicLinks: 192110d77418357fe994f2823a7df7db3ccb15bf
   FirebaseInstallations: 6ef4a1c7eb2a61ee1f74727d7f6ce2e72acf1414
-  FirebaseMessaging: c9ec7b90c399c7a6100297e9d16f8a27fc7f7152
+  FirebaseMessaging: f8a160d99c2c2e5babbbcc90c4a3e15db036aee2
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_breez_liquid: 8306e7e1867337fbecadf2b0f538270dc282ea94
   flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d

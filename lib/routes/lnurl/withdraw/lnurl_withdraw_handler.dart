@@ -15,7 +15,7 @@ import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
-final _log = Logger("HandleLNURLWithdrawPageResult");
+final _logger = Logger("HandleLNURLWithdrawPageResult");
 
 Future<LNURLPageResult?> handleWithdrawRequest(
   BuildContext context,
@@ -26,11 +26,11 @@ Future<LNURLPageResult?> handleWithdrawRequest(
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (_) => BlocProvider(
-        create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+        create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
         child: Scaffold(
           appBar: AppBar(
             leading: const back_button.BackButton(),
-            title: Text("Receive via ${texts.lnurl_payment_page_title}"),
+            title: Text(texts.lnurl_withdraw_page_title),
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
@@ -51,9 +51,9 @@ Future<LNURLPageResult?> handleWithdrawRequest(
 }
 
 void handleLNURLWithdrawPageResult(BuildContext context, LNURLPageResult result) {
-  _log.info("handle $result");
+  _logger.info("handle $result");
   if (result.hasError) {
-    _log.info("Handle LNURL withdraw page result with error '${result.error}'");
+    _logger.info("Handle LNURL withdraw page result with error '${result.error}'");
     final texts = context.texts();
     final themeData = Theme.of(context);
     promptError(
@@ -66,7 +66,7 @@ void handleLNURLWithdrawPageResult(BuildContext context, LNURLPageResult result)
     );
     throw result.error!;
   } else {
-    _log.info("Handle LNURL withdraw page result with success");
+    _logger.info("Handle LNURL withdraw page result with success");
     Navigator.of(context).push(
       TransparentPageRoute((ctx) => const SuccessfulPaymentRoute()),
     );

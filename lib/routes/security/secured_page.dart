@@ -5,7 +5,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/security/widget/pin_code_widget.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("SecuredPage");
+final _logger = Logger("SecuredPage");
 
 class SecuredPage<T> extends StatefulWidget {
   final Widget securedWidget;
@@ -34,7 +34,7 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
           : BlocBuilder<SecurityCubit, SecurityState>(
               key: ValueKey(DateTime.now().millisecondsSinceEpoch),
               builder: (context, state) {
-                _log.info("Building with: $state");
+                _logger.info("Building with: $state");
                 if (state.pinStatus == PinStatus.enabled && !_allowed) {
                   final texts = context.texts();
                   return Scaffold(
@@ -44,26 +44,26 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
                     body: PinCodeWidget(
                       label: texts.lock_screen_enter_pin,
                       testPinCodeFunction: (pin) async {
-                        _log.info("Testing pin code");
+                        _logger.info("Testing pin code");
                         bool pinMatches = false;
                         try {
                           final securityCubit = context.read<SecurityCubit>();
                           pinMatches = await securityCubit.testPin(pin);
                         } catch (e) {
-                          _log.severe("Pin code test failed", e);
+                          _logger.severe("Pin code test failed", e);
                           return TestPinResult(
                             false,
                             errorMessage: texts.lock_screen_pin_match_exception,
                           );
                         }
                         if (pinMatches) {
-                          _log.info("Pin matches");
+                          _logger.info("Pin matches");
                           setState(() {
                             _allowed = true;
                           });
                           return const TestPinResult(true);
                         } else {
-                          _log.info("Pin didn't match");
+                          _logger.info("Pin didn't match");
                           return TestPinResult(
                             false,
                             errorMessage: texts.lock_screen_pin_incorrect,

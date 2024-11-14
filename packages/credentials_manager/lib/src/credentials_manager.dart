@@ -4,7 +4,7 @@ import 'package:keychain/keychain.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 
-final _log = Logger("CredentialsManager");
+final _logger = Logger("CredentialsManager");
 
 const String accountMnemonic = "account_mnemonic";
 const String accountApiKey = "account_api_key";
@@ -36,7 +36,7 @@ class CredentialsManager {
   Future deleteBreezApiKey() async {
     try {
       await keyChain.delete(accountApiKey);
-      _log.info("Deleted Breez API key successfully");
+      _logger.info("Deleted Breez API key successfully");
     } catch (err) {
       throw Exception(err.toString());
     }
@@ -47,7 +47,7 @@ class CredentialsManager {
   }) async {
     try {
       await _storeMnemonic(mnemonic);
-      _log.info("Stored credentials successfully");
+      _logger.info("Stored credentials successfully");
     } catch (err) {
       throw Exception(err.toString());
     }
@@ -56,7 +56,7 @@ class CredentialsManager {
   Future<String?> restoreMnemonic() async {
     try {
       String? mnemonicStr = await keyChain.read(accountMnemonic);
-      _log.info(
+      _logger.info(
         (mnemonicStr != null)
             ? "Restored credentials successfully"
             : "No credentials found in secure storage",
@@ -70,7 +70,7 @@ class CredentialsManager {
   Future deleteMnemonic() async {
     try {
       await keyChain.delete(accountMnemonic);
-      _log.info("Deleted credentials successfully");
+      _logger.info("Deleted credentials successfully");
     } catch (err) {
       throw Exception(err.toString());
     }

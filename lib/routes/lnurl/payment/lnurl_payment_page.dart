@@ -205,8 +205,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
               );
             }
             return ScrollableErrorMessageWidget(
-              title: "Failed to retrieve payment limits:",
-              message: texts.reverse_swap_upstream_generic_error_message(errorMessage),
+              title: texts.payment_limits_generic_error_title,
+              message: texts.payment_limits_generic_error_message(errorMessage),
             );
           }
 
@@ -239,7 +239,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     if (_isFixedAmount) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: LnUrlPaymentHeader(
+                        child: LnPaymentHeader(
                           payeeName: payeeName,
                           totalAmount: maxSendableSat + (_prepareResponse?.feesSat.toInt() ?? 0),
                           errorMessage: errorMessage,
@@ -315,13 +315,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     if (_prepareResponse != null && _isFixedAmount) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnUrlPaymentAmount(amountSat: maxSendableSat),
+                        child: LnPaymentAmount(amountSat: maxSendableSat),
                       ),
                     ],
                     if (_isFixedAmount) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnUrlPaymentFee(
+                        child: LnPaymentFee(
                           isCalculatingFees: _isCalculatingFees,
                           feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
                         ),
@@ -330,7 +330,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     if (metadataText != null && metadataText.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnUrlPaymentDescription(
+                        child: LnPaymentDescription(
                           metadataText: metadataText,
                         ),
                       ),
@@ -354,7 +354,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           : _lightningLimits == null
               ? SingleButtonBottomBar(
                   stickToBottom: true,
-                  text: texts.invoice_ln_address_action_retry,
+                  text: texts.ln_payment_action_retry,
                   onPressed: () {
                     _fetchLightningLimits();
                   },
@@ -362,7 +362,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
               : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
-                      text: texts.qr_code_dialog_action_close,
+                      text: texts.ln_payment_action_close,
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -370,7 +370,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                   : !_isFixedAmount
                       ? SingleButtonBottomBar(
                           stickToBottom: true,
-                          text: texts.withdraw_funds_action_next,
+                          text: texts.lnurl_payment_page_action_next,
                           onPressed: () async {
                             if (_formKey.currentState?.validate() ?? false) {
                               await _openConfirmationPage();
@@ -380,7 +380,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       : _prepareResponse != null
                           ? SingleButtonBottomBar(
                               stickToBottom: true,
-                              text: texts.bottom_action_bar_send,
+                              text: texts.ln_payment_action_send,
                               onPressed: () async {
                                 Navigator.pop(context, _prepareResponse);
                               },
@@ -402,7 +402,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
     String? message;
     if (_lightningLimits == null) {
-      message = "Failed to retrieve network payment limits. Please try again later.";
+      message = texts.payment_limits_fetch_error_message;
     }
 
     if (!widget.isConfirmation && _isFixedAmount && effectiveMinSat == effectiveMaxSat) {
@@ -410,8 +410,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
       final minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
       final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
-      message =
-          "Payment amount is outside the allowed limits, which range from $minNetworkLimitFormatted to $maxNetworkLimitFormatted";
+      message = texts.invoice_payment_validator_error_payment_outside_network_limits(
+          minNetworkLimitFormatted, maxNetworkLimitFormatted);
     } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
       final networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,
@@ -470,7 +470,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     PrepareLnUrlPayResponse? prepareResponse = await Navigator.of(context).push<PrepareLnUrlPayResponse?>(
       FadeInRoute<PrepareLnUrlPayResponse?>(
         builder: (_) => BlocProvider(
-          create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().liquidSDK),
+          create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
           child: LnUrlPaymentPage(
             isConfirmation: true,
             requestData: requestData,

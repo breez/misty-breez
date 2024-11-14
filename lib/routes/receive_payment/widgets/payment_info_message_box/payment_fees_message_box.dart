@@ -20,18 +20,19 @@ class PaymentFeesMessageBox extends StatelessWidget {
   String _formatFeesMessage(BuildContext context, int feesSat) {
     final texts = context.texts();
 
-    if (feesSat == 0) {
-      return texts.qr_code_dialog_warning_message;
-    }
+    if (feesSat == 0) return texts.payment_fees_warning_message;
+
     final currencyCubit = context.read<CurrencyCubit>();
     final currencyState = currencyCubit.state;
-
-    // TODO: https://github.com/breez/Breez-Translations/issues/39 - This is a quick workaround as placeholder
-    return texts
-        .qr_code_dialog_warning_message_with_lsp(
-          currencyState.bitcoinCurrency.format(feesSat),
-          currencyState.fiatConversion()?.format(feesSat) ?? "",
-        )
-        .replaceAll(" setup", "");
+    final formattedFees = currencyState.bitcoinCurrency.format(feesSat);
+    final fiatConversion = currencyState.fiatConversion();
+    if (fiatConversion == null) {
+      return texts.payment_fees_message(formattedFees);
+    } else {
+      return texts.payment_fees_message_with_fiat(
+        formattedFees,
+        fiatConversion.format(feesSat),
+      );
+    }
   }
 }

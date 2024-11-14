@@ -15,7 +15,7 @@ import 'package:logging/logging.dart';
 
 export 'security_state.dart';
 
-final _log = Logger("SecurityCubit");
+final _logger = Logger("SecurityCubit");
 
 const String pinCodeKey = "pinCode";
 
@@ -119,7 +119,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
       if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
         throw error.message!;
       }
-      _log.severe("Error Code: ${error.code} - Message: ${error.message}", error);
+      _logger.severe("Error Code: ${error.code} - Message: ${error.message}", error);
       await _auth.stopAuthentication();
       _setLockState(LockState.locked);
       return false;

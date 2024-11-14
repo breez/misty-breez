@@ -8,7 +8,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
-final _log = Logger("DeepLinkClient");
+final _logger = Logger("DeepLinkClient");
 
 class DeepLinkClient {
   final StreamController<String> _linksNotificationsController = BehaviorSubject<String>();
@@ -30,7 +30,7 @@ class DeepLinkClient {
     _dynamicLinks!.onLink.listen((data) {
       publishLink(data);
     }).onError((err) {
-      _log.severe("Failed to fetch dynamic link $err", err);
+      _logger.severe("Failed to fetch dynamic link $err", err);
       return Future.value(null);
     });
   }

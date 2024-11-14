@@ -10,7 +10,7 @@ import 'package:l_breez/handlers/handler/src/mixin/handler_context_provider.dart
 import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("NetworkConnectivityHandler");
+final _logger = Logger("NetworkConnectivityHandler");
 
 class NetworkConnectivityHandler extends Handler {
   StreamSubscription<ConnectivityState>? _subscription;
@@ -36,7 +36,7 @@ class NetworkConnectivityHandler extends Handler {
   }
 
   void _listen(ConnectivityState connectivityState) async {
-    _log.info("Received connectivityState $connectivityState");
+    _logger.info("Received connectivityState $connectivityState");
     if (!connectivityState.hasNetworkConnection) {
       showNoInternetConnectionFlushbar();
     } else {
@@ -48,7 +48,7 @@ class NetworkConnectivityHandler extends Handler {
     dismissFlushbarIfNeed();
     final context = contextProvider?.getBuildContext();
     if (context == null) {
-      _log.info("Skipping connection flushbar as context is null");
+      _logger.info("Skipping connection flushbar as context is null");
       return;
     }
     _flushbar = _getNoConnectionFlushbar(context);
@@ -62,7 +62,7 @@ class NetworkConnectivityHandler extends Handler {
     if (flushbar.flushbarRoute != null && flushbar.flushbarRoute!.isActive) {
       final context = contextProvider?.getBuildContext();
       if (context == null) {
-        _log.info("Skipping dismissing connection flushbar as context is null");
+        _logger.info("Skipping dismissing connection flushbar as context is null");
         return;
       }
       Navigator.of(context).removeRoute(flushbar.flushbarRoute!);

@@ -18,7 +18,7 @@ class PaymentLimitsMessageBox extends StatelessWidget {
       builder: (BuildContext context, PaymentLimitsState snapshot) {
         if (snapshot.hasError) {
           return ScrollableErrorMessageWidget(
-            title: "Failed to retrieve payment limits:",
+            title: texts.payment_limits_generic_error_title,
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
             message: texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
           );

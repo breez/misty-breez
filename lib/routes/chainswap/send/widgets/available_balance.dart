@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
 
-class WithdrawFundsAvailableBtc extends StatelessWidget {
-  const WithdrawFundsAvailableBtc({super.key});
+class AvailableBalance extends StatelessWidget {
+  const AvailableBalance({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class WithdrawFundsAvailableBtc extends StatelessWidget {
         return Row(
           children: [
             Text(
-              texts.withdraw_funds_balance,
+              texts.available_balance_label,
               style: textStyle,
             ),
             Padding(

@@ -6,10 +6,10 @@ import 'package:logging/logging.dart';
 
 import 'widgets/lnurl_page_result.dart';
 
-final _log = Logger("HandleLNURL");
+final _logger = Logger("HandleLNURL");
 
 void handleLNURLPageResult(BuildContext context, LNURLPageResult result) {
-  _log.info("handle $result");
+  _logger.info("handle $result");
   switch (result.protocol) {
     case LnUrlProtocol.pay:
       handleLNURLPaymentPageResult(context, result);

@@ -8,7 +8,7 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
-final _log = Logger("QrActionButton");
+final _logger = Logger("QrActionButton");
 
 class QrActionButton extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
@@ -39,10 +39,10 @@ class QrActionButton extends StatelessWidget {
     final texts = context.texts();
     final inputCubit = context.read<InputCubit>();
 
-    _log.info("Start qr code scan");
+    _logger.info("Start qr code scan");
     Navigator.pushNamed<String>(context, QRScan.routeName).then(
       (barcode) {
-        _log.info("Scanned string: '$barcode'");
+        _logger.info("Scanned string: '$barcode'");
         if (barcode == null) return;
         if (barcode.isEmpty && context.mounted) {
           showFlushbar(
