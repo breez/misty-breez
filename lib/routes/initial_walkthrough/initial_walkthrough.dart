@@ -197,7 +197,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {
-      _logger.info("Failed to ${isRestore ? "restore" : "register"} wallet", error);
+      _logger.info("Failed to ${isRestore ? "restore" : "register"} wallet.", error);
       if (isRestore) {
         _restoreWalletFromMnemonicSeed(initialWords: mnemonic.split(" "));
       }
