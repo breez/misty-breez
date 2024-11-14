@@ -47,7 +47,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
   var _doneAction = KeyboardDoneAction();
 
   bool _isFixedAmount = false;
-  bool _loading = true;
+  bool _isLoading = true;
   bool _isFormEnabled = true;
   String errorMessage = "";
   LightningPaymentLimitsResponse? _lightningLimits;
@@ -65,6 +65,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
 
   Future<void> _fetchLightningLimits() async {
     setState(() {
+      _isLoading = true;
       errorMessage = "";
     });
     final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
@@ -80,7 +81,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       });
     } finally {
       setState(() {
-        _loading = false;
+        _isLoading = false;
       });
     }
   }
@@ -143,7 +144,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       key: _scaffoldKey,
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (context, currencyState) {
-          if (_loading) {
+          if (_isLoading) {
             return Center(
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
@@ -278,7 +279,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
           );
         },
       ),
-      bottomNavigationBar: _loading
+      bottomNavigationBar: _isLoading
           ? null
           : _lightningLimits == null
               ? SingleButtonBottomBar(

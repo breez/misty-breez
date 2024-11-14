@@ -26,7 +26,7 @@ class LnPaymentPage extends StatefulWidget {
 class LnPaymentPageState extends State<LnPaymentPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool _loading = true;
+  bool _isLoading = true;
   bool _isCalculatingFees = false;
   String errorMessage = "";
   LightningPaymentLimitsResponse? _lightningLimits;
@@ -53,6 +53,10 @@ class LnPaymentPageState extends State<LnPaymentPage> {
   }
 
   Future<void> _fetchLightningLimits() async {
+    setState(() {
+      _isLoading = true;
+      errorMessage = "";
+    });
     final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
     try {
       final response = await paymentLimitsCubit.fetchLightningLimits();
@@ -66,7 +70,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       });
     } finally {
       setState(() {
-        _loading = false;
+        _isLoading = false;
       });
     }
   }
@@ -102,7 +106,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       setState(() {
         _prepareResponse = null;
         errorMessage = extractExceptionMessage(error, texts);
-        _loading = false;
+        _isLoading = false;
       });
       rethrow;
     } finally {
@@ -125,7 +129,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (context, currencyState) {
-          if (_loading) {
+          if (_isLoading) {
             return Center(
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
@@ -176,7 +180,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
           );
         },
       ),
-      bottomNavigationBar: _loading
+      bottomNavigationBar: _isLoading
           ? null
           : _lightningLimits == null
               ? SingleButtonBottomBar(
