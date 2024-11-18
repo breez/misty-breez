@@ -354,13 +354,18 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       message = "Failed to retrieve network payment limits. Please try again later.";
     }
 
-    if (_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
+    if (!_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
       final minNetworkLimit = _lightningLimits!.receive.minSat.toInt();
       final maxNetworkLimit = _lightningLimits!.receive.maxSat.toInt();
       final minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
       final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
       message = texts.invoice_payment_validator_error_payment_outside_network_limits(
-          minNetworkLimitFormatted, maxNetworkLimitFormatted);
+        minNetworkLimitFormatted,
+        maxNetworkLimitFormatted,
+      );
+      setState(() {
+        _isFormEnabled = false;
+      });
     } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
       final networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,

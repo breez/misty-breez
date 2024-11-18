@@ -409,13 +409,18 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       message = texts.payment_limits_fetch_error_message;
     }
 
-    if (!widget.isConfirmation && _isFixedAmount && effectiveMinSat == effectiveMaxSat) {
+    if (!widget.isConfirmation && !_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
       final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
       final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
       final minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
       final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
       message = texts.invoice_payment_validator_error_payment_outside_network_limits(
-          minNetworkLimitFormatted, maxNetworkLimitFormatted);
+        minNetworkLimitFormatted,
+        maxNetworkLimitFormatted,
+      );
+      setState(() {
+        _isFormEnabled = false;
+      });
     } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
       final networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,
