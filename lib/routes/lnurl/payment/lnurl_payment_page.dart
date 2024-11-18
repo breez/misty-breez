@@ -146,6 +146,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       final req = PrepareLnUrlPayRequest(
         data: widget.requestData,
         amountMsat: BigInt.from(amountSat * 1000),
+        validateSuccessActionUrl: false,
       );
       final response = await lnUrlCubit.prepareLnurlPay(req: req);
       setState(() {
