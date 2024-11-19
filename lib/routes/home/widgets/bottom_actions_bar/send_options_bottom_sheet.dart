@@ -3,9 +3,9 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
-import 'package:l_breez/routes/chainswap/send/send_chainswap_page.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_action_item_image.dart';
 import 'package:l_breez/routes/home/widgets/bottom_actions_bar/enter_payment_info_page.dart';
+import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class SendOptionsBottomSheet extends StatefulWidget {

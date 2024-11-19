@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_breakdown/widgets/fee_breakdown_widgets/boltz_service_fee.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_breakdown/widgets/fee_breakdown_widgets/recipient_amount.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_breakdown/widgets/fee_breakdown_widgets/sender_amount.dart';
-import 'package:l_breez/routes/chainswap/send/fee/fee_breakdown/widgets/fee_breakdown_widgets/transaction_fee.dart';
+import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
 
 class FeeBreakdown extends StatelessWidget {
   final PreparePayOnchainResponse feeOption;

@@ -17,12 +17,12 @@ import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('LNURLWithdrawDialog');
 
-class LNURLWithdrawDialog extends StatefulWidget {
+class LnurlWithdrawDialog extends StatefulWidget {
   final Function(LNURLPageResult? result) onFinish;
   final LnUrlWithdrawRequestData requestData;
   final int amountSats;
 
-  const LNURLWithdrawDialog({
+  const LnurlWithdrawDialog({
     required this.requestData,
     required this.amountSats,
     required this.onFinish,
@@ -30,10 +30,10 @@ class LNURLWithdrawDialog extends StatefulWidget {
   });
 
   @override
-  State<LNURLWithdrawDialog> createState() => _LNURLWithdrawDialogState();
+  State<LnurlWithdrawDialog> createState() => _LnurlWithdrawDialogState();
 }
 
-class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTickerProviderStateMixin {
+class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _opacityAnimation;
   Future<LNURLPageResult>? _lnurlWithdrawFuture;

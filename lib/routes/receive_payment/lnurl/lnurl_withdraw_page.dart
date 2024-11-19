@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/lnurl/payment/widgets/widgets.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
-import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
-import 'package:l_breez/routes/lnurl/withdraw/widgets/lnurl_withdraw_header.dart';
+import 'package:l_breez/routes/receive_payment/lnurl/lnurl_withdraw_dialog.dart';
+import 'package:l_breez/routes/receive_payment/lnurl/widgets/lnurl_withdraw_header.dart';
 import 'package:l_breez/routes/receive_payment/lnurl/widgets/lnurl_withdraw_limits.dart';
+import 'package:l_breez/routes/send_payment/lnurl/widgets/widgets.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -331,7 +331,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       useRootNavigator: false,
       context: context,
       barrierDismissible: false,
-      builder: (_) => LNURLWithdrawDialog(
+      builder: (_) => LnurlWithdrawDialog(
         requestData: data,
         amountSats: currencyCubit.state.bitcoinCurrency.parse(
           _amountController.text,
