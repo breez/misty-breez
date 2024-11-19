@@ -7,8 +7,7 @@ import 'dart:typed_data';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/cubit/model/models.dart';
-import 'package:l_breez/cubit/user_profile/user_profile_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;

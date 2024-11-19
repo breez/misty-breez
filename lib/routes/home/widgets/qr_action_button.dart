@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/flushbar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('QrActionButton');

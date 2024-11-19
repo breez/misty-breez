@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_page.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/route.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class MnemonicsConfirmationPage extends StatefulWidget {
   final String mnemonics;

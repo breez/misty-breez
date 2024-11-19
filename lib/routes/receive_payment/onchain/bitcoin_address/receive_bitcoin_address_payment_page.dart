@@ -6,16 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
-import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
-import 'package:l_breez/widgets/keyboard_done_action.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
   static const String routeName = '/receive_bitcoin_address';

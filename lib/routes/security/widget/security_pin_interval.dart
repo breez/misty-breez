@@ -5,7 +5,7 @@ import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/widgets/preview/preview.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class SecurityPinInterval extends StatelessWidget {
   final Duration interval;

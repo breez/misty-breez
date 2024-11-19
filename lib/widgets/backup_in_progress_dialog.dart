@@ -3,7 +3,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/home/widgets/animated_loader_dialog.dart';
+import 'package:l_breez/routes/home/home.dart';
 
 class BackupInProgressDialog extends StatefulWidget {
   const BackupInProgressDialog({super.key});

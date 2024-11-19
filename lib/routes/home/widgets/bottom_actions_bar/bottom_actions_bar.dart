@@ -3,9 +3,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_action_item.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/receive_options_bottom_sheet.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/send_options_bottom_sheet.dart';
+import 'package:l_breez/routes/home/home.dart';
+
+export 'widgets/widgets.dart';
 
 class BottomActionsBar extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;

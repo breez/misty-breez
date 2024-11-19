@@ -7,8 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:http/http.dart' as http;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/cubit/webhook/webhook_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
+
+export 'webhook_state.dart';
 
 final Logger _logger = Logger('WebhookCubit');
 

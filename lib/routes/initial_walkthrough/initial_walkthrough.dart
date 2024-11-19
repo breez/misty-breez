@@ -9,9 +9,7 @@ import 'package:l_breez/routes/initial_walkthrough/beta_warning_dialog.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 

@@ -6,8 +6,10 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
-import 'package:l_breez/widgets/amount_form_field/currency_converter_dialog.dart';
-import 'package:l_breez/widgets/amount_form_field/sat_amount_form_field_formatter.dart';
+import 'package:l_breez/widgets/widgets.dart';
+
+export 'currency_converter_dialog.dart';
+export 'sat_amount_form_field_formatter.dart';
 
 class AmountFormField extends TextFormField {
   final FiatConversion? fiatConversion;

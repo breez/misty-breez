@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/refund/widgets/widgets.dart';
+import 'package:l_breez/routes/refund/refund.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 
 class GetRefundPage extends StatelessWidget {

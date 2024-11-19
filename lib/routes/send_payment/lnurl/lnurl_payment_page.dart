@@ -13,13 +13,8 @@ import 'package:l_breez/routes/send_payment/lnurl/widgets/widgets.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
-import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/keyboard_done_action.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/route.dart';
-import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 
 class LnUrlPaymentPage extends StatefulWidget {

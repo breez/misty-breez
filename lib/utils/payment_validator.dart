@@ -1,6 +1,5 @@
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:logging/logging.dart';

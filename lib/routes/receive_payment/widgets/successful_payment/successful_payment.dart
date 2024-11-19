@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widgets/widgets.dart';
-import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment_message.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment.dart';
+
+export 'successful_payment_message.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
   final bool particlesEnabled;

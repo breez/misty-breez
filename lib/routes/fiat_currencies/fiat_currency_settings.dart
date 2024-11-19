@@ -9,7 +9,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/fiat_currencies/fiat_currency_list_tile.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class FiatCurrencySettings extends StatefulWidget {
   static const String routeName = '/fiat_currency';

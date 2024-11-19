@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/connectivity/connectivity_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
 
 export 'connectivity_state.dart';

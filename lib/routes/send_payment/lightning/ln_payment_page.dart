@@ -8,9 +8,7 @@ import 'package:l_breez/routes/send_payment/lnurl/widgets/widgets.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class LnPaymentPage extends StatefulWidget {
   final LNInvoice lnInvoice;

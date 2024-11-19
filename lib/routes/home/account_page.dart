@@ -2,14 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/home/widgets/bubble_painter.dart';
-import 'package:l_breez/routes/home/widgets/dashboard/wallet_dashboard_header_delegate.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/fixed_sliver_delegate.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/header_filter_chip.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_sliver.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/payments_list.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/placeholder_payment_item.dart';
-import 'package:l_breez/routes/home/widgets/status_text.dart';
+import 'package:l_breez/routes/home/home.dart';
 import 'package:l_breez/theme/theme.dart';
 
 const double _kFilterMaxSize = 64.0;

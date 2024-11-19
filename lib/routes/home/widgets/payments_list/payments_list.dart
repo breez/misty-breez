@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/payment_item.dart';
+import 'package:l_breez/routes/home/home.dart';
+
+export 'widgets/widgets.dart';
 
 const double _kBottomPadding = 8.0;
 

@@ -10,9 +10,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/loading_animated_text.dart';
-import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('LNURLWithdrawDialog');

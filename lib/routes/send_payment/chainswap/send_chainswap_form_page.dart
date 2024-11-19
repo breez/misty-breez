@@ -5,11 +5,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/route.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('SendChainSwapFormPage');

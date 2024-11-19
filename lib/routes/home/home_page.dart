@@ -7,13 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:l_breez/handlers/handlers.dart';
-import 'package:l_breez/routes/home/account_page.dart';
-import 'package:l_breez/routes/home/widgets/app_bar/home_app_bar.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/bottom_actions_bar.dart';
-import 'package:l_breez/routes/home/widgets/drawer/home_drawer.dart';
-import 'package:l_breez/routes/home/widgets/qr_action_button.dart';
+import 'package:l_breez/routes/home/home.dart';
 import 'package:l_breez/routes/security/auto_lock_mixin.dart';
-import 'package:l_breez/widgets/error_dialog.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class Home extends StatefulWidget {
   static const String routeName = '/';

@@ -9,8 +9,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/utils/min_font_size.dart';
-import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class CurrencyConverterDialog extends StatefulWidget {
   final Function(String string) _onConvert;

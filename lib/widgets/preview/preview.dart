@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/preview/fill_view_port_column_scroll_view.dart';
+import 'package:l_breez/widgets/widgets.dart';
+
+export 'fill_view_port_column_scroll_view.dart';
 
 class Preview extends StatefulWidget {
   final List<Widget> children;

@@ -6,9 +6,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/auth/login_text.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
-import 'package:l_breez/widgets/error_dialog.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('HandleLNURLAuthRequest');

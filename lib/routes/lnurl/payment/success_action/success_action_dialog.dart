@@ -4,8 +4,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/shareable_payment_row.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class SuccessActionDialog extends StatefulWidget {
   final String message;

@@ -5,7 +5,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/handlers/handler/handler.dart';
+import 'package:l_breez/handlers/handlers.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 

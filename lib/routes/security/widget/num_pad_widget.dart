@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/security/widget/digit_button_widget.dart';
-import 'package:l_breez/widgets/preview/preview.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class NumPadWidget extends StatelessWidget {
   final ActionKey lhsActionKey;

@@ -3,7 +3,7 @@ library backup_cubit;
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/cubit/backup/backup_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
 
 export 'backup_state.dart';

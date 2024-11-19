@@ -6,11 +6,9 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_handler.dart';
 import 'package:l_breez/routes/qr_scan/qr_scan.dart';
-import 'package:l_breez/routes/receive_payment/lightning/receive_lightning_page.dart';
-import 'package:l_breez/routes/receive_payment/ln_address/receive_lightning_address_page.dart';
-import 'package:l_breez/routes/receive_payment/onchain/bitcoin_address/receive_bitcoin_address_payment_page.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/flushbar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class ReceivePaymentPage extends StatefulWidget {
   static const String routeName = '/receive_payment';

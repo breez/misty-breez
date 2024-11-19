@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class Loader extends StatelessWidget {
   final double? value;

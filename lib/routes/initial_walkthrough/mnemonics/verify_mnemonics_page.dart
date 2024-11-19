@@ -5,12 +5,12 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/home/home_page.dart';
+import 'package:l_breez/routes/home/home.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/widgets/verify_form.dart';
 import 'package:l_breez/routes/security/security_page.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class VerifyMnemonicsPage extends StatefulWidget {
   final String _mnemonics;

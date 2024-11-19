@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/refund/widgets/widgets.dart';
+import 'package:l_breez/routes/refund/refund.dart';
 
 class RefundItem extends StatelessWidget {
   final RefundableSwap refundItem;

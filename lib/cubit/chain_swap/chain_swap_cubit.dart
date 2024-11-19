@@ -4,9 +4,7 @@ import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/chain_swap/chain_swap_state.dart';
-import 'package:l_breez/cubit/model/models.dart';
-import 'package:l_breez/cubit/payments/models/models.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:logging/logging.dart';
 

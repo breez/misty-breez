@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_header.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_qr_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/flushbar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
+
+export 'widgets/widgets.dart';
 
 final Logger _logger = Logger('DestinationWidget');
 

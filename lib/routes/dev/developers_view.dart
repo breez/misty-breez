@@ -14,7 +14,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/dev/command_line_interface.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/flushbar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';

@@ -5,14 +5,13 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
-import 'package:l_breez/routes/home/home_page.dart';
+import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/home.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/receive_payment/lnurl/lnurl_withdraw_page.dart';
 import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/error_dialog.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 

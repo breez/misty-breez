@@ -8,7 +8,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:l_breez/cubit/payment_limits/payment_limits_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:logging/logging.dart';
 

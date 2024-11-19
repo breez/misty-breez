@@ -5,7 +5,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/widgets/restore_form.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class RestoreFormPage extends StatefulWidget {
   final int currentPage;

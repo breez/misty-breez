@@ -3,10 +3,10 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/payments/payments_cubit.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/payment_filter_exporter.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_calendar.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_dropdown.dart';
+import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/home.dart';
+
+export 'widgets/widgets.dart';
 
 class PaymentsFilters extends StatefulWidget {
   const PaymentsFilters({super.key});

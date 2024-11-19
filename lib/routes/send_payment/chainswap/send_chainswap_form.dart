@@ -6,7 +6,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
-import 'package:l_breez/widgets/amount_form_field/sat_amount_form_field_formatter.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('SendChainSwapForm');

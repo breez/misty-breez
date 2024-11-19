@@ -5,10 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/error_dialog.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class RefundButton extends StatelessWidget {
   final RefundRequest req;
