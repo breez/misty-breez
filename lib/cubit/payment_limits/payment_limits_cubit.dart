@@ -34,10 +34,16 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   }
 
   void _fetchPaymentLimits() {
-    _breezSdkLiquid.walletInfoStream.first.then((walletInfo) {
-      fetchLightningLimits();
-      fetchOnchainLimits();
-    });
+    if (_breezSdkLiquid.instance != null) {
+      _breezSdkLiquid.walletInfoStream.first.then((walletInfo) {
+        fetchLightningLimits();
+        fetchOnchainLimits();
+      }).timeout(const Duration(seconds: 15), onTimeout: () {
+        emit(state.copyWith(errorMessage: "Fetching payment network limits timed out."));
+      });
+    } else {
+      emit(state.copyWith(errorMessage: "Breez SDK instance is not running"));
+    }
   }
 
   @override
@@ -46,31 +52,41 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
     return super.close();
   }
 
-  Future<LightningPaymentLimitsResponse> fetchLightningLimits() async {
+  Future<LightningPaymentLimitsResponse?> fetchLightningLimits() async {
     emit(state.copyWith(errorMessage: ""));
-    try {
-      final lightningPaymentLimits = await _breezSdkLiquid.instance!.fetchLightningLimits();
-      emit(state.copyWith(lightningPaymentLimits: lightningPaymentLimits, errorMessage: ""));
-      return lightningPaymentLimits;
-    } catch (e) {
-      _logger.severe("fetchLightningLimits error", e);
-      final texts = getSystemAppLocalizations();
-      emit(state.copyWith(lightningPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
-      rethrow;
+    if (_breezSdkLiquid.instance != null) {
+      try {
+        final lightningPaymentLimits = await _breezSdkLiquid.instance!.fetchLightningLimits();
+        emit(state.copyWith(lightningPaymentLimits: lightningPaymentLimits, errorMessage: ""));
+        return lightningPaymentLimits;
+      } catch (e) {
+        _logger.severe("fetchLightningLimits error", e);
+        final texts = getSystemAppLocalizations();
+        emit(state.copyWith(lightningPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
+        rethrow;
+      }
+    } else {
+      emit(state.copyWith(errorMessage: "Breez SDK instance is not running"));
+      return null;
     }
   }
 
-  Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() async {
+  Future<OnchainPaymentLimitsResponse?> fetchOnchainLimits() async {
     emit(state.copyWith(errorMessage: ""));
-    try {
-      final onchainPaymentLimits = await _breezSdkLiquid.instance!.fetchOnchainLimits();
-      emit(state.copyWith(onchainPaymentLimits: onchainPaymentLimits, errorMessage: ""));
-      return onchainPaymentLimits;
-    } catch (e) {
-      _logger.severe("fetchOnchainLimits error", e);
-      final texts = getSystemAppLocalizations();
-      emit(state.copyWith(onchainPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
-      rethrow;
+    if (_breezSdkLiquid.instance != null) {
+      try {
+        final onchainPaymentLimits = await _breezSdkLiquid.instance!.fetchOnchainLimits();
+        emit(state.copyWith(onchainPaymentLimits: onchainPaymentLimits, errorMessage: ""));
+        return onchainPaymentLimits;
+      } catch (e) {
+        _logger.severe("fetchOnchainLimits error", e);
+        final texts = getSystemAppLocalizations();
+        emit(state.copyWith(onchainPaymentLimits: null, errorMessage: extractExceptionMessage(e, texts)));
+        rethrow;
+      }
+    } else {
+      emit(state.copyWith(errorMessage: "Breez SDK instance is not running"));
+      return null;
     }
   }
 
