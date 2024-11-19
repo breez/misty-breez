@@ -66,28 +66,24 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                     ),
           bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
             builder: (BuildContext context, PaymentLimitsState snapshot) {
-              return webhookState.lnurlPayError != null
+              return webhookState.lnurlPayError != null || snapshot.hasError
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
                       text: texts.invoice_ln_address_action_retry,
-                      onPressed: () => _refreshLnurlPay(),
+                      onPressed: webhookState.lnurlPayError != null
+                          ? () => _refreshLnurlPay()
+                          : () {
+                              final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                              paymentLimitsCubit.fetchLightningLimits();
+                            },
                     )
-                  : snapshot.hasError
-                      ? SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.invoice_ln_address_action_retry,
-                          onPressed: () {
-                            final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
-                            paymentLimitsCubit.fetchLightningLimits();
-                          },
-                        )
-                      : SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.qr_code_dialog_action_close,
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        );
+                  : SingleButtonBottomBar(
+                      stickToBottom: true,
+                      text: texts.qr_code_dialog_action_close,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
             },
           ),
         );
