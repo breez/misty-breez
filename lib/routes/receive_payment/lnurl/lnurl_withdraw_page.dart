@@ -259,7 +259,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                             ),
                           ),
                         ],
-                        if (errorMessage.isNotEmpty) ...[
+                        if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...[
                           const SizedBox(height: 8.0),
                           AutoSizeText(
                             errorMessage,
@@ -345,13 +345,9 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
     final currencyCubit = context.read<CurrencyCubit>();
     final currencyState = currencyCubit.state;
 
-    if (errorMessage.isNotEmpty) {
-      return errorMessage;
-    }
-
     String? message;
     if (_lightningLimits == null) {
-      message = "Failed to retrieve network payment limits. Please try again later.";
+      message = texts.payment_limits_fetch_error_message;
     }
 
     if (!_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
