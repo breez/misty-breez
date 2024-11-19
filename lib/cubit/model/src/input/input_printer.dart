@@ -18,7 +18,7 @@ String inputTypeToString(InputType inputType) {
   } else if (inputType is InputType_LnUrlError) {
     return _lnUrlErrorToString(inputType);
   } else {
-    return "Unknown InputType";
+    return 'Unknown InputType';
   }
 }
 
@@ -36,76 +36,76 @@ String inputDataToString(dynamic data) {
   } else if (data is LnUrlErrorData) {
     return _lnUrlErrorDataToString(data);
   } else {
-    return "Unknown InputType";
+    return 'Unknown InputType';
   }
 }
 
 String _bitcoinAddressToString(InputType_BitcoinAddress inputType) {
-  final data = inputType.address;
+  final BitcoinAddressData data = inputType.address;
   return _bitcoinAddressDataToString(data);
 }
 
 String _bitcoinAddressDataToString(BitcoinAddressData data) {
-  return "BitcoinAddressData(address: ${data.address}, network: ${data.network}, amountSat: ${data.amountSat}, "
-      "label: ${data.label}, message: ${data.message})";
+  return 'BitcoinAddressData(address: ${data.address}, network: ${data.network}, amountSat: ${data.amountSat}, '
+      'label: ${data.label}, message: ${data.message})';
 }
 
 String _bolt11ToString(InputType_Bolt11 inputType) {
-  final data = inputType.invoice;
+  final LNInvoice data = inputType.invoice;
   return _lnInvoiceToString(data);
 }
 
 String _lnInvoiceToString(LNInvoice data) {
-  return "LNInvoice(invoice: ${data.bolt11}, paymentHash: ${data.paymentHash}, "
-      "description: ${data.description}, amountMsat: ${data.amountMsat}, expiry: ${data.expiry}, "
-      "payeePubkey: ${data.payeePubkey}, descriptionHash: ${data.descriptionHash}, "
-      "timestamp: ${data.timestamp}, routingHints: ${data.routingHints}, "
-      "paymentSecret: ${data.paymentSecret})";
+  return 'LNInvoice(invoice: ${data.bolt11}, paymentHash: ${data.paymentHash}, '
+      'description: ${data.description}, amountMsat: ${data.amountMsat}, expiry: ${data.expiry}, '
+      'payeePubkey: ${data.payeePubkey}, descriptionHash: ${data.descriptionHash}, '
+      'timestamp: ${data.timestamp}, routingHints: ${data.routingHints}, '
+      'paymentSecret: ${data.paymentSecret})';
 }
 
 String _nodeIdToString(InputType_NodeId inputType) {
-  return "NodeId(nodeId: ${inputType.nodeId})";
+  return 'NodeId(nodeId: ${inputType.nodeId})';
 }
 
 String _urlToString(InputType_Url inputType) {
-  return "Url(url: ${inputType.url})";
+  return 'Url(url: ${inputType.url})';
 }
 
 String _lnUrlPayToString(InputType_LnUrlPay inputType) {
-  final data = inputType.data;
+  final LnUrlPayRequestData data = inputType.data;
   return _lnUrlPayRequestDataToString(data);
 }
 
 String _lnUrlPayRequestDataToString(LnUrlPayRequestData data) {
-  return "LnUrlPayRequestData(callback: ${data.callback}, minSendable: ${data.minSendable}, "
-      "maxSendable: ${data.maxSendable}, metadata: ${data.metadataStr}, "
-      "commentAllowed: ${data.commentAllowed}, domain: ${data.domain}, lnAddr: ${data.lnAddress})";
+  return 'LnUrlPayRequestData(callback: ${data.callback}, minSendable: ${data.minSendable}, '
+      'maxSendable: ${data.maxSendable}, metadata: ${data.metadataStr}, '
+      'commentAllowed: ${data.commentAllowed}, domain: ${data.domain}, lnAddr: ${data.lnAddress})';
 }
 
 String _lnUrlWithdrawToString(InputType_LnUrlWithdraw inputType) {
-  final data = inputType.data;
+  final LnUrlWithdrawRequestData data = inputType.data;
   return _lnUrlWithdrawRequestDataToString(data);
 }
 
 String _lnUrlWithdrawRequestDataToString(LnUrlWithdrawRequestData data) {
-  return "LnUrlWithdrawRequestData(callback: ${data.callback}, minWithdrawable: ${data.minWithdrawable}, "
-      "maxWithdrawable: ${data.maxWithdrawable}, defaultDescription: ${data.defaultDescription}, "
-      "k1: ${data.k1})";
+  return 'LnUrlWithdrawRequestData(callback: ${data.callback}, minWithdrawable: ${data.minWithdrawable}, '
+      'maxWithdrawable: ${data.maxWithdrawable}, defaultDescription: ${data.defaultDescription}, '
+      'k1: ${data.k1})';
 }
 
 String _lnUrlAuthToString(InputType_LnUrlAuth inputType) {
-  final data = inputType.data;
+  final LnUrlAuthRequestData data = inputType.data;
   return _lnUrlAuthRequestDataToString(data);
 }
 
 String _lnUrlAuthRequestDataToString(LnUrlAuthRequestData data) {
-  return "LnUrlAuthRequestData(k1: ${data.k1}, action: ${data.action}, domain: ${data.domain}, "
-      "url: ${data.url})";
+  return 'LnUrlAuthRequestData(k1: ${data.k1}, action: ${data.action}, domain: ${data.domain}, '
+      'url: ${data.url})';
 }
 
 String _lnUrlErrorToString(InputType_LnUrlError inputType) {
-  final data = inputType.data;
+  final LnUrlErrorData data = inputType.data;
   return _lnUrlErrorDataToString(data);
 }
 
-String _lnUrlErrorDataToString(LnUrlErrorData data) => "LnUrlErrorData(reason: ${data.reason})";
+String _lnUrlErrorDataToString(LnUrlErrorData data) => 'LnUrlErrorData(reason: ${data.reason})';

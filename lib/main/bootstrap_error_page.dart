@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -11,7 +12,7 @@ class BootstrapErrorPage extends StatefulWidget {
   final Object error;
   final StackTrace stackTrace;
 
-  const BootstrapErrorPage({super.key, required this.error, required this.stackTrace});
+  const BootstrapErrorPage({required this.error, required this.stackTrace, super.key});
 
   @override
   State<BootstrapErrorPage> createState() => _BootstrapErrorPageState();
@@ -23,27 +24,31 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) async {
-        if (didPop) return;
+        if (didPop) {
+          return;
+        }
 
         final bool? shouldPop = await promptAreYouSure(
           context,
           texts.bootstrap_error_page_close_popup_title,
           Text(texts.bootstrap_error_page_close_popup_message),
         );
-        if (shouldPop ?? false) exit(0);
+        if (shouldPop ?? false) {
+          exit(0);
+        }
       },
       child: MaterialApp(
-        title: "Misty ${getSystemAppLocalizations().app_name}",
+        title: 'Misty ${getSystemAppLocalizations().app_name}',
         theme: breezLightTheme,
         localizationsDelegates: localizationsDelegates(),
         supportedLocales: supportedLocales(),
         builder: (BuildContext context, Widget? child) {
-          const kMaxTitleTextScaleFactor = 1.3;
+          const double kMaxTitleTextScaleFactor = 1.3;
 
           return MediaQuery.withClampedTextScaling(
             maxScaleFactor: kMaxTitleTextScaleFactor,
@@ -57,9 +62,8 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0),
               child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: <Widget>[
                     Icon(Icons.error_outline, color: breezLightTheme.iconTheme.color, size: 64),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -78,7 +82,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           Text(
                             texts.bootstrap_error_page_error_label,
                             style: breezLightTheme.textTheme.labelLarge?.copyWith(
@@ -101,7 +105,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                                 child: SingleChildScrollView(
                                   controller: _errorScrollController,
                                   child: Column(
-                                    children: [
+                                    children: <Widget>[
                                       Text(
                                         widget.error.toString(),
                                         style: const TextStyle(
@@ -130,7 +134,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           Text(
                             texts.bootstrap_error_page_stack_trace_label,
                             style: breezLightTheme.textTheme.labelLarge?.copyWith(
@@ -151,7 +155,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                                 child: SingleChildScrollView(
                                   controller: _stackTraceScrollController,
                                   child: Column(
-                                    children: [
+                                    children: <Widget>[
                                       Text(
                                         widget.stackTrace.toString(),
                                         style: const TextStyle(

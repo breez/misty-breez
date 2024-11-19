@@ -10,11 +10,11 @@ class BottomActionItem extends StatelessWidget {
   final Alignment minimizedAlignment;
 
   const BottomActionItem({
-    super.key,
     required this.text,
     required this.group,
     required this.iconAssetPath,
     required this.onPress,
+    super.key,
     this.minimizedAlignment = Alignment.center,
   });
 

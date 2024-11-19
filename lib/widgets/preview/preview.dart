@@ -24,22 +24,19 @@ class _PreviewState extends State<Preview> {
       home: Scaffold(
         body: SafeArea(
           child: Stack(
-            children: [
+            children: <Widget>[
               LayoutBuilder(
-                builder: (context, constraints) {
-                  final cols = constraints.maxWidth ~/ 8;
-                  final rows = constraints.maxHeight ~/ 8;
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  final int cols = constraints.maxWidth ~/ 8;
+                  final int rows = constraints.maxHeight ~/ 8;
                   return GridView.builder(
                     itemCount: cols * rows + cols,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: cols,
-                      childAspectRatio: 1.0,
-                      crossAxisSpacing: 0.0,
-                      mainAxisSpacing: 0.0,
                     ),
-                    itemBuilder: (context, index) {
-                      final oddRow = (index ~/ cols).isOdd;
-                      final oddCol = (index % cols).isOdd;
+                    itemBuilder: (BuildContext context, int index) {
+                      final bool oddRow = (index ~/ cols).isOdd;
+                      final bool oddCol = (index % cols).isOdd;
                       return Container(
                         color: oddRow == oddCol ? Colors.grey.withAlpha(128) : Colors.blueGrey.withAlpha(128),
                       );
@@ -52,19 +49,19 @@ class _PreviewState extends State<Preview> {
                 color: theme?.appBarTheme.backgroundColor ?? Colors.white60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Text("Theme:"),
+                  children: <Widget>[
+                    const Text('Theme:'),
                     TextButton(
                       onPressed: () => _changeTheme(null),
-                      child: const Text("None"),
+                      child: const Text('None'),
                     ),
                     TextButton(
                       onPressed: () => _changeTheme(breezLightTheme),
-                      child: const Text("Light"),
+                      child: const Text('Light'),
                     ),
                     TextButton(
                       onPressed: () => _changeTheme(breezDarkTheme),
-                      child: const Text("Dark"),
+                      child: const Text('Dark'),
                     ),
                   ],
                 ),

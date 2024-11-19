@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -9,12 +10,13 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("EnterPaymentInfoPage");
+final Logger _logger = Logger('EnterPaymentInfoPage');
 
 class EnterPaymentInfoPage extends StatefulWidget {
-  static const routeName = "/enter_payment_info";
+  static const String routeName = '/enter_payment_info';
   const EnterPaymentInfoPage({super.key});
 
   @override
@@ -22,11 +24,11 @@ class EnterPaymentInfoPage extends StatefulWidget {
 }
 
 class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _paymentInfoController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _paymentInfoController = TextEditingController();
 
-  String errorMessage = "";
-  ModalRoute? _loaderRoute;
+  String errorMessage = '';
+  TransparentPageRoute<void>? _loaderRoute;
 
   @override
   void initState() {
@@ -38,8 +40,8 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,7 +56,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 TextFormField(
                   controller: _paymentInfoController,
                   decoration: InputDecoration(
@@ -63,7 +65,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                       padding: const EdgeInsets.only(top: 21.0),
                       alignment: Alignment.bottomRight,
                       icon: Image(
-                        image: const AssetImage("assets/icons/qr_scan.png"),
+                        image: const AssetImage('assets/icons/qr_scan.png'),
                         color: themeData.iconTheme.color,
                         width: 24.0,
                         height: 24.0,
@@ -73,8 +75,8 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
                     ),
                   ),
                   style: FieldTextStyle.textStyle,
-                  validator: (value) => errorMessage.isNotEmpty ? errorMessage : null,
-                  onFieldSubmitted: (input) async {
+                  validator: (String? value) => errorMessage.isNotEmpty ? errorMessage : null,
+                  onFieldSubmitted: (String input) async {
                     if (input.isNotEmpty) {
                       setState(() {
                         _paymentInfoController.text = input;
@@ -108,12 +110,14 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
   }
 
   void _scanBarcode() {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     Focus.maybeOf(context)?.unfocus();
-    Navigator.pushNamed<String>(context, QRScan.routeName).then((barcode) async {
+    Navigator.pushNamed<String>(context, QRScan.routeName).then((String? barcode) async {
       if (barcode == null || barcode.isEmpty) {
-        if (context.mounted) showFlushbar(context, message: texts.qr_code_not_detected_error);
+        if (context.mounted) {
+          showFlushbar(context, message: texts.qr_code_not_detected_error);
+        }
         return;
       }
       setState(() {
@@ -124,14 +128,14 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
   }
 
   Future<void> _validateInput() async {
-    final texts = context.texts();
-    final inputCubit = context.read<InputCubit>();
-    var errMsg = "";
+    final BreezTranslations texts = context.texts();
+    final InputCubit inputCubit = context.read<InputCubit>();
+    String errMsg = '';
     setState(() {
       errorMessage = errMsg;
     });
     try {
-      final inputType = await inputCubit.parseInput(input: _paymentInfoController.text);
+      final InputType inputType = await inputCubit.parseInput(input: _paymentInfoController.text);
       if (!(inputType is InputType_Bolt11 ||
           inputType is InputType_LnUrlPay ||
           inputType is InputType_LnUrlWithdraw)) {
@@ -141,11 +145,11 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
         errMsg = texts.payment_request_zero_amount_not_supported;
       }
       if (inputType is InputType_BitcoinAddress) {
-        errMsg = "Please use \"Send to BTC Address\" option from main menu.";
+        errMsg = 'Please use "Send to BTC Address" option from main menu.';
       }
     } catch (error) {
-      var errStr = error.toString();
-      errMsg = errStr.contains("Unrecognized") ? texts.payment_info_dialog_error_unsupported_input : errStr;
+      final String errStr = error.toString();
+      errMsg = errStr.contains('Unrecognized') ? texts.payment_info_dialog_error_unsupported_input : errStr;
     } finally {
       setState(() {
         errorMessage = errMsg;
@@ -156,14 +160,16 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
   }
 
   Future<void> _onApprovePressed() async {
-    final inputCubit = context.read<InputCubit>();
+    final InputCubit inputCubit = context.read<InputCubit>();
 
     try {
       _setLoading(true);
       await _validateInput();
       if (_formKey.currentState!.validate()) {
         _setLoading(false);
-        if (mounted) Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
         inputCubit.addIncomingInput(_paymentInfoController.text.trim(), InputSource.inputField);
       }
     } catch (error) {

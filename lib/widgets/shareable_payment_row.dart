@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/utils/external_browser.dart';
 import 'package:l_breez/widgets/flushbar.dart';
@@ -22,10 +23,10 @@ class ShareablePaymentRow extends StatelessWidget {
   final AutoSizeGroup? valueAutoSizeGroup;
 
   const ShareablePaymentRow({
-    super.key,
     required this.title,
-    this.titleWidget,
     required this.sharedValue,
+    super.key,
+    this.titleWidget,
     this.urlValue,
     this.isURL = false,
     this.isExpanded = false,
@@ -40,9 +41,9 @@ class ShareablePaymentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final color = themeData.primaryTextTheme.labelLarge!.color!;
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final Color color = themeData.primaryTextTheme.labelLarge!.color!;
 
     return Theme(
       data: themeData.copyWith(
@@ -60,14 +61,13 @@ class ShareablePaymentRow extends StatelessWidget {
               maxLines: 2,
               group: labelAutoSizeGroup,
             ),
-        children: [
+        children: <Widget>[
           Row(
-            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Expanded(
                 child: Padding(
-                  padding: childrenPadding ?? const EdgeInsets.only(left: 16.0, right: 0.0),
+                  padding: childrenPadding ?? const EdgeInsets.only(left: 16.0),
                   child: GestureDetector(
                     onTap: isURL
                         ? () => launchLinkOnExternalBrowser(context, linkAddress: urlValue ?? sharedValue)
@@ -90,7 +90,7 @@ class ShareablePaymentRow extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                    children: <Widget>[
                       IconButton(
                         alignment: Alignment.centerRight,
                         padding: iconPadding ?? const EdgeInsets.only(right: 8.0),

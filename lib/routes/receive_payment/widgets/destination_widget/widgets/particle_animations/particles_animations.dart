@@ -21,25 +21,28 @@ class Particles extends StatefulWidget {
 }
 
 class ParticlesState extends State<Particles> {
-  final random = Random();
-  final startTime = DateTime.now();
-  final List<ParticleModel> particles = [];
+  final Random random = Random();
+  final DateTime startTime = DateTime.now();
+  final List<ParticleModel> particles = <ParticleModel>[];
 
   @override
   void initState() {
-    List.generate(widget.numberOfParticles, (index) {
-      particles.add(ParticleModel(random));
-    });
     super.initState();
+    List<void>.generate(
+      widget.numberOfParticles,
+      (int index) {
+        particles.add(ParticleModel(random));
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return LoopAnimationBuilder<int>(
       duration: const Duration(seconds: 1),
-      tween: ConstantTween(1),
-      builder: (context, animation, child) {
-        final time = DateTime.now().difference(startTime);
+      tween: ConstantTween<int>(1),
+      builder: (BuildContext context, int animation, Widget? child) {
+        final Duration time = DateTime.now().difference(startTime);
         _simulateParticles(time);
         return CustomPaint(
           painter: ParticlePainter(particles, time, widget.color),
@@ -49,7 +52,7 @@ class ParticlesState extends State<Particles> {
   }
 
   void _simulateParticles(Duration time) {
-    for (var particle in particles) {
+    for (ParticleModel particle in particles) {
       particle.maintainRestart(time);
     }
   }

@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,7 +9,7 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("QrActionButton");
+final Logger _logger = Logger('QrActionButton');
 
 class QrActionButton extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
@@ -22,12 +23,11 @@ class QrActionButton extends StatelessWidget {
       child: FloatingActionButton(
         onPressed: () => _scanBarcode(context),
         child: SvgPicture.asset(
-          "assets/icons/qr_scan.svg",
+          'assets/icons/qr_scan.svg',
           colorFilter: ColorFilter.mode(
             BreezColors.white[500]!,
             BlendMode.srcATop,
           ),
-          fit: BoxFit.contain,
           width: 24.0,
           height: 24.0,
         ),
@@ -36,14 +36,16 @@ class QrActionButton extends StatelessWidget {
   }
 
   void _scanBarcode(BuildContext context) {
-    final texts = context.texts();
-    final inputCubit = context.read<InputCubit>();
+    final BreezTranslations texts = context.texts();
+    final InputCubit inputCubit = context.read<InputCubit>();
 
-    _logger.info("Start qr code scan");
+    _logger.info('Start qr code scan');
     Navigator.pushNamed<String>(context, QRScan.routeName).then(
-      (barcode) {
+      (String? barcode) {
         _logger.info("Scanned string: '$barcode'");
-        if (barcode == null) return;
+        if (barcode == null) {
+          return;
+        }
         if (barcode.isEmpty && context.mounted) {
           showFlushbar(
             context,

@@ -5,14 +5,14 @@ class BottomActionItemImage extends StatelessWidget {
   final bool enabled;
 
   const BottomActionItemImage({
-    super.key,
     required this.iconAssetPath,
+    super.key,
     this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return Image(
       image: AssetImage(

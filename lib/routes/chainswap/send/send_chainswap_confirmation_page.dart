@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -13,10 +14,10 @@ class SendChainSwapConfirmationPage extends StatefulWidget {
   final bool isMaxValue;
 
   const SendChainSwapConfirmationPage({
-    super.key,
     required this.amountSat,
     required this.onchainRecipientAddress,
     required this.isMaxValue,
+    super.key,
   });
 
   @override
@@ -37,15 +38,15 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(texts.sweep_all_coins_speed),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<SendChainSwapFeeOption>>(
         future: _fetchFeeOptionsFuture,
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<SendChainSwapFeeOption>> snapshot) {
           if (snapshot.error != null) {
             return _ErrorMessage(
               message: (snapshot.error is PaymentError_InsufficientFunds)
@@ -62,7 +63,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
               amountSat: widget.amountSat,
               feeOptions: snapshot.data!,
               selectedFeeIndex: selectedFeeIndex,
-              onSelect: (index) => setState(() {
+              onSelect: (int index) => setState(() {
                 selectedFeeIndex = index;
               }),
             );
@@ -84,28 +85,35 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
   }
 
   void _fetchSendChainSwapFeeOptions() {
-    final chainSwapCubit = context.read<ChainSwapCubit>();
+    final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
     _fetchFeeOptionsFuture = chainSwapCubit.fetchSendChainSwapFeeOptions(
       amountSat: widget.amountSat,
       isDrain: widget.isMaxValue,
     );
-    _fetchFeeOptionsFuture.then((feeOptions) {
-      if (mounted) {
-        final accountCubit = context.read<AccountCubit>();
-        final accountState = accountCubit.state;
+    _fetchFeeOptionsFuture.then(
+      (List<SendChainSwapFeeOption> feeOptions) {
+        if (mounted) {
+          final AccountCubit accountCubit = context.read<AccountCubit>();
+          final AccountState accountState = accountCubit.state;
+          setState(() {
+            affordableFees = feeOptions
+                .where(
+                  (SendChainSwapFeeOption f) => f.isAffordable(
+                    balanceSat: accountState.walletInfo!.balanceSat.toInt(),
+                    amountSat: widget.amountSat,
+                  ),
+                )
+                .toList();
+            selectedFeeIndex = (affordableFees.length / 2).floor();
+          });
+        }
+      },
+      onError: (Object error, StackTrace stackTrace) {
         setState(() {
-          affordableFees = feeOptions
-              .where((f) => f.isAffordable(
-                  balanceSat: accountState.walletInfo!.balanceSat.toInt(), amountSat: widget.amountSat))
-              .toList();
-          selectedFeeIndex = (affordableFees.length / 2).floor();
+          affordableFees = <SendChainSwapFeeOption>[];
         });
-      }
-    }, onError: (error, stackTrace) {
-      setState(() {
-        affordableFees = <SendChainSwapFeeOption>[];
-      });
-    });
+      },
+    );
   }
 }
 

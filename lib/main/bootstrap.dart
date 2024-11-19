@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:breez_logger/breez_logger.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -20,7 +21,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:shared_preference_app_group/shared_preference_app_group.dart';
 
-final _logger = Logger("Bootstrap");
+final Logger _logger = Logger('Bootstrap');
 
 typedef AppBuilder = Widget Function(
   ServiceInjector serviceInjector,
@@ -34,51 +35,51 @@ Future<void> bootstrap(AppBuilder builder) async {
     WidgetsFlutterBinding.ensureInitialized();
     await _precacheSvgImages();
     SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+      <DeviceOrientation>[DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
     );
     // iOS Extension requirement
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       SharedPreferenceAppGroup.setAppGroup(
-        "group.F7R2LZH3W5.com.breez.liquid.lBreez",
+        'group.F7R2LZH3W5.com.breez.liquid.lBreez',
       );
     }
 
     // Initialize library
     await _initializeBreezSdkLiquid();
-    final injector = ServiceInjector();
-    final breezLogger = injector.breezLogger;
+    final ServiceInjector injector = ServiceInjector();
+    final BreezLogger breezLogger = injector.breezLogger;
     breezLogger.registerBreezSdkLiquidLogs(injector.breezSdkLiquid);
     BreezDateUtils.setupLocales();
     if (Firebase.apps.isEmpty) {
-      _logger.info("List of Firebase apps: ${Firebase.apps}");
+      _logger.info('List of Firebase apps: ${Firebase.apps}');
       await Firebase.initializeApp(
-        name: "breez-technology",
+        name: 'breez-technology',
         // ignore: undefined_identifier
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }
 
-    final appDir = await getApplicationDocumentsDirectory();
+    final Directory appDir = await getApplicationDocumentsDirectory();
     HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: Directory(p.join(appDir.path, "bloc_storage")),
+      storageDirectory: Directory(p.join(appDir.path, 'bloc_storage')),
     );
-    final accountCubit = AccountCubit(breezSdkLiquid: injector.breezSdkLiquid);
-    final sdkConnectivityCubit = SdkConnectivityCubit(
+    final AccountCubit accountCubit = AccountCubit(breezSdkLiquid: injector.breezSdkLiquid);
+    final SdkConnectivityCubit sdkConnectivityCubit = SdkConnectivityCubit(
       breezSdkLiquid: injector.breezSdkLiquid,
       credentialsManager: injector.credentialsManager,
     );
-    final isOnboardingComplete = accountCubit.state.isOnboardingComplete;
+    final bool isOnboardingComplete = accountCubit.state.isOnboardingComplete;
     if (isOnboardingComplete) {
-      _logger.info("Reconnect if secure storage has mnemonic.");
-      String? mnemonic = await injector.credentialsManager.restoreMnemonic();
+      _logger.info('Reconnect if secure storage has mnemonic.');
+      final String? mnemonic = await injector.credentialsManager.restoreMnemonic();
       if (mnemonic != null) {
         await sdkConnectivityCubit.reconnect(mnemonic: mnemonic);
       }
     }
     runApp(builder(injector, accountCubit, sdkConnectivityCubit));
-  }, (error, stackTrace) async {
+  }, (Object error, StackTrace stackTrace) async {
     if (error is! FlutterErrorDetails) {
-      _logger.severe("FlutterError: $error", error, stackTrace);
+      _logger.severe('FlutterError: $error', error, stackTrace);
     }
   });
 }
@@ -87,18 +88,18 @@ Future<void> _initializeBreezSdkLiquid() async {
   try {
     await liquid_sdk.initialize();
   } catch (error, stackTrace) {
-    _logger.severe("Failed to initialize Breez SDK - Liquid: $error", error, stackTrace);
+    _logger.severe('Failed to initialize Breez SDK - Liquid: $error', error, stackTrace);
     runApp(BootstrapErrorPage(error: error, stackTrace: stackTrace));
   }
 }
 
 Future<void> _precacheSvgImages() async {
-  final assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
-  final assets = assetManifest.listAssets();
+  final AssetManifest assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+  final List<String> assets = assetManifest.listAssets();
 
-  final svgPaths = assets.where((path) => path.endsWith('.svg'));
-  for (final svgPath in svgPaths) {
-    final loader = SvgAssetLoader(svgPath);
+  final Iterable<String> svgPaths = assets.where((String path) => path.endsWith('.svg'));
+  for (final String svgPath in svgPaths) {
+    final SvgAssetLoader loader = SvgAssetLoader(svgPath);
     await svg.cache.putIfAbsent(loader.cacheKey(null), () => loader.loadBytes(null));
   }
 }

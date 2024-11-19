@@ -37,7 +37,7 @@ class AddWebhookRequest {
     required this.signature,
   });
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'time': time,
         'webhook_url': webhookUrl,
         'signature': signature,
@@ -55,7 +55,7 @@ class RemoveWebhookRequest {
     required this.signature,
   });
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'time': time,
         'webhook_url': webhookUrl,
         'signature': signature,

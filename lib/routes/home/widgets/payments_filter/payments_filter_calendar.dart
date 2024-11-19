@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -14,11 +15,11 @@ class PaymentsFilterCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return BlocBuilder<PaymentsCubit, PaymentsState>(
-      builder: (context, paymentsState) {
+      builder: (BuildContext context, PaymentsState paymentsState) {
         DateTime? firstDate;
         if (paymentsState.payments.isNotEmpty) {
           // The list is backwards so the last element is the first in chronological order.
@@ -26,10 +27,10 @@ class PaymentsFilterCalendar extends StatelessWidget {
         }
 
         return Padding(
-          padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+          padding: const EdgeInsets.only(),
           child: IconButton(
             icon: SvgPicture.asset(
-              "assets/icons/calendar.svg",
+              'assets/icons/calendar.svg',
               colorFilter: ColorFilter.mode(
                 themeData.isLightTheme ? Colors.black : themeData.colorScheme.onSecondary,
                 BlendMode.srcATop,
@@ -42,9 +43,9 @@ class PaymentsFilterCalendar extends StatelessWidget {
                     useRootNavigator: false,
                     context: context,
                     builder: (_) => CalendarDialog(firstDate!),
-                  ).then((result) {
+                  ).then((List<DateTime>? result) {
                     if (context.mounted) {
-                      final paymentsCubit = context.read<PaymentsCubit>();
+                      final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
                       if (result != null) {
                         paymentsCubit.changePaymentFilter(
                           filters: filter,

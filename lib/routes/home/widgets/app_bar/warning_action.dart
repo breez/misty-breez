@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -6,7 +7,7 @@ class WarningAction extends StatefulWidget {
   final void Function() onTap;
   final Widget? iconWidget;
 
-  const WarningAction({super.key, required this.onTap, this.iconWidget});
+  const WarningAction({required this.onTap, super.key, this.iconWidget});
 
   @override
   State<StatefulWidget> createState() => WarningActionState();
@@ -41,8 +42,8 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
 
     return IconButton(
       iconSize: 45.0,
@@ -51,7 +52,7 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
         width: 45 * _animation!.value,
         child: widget.iconWidget ??
             SvgPicture.asset(
-              "assets/icons/warning.svg",
+              'assets/icons/warning.svg',
               colorFilter: ColorFilter.mode(
                 themeData.appBarTheme.actionsIconTheme!.color!,
                 BlendMode.srcATop,

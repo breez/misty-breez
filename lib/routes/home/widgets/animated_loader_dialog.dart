@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/loading_animated_text.dart';
@@ -8,16 +9,16 @@ AlertDialog createAnimatedLoaderDialog(
   String text, {
   bool withOKButton = true,
 }) {
-  final themeData = Theme.of(context);
-  final texts = context.texts();
-  final navigator = Navigator.of(context);
+  final ThemeData themeData = Theme.of(context);
+  final BreezTranslations texts = context.texts();
+  final NavigatorState navigator = Navigator.of(context);
 
   return AlertDialog(
     contentPadding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0),
     content: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
-      children: [
+      children: <Widget>[
         LoadingAnimatedText(
           loadingMessage: text,
           textStyle: themeData.dialogTheme.contentTextStyle,
@@ -30,9 +31,8 @@ AlertDialog createAnimatedLoaderDialog(
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
           children: withOKButton
-              ? [
+              ? <Widget>[
                   TextButton(
                     child: Text(
                       texts.backup_in_progress_action_confirm,
@@ -41,7 +41,7 @@ AlertDialog createAnimatedLoaderDialog(
                     onPressed: () => navigator.pop(),
                   ),
                 ]
-              : [],
+              : <Widget>[],
         ),
       ],
     ),

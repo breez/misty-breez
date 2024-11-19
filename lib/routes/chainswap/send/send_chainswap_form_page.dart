@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/currency.dart';
@@ -10,9 +11,10 @@ import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/route.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/transparent_page_route.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("SendChainSwapFormPage");
+final Logger _logger = Logger('SendChainSwapFormPage');
 
 class SendChainSwapFormPage extends StatefulWidget {
   final BitcoinCurrency bitcoinCurrency;
@@ -20,9 +22,9 @@ class SendChainSwapFormPage extends StatefulWidget {
   final BitcoinAddressData? btcAddressData;
 
   const SendChainSwapFormPage({
-    super.key,
     required this.bitcoinCurrency,
     required this.paymentLimits,
+    super.key,
     this.btcAddressData,
   });
 
@@ -31,20 +33,20 @@ class SendChainSwapFormPage extends StatefulWidget {
 }
 
 class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _amountController = TextEditingController();
-  final _addressController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   bool _withdrawMaxValue = false;
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-          children: [
+          children: <Widget>[
             SendChainSwapForm(
               formKey: _formKey,
               amountController: _amountController,
@@ -76,24 +78,24 @@ class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
     try {
       amount = widget.bitcoinCurrency.parse(_amountController.text);
     } catch (e) {
-      _logger.warning("Failed to parse the input amount", e);
+      _logger.warning('Failed to parse the input amount', e);
     }
     return amount;
   }
 
   void _prepareSendChainSwap() async {
-    final texts = context.texts();
-    final navigator = Navigator.of(context);
+    final BreezTranslations texts = context.texts();
+    final NavigatorState navigator = Navigator.of(context);
     if (_formKey.currentState?.validate() ?? false) {
-      var loaderRoute = createLoaderRoute(context);
+      final TransparentPageRoute<void> loaderRoute = createLoaderRoute(context);
       navigator.push(loaderRoute);
       try {
-        int amount = _getAmount();
+        final int amount = _getAmount();
         if (loaderRoute.isActive) {
           navigator.removeRoute(loaderRoute);
         }
         navigator.push(
-          FadeInRoute(
+          FadeInRoute<void>(
             builder: (_) => SendChainSwapConfirmationPage(
               amountSat: amount,
               onchainRecipientAddress: _addressController.text,
@@ -105,8 +107,10 @@ class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
         if (loaderRoute.isActive) {
           navigator.removeRoute(loaderRoute);
         }
-        _logger.severe("Received error: $error");
-        if (!context.mounted) return;
+        _logger.severe('Received error: $error');
+        if (!context.mounted) {
+          return;
+        }
         showFlushbar(
           context,
           message: texts.reverse_swap_upstream_generic_error_message(

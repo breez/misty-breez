@@ -18,11 +18,11 @@ class FixedSliverDelegate extends SliverPersistentHeaderDelegate {
     return child!;
   }
 
-  // TODO: implement maxExtent
+  // TODO(erdemyerebasmaz): implement maxExtent
   @override
   double get maxExtent => _height;
 
-  // TODO: implement minExtent
+  // TODO(erdemyerebasmaz): implement minExtent
   @override
   double get minExtent => _height;
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-const _kDefaultLockInterval = 120;
+const int _kDefaultLockInterval = 120;
 
 enum PinStatus {
   initial,
@@ -75,20 +75,20 @@ class SecurityState {
   }
 
   SecurityState.fromJson(Map<String, dynamic> json)
-      : pinStatus = PinStatus.values.byName(json["pinStatus"] ?? PinStatus.initial.name),
-        lockInterval = Duration(seconds: json["lockInterval"] ?? _kDefaultLockInterval),
+      : pinStatus = PinStatus.values.byName(json['pinStatus'] ?? PinStatus.initial.name),
+        lockInterval = Duration(seconds: json['lockInterval'] ?? _kDefaultLockInterval),
         localAuthenticationOption = LocalAuthenticationOption.values
-            .byName(json["localAuthenticationOption"] ?? LocalAuthenticationOption.none.name),
-        lockState = LockState.values.byName(json["lockState"] ?? LockState.unlocked.name),
+            .byName(json['localAuthenticationOption'] ?? LocalAuthenticationOption.none.name),
+        lockState = LockState.values.byName(json['lockState'] ?? LockState.unlocked.name),
         verificationStatus = VerificationStatus.values
-            .byName(json["verificationStatus"] ?? VerificationStatus.unverified.name);
+            .byName(json['verificationStatus'] ?? VerificationStatus.unverified.name);
 
-  Map<String, dynamic> toJson() => {
-        "pinStatus": pinStatus.name,
-        "lockInterval": lockInterval.inSeconds,
-        "localAuthenticationOption": localAuthenticationOption.name,
-        "lockState": lockState.name,
-        "verificationStatus": verificationStatus.name,
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'pinStatus': pinStatus.name,
+        'lockInterval': lockInterval.inSeconds,
+        'localAuthenticationOption': localAuthenticationOption.name,
+        'lockState': lockState.name,
+        'verificationStatus': verificationStatus.name,
       };
 
   @override

@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -10,20 +11,20 @@ import 'package:l_breez/widgets/loader.dart';
 class SendChainSwapPage extends StatefulWidget {
   final BitcoinAddressData? btcAddressData;
 
-  static const routeName = "/send_chainswap";
+  static const String routeName = '/send_chainswap';
 
-  const SendChainSwapPage({super.key, required this.btcAddressData});
+  const SendChainSwapPage({required this.btcAddressData, super.key});
 
   @override
   State<SendChainSwapPage> createState() => _SendChainSwapPageState();
 }
 
 class _SendChainSwapPageState extends State<SendChainSwapPage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Scaffold(
       key: _scaffoldKey,
@@ -45,7 +46,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
             );
           }
           if (snapshot.onchainPaymentLimits == null) {
-            final themeData = Theme.of(context);
+            final ThemeData themeData = Theme.of(context);
 
             return Center(
               child: Loader(
@@ -54,8 +55,8 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
             );
           }
 
-          final currencyCubit = context.read<CurrencyCubit>();
-          final currencyState = currencyCubit.state;
+          final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+          final CurrencyState currencyState = currencyCubit.state;
           return SendChainSwapFormPage(
             bitcoinCurrency: currencyState.bitcoinCurrency,
             paymentLimits: snapshot.onchainPaymentLimits!,

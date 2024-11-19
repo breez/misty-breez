@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -15,66 +16,66 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return BlocBuilder<UserProfileCubit, UserProfileState>(
-      builder: (context, user) {
-        final settings = user.profileSettings;
+      builder: (BuildContext context, UserProfileState user) {
+        final UserProfileSettings settings = user.profileSettings;
 
         return BlocBuilder<RefundCubit, RefundState>(
-          builder: (context, refundState) {
-            final hasRefundables = refundState.refundables?.isNotEmpty ?? false;
+          builder: (BuildContext context, RefundState refundState) {
+            final bool hasRefundables = refundState.refundables?.isNotEmpty ?? false;
 
             return BreezNavigationDrawer(
-              [
-                if (hasRefundables) ...[
+              <DrawerItemConfigGroup>[
+                if (hasRefundables) ...<DrawerItemConfigGroup>[
                   DrawerItemConfigGroup(
-                    [
+                    <DrawerItemConfig>[
                       DrawerItemConfig(
                         GetRefundPage.routeName,
                         texts.home_drawer_item_title_get_refund,
-                        "assets/icons/get_refund.png",
+                        'assets/icons/get_refund.png',
                       ),
                     ],
                   ),
                 ],
-                DrawerItemConfigGroup([
+                DrawerItemConfigGroup(<DrawerItemConfig>[
                   DrawerItemConfig(
-                    "",
+                    '',
                     texts.home_drawer_item_title_balance,
-                    "assets/icons/balance.png",
+                    'assets/icons/balance.png',
                     isSelected: settings.appMode == AppMode.balance,
                     onItemSelected: (_) {
-                      // TODO add protectAdminAction
+                      // TODO(ademar111190): add protectAdminAction
                     },
-                  )
+                  ),
                 ]),
                 DrawerItemConfigGroup(
-                  [
+                  <DrawerItemConfig>[
                     DrawerItemConfig(
                       FiatCurrencySettings.routeName,
                       texts.home_drawer_item_title_fiat_currencies,
-                      "assets/icons/fiat_currencies.png",
+                      'assets/icons/fiat_currencies.png',
                     ),
                     DrawerItemConfig(
                       SecurityPage.routeName,
                       texts.home_drawer_item_title_security_and_backup,
-                      "assets/icons/security.png",
+                      'assets/icons/security.png',
                     ),
                     DrawerItemConfig(
                       DevelopersView.routeName,
                       texts.home_drawer_item_title_developers,
-                      "assets/icons/developers.png",
+                      'assets/icons/developers.png',
                     ),
                   ],
                   groupTitle: texts.home_drawer_item_title_preferences,
-                  groupAssetImage: "",
+                  groupAssetImage: '',
                   isExpanded: settings.expandPreferences,
                 ),
               ],
-              (routeName) {
+              (String routeName) {
                 Navigator.of(context).pushNamed(routeName).then(
-                  (message) {
+                  (Object? message) {
                     if (message != null && message is String && context.mounted) {
                       showFlushbar(context, message: message);
                     }

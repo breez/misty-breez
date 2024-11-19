@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-var _versionsToMaxCharacters = [
+List<int> _versionsToMaxCharacters = <int>[
   17,
   32,
   53,
@@ -41,14 +41,14 @@ var _versionsToMaxCharacters = [
   2563,
   2699,
   2809,
-  2953
+  2953,
 ];
 
 class CompactQRImage extends StatelessWidget {
   final String data;
   final double? size;
 
-  const CompactQRImage({super.key, required this.data, this.size});
+  const CompactQRImage({required this.data, super.key, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class CompactQRImage extends StatelessWidget {
       version: _calculateVersion(),
       data: data,
       size: size,
-      embeddedImage: const AssetImage("assets/icons/app_icon.png"),
+      embeddedImage: const AssetImage('assets/icons/app_icon.png'),
       embeddedImageStyle: const QrEmbeddedImageStyle(
         size: Size.square(68.0),
       ),

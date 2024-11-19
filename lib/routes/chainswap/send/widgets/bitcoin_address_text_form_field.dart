@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
@@ -7,16 +8,16 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("BitcoinAddressTextFormField");
+final Logger _logger = Logger('BitcoinAddressTextFormField');
 
 class BitcoinAddressTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final ValidatorHolder validatorHolder;
 
   const BitcoinAddressTextFormField({
-    super.key,
     required this.controller,
     required this.validatorHolder,
+    super.key,
   });
 
   @override
@@ -24,7 +25,7 @@ class BitcoinAddressTextFormField extends StatefulWidget {
 }
 
 class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField> {
-  final _textFieldKey = GlobalKey<FormFieldState<String>>();
+  final GlobalKey<FormFieldState<String>> _textFieldKey = GlobalKey<FormFieldState<String>>();
   bool _autoValidate = false;
 
   @override
@@ -42,7 +43,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return TextFormField(
       key: _textFieldKey,
@@ -53,7 +54,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
         suffixIcon: IconButton(
           alignment: Alignment.bottomRight,
           icon: Image(
-            image: const AssetImage("assets/icons/qr_scan.png"),
+            image: const AssetImage('assets/icons/qr_scan.png'),
             color: BreezColors.white[500],
             fit: BoxFit.contain,
             width: 24.0,
@@ -61,11 +62,13 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
           ),
           tooltip: texts.bitcoin_address_scan_tooltip,
           onPressed: () {
-            _logger.info("Start qr code scan");
+            _logger.info('Start qr code scan');
             Navigator.pushNamed<String>(context, QRScan.routeName).then(
-              (barcode) async {
+              (String? barcode) async {
                 _logger.info("Scanned string: '$barcode'");
-                if (barcode == null) return;
+                if (barcode == null) {
+                  return;
+                }
                 if (barcode.isEmpty && context.mounted) {
                   showFlushbar(
                     context,
@@ -83,8 +86,8 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
       ),
       style: FieldTextStyle.textStyle,
       onChanged: (_) => _validateAddress(),
-      validator: (address) {
-        _logger.info("validator called for $address");
+      validator: (String? address) {
+        _logger.info('validator called for $address');
         if (address == null || address.isEmpty) {
           return texts.withdraw_funds_error_invalid_address;
         }
@@ -107,7 +110,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
 
   Future<bool> isValidBitcoinAddress() async {
     try {
-      final inputType = await parse(input: widget.controller.text);
+      final InputType inputType = await parse(input: widget.controller.text);
       return inputType is InputType_BitcoinAddress;
     } catch (e) {
       return false;

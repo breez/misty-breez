@@ -8,16 +8,16 @@ import 'package:logging/logging.dart';
 
 export 'backup_state.dart';
 
-final _logger = Logger("BackupCubit");
+final Logger _logger = Logger('BackupCubit');
 
 class BackupCubit extends Cubit<BackupState?> {
   final BreezSDKLiquid _breezSdkLiquid;
 
   BackupCubit(this._breezSdkLiquid) : super(null);
 
-  // TODO: Liquid - Listen to Backup events
+  // TODO(erdemyerebasmaz): Liquid - Listen to Backup events
   // ignore: unused_element
-  _listenBackupEvents() {
+  void _listenBackupEvents() {
     // _breezSdkLiquid.backupStream.listen((event) {
     //   _logger.info('got state: $event');
     // });
@@ -30,7 +30,7 @@ class BackupCubit extends Cubit<BackupState?> {
       _breezSdkLiquid.instance?.backup(req: const BackupRequest());
       emit(BackupState(status: BackupStatus.success));
     } catch (e) {
-      _logger.info("Failed to backup");
+      _logger.info('Failed to backup');
       emit(BackupState(status: BackupStatus.failed));
     }
   }

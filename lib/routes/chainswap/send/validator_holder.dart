@@ -1,8 +1,8 @@
 import 'package:synchronized/synchronized.dart';
 
 class ValidatorHolder {
-  final lock = Lock();
-  var valid = false;
+  final Lock lock = Lock();
+  bool valid = false;
 
   @override
   String toString() {

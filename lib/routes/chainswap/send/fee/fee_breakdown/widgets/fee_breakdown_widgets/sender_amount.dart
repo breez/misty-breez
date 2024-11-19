@@ -1,9 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
+import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 
 class SenderAmount extends StatelessWidget {
@@ -13,9 +15,9 @@ class SenderAmount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final minFont = MinFontSize(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final MinFontSize minFont = MinFontSize(context);
 
     return ListTile(
       title: AutoSizeText(
@@ -25,8 +27,8 @@ class SenderAmount extends StatelessWidget {
         stepGranularity: 0.1,
       ),
       trailing: BlocBuilder<CurrencyCubit, CurrencyState>(
-        builder: (context, currency) {
-          final fiatConversion = currency.fiatConversion();
+        builder: (BuildContext context, CurrencyState currency) {
+          final FiatConversion? fiatConversion = currency.fiatConversion();
 
           return AutoSizeText(
             fiatConversion == null

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -10,7 +11,7 @@ class SuccessActionDialog extends StatefulWidget {
   final String message;
   final String? url;
 
-  const SuccessActionDialog({super.key, required this.message, this.url});
+  const SuccessActionDialog({required this.message, super.key, this.url});
 
   @override
   State<StatefulWidget> createState() => SuccessActionDialogState();
@@ -19,8 +20,8 @@ class SuccessActionDialog extends StatefulWidget {
 class SuccessActionDialogState extends State<SuccessActionDialog> {
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
@@ -31,15 +32,14 @@ class SuccessActionDialogState extends State<SuccessActionDialog> {
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: <Widget>[
               const Expanded(child: SizedBox.expand()),
               Text(
                 texts.processing_payment_dialog_payment_sent,
                 style: themeData.dialogTheme.titleTextStyle,
               ),
               Column(
-                children: [
+                children: <Widget>[
                   widget.url == null
                       ? Message(widget.message)
                       : ShareablePaymentRow(
@@ -65,7 +65,6 @@ class SuccessActionDialogState extends State<SuccessActionDialog> {
                 data: breezDarkTheme,
                 child: SingleButtonBottomBar(
                   text: texts.lnurl_withdraw_dialog_action_close,
-                  stickToBottom: false,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -93,7 +92,7 @@ class _MessageState extends State<Message> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, bottom: 8.0),
       child: Container(
@@ -110,7 +109,7 @@ class _MessageState extends State<Message> {
             child: AutoSizeText(
               widget.message,
               style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16),
-              textAlign: widget.message.length > 40 && !widget.message.contains("\n")
+              textAlign: widget.message.length > 40 && !widget.message.contains('\n')
                   ? TextAlign.start
                   : TextAlign.left,
             ),

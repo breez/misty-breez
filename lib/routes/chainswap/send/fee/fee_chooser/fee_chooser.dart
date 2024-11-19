@@ -25,27 +25,27 @@ class FeeChooser extends StatefulWidget {
 class _FeeChooserState extends State<FeeChooser> {
   @override
   Widget build(BuildContext context) {
-    final selectedFeeOption = widget.feeOptions.elementAt(widget.selectedFeeIndex);
+    final FeeOption selectedFeeOption = widget.feeOptions.elementAt(widget.selectedFeeIndex);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           FeeChooserHeader(
             amountSat: widget.amountSat,
             feeOptions: widget.feeOptions,
             selectedFeeIndex: widget.selectedFeeIndex,
-            onSelect: (index) => widget.onSelect(index),
+            onSelect: (int index) => widget.onSelect(index),
           ),
           const SizedBox(height: 12.0),
           ProcessingSpeedWaitTime(
             selectedFeeOption.processingSpeed.waitingTime,
           ),
           const SizedBox(height: 36.0),
-          if (selectedFeeOption is SendChainSwapFeeOption) ...[
-            FeeBreakdown(feeOption: selectedFeeOption.preparePayOnchainResponse)
-          ]
+          if (selectedFeeOption is SendChainSwapFeeOption) ...<Widget>[
+            FeeBreakdown(feeOption: selectedFeeOption.preparePayOnchainResponse),
+          ],
         ],
       ),
     );

@@ -1,27 +1,24 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-
-import 'mnemonic_item.dart';
+import 'package:l_breez/routes/initial_walkthrough/mnemonics/widgets/mnemonic_item.dart';
 
 class MnemonicSeedList extends StatelessWidget {
   final List<String> mnemonicsList;
 
-  const MnemonicSeedList({super.key, required this.mnemonicsList});
+  const MnemonicSeedList({required this.mnemonicsList, super.key});
 
-  get autoSizeGroup => AutoSizeGroup();
+  AutoSizeGroup get autoSizeGroup => AutoSizeGroup();
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
+      children: <Widget>[
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
           children: List<Widget>.generate(
             6,
-            (index) => MnemonicItem(
+            (int index) => MnemonicItem(
               mnemonic: mnemonicsList[2 * index],
               index: 2 * index,
               autoSizeGroup: autoSizeGroup,
@@ -30,10 +27,9 @@ class MnemonicSeedList extends StatelessWidget {
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
           children: List<Widget>.generate(
             6,
-            (index) => MnemonicItem(
+            (int index) => MnemonicItem(
               mnemonic: mnemonicsList[1 + 2 * index],
               index: 1 + 2 * index,
               autoSizeGroup: autoSizeGroup,

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
@@ -10,15 +11,15 @@ class MnemonicItem extends StatelessWidget {
   final AutoSizeGroup? autoSizeGroup;
 
   const MnemonicItem({
-    super.key,
     required this.mnemonic,
     required this.index,
+    super.key,
     this.autoSizeGroup,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Container(
       height: 48,
@@ -31,7 +32,7 @@ class MnemonicItem extends StatelessWidget {
         ),
       ),
       child: Row(
-        children: [
+        children: <Widget>[
           Text(
             texts.backup_phrase_generation_index(index + 1),
             style: mnemonicSeedTextStyle,

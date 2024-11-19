@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/chainswap/send/validator_holder.dart';
@@ -14,7 +15,7 @@ import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 class RefundPage extends StatefulWidget {
   final RefundableSwap swapInfo;
 
-  static const routeName = "/refund_page";
+  static const String routeName = '/refund_page';
 
   const RefundPage({required this.swapInfo, super.key});
 
@@ -29,7 +30,7 @@ class RefundPageState extends State<RefundPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Scaffold(
       appBar: AppBar(
@@ -41,13 +42,13 @@ class RefundPageState extends State<RefundPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Form(
                 key: _formKey,
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     BitcoinAddressTextFormField(
                       controller: _addressController,
                       validatorHolder: _validatorHolder,
@@ -71,7 +72,7 @@ class RefundPageState extends State<RefundPage> {
         onPressed: () {
           if (_formKey.currentState?.validate() ?? false) {
             Navigator.of(context).push(
-              FadeInRoute(
+              FadeInRoute<void>(
                 builder: (_) => RefundConfirmationPage(
                   amountSat: widget.swapInfo.amountSat.toInt(),
                   toAddress: _addressController.text,

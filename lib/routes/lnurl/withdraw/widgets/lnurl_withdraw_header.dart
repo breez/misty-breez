@@ -11,10 +11,10 @@ class LnWithdrawHeader extends StatefulWidget {
   final String errorMessage;
 
   const LnWithdrawHeader({
-    super.key,
     required this.callback,
     required this.amountSat,
     required this.errorMessage,
+    super.key,
   });
 
   @override
@@ -26,23 +26,23 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final currencyCubit = context.read<CurrencyCubit>();
-    final currencyState = currencyCubit.state;
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
 
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     FiatConversion? fiatConversion;
     if (currencyState.fiatEnabled) {
       fiatConversion = FiatConversion(currencyState.fiatCurrency!, currencyState.fiatExchangeRate!);
     }
 
-    final uri = Uri.parse(widget.callback);
-    final domain = uri.host;
+    final Uri uri = Uri.parse(widget.callback);
+    final String domain = uri.host;
     return Center(
       child: Column(
         children: <Widget>[
           Text(
-            "Redeeming funds from",
+            'Redeeming funds from',
             style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white),
             textAlign: TextAlign.center,
           ),
@@ -89,9 +89,9 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
                           removeTrailingZeros: true,
                           includeDisplayName: false,
                         ),
-                        children: [
+                        children: <InlineSpan>[
                           TextSpan(
-                            text: " ${currencyState.bitcoinCurrency.displayName}",
+                            text: ' ${currencyState.bitcoinCurrency.displayName}',
                             style: balanceCurrencyTextStyle.copyWith(
                               color: themeData.colorScheme.onSurface,
                             ),
@@ -112,7 +112,7 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
             ),
           ],
            */
-          if (widget.errorMessage.isNotEmpty) ...[
+          if (widget.errorMessage.isNotEmpty) ...<Widget>[
             AutoSizeText(
               widget.errorMessage,
               textAlign: TextAlign.center,
@@ -121,7 +121,7 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
                 color: themeData.colorScheme.error,
               ),
             ),
-          ]
+          ],
         ],
       ),
     );

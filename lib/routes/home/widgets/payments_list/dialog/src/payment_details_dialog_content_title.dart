@@ -8,20 +8,20 @@ import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 class PaymentDetailsDialogContentTitle extends StatelessWidget {
   final PaymentData paymentData;
 
-  const PaymentDetailsDialogContentTitle({super.key, required this.paymentData});
+  const PaymentDetailsDialogContentTitle({required this.paymentData, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
-    var title = paymentData.title;
+    String title = paymentData.title;
     if (title.isEmpty) {
       return Container();
     }
     if (paymentData.paymentType == PaymentType.receive && title.isDefaultTitleWithLiquidNaming) {
-      final userProfileCubit = context.read<UserProfileCubit>();
-      final userProfileState = userProfileCubit.state;
-      title = "Payment to ${userProfileState.profileSettings.name}";
+      final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
+      final UserProfileState userProfileState = userProfileCubit.state;
+      title = 'Payment to ${userProfileState.profileSettings.name}';
     }
     return Padding(
       padding: const EdgeInsets.only(

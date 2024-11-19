@@ -12,7 +12,7 @@ import 'package:lightning_links/lightning_links.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ServiceInjector {
-  static final _singleton = ServiceInjector._internal();
+  static final ServiceInjector _singleton = ServiceInjector._internal();
   static ServiceInjector? _injector;
 
   FirebaseNotificationsClient? _notifications;

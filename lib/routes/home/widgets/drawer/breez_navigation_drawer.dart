@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,7 +58,7 @@ class DrawerItemConfigGroup {
 class BreezNavigationDrawer extends StatelessWidget {
   final List<DrawerItemConfigGroup> _drawerGroupedItems;
   final void Function(String screenName) _onItemSelected;
-  final _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   BreezNavigationDrawer(
     this._drawerGroupedItems,
@@ -67,15 +68,15 @@ class BreezNavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return BlocBuilder<UserProfileCubit, UserProfileState>(
-      builder: (context, userSettings) {
-        List<Widget> children = [
+      builder: (BuildContext context, UserProfileState userSettings) {
+        final List<Widget> children = <Widget>[
           _breezDrawerHeader(context, userSettings.profileSettings),
           const Padding(padding: EdgeInsets.only(top: 16)),
         ];
-        for (var groupItems in _drawerGroupedItems) {
+        for (DrawerItemConfigGroup groupItems in _drawerGroupedItems) {
           children.addAll(
             _createDrawerGroupWidgets(
               groupItems,
@@ -96,7 +97,7 @@ class BreezNavigationDrawer extends StatelessWidget {
             ),
             child: Drawer(
               child: Column(
-                children: [
+                children: <Widget>[
                   Expanded(
                     child: ListView(
                       controller: _scrollController,
@@ -122,7 +123,7 @@ class BreezNavigationDrawer extends StatelessWidget {
   }) {
     List<Widget> groupItems = group.items
         .map(
-          (action) => _actionTile(
+          (DrawerItemConfig action) => _actionTile(
             action,
             context,
             action.onItemSelected ?? _onItemSelected,
@@ -132,7 +133,7 @@ class BreezNavigationDrawer extends StatelessWidget {
     if (group.groupTitle != null && groupItems.isNotEmpty) {
       groupItems = group.items
           .map(
-            (action) => _actionTile(
+            (DrawerItemConfig action) => _actionTile(
               action,
               context,
               action.onItemSelected ?? _onItemSelected,
@@ -140,14 +141,14 @@ class BreezNavigationDrawer extends StatelessWidget {
             ),
           )
           .toList();
-      groupItems = [
+      groupItems = <Widget>[
         _ExpansionTile(
           items: groupItems,
-          title: group.groupTitle ?? "",
+          title: group.groupTitle ?? '',
           icon: group.groupAssetImage == null ? null : AssetImage(group.groupAssetImage!),
           controller: _scrollController,
           isExpanded: group.isExpanded,
-        )
+        ),
       ];
     }
 
@@ -174,14 +175,14 @@ class BreezNavigationDrawer extends StatelessWidget {
     UserProfileSettings user,
     BuildContext context,
   ) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
-    List<Widget> drawerHeaderContent = [];
+    final List<Widget> drawerHeaderContent = <Widget>[];
     drawerHeaderContent.add(_buildThemeSwitch(context, user));
     drawerHeaderContent
       ..add(
         Row(
-          children: [
+          children: <Widget>[
             BreezAvatar(user.avatarURL, radius: 24.0),
           ],
         ),
@@ -189,7 +190,7 @@ class BreezNavigationDrawer extends StatelessWidget {
       ..add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: AutoSizeText(
@@ -207,7 +208,7 @@ class BreezNavigationDrawer extends StatelessWidget {
           useRootNavigator: false,
           context: context,
           barrierDismissible: false,
-          builder: (context) => const BreezAvatarDialog(),
+          builder: (BuildContext context) => const BreezAvatarDialog(),
         );
       },
       child: Column(children: drawerHeaderContent),
@@ -224,14 +225,13 @@ class NavigationDrawerFooter extends StatelessWidget {
       // Aligns footer with bottom actions bar
       height: _kBreezBottomSheetHeight + 8.0 + MediaQuery.of(context).viewPadding.bottom,
       child: Column(
-        children: [
+        children: <Widget>[
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: <Widget>[
               SvgPicture.asset(
-                "assets/images/drawer_footer.svg",
+                'assets/images/drawer_footer.svg',
                 colorFilter: ColorFilter.mode(
                   BreezColors.white[500]!,
                   BlendMode.srcATop,
@@ -239,7 +239,7 @@ class NavigationDrawerFooter extends StatelessWidget {
                 height: 39,
                 width: 183,
                 fit: BoxFit.scaleDown,
-              )
+              ),
             ],
           ),
         ],
@@ -262,12 +262,12 @@ GestureDetector _buildThemeSwitch(
   BuildContext context,
   UserProfileSettings user,
 ) {
-  final themeData = Theme.of(context);
+  final ThemeData themeData = Theme.of(context);
   return GestureDetector(
     onTap: () => ThemeProvider.controllerOf(context).nextTheme(),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(
             top: 10,
@@ -281,9 +281,9 @@ GestureDetector _buildThemeSwitch(
               color: themeSwitchBgColor,
             ),
             child: Row(
-              children: [
+              children: <Widget>[
                 Image.asset(
-                  "assets/icons/ic_lightmode.png",
+                  'assets/icons/ic_lightmode.png',
                   height: 24,
                   width: 24,
                   color: themeData.lightThemeSwitchIconColor,
@@ -296,7 +296,7 @@ GestureDetector _buildThemeSwitch(
                   ),
                 ),
                 ImageIcon(
-                  const AssetImage("assets/icons/ic_darkmode.png"),
+                  const AssetImage('assets/icons/ic_darkmode.png'),
                   color: themeData.darkThemeSwitchIconColor,
                   size: 24.0,
                 ),
@@ -315,7 +315,7 @@ Widget _actionTile(
   Function onItemSelected, {
   bool? subTile,
 }) {
-  final themeData = Theme.of(context);
+  final ThemeData themeData = Theme.of(context);
   TextStyle itemStyle = drawerItemTextStyle;
 
   Color? color;
@@ -325,7 +325,6 @@ Widget _actionTile(
   }
   return Padding(
     padding: EdgeInsets.only(
-      left: 0.0,
       right: subTile != null ? 0.0 : 16.0,
     ),
     child: Ink(
@@ -392,8 +391,8 @@ class _ExpansionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final expansionTileTheme = themeData.copyWith(
+    final ThemeData themeData = Theme.of(context);
+    final ThemeData expansionTileTheme = themeData.copyWith(
       dividerColor: themeData.canvasColor,
     );
     return Theme(
@@ -401,7 +400,7 @@ class _ExpansionTile extends StatelessWidget {
       child: ExpansionTile(
         title: Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          child: (icon?.assetName ?? "") == ""
+          child: (icon?.assetName ?? '') == ''
               ? null
               : Text(
                   title,
@@ -411,7 +410,7 @@ class _ExpansionTile extends StatelessWidget {
         initiallyExpanded: isExpanded,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: (icon?.assetName ?? "") == ""
+          child: (icon?.assetName ?? '') == ''
               ? Text(
                   title,
                   style: drawerItemTextStyle.copyWith(
@@ -426,14 +425,14 @@ class _ExpansionTile extends StatelessWidget {
         ),
         children: items
             .map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(left: 0.0),
+              (Widget item) => Padding(
+                padding: const EdgeInsets.only(),
                 child: item,
               ),
             )
             .toList(),
-        onExpansionChanged: (isExpanded) {
-          final userProfileCubit = context.read<UserProfileCubit>();
+        onExpansionChanged: (bool isExpanded) {
+          final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
           userProfileCubit.updateProfile(expandPreferences: isExpanded);
           if (isExpanded) {
             Timer(

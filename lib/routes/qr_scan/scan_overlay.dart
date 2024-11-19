@@ -5,7 +5,7 @@ class ScanOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var dimension = MediaQuery.of(context).size.width - 72;
+    final double dimension = MediaQuery.of(context).size.width - 72;
     return Center(
       child: CustomPaint(
         painter: BorderPainter(),
@@ -21,42 +21,42 @@ class ScanOverlay extends StatelessWidget {
 class BorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    const width = 4.0;
-    const radius = 16.0;
-    const tRadius = 2 * radius;
-    final rect = Rect.fromLTWH(
+    const double width = 4.0;
+    const double radius = 16.0;
+    const double tRadius = 2 * radius;
+    final Rect rect = Rect.fromLTWH(
       width,
       width,
       size.width - 2 * width,
       size.height - 2 * width,
     );
-    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(radius));
-    const clippingRect0 = Rect.fromLTWH(
+    final RRect rrect = RRect.fromRectAndRadius(rect, const Radius.circular(radius));
+    const Rect clippingRect0 = Rect.fromLTWH(
       0,
       0,
       tRadius,
       tRadius,
     );
-    final clippingRect1 = Rect.fromLTWH(
+    final Rect clippingRect1 = Rect.fromLTWH(
       size.width - tRadius,
       0,
       tRadius,
       tRadius,
     );
-    final clippingRect2 = Rect.fromLTWH(
+    final Rect clippingRect2 = Rect.fromLTWH(
       0,
       size.height - tRadius,
       tRadius,
       tRadius,
     );
-    final clippingRect3 = Rect.fromLTWH(
+    final Rect clippingRect3 = Rect.fromLTWH(
       size.width - tRadius,
       size.height - tRadius,
       tRadius,
       tRadius,
     );
 
-    final path = Path()
+    final Path path = Path()
       ..addRect(clippingRect0)
       ..addRect(clippingRect1)
       ..addRect(clippingRect2)

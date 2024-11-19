@@ -9,11 +9,11 @@ import 'package:l_breez/handlers/handler/handler.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("WalletConnectivityHandler");
+final Logger _logger = Logger('WalletConnectivityHandler');
 
 class WalletConnectivityHandler extends Handler {
   StreamSubscription<SdkConnectivityState?>? _subscription;
-  Flushbar? _flushbar;
+  Flushbar<dynamic>? _flushbar;
 
   @override
   void init(HandlerContextProvider<StatefulWidget> contextProvider) {
@@ -22,7 +22,10 @@ class WalletConnectivityHandler extends Handler {
         .getBuildContext()!
         .read<SdkConnectivityCubit>()
         .stream
-        .distinct((previous, next) => previous == next || next == SdkConnectivityState.connecting)
+        .distinct(
+          (SdkConnectivityState previous, SdkConnectivityState next) =>
+              previous == next || next == SdkConnectivityState.connecting,
+        )
         .listen(_listen);
   }
 
@@ -35,7 +38,7 @@ class WalletConnectivityHandler extends Handler {
   }
 
   void _listen(SdkConnectivityState? connectionStatus) async {
-    _logger.info("Received accountState $connectionStatus");
+    _logger.info('Received accountState $connectionStatus');
     if (connectionStatus == SdkConnectivityState.disconnected) {
       showDisconnectedFlushbar();
     } else if (connectionStatus == SdkConnectivityState.connected) {
@@ -45,9 +48,9 @@ class WalletConnectivityHandler extends Handler {
 
   void showDisconnectedFlushbar() {
     dismissFlushbarIfNeed();
-    final context = contextProvider?.getBuildContext();
+    final BuildContext? context = contextProvider?.getBuildContext();
     if (context == null) {
-      _logger.info("Skipping connection flushbar as context is null");
+      _logger.info('Skipping connection flushbar as context is null');
       return;
     }
     _flushbar = _getDisconnectedFlushbar(context);
@@ -55,13 +58,15 @@ class WalletConnectivityHandler extends Handler {
   }
 
   void dismissFlushbarIfNeed() async {
-    final flushbar = _flushbar;
-    if (flushbar == null) return;
+    final Flushbar<dynamic>? flushbar = _flushbar;
+    if (flushbar == null) {
+      return;
+    }
 
     if (flushbar.flushbarRoute != null && flushbar.flushbarRoute!.isActive) {
-      final context = contextProvider?.getBuildContext();
+      final BuildContext? context = contextProvider?.getBuildContext();
       if (context == null) {
-        _logger.info("Skipping dismissing wallet connectivity flushbar as context is null");
+        _logger.info('Skipping dismissing wallet connectivity flushbar as context is null');
         return;
       }
       Navigator.of(context).removeRoute(flushbar.flushbarRoute!);
@@ -69,8 +74,8 @@ class WalletConnectivityHandler extends Handler {
     _flushbar = null;
   }
 
-  Flushbar? _getDisconnectedFlushbar(BuildContext context) {
-    return Flushbar(
+  Flushbar<dynamic>? _getDisconnectedFlushbar(BuildContext context) {
+    return Flushbar<dynamic>(
       isDismissible: false,
       flushbarPosition: FlushbarPosition.TOP,
       icon: Icon(
@@ -87,8 +92,8 @@ class WalletConnectivityHandler extends Handler {
         width: 64,
         child: StreamBuilder<SdkConnectivityState>(
           stream: context.read<SdkConnectivityCubit>().stream,
-          builder: (context, snapshot) {
-            var themeData = Theme.of(context);
+          builder: (BuildContext context, AsyncSnapshot<SdkConnectivityState> snapshot) {
+            final ThemeData themeData = Theme.of(context);
             if (snapshot.hasData && snapshot.data! == SdkConnectivityState.connecting) {
               return Center(
                 child: SizedBox(
@@ -102,12 +107,12 @@ class WalletConnectivityHandler extends Handler {
             }
             return TextButton(
               onPressed: () {
-                final sdkConnectivityCubit = context.read<SdkConnectivityCubit>();
-                Future.delayed(const Duration(milliseconds: 500), () async {
+                final SdkConnectivityCubit sdkConnectivityCubit = context.read<SdkConnectivityCubit>();
+                Future<void>.delayed(const Duration(milliseconds: 500), () async {
                   try {
                     await sdkConnectivityCubit.reconnect();
                   } catch (error) {
-                    _logger.severe("Failed to reconnect");
+                    _logger.severe('Failed to reconnect');
                     rethrow;
                   }
                 });

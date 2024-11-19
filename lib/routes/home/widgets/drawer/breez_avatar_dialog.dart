@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as dart_image;
@@ -15,7 +16,7 @@ import 'package:l_breez/widgets/breez_avatar.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("BreezAvatarDialog");
+final Logger _logger = Logger('BreezAvatarDialog');
 
 class BreezAvatarDialog extends StatefulWidget {
   const BreezAvatarDialog({super.key});
@@ -26,7 +27,7 @@ class BreezAvatarDialog extends StatefulWidget {
 
 class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   late UserProfileCubit userProfileCubit;
-  final nameInputController = TextEditingController();
+  final TextEditingController nameInputController = TextEditingController();
   final AutoSizeGroup autoSizeGroup = AutoSizeGroup();
   CroppedFile? pickedImage;
   String? randomAvatarPath;
@@ -36,7 +37,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   void initState() {
     super.initState();
     userProfileCubit = context.read<UserProfileCubit>();
-    nameInputController.text = userProfileCubit.state.profileSettings.name ?? "";
+    nameInputController.text = userProfileCubit.state.profileSettings.name ?? '';
   }
 
   @override
@@ -44,16 +45,16 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
     return PopScope(
       canPop: !isUploading,
       child: StatefulBuilder(
-        builder: (context, setState) {
-          final texts = context.texts();
-          final themeData = Theme.of(context);
-          final navigator = Navigator.of(context);
-          final queryData = MediaQuery.of(context);
+        builder: (BuildContext context, StateSetter setState) {
+          final BreezTranslations texts = context.texts();
+          final ThemeData themeData = Theme.of(context);
+          final NavigatorState navigator = Navigator.of(context);
+          final MediaQueryData queryData = MediaQuery.of(context);
 
           return SimpleDialog(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
             title: Stack(
-              children: [
+              children: <Widget>[
                 const TitleBackground(),
                 SizedBox(
                   width: queryData.size.width,
@@ -61,7 +62,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       RandomButton(onPressed: generateRandomProfile),
                       AvatarPreview(
                         isUploading: isUploading,
@@ -95,7 +96,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
                     decoration: InputDecoration(
                       hintText: texts.breez_avatar_dialog_your_name,
                     ),
-                    onSubmitted: (text) {},
+                    onSubmitted: (String text) {},
                   ),
                 ),
               ),
@@ -104,7 +105,7 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
+                  children: <Widget>[
                     TextButton(
                       onPressed: isUploading ? null : () => navigator.pop(),
                       child: Text(
@@ -134,14 +135,14 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   Future<void> saveAvatarChanges() async {
-    _logger.info("saveAvatarChanges");
-    final navigator = Navigator.of(context);
-    final texts = context.texts();
+    _logger.info('saveAvatarChanges');
+    final NavigatorState navigator = Navigator.of(context);
+    final BreezTranslations texts = context.texts();
     try {
       setState(() {
         isUploading = true;
       });
-      var userName = nameInputController.text.isNotEmpty
+      final String? userName = nameInputController.text.isNotEmpty
           ? nameInputController.text
           : userProfileCubit.state.profileSettings.name;
       userProfileCubit.updateProfile(name: userName);
@@ -155,7 +156,9 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
         isUploading = false;
         pickedImage = null;
       });
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       showFlushbar(
         context,
         message: texts.breez_avatar_dialog_error_upload,
@@ -164,10 +167,10 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   void generateRandomProfile() {
-    _logger.info("generateRandomProfile");
+    _logger.info('generateRandomProfile');
     final DefaultProfile randomUser = generateDefaultProfile();
     setState(() {
-      nameInputController.text = "${randomUser.color} ${randomUser.animal}";
+      nameInputController.text = '${randomUser.color} ${randomUser.animal}';
       randomAvatarPath = 'breez://profile_image?animal=${randomUser.animal}&color=${randomUser.color}';
       pickedImage = null;
     });
@@ -175,46 +178,52 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
     FocusScope.of(context).unfocus();
   }
 
-  pickImageFromGallery() async {
-    _logger.info("pickImageFromGallery");
-    ImagePicker().pickImage(source: ImageSource.gallery).then((pickedFile) {
-      final pickedFilePath = pickedFile?.path;
-      _logger.info("pickedFile $pickedFilePath");
-      if (pickedFilePath != null) {
-        ImageCropper().cropImage(
-          sourcePath: pickedFilePath,
-          aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-          uiSettings: [
-            AndroidUiSettings(
-              cropStyle: CropStyle.circle,
-              aspectRatioPresets: [CropAspectRatioPreset.square],
-            ),
-            IOSUiSettings(
-              cropStyle: CropStyle.circle,
-              aspectRatioPresets: [CropAspectRatioPreset.square],
-            )
-          ],
-        ).then((croppedFile) {
-          _logger.info("croppedFile ${croppedFile?.path}");
-          if (croppedFile != null) {
-            setState(() {
-              pickedImage = croppedFile;
-              randomAvatarPath = null;
-            });
-          }
-        }, onError: (error) {
-          _logger.severe("Failed to crop image", error);
-        });
-      }
-    }, onError: (error) {
-      _logger.severe("Failed to pick image", error);
-    });
+  void pickImageFromGallery() {
+    _logger.info('pickImageFromGallery');
+    ImagePicker().pickImage(source: ImageSource.gallery).then(
+      (XFile? pickedFile) {
+        final String? pickedFilePath = pickedFile?.path;
+        _logger.info('pickedFile $pickedFilePath');
+        if (pickedFilePath != null) {
+          ImageCropper().cropImage(
+            sourcePath: pickedFilePath,
+            aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+            uiSettings: <PlatformUiSettings>[
+              AndroidUiSettings(
+                cropStyle: CropStyle.circle,
+                aspectRatioPresets: <CropAspectRatioPresetData>[CropAspectRatioPreset.square],
+              ),
+              IOSUiSettings(
+                cropStyle: CropStyle.circle,
+                aspectRatioPresets: <CropAspectRatioPresetData>[CropAspectRatioPreset.square],
+              ),
+            ],
+          ).then(
+            (CroppedFile? croppedFile) {
+              _logger.info('croppedFile ${croppedFile?.path}');
+              if (croppedFile != null) {
+                setState(() {
+                  pickedImage = croppedFile;
+                  randomAvatarPath = null;
+                });
+              }
+            },
+            onError: (Object error) {
+              _logger.severe('Failed to crop image', error);
+            },
+          );
+        }
+      },
+      onError: (Object error) {
+        _logger.severe('Failed to pick image', error);
+      },
+    );
   }
 
   Future<void> saveProfileImage() async {
-    _logger.info("saveProfileImage ${pickedImage?.path} $randomAvatarPath");
+    _logger.info('saveProfileImage ${pickedImage?.path} $randomAvatarPath');
     if (pickedImage != null) {
-      final profileImageFilePath = await userProfileCubit.saveProfileImage(await scaleAndFormatPNG());
+      final String profileImageFilePath = await userProfileCubit.saveProfileImage(await scaleAndFormatPNG());
       userProfileCubit.updateProfile(image: profileImageFilePath);
     } else if (randomAvatarPath != null) {
       userProfileCubit.updateProfile(image: randomAvatarPath);
@@ -222,11 +231,11 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
   }
 
   Future<Uint8List> scaleAndFormatPNG() async {
-    _logger.info("scaleAndFormatPNG");
+    _logger.info('scaleAndFormatPNG');
     const int scaledSize = 200;
     try {
-      final image = dart_image.decodeImage(await pickedImage!.readAsBytes());
-      final resized = dart_image.copyResize(
+      final dart_image.Image? image = dart_image.decodeImage(await pickedImage!.readAsBytes());
+      final dart_image.Image resized = dart_image.copyResize(
         image!,
         width: image.width < image.height ? -1 : scaledSize,
         height: image.width < image.height ? scaledSize : -1,
@@ -243,7 +252,7 @@ class TitleBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return Container(
       height: 70.0,
       decoration: ShapeDecoration(
@@ -262,12 +271,12 @@ class RandomButton extends StatelessWidget {
   final Function() onPressed;
   final AutoSizeGroup? autoSizeGroup;
 
-  const RandomButton({super.key, required this.onPressed, this.autoSizeGroup});
+  const RandomButton({required this.onPressed, super.key, this.autoSizeGroup});
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final minFontSize = MinFontSize(context);
+    final BreezTranslations texts = context.texts();
+    final MinFontSize minFontSize = MinFontSize(context);
 
     return Expanded(
       child: TextButton(
@@ -297,19 +306,19 @@ class AvatarPreview extends StatelessWidget {
   final bool isUploading;
 
   const AvatarPreview({
-    super.key,
     required this.pickedImage,
     required this.randomAvatarPath,
     required this.isUploading,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserProfileCubit, UserProfileState>(
-      builder: (context, userModel) {
+      builder: (BuildContext context, UserProfileState userModel) {
         return Stack(
-          children: [
-            if (isUploading) ...[
+          children: <Widget>[
+            if (isUploading) ...<Widget>[
               const AvatarSpinner(),
             ],
             Padding(
@@ -335,7 +344,7 @@ class AvatarSpinner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 26.0),
       child: AspectRatio(
@@ -355,12 +364,12 @@ class GalleryButton extends StatelessWidget {
   final Function() onPressed;
   final AutoSizeGroup? autoSizeGroup;
 
-  const GalleryButton({super.key, required this.onPressed, this.autoSizeGroup});
+  const GalleryButton({required this.onPressed, super.key, this.autoSizeGroup});
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final minFontSize = MinFontSize(context);
+    final BreezTranslations texts = context.texts();
+    final MinFontSize minFontSize = MinFontSize(context);
 
     return Expanded(
       child: TextButton(

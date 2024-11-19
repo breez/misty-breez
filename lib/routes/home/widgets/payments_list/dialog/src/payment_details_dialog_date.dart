@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/utils/date.dart';
@@ -10,23 +11,22 @@ class PaymentDetailsDialogDate extends StatelessWidget {
   final AutoSizeGroup? valueAutoSizeGroup;
 
   const PaymentDetailsDialogDate({
-    super.key,
     required this.paymentData,
+    super.key,
     this.labelAutoSizeGroup,
     this.valueAutoSizeGroup,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Container(
       height: 36.0,
       padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
       child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: AutoSizeText(

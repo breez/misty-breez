@@ -96,6 +96,7 @@ dependencies:
   mockito: ^5.4.4
   # Doesn't support: Linux Windows
   mobile_scanner: ^6.0.2
+  nested: any
   package_info_plus: ^8.1.1
   path: <1.9.1 # Flutter 3.24+
   path_provider: ^2.1.5

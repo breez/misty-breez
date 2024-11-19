@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 
 Future<void> promptError(
@@ -13,8 +14,8 @@ Future<void> promptError(
   Function? okFunc,
   bool disableBack = false,
 }) {
-  final texts = context.texts();
-  final themeData = Theme.of(context);
+  final BreezTranslations texts = context.texts();
+  final ThemeData themeData = Theme.of(context);
 
   bool canPop = !disableBack;
 
@@ -31,7 +32,7 @@ Future<void> promptError(
           content: SingleChildScrollView(
             child: body,
           ),
-          actions: [
+          actions: <Widget>[
             optionText != null
                 ? TextButton(
                     child: Text(
@@ -72,14 +73,14 @@ Future<bool?> promptAreYouSure(
   BuildContext context,
   String? title,
   Widget body, {
-  contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
+  EdgeInsets contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
   bool wideTitle = false,
   String? okText,
   String? cancelText,
   TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
-  final texts = context.texts();
-  final themeData = Theme.of(context);
+  final BreezTranslations texts = context.texts();
+  final ThemeData themeData = Theme.of(context);
 
   Widget? titleWidget = title == null ? null : Text(title);
   if (wideTitle) {
@@ -98,7 +99,7 @@ Future<bool?> promptAreYouSure(
         content: SingleChildScrollView(
           child: body,
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             child: Text(
               cancelText ?? texts.error_dialog_default_action_no,
@@ -125,13 +126,13 @@ Future<bool?> promptMessage(
   BuildContext context,
   String? title,
   Widget body, {
-  contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
+  EdgeInsets contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
   bool wideTitle = false,
   String? closeText,
   TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
-  final texts = context.texts();
-  final themeData = Theme.of(context);
+  final BreezTranslations texts = context.texts();
+  final ThemeData themeData = Theme.of(context);
 
   Widget? titleWidget = title == null
       ? null
@@ -155,7 +156,7 @@ Future<bool?> promptMessage(
         content: SingleChildScrollView(
           child: body,
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             child: Text(
               closeText ?? texts.error_dialog_default_action_close,

@@ -12,9 +12,9 @@ class FlipTransition extends StatefulWidget {
   const FlipTransition(
     this.firstChild,
     this.secondChild, {
-    super.key,
     required this.radius,
     required this.onComplete,
+    super.key,
   });
 
   @override
@@ -23,14 +23,14 @@ class FlipTransition extends StatefulWidget {
 
 class FlipTransitionState extends State<FlipTransition> with TickerProviderStateMixin {
   AnimationController? _flipAnimationController;
-  Animation? _flipAnimation;
-  static const flipDuration = Duration(seconds: 2);
+  Animation<double>? _flipAnimation;
+  static const Duration flipDuration = Duration(seconds: 2);
 
   @override
   void initState() {
     super.initState();
     _flipAnimationController = AnimationController(vsync: this, duration: flipDuration);
-    _flipAnimation = Tween(begin: 0.0, end: 1.0).animate(
+    _flipAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _flipAnimationController!,
         curve: const Interval(0.0, 1.0, curve: Curves.fastOutSlowIn),
@@ -39,10 +39,12 @@ class FlipTransitionState extends State<FlipTransition> with TickerProviderState
 
     /// 0.4s Slide In + 2s Wait + 0.4s Slide Out + 3 seconds Particles
     /// Show flip transition as particles animation is half fade-out
-    const successfulPaymentRouteAnimation = Duration(seconds: 4, milliseconds: 300);
-    Future.delayed(successfulPaymentRouteAnimation, () {
+    const Duration successfulPaymentRouteAnimation = Duration(seconds: 4, milliseconds: 300);
+    Future<void>.delayed(successfulPaymentRouteAnimation, () {
       _flipAnimationController!.forward().whenCompleteOrCancel(() {
-        if (!mounted) return;
+        if (!mounted) {
+          return;
+        }
         _flipAnimationController!.reverse().whenCompleteOrCancel(() {
           if (mounted) {
             widget.onComplete();

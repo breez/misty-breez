@@ -8,20 +8,20 @@ class FeeOptionButton extends StatelessWidget {
   final Function onSelect;
 
   const FeeOptionButton({
-    super.key,
     required this.index,
     required this.text,
     required this.isAffordable,
     required this.isSelected,
     required this.onSelect,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final borderColor = themeData.colorScheme.onSurface.withOpacity(0.4);
-    Border border = Border.all(color: borderColor);
-    BorderRadius borderRadius = BorderRadius.only(
+    final ThemeData themeData = Theme.of(context);
+    final Color borderColor = themeData.colorScheme.onSurface.withOpacity(0.4);
+    final Border border = Border.all(color: borderColor);
+    final BorderRadius borderRadius = BorderRadius.only(
       topLeft: index == 2 ? Radius.zero : Radius.circular((index == 0) ? 5.0 : 0.0),
       bottomLeft: index == 2 ? Radius.zero : Radius.circular((index == 0) ? 5.0 : 0.0),
       topRight: index == 2 ? const Radius.circular(5.0) : Radius.zero,

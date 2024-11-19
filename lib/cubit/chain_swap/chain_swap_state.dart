@@ -4,7 +4,7 @@ class ChainSwapState {
   final List<SendChainSwapFeeOption> feeOptions;
   final String? error;
 
-  ChainSwapState({this.feeOptions = const [], this.error = ""});
+  ChainSwapState({this.feeOptions = const <SendChainSwapFeeOption>[], this.error = ''});
 
   ChainSwapState.initial() : this();
 

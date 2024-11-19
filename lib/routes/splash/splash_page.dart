@@ -7,7 +7,7 @@ import 'package:l_breez/routes/splash/splash_animation_widget.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class SplashPage extends StatefulWidget {
-  static const routeName = "splash";
+  static const String routeName = 'splash';
 
   const SplashPage({super.key});
 
@@ -26,7 +26,7 @@ class SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
         systemNavigationBarColor: BreezColors.blue[500],

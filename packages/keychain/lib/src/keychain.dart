@@ -4,7 +4,7 @@ class KeyChain {
   final FlutterSecureStorage _storage = const FlutterSecureStorage(
     iOptions: IOSOptions(
       accessibility: KeychainAccessibility.first_unlock,
-      groupId: "group.F7R2LZH3W5.com.breez.liquid.lBreez",
+      groupId: 'group.F7R2LZH3W5.com.breez.liquid.lBreez',
     ),
   );
 
@@ -12,15 +12,15 @@ class KeyChain {
     return _storage.read(key: key);
   }
 
-  Future write(String key, String value) {
+  Future<void> write(String key, String value) {
     return _storage.write(key: key, value: value);
   }
 
-  Future delete(String key) {
+  Future<void> delete(String key) {
     return _storage.delete(key: key);
   }
 
-  Future clear() {
+  Future<void> clear() {
     return _storage.deleteAll();
   }
 }

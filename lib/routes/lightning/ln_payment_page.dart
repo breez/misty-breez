@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -14,21 +15,21 @@ import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 class LnPaymentPage extends StatefulWidget {
   final LNInvoice lnInvoice;
 
-  static const routeName = "/ln_invoice_payment";
-  static const paymentMethod = PaymentMethod.lightning;
+  static const String routeName = '/ln_invoice_payment';
+  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
 
-  const LnPaymentPage({super.key, required this.lnInvoice});
+  const LnPaymentPage({required this.lnInvoice, super.key});
 
   @override
   State<StatefulWidget> createState() => LnPaymentPageState();
 }
 
 class LnPaymentPageState extends State<LnPaymentPage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool _isLoading = true;
   bool _isCalculatingFees = false;
-  String errorMessage = "";
+  String errorMessage = '';
   LightningPaymentLimitsResponse? _lightningLimits;
 
   int? amountSat;
@@ -38,9 +39,9 @@ class LnPaymentPageState extends State<LnPaymentPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final amountMsat = widget.lnInvoice.amountMsat;
+      final BigInt? amountMsat = widget.lnInvoice.amountMsat;
       if ((amountMsat == null || amountMsat == BigInt.zero) && context.mounted) {
-        final texts = context.texts();
+        final BreezTranslations texts = context.texts();
         Navigator.pop(context);
         showFlushbar(context, message: texts.payment_request_zero_amount_not_supported);
       }
@@ -55,11 +56,11 @@ class LnPaymentPageState extends State<LnPaymentPage> {
   Future<void> _fetchLightningLimits() async {
     setState(() {
       _isLoading = true;
-      errorMessage = "";
+      errorMessage = '';
     });
-    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+    final PaymentLimitsCubit paymentLimitsCubit = context.read<PaymentLimitsCubit>();
     try {
-      final response = await paymentLimitsCubit.fetchLightningLimits();
+      final LightningPaymentLimitsResponse? response = await paymentLimitsCubit.fetchLightningLimits();
       setState(() {
         _lightningLimits = response;
       });
@@ -76,7 +77,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
   }
 
   Future<void> _handleLightningPaymentLimitsResponse() async {
-    final errorMessage = validatePayment(
+    final String? errorMessage = validatePayment(
       amountSat: amountSat!,
       throwError: true,
     );
@@ -86,16 +87,16 @@ class LnPaymentPageState extends State<LnPaymentPage> {
   }
 
   Future<void> _prepareSendPayment(int amountSat) async {
-    final texts = context.texts();
-    final paymentsCubit = context.read<PaymentsCubit>();
+    final BreezTranslations texts = context.texts();
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
     try {
       setState(() {
         _isCalculatingFees = true;
         _prepareResponse = null;
-        errorMessage = "";
+        errorMessage = '';
       });
 
-      final response = await paymentsCubit.prepareSendPayment(
+      final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(
         destination: widget.lnInvoice.bolt11,
         amountSat: BigInt.from(amountSat),
       );
@@ -118,8 +119,8 @@ class LnPaymentPageState extends State<LnPaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -128,7 +129,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
         title: Text(texts.ln_payment_send_payment_title),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
-        builder: (context, currencyState) {
+        builder: (BuildContext context, CurrencyState currencyState) {
           if (_isLoading) {
             return Center(
               child: Loader(
@@ -142,14 +143,13 @@ class LnPaymentPageState extends State<LnPaymentPage> {
             child: Center(
               child: SingleChildScrollView(
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: LnPaymentHeader(
-                        payeeName: "",
+                        payeeName: '',
                         totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
                         errorMessage: errorMessage,
                       ),
@@ -165,7 +165,8 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                         feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
                       ),
                     ),
-                    if (widget.lnInvoice.description != null && widget.lnInvoice.description!.isNotEmpty) ...[
+                    if (widget.lnInvoice.description != null &&
+                        widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: LnPaymentDescription(
@@ -214,28 +215,27 @@ class LnPaymentPageState extends State<LnPaymentPage> {
     required int amountSat,
     bool throwError = false,
   }) {
-    final texts = context.texts();
-    final currencyCubit = context.read<CurrencyCubit>();
-    final currencyState = currencyCubit.state;
+    final BreezTranslations texts = context.texts();
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
 
     String? message;
     if (_lightningLimits == null) {
       message = texts.payment_limits_fetch_error_message;
     }
-    final effectiveMinSat = _lightningLimits!.send.minSat.toInt();
-    final effectiveMaxSat = _lightningLimits!.send.maxSat.toInt();
+    final int effectiveMinSat = _lightningLimits!.send.minSat.toInt();
+    final int effectiveMaxSat = _lightningLimits!.send.maxSat.toInt();
     if (amountSat > effectiveMaxSat) {
-      final networkLimit = "(${currencyState.bitcoinCurrency.format(
+      final String networkLimit = '(${currencyState.bitcoinCurrency.format(
         effectiveMaxSat,
-        includeDisplayName: true,
-      )})";
+      )})';
       message = throwError
           ? texts.valid_payment_error_exceeds_the_limit(networkLimit)
           : texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat);
     } else if (amountSat < effectiveMinSat) {
-      final effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+      final String effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
       message = throwError
-          ? "${texts.invoice_payment_validator_error_payment_below_invoice_limit(effMinSendableFormatted)}."
+          ? '${texts.invoice_payment_validator_error_payment_below_invoice_limit(effMinSendableFormatted)}.'
           : texts.lnurl_payment_page_error_below_limit(effectiveMinSat);
     } else {
       message = PaymentValidator(
@@ -245,7 +245,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       ).validateOutgoing(amountSat);
     }
     setState(() {
-      errorMessage = message ?? "";
+      errorMessage = message ?? '';
     });
     if (message != null && throwError) {
       throw message;
@@ -254,10 +254,10 @@ class LnPaymentPageState extends State<LnPaymentPage> {
   }
 
   void _validateLnUrlPayment(int amount, bool outgoing) {
-    final accountCubit = context.read<AccountCubit>();
-    final accountState = accountCubit.state;
-    final balance = accountState.walletInfo!.balanceSat.toInt();
-    final lnUrlCubit = context.read<LnUrlCubit>();
+    final AccountCubit accountCubit = context.read<AccountCubit>();
+    final AccountState accountState = accountCubit.state;
+    final int balance = accountState.walletInfo!.balanceSat.toInt();
+    final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
   }
 }

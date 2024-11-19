@@ -21,11 +21,11 @@ class DigitMaskedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
-      children: [
+      children: <Widget>[
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.only(top: 24.0),
-          margin: const EdgeInsets.only(bottom: 0),
+          margin: const EdgeInsets.only(),
           curve: filled ? Curves.decelerate : Curves.easeIn,
           width: size,
           height: size,
@@ -41,7 +41,7 @@ class DigitMaskedWidget extends StatelessWidget {
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.only(top: 24.0),
-          margin: const EdgeInsets.only(bottom: 0),
+          margin: const EdgeInsets.only(),
           curve: filled ? Curves.decelerate : Curves.easeIn,
           alignment: Alignment.center,
           width: filled ? size : 0,
@@ -75,12 +75,12 @@ class _DigitMaskedWidgetPreviewState extends State<DigitMaskedWidgetPreview> {
   @override
   Widget build(BuildContext context) {
     return Preview(
-      [
+      <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
+          children: List<Widget>.generate(
             6,
-            (index) => Padding(
+            (int index) => Padding(
               padding: const EdgeInsets.all(8.0),
               child: DigitMaskedWidget(
                 filled: count > index,
@@ -90,9 +90,9 @@ class _DigitMaskedWidgetPreviewState extends State<DigitMaskedWidgetPreview> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
+          children: List<Widget>.generate(
             6,
-            (index) => Padding(
+            (int index) => Padding(
               padding: const EdgeInsets.all(8.0),
               child: DigitMaskedWidget(
                 filled: count > index,
@@ -104,14 +104,14 @@ class _DigitMaskedWidgetPreviewState extends State<DigitMaskedWidgetPreview> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             ElevatedButton(
               onPressed: () {
                 setState(() {
                   count = min(count + 1, 6);
                 });
               },
-              child: const Text("Fill"),
+              child: const Text('Fill'),
             ),
             const SizedBox(width: 8),
             ElevatedButton(
@@ -120,7 +120,7 @@ class _DigitMaskedWidgetPreviewState extends State<DigitMaskedWidgetPreview> {
                   count = max(0, count - 1);
                 });
               },
-              child: const Text("Clear"),
+              child: const Text('Clear'),
             ),
           ],
         ),

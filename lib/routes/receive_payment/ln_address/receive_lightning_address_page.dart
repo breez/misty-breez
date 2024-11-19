@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -11,8 +12,8 @@ import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 
 class ReceiveLightningAddressPage extends StatefulWidget {
-  static const routeName = "/lightning_address";
-  static const pageIndex = 1;
+  static const String routeName = '/lightning_address';
+  static const int pageIndex = 1;
 
   const ReceiveLightningAddressPage({super.key});
 
@@ -30,16 +31,16 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
   }
 
   void _refreshLnurlPay() {
-    final webhookCubit = context.read<WebhookCubit>();
+    final WebhookCubit webhookCubit = context.read<WebhookCubit>();
     webhookCubit.refreshLnurlPay();
   }
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return BlocBuilder<WebhookCubit, WebhookState>(
-      builder: (context, webhookState) {
+      builder: (BuildContext context, WebhookState webhookState) {
         return Scaffold(
           body: webhookState.isLoading
               ? const DestinationWidgetPlaceholder()
@@ -70,7 +71,8 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                       onPressed: webhookState.lnurlPayError != null
                           ? () => _refreshLnurlPay()
                           : () {
-                              final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                              final PaymentLimitsCubit paymentLimitsCubit =
+                                  context.read<PaymentLimitsCubit>();
                               paymentLimitsCubit.fetchLightningLimits();
                             },
                     )

@@ -10,7 +10,7 @@ class SessionLink {
   }
 
   static SessionLink fromLinkQuery(String queryStr) {
-    Map<String, String> query = Uri.splitQueryString(queryStr);
-    return SessionLink(query["sessionID"]!, query["sessionSecret"]!, query["pubKey"]!);
+    final Map<String, String> query = Uri.splitQueryString(queryStr);
+    return SessionLink(query['sessionID']!, query['sessionSecret']!, query['pubKey']!);
   }
 }

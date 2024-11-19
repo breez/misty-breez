@@ -1,1 +1,1 @@
-const maxPaymentAmountSat = 4294967;
+const int maxPaymentAmountSat = 4294967;

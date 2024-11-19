@@ -9,7 +9,7 @@ class DestinationWidgetPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
+      children: <Widget>[
         Center(
           child: Container(
             height: 188,

@@ -6,7 +6,7 @@ import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widget
 import 'package:simple_animations/simple_animations.dart';
 
 class ParticleModel {
-  Animatable? tween;
+  Animatable<Movie>? tween;
   double? size;
   AnimationProgress? animationProgress;
   Random random;
@@ -18,14 +18,14 @@ class ParticleModel {
   void restart({
     Duration time = Duration.zero,
   }) {
-    final startPosition = Offset(-0.2 + 1.4 * random.nextDouble(), 1.2);
-    final endPosition = Offset(-0.2 + 1.4 * random.nextDouble(), -0.2);
-    final duration = Duration(milliseconds: 3000 + random.nextInt(6000));
+    final Offset startPosition = Offset(-0.2 + 1.4 * random.nextDouble(), 1.2);
+    final Offset endPosition = Offset(-0.2 + 1.4 * random.nextDouble(), -0.2);
+    final Duration duration = Duration(milliseconds: 3000 + random.nextInt(6000));
 
     tween = MovieTween()
       ..tween(
         AnimationProperties.X,
-        Tween(
+        Tween<double>(
           begin: startPosition.dx,
           end: endPosition.dx,
         ),
@@ -34,7 +34,7 @@ class ParticleModel {
       )
       ..tween(
         AnimationProperties.Y,
-        Tween(
+        Tween<double>(
           begin: startPosition.dy,
           end: endPosition.dy,
         ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -10,21 +11,21 @@ import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/processing_payment/processing_payment_animated_content.dart';
 import 'package:l_breez/widgets/processing_payment/processing_payment_content.dart';
 
-const _kPaymentListItemHeight = 72.0;
+const double _kPaymentListItemHeight = 72.0;
 
 class ProcessingPaymentDialog extends StatefulWidget {
   final GlobalKey? firstPaymentItemKey;
   final double minHeight;
   final bool popOnCompletion;
   final bool isLnUrlPayment;
-  final Future Function() paymentFunc;
+  final Future<dynamic> Function() paymentFunc;
 
   const ProcessingPaymentDialog({
+    required this.paymentFunc,
     this.firstPaymentItemKey,
     this.minHeight = 220,
     this.popOnCompletion = false,
     this.isLnUrlPayment = false,
-    required this.paymentFunc,
     super.key,
   });
 
@@ -44,9 +45,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   Animation<double>? opacityAnimation;
   Animation<RelativeRect>? transitionAnimation;
   final GlobalKey _dialogKey = GlobalKey();
-  ModalRoute? _currentRoute;
+  ModalRoute<dynamic>? _currentRoute;
   double? channelsSyncProgress;
-  final Completer? synchronizedCompleter = Completer<bool>();
+  final Completer<bool>? synchronizedCompleter = Completer<bool>();
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       duration: const Duration(milliseconds: 500),
     );
     controller!.value = 1.0;
-    controller!.addStatusListener((status) {
+    controller!.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.dismissed) {
         if (widget.popOnCompletion) {
           Navigator.of(context).removeRoute(_currentRoute!);
@@ -69,7 +70,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     _currentRoute ??= ModalRoute.of(context);
     colorAnimation = ColorTween(
@@ -88,13 +89,13 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   void _payAndClose() {
-    final navigator = Navigator.of(context);
-    widget.paymentFunc().then((payResult) async {
+    final NavigatorState navigator = Navigator.of(context);
+    widget.paymentFunc().then((dynamic payResult) async {
       await _animateClose();
       if (widget.isLnUrlPayment) {
         navigator.pop(payResult);
       }
-    }).catchError((err) {
+    }).catchError((Object err) {
       if (widget.popOnCompletion) {
         navigator.removeRoute(_currentRoute!);
       }
@@ -105,38 +106,37 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         if (_currentRoute != null && _currentRoute!.isActive) {
           navigator.removeRoute(_currentRoute!);
         }
-        final texts = getSystemAppLocalizations();
-        final message = extractExceptionMessage(err, texts);
+        final BreezTranslations texts = getSystemAppLocalizations();
+        final String message = extractExceptionMessage(err, texts);
         showFlushbar(context, message: texts.payment_error_to_send(message));
       }
     });
   }
 
-  Future _animateClose() {
-    return Future.delayed(const Duration(milliseconds: 50)).then((_) {
-      _initializeTransitionAnimation();
-      setState(() {
-        _animating = true;
-        controller!.reverse();
-      });
+  Future<void> _animateClose() async {
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    _initializeTransitionAnimation();
+    setState(() {
+      _animating = true;
+      controller!.reverse();
     });
   }
 
   void _initializeTransitionAnimation() {
-    final queryData = MediaQuery.of(context);
-    final statusBarHeight = queryData.padding.top;
-    RenderBox? box = _dialogKey.currentContext!.findRenderObject() as RenderBox;
+    final MediaQueryData queryData = MediaQuery.of(context);
+    final double statusBarHeight = queryData.padding.top;
+    final RenderBox box = _dialogKey.currentContext!.findRenderObject() as RenderBox;
     startHeight = box.size.height;
-    double yMargin = (queryData.size.height - box.size.height - 24) / 2;
+    final double yMargin = (queryData.size.height - box.size.height - 24) / 2;
 
-    final endPosition = RelativeRect.fromLTRB(40.0, yMargin, 40.0, yMargin);
+    final RelativeRect endPosition = RelativeRect.fromLTRB(40.0, yMargin, 40.0, yMargin);
     RelativeRect startPosition = endPosition;
-    final paymentCtx = widget.firstPaymentItemKey?.currentContext;
+    final BuildContext? paymentCtx = widget.firstPaymentItemKey?.currentContext;
     if (paymentCtx != null) {
-      RenderBox paymentTableBox = paymentCtx.findRenderObject() as RenderBox;
-      final dy = paymentTableBox.localToGlobal(Offset.zero).dy;
-      final start = dy - statusBarHeight;
-      final end = queryData.size.height - start - _kPaymentListItemHeight;
+      final RenderBox paymentTableBox = paymentCtx.findRenderObject() as RenderBox;
+      final double dy = paymentTableBox.localToGlobal(Offset.zero).dy;
+      final double start = dy - statusBarHeight;
+      final double end = queryData.size.height - start - _kPaymentListItemHeight;
       startPosition = RelativeRect.fromLTRB(0.0, start, 0.0, end);
     }
     transitionAnimation = RelativeRectTween(
@@ -153,7 +153,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return _animating
         ? ProcessingPaymentAnimatedContent(

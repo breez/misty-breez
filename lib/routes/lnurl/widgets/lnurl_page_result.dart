@@ -16,7 +16,7 @@ class LNURLPageResult {
   bool get hasError => error != null;
 
   String get errorMessage => extractExceptionMessage(
-        error ?? "",
+        error ?? '',
         getSystemAppLocalizations(),
         defaultErrorMsg: getSystemAppLocalizations().lnurl_payment_page_unknown_error,
       );

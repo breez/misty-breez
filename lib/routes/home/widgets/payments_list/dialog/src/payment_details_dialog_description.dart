@@ -13,19 +13,19 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
-    var title = paymentData.title;
+    String title = paymentData.title;
     if (paymentData.paymentType == PaymentType.receive && title.isDefaultTitleWithLiquidNaming) {
-      final userProfileCubit = context.read<UserProfileCubit>();
-      final userProfileState = userProfileCubit.state;
-      title = "Payment to ${userProfileState.profileSettings.name}";
+      final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
+      final UserProfileState userProfileState = userProfileCubit.state;
+      title = 'Payment to ${userProfileState.profileSettings.name}';
     }
-    final description = paymentData.details.map(
-      lightning: (details) => details.description,
-      bitcoin: (details) => details.description,
-      liquid: (details) => details.description,
-      orElse: () => "",
+    final String description = paymentData.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.description,
+      bitcoin: (PaymentDetails_Bitcoin details) => details.description,
+      liquid: (PaymentDetails_Liquid details) => details.description,
+      orElse: () => '',
     );
     if (description.isEmpty || title == description) {
       return const SizedBox.shrink();
@@ -44,7 +44,7 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
               description,
               style: themeData.primaryTextTheme.headlineMedium,
               textAlign:
-                  description.length > 40 && !description.contains("\n") ? TextAlign.start : TextAlign.center,
+                  description.length > 40 && !description.contains('\n') ? TextAlign.start : TextAlign.center,
             ),
           ),
         ),

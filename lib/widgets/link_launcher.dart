@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/utils/external_browser.dart';
 
@@ -11,10 +12,10 @@ class LinkLauncher extends StatelessWidget {
   final Function() onCopy;
 
   const LinkLauncher({
-    super.key,
-    this.linkName,
     required this.linkAddress,
     required this.onCopy,
+    super.key,
+    this.linkName,
     this.textStyle,
     this.linkTitle,
     this.iconSize = 16.0,
@@ -22,18 +23,16 @@ class LinkLauncher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final style = textStyle ?? DefaultTextStyle.of(context).style;
+    final BreezTranslations texts = context.texts();
+    final TextStyle style = textStyle ?? DefaultTextStyle.of(context).style;
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [
+      children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Expanded(
-              flex: 1,
               child: Text(
                 linkTitle ?? texts.link_launcher_title,
                 textAlign: TextAlign.start,
@@ -46,7 +45,7 @@ class LinkLauncher extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+                  children: <Widget>[
                     IconButton(
                       padding: EdgeInsets.zero,
                       alignment: Alignment.centerRight,
@@ -67,13 +66,10 @@ class LinkLauncher extends StatelessWidget {
           ],
         ),
         Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+          children: <Widget>[
             Expanded(
-              flex: 1,
               child: Padding(
-                padding: const EdgeInsets.only(right: 0.0),
+                padding: const EdgeInsets.only(),
                 child: GestureDetector(
                   onTap: onCopy,
                   child: Text(

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/cubit/payments/payments_cubit.dart';
+import 'package:l_breez/routes/home/widgets/payments_filter/fixed_sliver_delegate.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/date.dart';
-
-import 'fixed_sliver_delegate.dart';
 
 class HeaderFilterChip extends SliverPadding {
   HeaderFilterChip(
@@ -19,8 +18,8 @@ class HeaderFilterChip extends SliverPadding {
             pinned: true,
             delegate: FixedSliverDelegate(
               maxHeight / 1.2,
-              builder: (context, height, overlap) {
-                final customData = Theme.of(context).customData;
+              builder: (BuildContext context, double height, bool overlap) {
+                final CustomData customData = Theme.of(context).customData;
                 return Container(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                   height: maxHeight / 1.2,
@@ -30,9 +29,7 @@ class HeaderFilterChip extends SliverPadding {
                     child: Container(
                       color: customData.paymentListBgColor,
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
                             child: Chip(
@@ -43,11 +40,8 @@ class HeaderFilterChip extends SliverPadding {
                                 ),
                               ),
                               onDeleted: () {
-                                final paymentsCubit = context.read<PaymentsCubit>();
-                                return paymentsCubit.changePaymentFilter(
-                                  toTimestamp: null,
-                                  fromTimestamp: null,
-                                );
+                                final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+                                return paymentsCubit.changePaymentFilter();
                               },
                             ),
                           ),

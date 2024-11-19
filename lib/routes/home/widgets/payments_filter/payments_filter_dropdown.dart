@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 
@@ -14,9 +15,9 @@ class PaymentsFilterDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final foregroundColor = themeData.isLightTheme ? Colors.black : themeData.colorScheme.onSecondary;
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final Color foregroundColor = themeData.isLightTheme ? Colors.black : themeData.colorScheme.onSecondary;
 
     return Theme(
       data: themeData.copyWith(
@@ -25,13 +26,13 @@ class PaymentsFilterDropdown extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
-          child: DropdownButton(
+          child: DropdownButton<String>(
             value: filter,
             iconEnabledColor: foregroundColor,
             style: themeData.textTheme.titleSmall?.copyWith(
               color: foregroundColor,
             ),
-            items: [
+            items: <String>[
               texts.payments_filter_option_all,
               texts.payments_filter_option_sent,
               texts.payments_filter_option_received,
@@ -48,7 +49,7 @@ class PaymentsFilterDropdown extends StatelessWidget {
                 ),
               );
             }).toList(),
-            onChanged: (item) => onFilterChanged(item),
+            onChanged: (String? item) => onFilterChanged(item),
           ),
         ),
       ),

@@ -8,7 +8,7 @@ class CurrencyFormatter {
 
   static NumberFormat _defineFormatter() {
     numberFormatSymbols['space-between'] = const NumberSymbols(
-      NAME: "zz",
+      NAME: 'zz',
       DECIMAL_SEP: '.',
       GROUP_SEP: '\u00A0',
       PERCENT: '%',
@@ -25,33 +25,35 @@ class CurrencyFormatter {
       CURRENCY_PATTERN: '\u00A4#,##0.00',
       DEF_CURRENCY_CODE: 'AUD',
     );
-    final formatter = NumberFormat('###,###.##', 'space-between');
+    final NumberFormat formatter = NumberFormat('###,###.##', 'space-between');
     return formatter;
   }
 }
 
 class BitcoinCurrencyFormatter {
-  static final formatter = CurrencyFormatter().formatter;
+  static final NumberFormat formatter = CurrencyFormatter().formatter;
 
   String format(
-    satoshies,
+    int satoshies,
     BitcoinCurrency currency, {
     bool addCurrencySuffix = true,
     bool addCurrencySymbol = false,
-    removeTrailingZeros = false,
-    userInput = false,
+    bool removeTrailingZeros = false,
+    bool userInput = false,
   }) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case BitcoinCurrency.btc:
-        double amountInBTC = (satoshies.toInt() / 100000000);
+        final double amountInBTC = (satoshies.toInt() / 100000000);
         formattedAmount = amountInBTC.toStringAsFixed(8);
         if (removeTrailingZeros) {
           if (amountInBTC.truncateToDouble() == amountInBTC) {
             formattedAmount = amountInBTC.toInt().toString();
           } else {
-            formattedAmount =
-                formattedAmount.replaceAllMapped(RegExp(r'^(\d+\.\d*?[1-9])0+$'), (match) => match.group(1)!);
+            formattedAmount = formattedAmount.replaceAllMapped(
+              RegExp(r'^(\d+\.\d*?[1-9])0+$'),
+              (Match match) => match.group(1)!,
+            );
           }
         }
         break;
@@ -66,7 +68,7 @@ class BitcoinCurrencyFormatter {
     }
 
     if (userInput) {
-      return formattedAmount.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      return formattedAmount.replaceAll(RegExp(r'\s+\b|\b\s'), '');
     }
 
     return formattedAmount;

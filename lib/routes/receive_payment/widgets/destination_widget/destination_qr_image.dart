@@ -4,7 +4,7 @@ import 'package:l_breez/routes/receive_payment/widgets/destination_widget/widget
 class DestinationQRImage extends StatelessWidget {
   final String destination;
 
-  const DestinationQRImage({super.key, required this.destination});
+  const DestinationQRImage({required this.destination, super.key});
 
   @override
   Widget build(BuildContext context) {

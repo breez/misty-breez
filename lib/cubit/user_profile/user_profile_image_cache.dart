@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 const String profileImageCacheKey = 'profileImageCache';
 const String profileImagesDirName = 'ProfileImages';
 
-final _logger = Logger("UserProfileImageCache");
+final Logger _logger = Logger('UserProfileImageCache');
 
 class UserProfileImageCache {
   final DefaultCacheManager _cacheManager = DefaultCacheManager();
@@ -23,7 +23,7 @@ class UserProfileImageCache {
   UserProfileImageCache._internal();
 
   Future<File?> getProfileImageFile({required String fileName}) async {
-    final cachedFile = await _getCachedProfileImageFile();
+    final File? cachedFile = await _getCachedProfileImageFile();
     if (cachedFile != null) {
       return cachedFile;
     }
@@ -32,16 +32,16 @@ class UserProfileImageCache {
   }
 
   Future<File?> _getCachedProfileImageFile() async {
-    final cachedFileInfo = await _cacheManager.getFileFromCache(profileImageCacheKey);
+    final FileInfo? cachedFileInfo = await _cacheManager.getFileFromCache(profileImageCacheKey);
     return cachedFileInfo?.file;
   }
 
   Future<File?> _loadProfileImageFileFromDocuments(String fileName) async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
-      final profileImageFilePath = path.join(profileImagesDir.path, fileName);
-      final profileImageFile = File(profileImageFilePath);
+      final Directory directory = await getApplicationDocumentsDirectory();
+      final Directory profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
+      final String profileImageFilePath = path.join(profileImagesDir.path, fileName);
+      final File profileImageFile = File(profileImageFilePath);
 
       if (await profileImageFile.exists()) {
         await cacheProfileImage(await profileImageFile.readAsBytes());
@@ -56,12 +56,11 @@ class UserProfileImageCache {
 
   Future<void> cacheProfileImage(Uint8List bytes) async {
     try {
-      _logger.info("Caching profile image, size: ${bytes.length} bytes");
+      _logger.info('Caching profile image, size: ${bytes.length} bytes');
       await _cacheManager.removeFile(profileImageCacheKey);
       await _cacheManager.putFile(
         profileImageCacheKey,
         bytes,
-        maxAge: const Duration(days: 30),
         eTag: profileImageCacheKey,
       );
     } catch (e) {

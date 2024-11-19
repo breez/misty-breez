@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 
 export 'chain_swap_state.dart';
 
-final _logger = Logger("ChainSwapCubit");
+final Logger _logger = Logger('ChainSwapCubit');
 
 class ChainSwapCubit extends Cubit<ChainSwapState> {
   final BreezSDKLiquid _breezSdkLiquid;
@@ -27,10 +27,10 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
 
   Future<void> rescanOnchainSwaps() async {
     try {
-      _logger.info("Rescanning onchain swaps");
+      _logger.info('Rescanning onchain swaps');
       return await _breezSdkLiquid.instance!.rescanOnchainSwaps();
     } catch (e) {
-      _logger.severe("Failed to rescan onchain swaps", e);
+      _logger.severe('Failed to rescan onchain swaps', e);
       rethrow;
     }
   }
@@ -40,11 +40,11 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
   }) async {
     try {
       _logger.info(
-        "Paying onchain ${req.address} to ${req.prepareResponse.receiverAmountSat} with fee ${req.prepareResponse.totalFeesSat}",
+        'Paying onchain ${req.address} to ${req.prepareResponse.receiverAmountSat} with fee ${req.prepareResponse.totalFeesSat}',
       );
       return await _breezSdkLiquid.instance!.payOnchain(req: req);
     } catch (e) {
-      _logger.severe("Failed to pay onchain", e);
+      _logger.severe('Failed to pay onchain', e);
       emit(state.copyWith(error: extractExceptionMessage(e, getSystemAppLocalizations())));
       rethrow;
     }
@@ -56,7 +56,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     required bool isDrain,
   }) async {
     try {
-      final recommendedFees = await _breezSdkLiquid.instance!.recommendedFees();
+      final RecommendedFees recommendedFees = await _breezSdkLiquid.instance!.recommendedFees();
       return _constructFeeOptionList(
         amountSat: amountSat,
         isDrain: isDrain,
@@ -73,20 +73,24 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     required bool isDrain,
     required RecommendedFees recommendedFees,
   }) async {
-    final recommendedFeeList = [
+    final List<BigInt> recommendedFeeList = <BigInt>[
       recommendedFees.hourFee,
       recommendedFees.halfHourFee,
       recommendedFees.fastestFee,
     ];
-    final feeOptions = await Future.wait(
-      List.generate(3, (index) async {
-        final payAmount =
-            isDrain ? const PayAmount_Drain() : PayAmount_Receiver(amountSat: BigInt.from(amountSat));
-        final preparePayOnchainRequest = PreparePayOnchainRequest(
+    final List<SendChainSwapFeeOption> feeOptions = await Future.wait(
+      List<Future<SendChainSwapFeeOption>>.generate(3, (int index) async {
+        final PayAmount payAmount = isDrain
+            ? const PayAmount_Drain()
+            : PayAmount_Receiver(
+                amountSat: BigInt.from(amountSat),
+              );
+        final PreparePayOnchainRequest preparePayOnchainRequest = PreparePayOnchainRequest(
           amount: payAmount,
           feeRateSatPerVbyte: recommendedFeeList[index].toInt(),
         );
-        final preparePayOnchainResponse = await _preparePayOnchain(preparePayOnchainRequest);
+        final PreparePayOnchainResponse preparePayOnchainResponse =
+            await _preparePayOnchain(preparePayOnchainRequest);
 
         return SendChainSwapFeeOption(
           processingSpeed: ProcessingSpeed.values[index],
@@ -102,11 +106,11 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
   Future<PreparePayOnchainResponse> _preparePayOnchain(PreparePayOnchainRequest req) async {
     try {
       _logger.info(
-        "Preparing pay onchain for amount: ${req.amount} with fee ${req.feeRateSatPerVbyte}",
+        'Preparing pay onchain for amount: ${req.amount} with fee ${req.feeRateSatPerVbyte}',
       );
       return await _breezSdkLiquid.instance!.preparePayOnchain(req: req);
     } catch (e) {
-      _logger.severe("Failed to prepare pay onchain", e);
+      _logger.severe('Failed to prepare pay onchain', e);
       rethrow;
     }
   }
@@ -120,7 +124,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     if (outgoing && amount.toInt() > balance) {
       throw const InsufficientLocalBalanceError();
     }
-    var limits = outgoing ? onchainLimits.send : onchainLimits.receive;
+    final Limits limits = outgoing ? onchainLimits.send : onchainLimits.receive;
     if (amount > limits.maxSat) {
       throw PaymentExceededLimitError(limits.maxSat.toInt());
     }

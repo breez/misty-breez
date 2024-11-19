@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -15,7 +16,7 @@ import 'package:l_breez/routes/security/auto_lock_mixin.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 
 class Home extends StatefulWidget {
-  static const routeName = "/";
+  static const String routeName = '/';
 
   const Home({super.key});
 
@@ -23,22 +24,22 @@ class Home extends StatefulWidget {
   State<StatefulWidget> createState() => HomeState();
 }
 
-class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
+class HomeState extends State<Home> with AutoLockMixin<Home>, HandlerContextProvider<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey firstPaymentItemKey = GlobalKey();
   final ScrollController scrollController = ScrollController();
-  final handlers = <Handler>[];
+  final List<Handler> handlers = <Handler>[];
 
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      handlers.addAll([
+      handlers.addAll(<Handler>[
         InputHandler(firstPaymentItemKey, _scaffoldKey),
         NetworkConnectivityHandler(),
         WalletConnectivityHandler(),
       ]);
-      for (var handler in handlers) {
+      for (Handler handler in handlers) {
         handler.init(this);
       }
     });
@@ -47,7 +48,7 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
   @override
   void dispose() {
     super.dispose();
-    for (var handler in handlers) {
+    for (Handler handler in handlers) {
       handler.dispose();
     }
     handlers.clear();
@@ -55,8 +56,8 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final mediaSize = MediaQuery.of(context).size;
+    final ThemeData themeData = Theme.of(context);
+    final Size mediaSize = MediaQuery.of(context).size;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
@@ -76,7 +77,7 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
           }
 
           // If drawer is not open, prompt user to approve exiting the app
-          final texts = context.texts();
+          final BreezTranslations texts = context.texts();
           final bool? shouldPop = await promptAreYouSure(
             context,
             texts.close_popup_title,
@@ -90,7 +91,6 @@ class HomeState extends State<Home> with AutoLockMixin, HandlerContextProvider {
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           appBar: HomeAppBar(themeData: themeData, scaffoldKey: _scaffoldKey),
-          drawerEnableOpenDragGesture: true,
           drawerDragStartBehavior: DragStartBehavior.down,
           drawerEdgeDragWidth: mediaSize.width,
           drawer: const HomeDrawer(),

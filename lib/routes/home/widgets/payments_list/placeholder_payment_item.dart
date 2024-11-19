@@ -7,14 +7,13 @@ class PlaceholderPaymentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
-    final customData = themeData.customData;
-    final paymentListBgColor = customData.paymentListBgColor;
+    final CustomData customData = themeData.customData;
+    final Color paymentListBgColor = customData.paymentListBgColor;
     return Shimmer.fromColors(
       baseColor: paymentListBgColor,
       highlightColor: customData.paymentListBgColor.withOpacity(0.5),
-      enabled: true,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
         child: ClipRRect(
@@ -22,15 +21,14 @@ class PlaceholderPaymentItem extends StatelessWidget {
           child: Container(
             color: themeData.customData.paymentListBgColor,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+              children: <Widget>[
                 ListTile(
                   leading: Container(
                     height: 72.0,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
-                      boxShadow: [
+                      boxShadow: <BoxShadow>[
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
                           offset: const Offset(0.5, 0.5),
@@ -50,7 +48,7 @@ class PlaceholderPaymentItem extends StatelessWidget {
                   title: Transform.translate(
                     offset: const Offset(-8, 0),
                     child: Text(
-                      "",
+                      '',
                       style: themeData.paymentItemTitleTextStyle,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -58,11 +56,9 @@ class PlaceholderPaymentItem extends StatelessWidget {
                   subtitle: Transform.translate(
                     offset: const Offset(-8, 0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("", style: themeData.paymentItemSubtitleTextStyle),
+                      children: <Widget>[
+                        Text('', style: themeData.paymentItemSubtitleTextStyle),
                       ],
                     ),
                   ),
@@ -71,13 +67,13 @@ class PlaceholderPaymentItem extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
+                      children: <Widget>[
                         Text(
-                          "",
+                          '',
                           style: themeData.paymentItemAmountTextStyle,
                         ),
                         Text(
-                          "",
+                          '',
                           style: themeData.paymentItemFeeTextStyle,
                         ),
                       ],

@@ -45,8 +45,7 @@ class _PaymentItemState extends State<PaymentItem> {
         child: Container(
           color: Theme.of(context).customData.paymentListBgColor,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: <Widget>[
               ListTile(
                 leading: Container(
                   height: 72.0,
@@ -55,7 +54,7 @@ class _PaymentItemState extends State<PaymentItem> {
                       : BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          boxShadow: [
+                          boxShadow: <BoxShadow>[
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
                               offset: const Offset(0.5, 0.5),
@@ -107,7 +106,7 @@ class _PaymentItemState extends State<PaymentItem> {
   }
 
   bool _createdWithin(Duration duration) {
-    final diff = widget.paymentData.paymentTime.difference(DateTime.now());
+    final Duration diff = widget.paymentData.paymentTime.difference(DateTime.now());
     return diff > -duration;
   }
 }

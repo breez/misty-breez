@@ -9,10 +9,10 @@ class PaymentsFilterSliver extends StatefulWidget {
   final ScrollController scrollController;
 
   const PaymentsFilterSliver({
-    super.key,
     required this.maxSize,
     required this.hasFilter,
     required this.scrollController,
+    super.key,
   });
 
   @override
@@ -38,8 +38,8 @@ class _PaymentsFilterSliverState extends State<PaymentsFilterSliver> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final scrollOffset = widget.scrollController.position.pixels;
+    final ThemeData themeData = Theme.of(context);
+    final double scrollOffset = widget.scrollController.position.pixels;
 
     return SliverPersistentHeader(
       pinned: true,
@@ -50,7 +50,7 @@ class _PaymentsFilterSliverState extends State<PaymentsFilterSliver> {
                 0,
                 widget.maxSize,
               ),
-        builder: (context, height, overlapContent) {
+        builder: (BuildContext context, double height, bool overlapContent) {
           return Container(
             color: themeData.isLightTheme ? themeData.colorScheme.surface : themeData.canvasColor,
             child: Padding(

@@ -1,15 +1,16 @@
 library account_cubit;
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
 import 'package:logging/logging.dart';
 
 export 'account_state.dart';
 
-final _logger = Logger("AccountCubit");
+final Logger _logger = Logger('AccountCubit');
 
-class AccountCubit extends Cubit<AccountState> with HydratedMixin {
+class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> {
   final BreezSDKLiquid breezSdkLiquid;
 
   AccountCubit({
@@ -21,18 +22,20 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin {
   }
 
   void _listenAccountChanges() {
-    _logger.info("Listening to account changes");
-    breezSdkLiquid.walletInfoStream.distinct().listen((walletInfo) {
-      final newState = state.copyWith(walletInfo: walletInfo);
-      _logger.info("AccountState changed: $newState");
-      emit(newState);
-    });
+    _logger.info('Listening to account changes');
+    breezSdkLiquid.walletInfoStream.distinct().listen(
+      (GetInfoResponse walletInfo) {
+        final AccountState newState = state.copyWith(walletInfo: walletInfo);
+        _logger.info('AccountState changed: $newState');
+        emit(newState);
+      },
+    );
   }
 
   void _listenInitialSyncEvent() {
-    _logger.info("Listening to initial sync event.");
+    _logger.info('Listening to initial sync event.');
     breezSdkLiquid.didCompleteInitialSyncStream.listen((_) {
-      _logger.info("Initial sync complete.");
+      _logger.info('Initial sync complete.');
       emit(state.copyWith(isRestoring: false, didCompleteInitialSync: true));
     });
   }

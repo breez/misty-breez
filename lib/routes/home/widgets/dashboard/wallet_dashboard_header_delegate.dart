@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:l_breez/routes/home/widgets/dashboard/wallet_dashboard.dart';
 
-import 'wallet_dashboard.dart';
-
-const kMaxExtent = 200.0;
-const kMinExtent = 70.0;
+const double kMaxExtent = 200.0;
+const double kMinExtent = 70.0;
 
 class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   const WalletDashboardHeaderDelegate();

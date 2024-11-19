@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -17,10 +18,10 @@ class RefundConfirmationPage extends StatefulWidget {
   final String? originalTransaction;
 
   const RefundConfirmationPage({
-    super.key,
     required this.amountSat,
     required this.toAddress,
     required this.swapAddress,
+    super.key,
     this.originalTransaction,
   });
 
@@ -31,7 +32,7 @@ class RefundConfirmationPage extends StatefulWidget {
 }
 
 class RefundConfirmationState extends State<RefundConfirmationPage> {
-  List<RefundFeeOption> affordableFees = [];
+  List<RefundFeeOption> affordableFees = <RefundFeeOption>[];
   int selectedFeeIndex = -1;
 
   late Future<List<RefundFeeOption>> _fetchFeeOptionsFuture;
@@ -44,15 +45,15 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(texts.sweep_all_coins_speed),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<RefundFeeOption>>(
         future: _fetchFeeOptionsFuture,
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<RefundFeeOption>> snapshot) {
           if (snapshot.error != null) {
             return _ErrorMessage(
               message: texts.sweep_all_coins_error_retrieve_fees,
@@ -71,7 +72,7 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
               amountSat: widget.amountSat,
               feeOptions: snapshot.data!,
               selectedFeeIndex: selectedFeeIndex,
-              onSelect: (index) => setState(() {
+              onSelect: (int index) => setState(() {
                 selectedFeeIndex = index;
               }),
             );
@@ -100,14 +101,18 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
   }
 
   void _fetchRefundFeeOptions() {
-    final refundCubit = context.read<RefundCubit>();
+    final RefundCubit refundCubit = context.read<RefundCubit>();
     _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(
       toAddress: widget.toAddress,
       swapAddress: widget.swapAddress,
     );
-    _fetchFeeOptionsFuture.then((feeOptions) {
+    _fetchFeeOptionsFuture.then((List<RefundFeeOption> feeOptions) {
       setState(() {
-        affordableFees = feeOptions.where((f) => f.isAffordable(amountSat: widget.amountSat)).toList();
+        affordableFees = feeOptions
+            .where(
+              (RefundFeeOption f) => f.isAffordable(amountSat: widget.amountSat),
+            )
+            .toList();
         selectedFeeIndex = (affordableFees.length / 2).floor();
       });
     });

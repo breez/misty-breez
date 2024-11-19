@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -8,20 +9,21 @@ import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/error_dialog.dart';
 import 'package:l_breez/widgets/loader.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/transparent_page_route.dart';
 
 class SendChainSwapButton extends StatelessWidget {
   final String recipientAddress;
   final PreparePayOnchainResponse preparePayOnchainResponse;
 
   const SendChainSwapButton({
-    super.key,
     required this.recipientAddress,
     required this.preparePayOnchainResponse,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return SingleButtonBottomBar(
       text: texts.sweep_all_coins_action_confirm,
@@ -29,21 +31,26 @@ class SendChainSwapButton extends StatelessWidget {
     );
   }
 
-  Future _payOnchain(BuildContext context) async {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final chainSwapCubit = context.read<ChainSwapCubit>();
+  Future<void> _payOnchain(BuildContext context) async {
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
 
-    final navigator = Navigator.of(context);
-    var loaderRoute = createLoaderRoute(context);
+    final NavigatorState navigator = Navigator.of(context);
+    final TransparentPageRoute<void> loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
     try {
-      final req = PayOnchainRequest(address: recipientAddress, prepareResponse: preparePayOnchainResponse);
+      final PayOnchainRequest req = PayOnchainRequest(
+        address: recipientAddress,
+        prepareResponse: preparePayOnchainResponse,
+      );
       await chainSwapCubit.payOnchain(req: req);
       navigator.pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
     } catch (e) {
       navigator.pop(loaderRoute);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       promptError(
         context,
         null,

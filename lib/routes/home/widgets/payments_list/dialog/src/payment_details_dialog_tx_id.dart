@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:l_breez/cubit/payments/models/models.dart';
 import 'package:l_breez/utils/blockchain_explorer_utils.dart';
@@ -11,8 +12,8 @@ class PaymentDetailsTxId extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final txId = paymentData.txId;
-    final texts = context.texts();
+    final String txId = paymentData.txId;
+    final BreezTranslations texts = context.texts();
 
     return txId.isNotEmpty
         ? ShareablePaymentRow(

@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:breez_translations/breez_translations_locales.dart';
-import "package:intl/intl.dart";
+import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class BreezDateUtils {
@@ -16,7 +16,7 @@ class BreezDateUtils {
   static String formatYearMonthDayHourMinute(DateTime d) => _yearMonthDayHourMinuteFormat
       .format(d)
       // Known issues: NumberFormat Non-breaking space breaking unit tests
-      // TODO: remove it when a fix is published  https://github.com/dart-lang/i18n/issues/146
+      // TODO(erdemyerebasmaz): remove it when a fix is published  https://github.com/dart-lang/i18n/issues/146
       .replaceAll(' ', ' ');
   static String formatYearMonthDayHourMinuteSecond(DateTime d) =>
       _yearMonthDayHourMinuteSecondFormat.format(d);
@@ -34,26 +34,26 @@ class BreezDateUtils {
     DateTime fromDateTime,
     DateTime toDateTime,
   ) {
-    final isAfter = date.isAfter(fromDateTime);
-    final isBefore = date.isBefore(toDateTime);
+    final bool isAfter = date.isAfter(fromDateTime);
+    final bool isBefore = date.isBefore(toDateTime);
     return isAfter && isBefore;
   }
 
   static DateTime blockDiffToDate({required int blockHeight, required int expiryBlock}) {
-    final diffInSecs = (expiryBlock - blockHeight) * 600;
-    final time = DateTime.now();
+    final int diffInSecs = (expiryBlock - blockHeight) * 600;
+    final DateTime time = DateTime.now();
     return time.add(Duration(seconds: diffInSecs));
   }
 
   static String formatHourMinute(DateTime d) => _hourMinuteDayFormat.format(d);
 
   static String formatFilterDateRange(DateTime startDate, DateTime endDate) {
-    var formatter = (startDate.year == endDate.year) ? _monthDateFormat : _yearMonthDayFormat;
-    return "${formatter.format(startDate)}-${formatter.format(endDate)}";
+    final DateFormat formatter = (startDate.year == endDate.year) ? _monthDateFormat : _yearMonthDayFormat;
+    return '${formatter.format(startDate)}-${formatter.format(endDate)}';
   }
 
   static void setupLocales() {
-    timeago.setLocaleMessages('bg', timeago.EnMessages()); // TODO: add bg locale
+    timeago.setLocaleMessages('bg', timeago.EnMessages()); // TODO(erdemyerebasmaz): add bg locale
     timeago.setLocaleMessages('cs', timeago.CsMessages());
     timeago.setLocaleMessages('de', timeago.DeMessages());
     timeago.setLocaleMessages('el', timeago.GrMessages());
@@ -63,7 +63,7 @@ class BreezDateUtils {
     timeago.setLocaleMessages('fr', timeago.FrMessages());
     timeago.setLocaleMessages('it', timeago.ItMessages());
     timeago.setLocaleMessages('pt', timeago.PtBrMessages());
-    timeago.setLocaleMessages('sk', timeago.EnMessages()); // TODO: add sk locale
+    timeago.setLocaleMessages('sk', timeago.EnMessages()); // TODO(erdemyerebasmaz): add sk locale
     timeago.setLocaleMessages('sv', timeago.SvMessages());
   }
 }

@@ -19,7 +19,7 @@ class BubblePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     size = MediaQuery.of(context).size;
-    double height = (size.height - kToolbarHeight);
+    final double height = (size.height - kToolbarHeight);
     canvas.drawCircle(
       Offset(size.width / 2, height * 0.4),
       _kBubbleRadius,

@@ -46,14 +46,15 @@ ProfileAnimal? profileAnimalFromName(String? name, BreezTranslations texts) {
   if (name == null) {
     return null;
   }
-  final key = name.toLowerCase();
-  final localizedNames = _animalsFromName[texts.locale] ?? {};
+  final String key = name.toLowerCase();
+  final Map<String, ProfileAnimal> localizedNames =
+      _animalsFromName[texts.locale] ?? <String, ProfileAnimal>{};
 
   if (localizedNames.containsKey(key)) {
     return localizedNames[key];
   }
 
-  for (var map in _animalsFromName.values) {
+  for (Map<String, ProfileAnimal> map in _animalsFromName.values) {
     if (map.containsKey(key)) {
       return map[key];
     }
@@ -119,7 +120,7 @@ extension ProfileAnimalExtension on ProfileAnimal {
       case ProfileAnimal.snake:
         return texts.app_animal_snake;
       default:
-        return "";
+        return '';
     }
   }
 
@@ -183,23 +184,23 @@ extension ProfileAnimalExtension on ProfileAnimal {
   }
 }
 
-Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
-  "bg": _buildAnimalsFromName(BreezTranslationsBg()),
-  "cz": _buildAnimalsFromName(BreezTranslationsCs()),
-  "cs": _buildAnimalsFromName(BreezTranslationsCs()),
-  "de": _buildAnimalsFromName(BreezTranslationsDe()),
-  "el": _buildAnimalsFromName(BreezTranslationsEl()),
-  "en": _buildAnimalsFromName(BreezTranslationsEn()),
-  "es": _buildAnimalsFromName(BreezTranslationsEs()),
-  "fi": _buildAnimalsFromName(BreezTranslationsFi()),
-  "fr": _buildAnimalsFromName(BreezTranslationsFr()),
-  "it": _buildAnimalsFromName(BreezTranslationsIt()),
-  "pt": _buildAnimalsFromName(BreezTranslationsPt()),
-  "sk": _buildAnimalsFromName(BreezTranslationsSk()),
-  "sv": _buildAnimalsFromName(BreezTranslationsSv()),
+Map<String, Map<String, ProfileAnimal>> _animalsFromName = <String, Map<String, ProfileAnimal>>{
+  'bg': _buildAnimalsFromName(BreezTranslationsBg()),
+  'cz': _buildAnimalsFromName(BreezTranslationsCs()),
+  'cs': _buildAnimalsFromName(BreezTranslationsCs()),
+  'de': _buildAnimalsFromName(BreezTranslationsDe()),
+  'el': _buildAnimalsFromName(BreezTranslationsEl()),
+  'en': _buildAnimalsFromName(BreezTranslationsEn()),
+  'es': _buildAnimalsFromName(BreezTranslationsEs()),
+  'fi': _buildAnimalsFromName(BreezTranslationsFi()),
+  'fr': _buildAnimalsFromName(BreezTranslationsFr()),
+  'it': _buildAnimalsFromName(BreezTranslationsIt()),
+  'pt': _buildAnimalsFromName(BreezTranslationsPt()),
+  'sk': _buildAnimalsFromName(BreezTranslationsSk()),
+  'sv': _buildAnimalsFromName(BreezTranslationsSv()),
 };
 
-Map<String, ProfileAnimal> _buildAnimalsFromName(BreezTranslations local) => {
+Map<String, ProfileAnimal> _buildAnimalsFromName(BreezTranslations local) => <String, ProfileAnimal>{
       local.app_animal_bat.toLowerCase(): ProfileAnimal.bat,
       local.app_animal_bear.toLowerCase(): ProfileAnimal.bear,
       local.app_animal_boar.toLowerCase(): ProfileAnimal.boar,

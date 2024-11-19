@@ -2,30 +2,34 @@ import 'package:l_breez/utils/currency_formatter.dart';
 
 class BitcoinCurrency extends Object {
   final String tickerSymbol;
-  static const BitcoinCurrency btc = BitcoinCurrency._internal("BTC");
-  static const BitcoinCurrency sat = BitcoinCurrency._internal("SAT");
-  static final List<BitcoinCurrency> currencies = List.unmodifiable([btc, sat]);
+  static const BitcoinCurrency btc = BitcoinCurrency._internal('BTC');
+  static const BitcoinCurrency sat = BitcoinCurrency._internal('SAT');
+  static final List<BitcoinCurrency> currencies =
+      List<BitcoinCurrency>.unmodifiable(<BitcoinCurrency>[btc, sat]);
 
   const BitcoinCurrency._internal(this.tickerSymbol);
 
   factory BitcoinCurrency.fromTickerSymbol(String tickerSymbol) {
     return currencies.firstWhere(
-      (c) => c.tickerSymbol.toUpperCase() == tickerSymbol.toUpperCase(),
+      (BitcoinCurrency c) => c.tickerSymbol.toUpperCase() == tickerSymbol.toUpperCase(),
     );
   }
 
   String format(
     int sat, {
-    includeCurrencySymbol = false,
-    includeDisplayName = true,
-    removeTrailingZeros = false,
-    userInput = false,
+    bool includeCurrencySymbol = false,
+    bool includeDisplayName = true,
+    bool removeTrailingZeros = false,
+    bool userInput = false,
   }) =>
-      BitcoinCurrencyFormatter().format(sat, this,
-          addCurrencySymbol: includeCurrencySymbol,
-          addCurrencySuffix: includeDisplayName,
-          removeTrailingZeros: removeTrailingZeros,
-          userInput: userInput);
+      BitcoinCurrencyFormatter().format(
+        sat,
+        this,
+        addCurrencySymbol: includeCurrencySymbol,
+        addCurrencySuffix: includeDisplayName,
+        removeTrailingZeros: removeTrailingZeros,
+        userInput: userInput,
+      );
 
   int parse(String amountStr) => BitcoinCurrencyFormatter().parse(amountStr, this);
 
@@ -44,27 +48,27 @@ class BitcoinCurrency extends Object {
 
   int toSats(double amount) => BitcoinCurrencyFormatter().toSats(amount, this);
 
-  String get displayName => tickerSymbol.toLowerCase() == "sat" ? "sats" : tickerSymbol;
+  String get displayName => tickerSymbol.toLowerCase() == 'sat' ? 'sats' : tickerSymbol;
 
   String get symbol {
     switch (tickerSymbol) {
-      case "BTC":
-        return "₿";
-      case "SAT":
-        return "Ş";
+      case 'BTC':
+        return '₿';
+      case 'SAT':
+        return 'Ş';
       default:
-        return "₿";
+        return '₿';
     }
   }
 
   RegExp get whitelistedPattern {
     switch (tickerSymbol) {
-      case "BTC":
-        return RegExp("^\\d+[.,]?\\d{0,8}");
-      case "SAT":
+      case 'BTC':
+        return RegExp('^\\d+[.,]?\\d{0,8}');
+      case 'SAT':
         return RegExp(r'\d+');
       default:
-        return RegExp("^\\d+[.,]?\\d{0,8}");
+        return RegExp('^\\d+[.,]?\\d{0,8}');
     }
   }
 

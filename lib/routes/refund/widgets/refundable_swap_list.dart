@@ -5,20 +5,20 @@ import 'package:l_breez/routes/refund/widgets/widgets.dart';
 class RefundableSwapList extends StatelessWidget {
   final List<RefundableSwap> refundables;
 
-  const RefundableSwapList({super.key, required this.refundables});
+  const RefundableSwapList({required this.refundables, super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
       itemCount: refundables.length,
-      itemBuilder: (context, index) {
+      itemBuilder: (BuildContext context, int index) {
         return Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
-            children: [
+            children: <Widget>[
               RefundItem(refundables[index]),
-              if (index != refundables.length) ...[
+              if (index != refundables.length) ...<Widget>[
                 const Divider(
                   height: 0.0,
                   color: Color.fromRGBO(255, 255, 255, 0.52),

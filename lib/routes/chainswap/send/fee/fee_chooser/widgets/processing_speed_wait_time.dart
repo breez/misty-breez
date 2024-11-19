@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 
 class ProcessingSpeedWaitTime extends StatelessWidget {
@@ -11,10 +12,10 @@ class ProcessingSpeedWaitTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
-    final hours = waitingTime.inHours;
+    final int hours = waitingTime.inHours;
 
     String message = texts.fee_chooser_estimated_delivery_minutes(
       waitingTime.inMinutes.toString(),

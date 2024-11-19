@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -12,10 +13,10 @@ class LnPaymentHeader extends StatefulWidget {
   final String errorMessage;
 
   const LnPaymentHeader({
-    super.key,
     required this.payeeName,
     required this.totalAmount,
     required this.errorMessage,
+    super.key,
   });
 
   @override
@@ -27,11 +28,11 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final currencyCubit = context.read<CurrencyCubit>();
-    final currencyState = currencyCubit.state;
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
 
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     FiatConversion? fiatConversion;
     if (currencyState.fiatEnabled) {
@@ -91,9 +92,9 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
                           removeTrailingZeros: true,
                           includeDisplayName: false,
                         ),
-                        children: [
+                        children: <InlineSpan>[
                           TextSpan(
-                            text: " ${currencyState.bitcoinCurrency.displayName}",
+                            text: ' ${currencyState.bitcoinCurrency.displayName}',
                             style: balanceCurrencyTextStyle.copyWith(
                               color: themeData.colorScheme.onSurface,
                             ),
@@ -114,7 +115,7 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
             ),
           ],
            */
-          if (widget.errorMessage.isNotEmpty) ...[
+          if (widget.errorMessage.isNotEmpty) ...<Widget>[
             AutoSizeText(
               widget.errorMessage,
               textAlign: TextAlign.center,
@@ -123,7 +124,7 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
                 color: themeData.colorScheme.error,
               ),
             ),
-          ]
+          ],
         ],
       ),
     );

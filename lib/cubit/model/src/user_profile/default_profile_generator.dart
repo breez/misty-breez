@@ -1,7 +1,8 @@
-import "dart:math";
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:l_breez/cubit/cubit.dart';
 
 class DefaultProfile {
@@ -19,7 +20,7 @@ class DefaultProfile {
       case 'fr':
       case 'it':
       case 'pt':
-        return "$animal $color";
+        return '$animal $color';
 
       case 'bg':
       case 'cs':
@@ -30,20 +31,20 @@ class DefaultProfile {
       case 'sk':
       case 'sv':
       default:
-        return "$color $animal";
+        return '$color $animal';
     }
   }
 }
 
 DefaultProfile generateDefaultProfile() {
-  final texts = getSystemAppLocalizations();
-  final random = Random();
+  final BreezTranslations texts = getSystemAppLocalizations();
+  final Random random = Random();
 
-  const colors = ProfileColor.values;
-  const animals = ProfileAnimal.values;
+  const List<ProfileColor> colors = ProfileColor.values;
+  const List<ProfileAnimal> animals = ProfileAnimal.values;
 
-  final randomColor = colors.elementAt(random.nextInt(colors.length));
-  final randomAnimal = animals.elementAt(random.nextInt(animals.length));
+  final ProfileColor randomColor = colors.elementAt(random.nextInt(colors.length));
+  final ProfileAnimal randomAnimal = animals.elementAt(random.nextInt(animals.length));
 
   return DefaultProfile(
     randomColor.name(texts),

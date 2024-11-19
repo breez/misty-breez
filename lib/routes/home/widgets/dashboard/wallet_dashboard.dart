@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/widgets/dashboard/balance_text.dart';
 import 'package:l_breez/routes/home/widgets/dashboard/fiat_balance_text.dart';
 import 'package:l_breez/routes/home/widgets/dashboard/placeholder_balance_text.dart';
 import 'package:l_breez/theme/theme.dart';
 
-import 'balance_text.dart';
-
-const _kBalanceOffsetTransition = 60.0;
+const double _kBalanceOffsetTransition = 60.0;
 
 class WalletDashboard extends StatefulWidget {
   final double height;
   final double offsetFactor;
 
   const WalletDashboard({
-    super.key,
     required this.height,
     required this.offsetFactor,
+    super.key,
   });
 
   @override
@@ -26,20 +25,20 @@ class WalletDashboard extends StatefulWidget {
 class _WalletDashboardState extends State<WalletDashboard> {
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
-      builder: (context, currencyState) {
+      builder: (BuildContext context, CurrencyState currencyState) {
         return BlocBuilder<UserProfileCubit, UserProfileState>(
-          builder: (context, userProfileState) {
+          builder: (BuildContext context, UserProfileState userProfileState) {
             return BlocBuilder<AccountCubit, AccountState>(
-              builder: (context, accountState) {
-                final hiddenBalance = userProfileState.profileSettings.hideBalance;
-                final showBalance = !accountState.isRestoring && accountState.walletInfo != null;
+              builder: (BuildContext context, AccountState accountState) {
+                final bool hiddenBalance = userProfileState.profileSettings.hideBalance;
+                final bool showBalance = !accountState.isRestoring && accountState.walletInfo != null;
 
                 return Stack(
                   alignment: AlignmentDirectional.topCenter,
-                  children: [
+                  children: <Widget>[
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: widget.height,

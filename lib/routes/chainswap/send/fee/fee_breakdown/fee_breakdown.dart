@@ -12,7 +12,7 @@ class FeeBreakdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -23,13 +23,13 @@ class FeeBreakdown extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           SenderAmount(amountSat: (feeOption.receiverAmountSat + feeOption.totalFeesSat).toInt()),
           BoltzServiceFee(
             boltzServiceFee: (feeOption.totalFeesSat - feeOption.claimFeesSat).toInt(),
           ),
           TransactionFee(txFeeSat: feeOption.claimFeesSat.toInt()),
-          RecipientAmount(amountSat: feeOption.receiverAmountSat.toInt())
+          RecipientAmount(amountSat: feeOption.receiverAmountSat.toInt()),
         ],
       ),
     );

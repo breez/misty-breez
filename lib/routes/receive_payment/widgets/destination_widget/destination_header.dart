@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/widgets/flushbar.dart';
@@ -11,34 +12,37 @@ class DestinationHeader extends StatelessWidget {
   final String? paymentMethod;
 
   const DestinationHeader({
-    super.key,
     required this.snapshot,
     required this.destination,
+    super.key,
     this.paymentMethod,
   });
 
   @override
   Widget build(BuildContext context) {
-    final destination = this.destination ?? snapshot?.data?.destination;
+    final String? destination = this.destination ?? snapshot?.data?.destination;
     return SizedBox(
       height: 64,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          if (paymentMethod != null && paymentMethod!.isNotEmpty) ...[
+        children: <Widget>[
+          if (paymentMethod != null && paymentMethod!.isNotEmpty) ...<Widget>[
             Text(paymentMethod!),
           ],
-          if (destination != null) ...[
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              _ShareIcon(
-                destination: destination,
-                paymentMethod: paymentMethod,
-              ),
-              _CopyIcon(
-                destination: destination,
-                paymentMethod: paymentMethod,
-              ),
-            ]),
+          if (destination != null) ...<Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                _ShareIcon(
+                  destination: destination,
+                  paymentMethod: paymentMethod,
+                ),
+                _CopyIcon(
+                  destination: destination,
+                  paymentMethod: paymentMethod,
+                ),
+              ],
+            ),
           ],
         ],
       ),
@@ -57,13 +61,13 @@ class _ShareIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return Tooltip(
-      // TODO: Add these messages to Breez-Translations
+      // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
       message: (paymentMethod != null && paymentMethod!.isNotEmpty)
-          ? "Share $paymentMethod"
-          : "Share deposit address",
+          ? 'Share $paymentMethod'
+          : 'Share deposit address',
       child: IconButton(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -89,8 +93,8 @@ class _CopyIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Tooltip(
       message: texts.qr_code_dialog_copy,
@@ -102,7 +106,7 @@ class _CopyIcon extends StatelessWidget {
         color: themeData.colorScheme.primary,
         onPressed: () {
           ServiceInjector().deviceClient.setClipboardText(destination);
-          // TODO: Create payment method specific copy messages to Breez-Translations
+          // TODO(erdemyerebasmaz): Create payment method specific copy messages to Breez-Translations
           showFlushbar(
             context,
             message: (paymentMethod != null && paymentMethod!.isNotEmpty)

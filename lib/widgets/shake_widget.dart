@@ -6,13 +6,13 @@ import 'package:vector_math/vector_math_64.dart';
 // Based on https://github.com/FayaPay/flutter-shake-anim/blob/master/lib/ui/shake_view.dart
 class ShakeWidget extends StatelessWidget {
   final ShakeController controller;
-  final Animation _anim;
+  final Animation<double> _anim;
   final Widget child;
 
   ShakeWidget({
-    super.key,
     required this.controller,
     required this.child,
+    super.key,
   }) : _anim = Tween<double>(begin: 50, end: 120).animate(controller);
 
   @override
@@ -20,15 +20,17 @@ class ShakeWidget extends StatelessWidget {
     return AnimatedBuilder(
       animation: controller,
       child: child,
-      builder: (context, child) => Transform(
-        transform: Matrix4.translation(_shake(_anim.value)),
+      builder: (BuildContext context, Widget? child) => Transform(
+        transform: Matrix4.translation(
+          _shake(_anim.value),
+        ),
         child: child,
       ),
     );
   }
 
   Vector3 _shake(double progress) {
-    double offset = sin(progress * pi * 4.0);
+    final double offset = sin(progress * pi * 4.0);
     return Vector3(offset * 4, 0.0, 0.0);
   }
 }

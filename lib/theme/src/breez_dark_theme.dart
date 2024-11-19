@@ -54,41 +54,46 @@ final ThemeData breezDarkTheme = ThemeData(
   cardTheme: const CardTheme(color: Color(0xFF121212)),
   highlightColor: const Color(0xFF0085fb),
   textTheme: const TextTheme(
-      titleSmall: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
-      headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
-      labelLarge: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-      headlineMedium: TextStyle(
-        color: Color(0xffffe685),
-        fontSize: 18.0,
-      ),
-      titleLarge: TextStyle(
-          color: Colors.white,
-          fontSize: 12.3,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.25,
-          height: 1.22)),
+    titleSmall: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
+    headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
+    labelLarge: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+    headlineMedium: TextStyle(
+      color: Color(0xffffe685),
+      fontSize: 18.0,
+    ),
+    titleLarge: TextStyle(
+      color: Colors.white,
+      fontSize: 12.3,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.25,
+      height: 1.22,
+    ),
+  ),
   primaryTextTheme: TextTheme(
     headlineMedium: const TextStyle(
-        color: Colors.white,
-        fontSize: 14.0,
-        letterSpacing: 0.0,
-        height: 1.28,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: Colors.white,
+      fontSize: 14.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     displaySmall: const TextStyle(color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
     headlineSmall: const TextStyle(
-        color: Colors.white,
-        fontSize: 24.0,
-        letterSpacing: 0.0,
-        height: 1.28,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: Colors.white,
+      fontSize: 24.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     bodyMedium: const TextStyle(
-        color: Colors.white,
-        fontSize: 16.4,
-        letterSpacing: 0.15,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: Colors.white,
+      fontSize: 16.4,
+      letterSpacing: 0.15,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     labelLarge: const TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     titleSmall: TextStyle(color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     bodySmall: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
@@ -103,7 +108,7 @@ final ThemeData breezDarkTheme = ThemeData(
   outlinedButtonTheme: const OutlinedButtonThemeData(),
   elevatedButtonTheme: const ElevatedButtonThemeData(),
   radioTheme: RadioThemeData(
-    fillColor: WidgetStateProperty.resolveWith((states) {
+    fillColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
       return Colors.white;
     }),
   ),
@@ -112,37 +117,37 @@ final ThemeData breezDarkTheme = ThemeData(
 );
 
 final DatePickerThemeData calendarDarkTheme = DatePickerThemeData(
-  yearBackgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+  yearBackgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
     if (states.contains(WidgetState.selected)) {
       return const Color(0xFF0085fb);
     }
     return Colors.transparent;
   }),
-  yearForegroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+  yearForegroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
     if (states.contains(WidgetState.disabled)) {
       return Colors.white38;
     }
     return Colors.white;
   }),
-  dayBackgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+  dayBackgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
     if (states.contains(WidgetState.selected)) {
       return const Color(0xFF0085fb);
     }
     return Colors.transparent;
   }),
-  dayForegroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+  dayForegroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
     if (states.contains(WidgetState.disabled)) {
       return Colors.white38;
     }
     return Colors.white;
   }),
-  todayBackgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+  todayBackgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
     if (states.contains(WidgetState.selected)) {
       return const Color(0xFF0085fb);
     }
     return Colors.transparent;
   }),
-  todayForegroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+  todayForegroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
     if (states.contains(WidgetState.selected)) {
       return Colors.white;
     }
@@ -162,7 +167,7 @@ final DatePickerThemeData calendarDarkTheme = DatePickerThemeData(
   ),
   cancelButtonStyle: ButtonStyle(
     foregroundColor: WidgetStateProperty.resolveWith<Color?>(
-      (states) {
+      (Set<WidgetState> states) {
         if (states.contains(WidgetState.disabled)) {
           return Colors.white38;
         }
@@ -173,7 +178,7 @@ final DatePickerThemeData calendarDarkTheme = DatePickerThemeData(
   ),
   confirmButtonStyle: ButtonStyle(
     foregroundColor: WidgetStateProperty.resolveWith<Color?>(
-      (states) {
+      (Set<WidgetState> states) {
         if (states.contains(WidgetState.disabled)) {
           return Colors.white38;
         }

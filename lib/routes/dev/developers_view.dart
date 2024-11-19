@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
 import 'package:breez_logger/breez_logger.dart';
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -18,7 +21,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _logger = Logger("DevelopersView");
+final Logger _logger = Logger('DevelopersView');
 
 bool allowRebroadcastRefunds = false;
 
@@ -35,7 +38,7 @@ class Choice {
 }
 
 class DevelopersView extends StatefulWidget {
-  static const routeName = "/developers";
+  static const String routeName = '/developers';
 
   const DevelopersView({super.key});
 
@@ -44,23 +47,24 @@ class DevelopersView extends StatefulWidget {
 }
 
 class _DevelopersViewState extends State<DevelopersView> {
-  final _preferences = const BreezPreferences();
-  var bugReportBehavior = BugReportBehavior.prompt;
+  final BreezPreferences _preferences = const BreezPreferences();
+  BugReportBehavior bugReportBehavior = BugReportBehavior.prompt;
 
   @override
   void initState() {
     super.initState();
-    _preferences
-        .getBugReportBehavior()
-        .then((value) => bugReportBehavior = value, onError: (e) => _logger.warning(e));
+    _preferences.getBugReportBehavior().then(
+          (BugReportBehavior value) => bugReportBehavior = value,
+          onError: (Object e) => _logger.warning(e),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: scaffoldKey,
@@ -68,15 +72,15 @@ class _DevelopersViewState extends State<DevelopersView> {
         automaticallyImplyLeading: false,
         leading: const back_button.BackButton(),
         title: Text(texts.home_drawer_item_title_developers),
-        actions: [
+        actions: <Widget>[
           PopupMenuButton<Choice>(
-            onSelected: (c) => c.function(context),
+            onSelected: (Choice c) => c.function(context),
             color: themeData.colorScheme.surface,
             icon: Icon(
               Icons.more_vert,
               color: themeData.iconTheme.color,
             ),
-            itemBuilder: (context) => [
+            itemBuilder: (BuildContext context) => <Choice>[
               Choice(
                 title: texts.developers_page_menu_export_keys_title,
                 icon: Icons.phone_android,
@@ -98,17 +102,18 @@ class _DevelopersViewState extends State<DevelopersView> {
                   icon: Icons.bug_report,
                   function: (_) {
                     _preferences.setBugReportBehavior(BugReportBehavior.prompt).then(
-                        (value) => setState(
-                              () {
-                                bugReportBehavior = BugReportBehavior.prompt;
-                              },
-                            ),
-                        onError: (e) => _logger.warning(e));
+                          (void value) => setState(
+                            () {
+                              bugReportBehavior = BugReportBehavior.prompt;
+                            },
+                          ),
+                          onError: (Object e) => _logger.warning(e),
+                        );
                   },
                 ),
             ]
                 .map(
-                  (choice) => PopupMenuItem<Choice>(
+                  (Choice choice) => PopupMenuItem<Choice>(
                     value: choice,
                     child: Text(
                       choice.title,
@@ -120,52 +125,53 @@ class _DevelopersViewState extends State<DevelopersView> {
           ),
         ],
       ),
-      // TODO: Liquid - Remove Absorb Pointer once execute_command API is implemented
+      // TODO(erdemyerebasmaz): Liquid - Remove Absorb Pointer once execute_command API is implemented
       body: AbsorbPointer(
-        absorbing: true,
         child: CommandLineInterface(scaffoldKey: scaffoldKey),
       ),
     );
   }
 
   void _exportKeys(BuildContext context) async {
-    final accountCubit = context.read<AccountCubit>();
-    final accountState = accountCubit.state;
+    final AccountCubit accountCubit = context.read<AccountCubit>();
+    final AccountState accountState = accountCubit.state;
 
-    final credentialsManager = ServiceInjector().credentialsManager;
-    final appDir = await getApplicationDocumentsDirectory();
-    final encoder = ZipFileEncoder();
-    final zipFilePath = "${appDir.path}/l-breez-keys.zip";
+    final CredentialsManager credentialsManager = ServiceInjector().credentialsManager;
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final ZipFileEncoder encoder = ZipFileEncoder();
+    final String zipFilePath = '${appDir.path}/l-breez-keys.zip';
     encoder.create(zipFilePath);
     final List<File> credentialFiles = await credentialsManager.exportCredentials();
-    for (var credentialFile in credentialFiles) {
-      final bytes = await credentialFile.readAsBytes();
+    for (File credentialFile in credentialFiles) {
+      final Uint8List bytes = await credentialFile.readAsBytes();
       encoder.addArchiveFile(
         ArchiveFile(basename(credentialFile.path), bytes.length, bytes),
       );
     }
 
-    final config = await AppConfig.instance();
-    final sdkDirPath = Directory(config.sdkConfig.workingDir).path;
-    final networkName = config.sdkConfig.network.name;
-    final fingerprint = accountState.walletInfo!.fingerprint;
-    final walletStoragePath = "$sdkDirPath/$networkName/$fingerprint";
-    final storageFilePath = "$walletStoragePath/storage.sql";
-    final storageFile = File(storageFilePath);
+    final AppConfig config = await AppConfig.instance();
+    final String sdkDirPath = Directory(config.sdkConfig.workingDir).path;
+    final String networkName = config.sdkConfig.network.name;
+    final String fingerprint = accountState.walletInfo!.fingerprint;
+    final String walletStoragePath = '$sdkDirPath/$networkName/$fingerprint';
+    final String storageFilePath = '$walletStoragePath/storage.sql';
+    final File storageFile = File(storageFilePath);
     encoder.addFile(storageFile);
     encoder.close();
-    final zipFile = XFile(zipFilePath);
-    Share.shareXFiles([zipFile]);
+    final XFile zipFile = XFile(zipFilePath);
+    Share.shareXFiles(<XFile>[zipFile]);
   }
 
   Future<void> _rescanOnchainSwaps(BuildContext context) async {
-    final texts = getSystemAppLocalizations();
-    final chainSwapCubit = context.read<ChainSwapCubit>();
+    final BreezTranslations texts = getSystemAppLocalizations();
+    final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
 
     try {
       return await chainSwapCubit.rescanOnchainSwaps();
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       showFlushbar(context, title: extractExceptionMessage(error, texts));
     }
   }

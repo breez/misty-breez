@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_qr_image.dart';
@@ -12,18 +13,18 @@ class DestinationQRWidget extends StatelessWidget {
   final Widget? infoWidget;
 
   const DestinationQRWidget({
-    super.key,
     required this.snapshot,
     required this.destination,
+    super.key,
     this.onLongPress,
     this.infoWidget,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
-    final destination = this.destination ?? snapshot?.data?.destination;
+    final String? destination = this.destination ?? snapshot?.data?.destination;
 
     return AnimatedCrossFade(
       firstChild: LoadingOrError(
@@ -35,19 +36,19 @@ class DestinationQRWidget extends StatelessWidget {
       secondChild: destination == null
           ? const SizedBox.shrink()
           : Column(
-              children: [
+              children: <Widget>[
                 GestureDetector(
                   onLongPress: onLongPress,
                   child: DestinationQRImage(
                     destination: destination,
                   ),
                 ),
-                if (infoWidget != null) ...[
+                if (infoWidget != null) ...<Widget>[
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: infoWidget,
                   ),
-                ]
+                ],
               ],
             ),
       duration: const Duration(seconds: 1),

@@ -11,7 +11,7 @@ import 'package:logging/logging.dart';
 
 export 'lnurl_state.dart';
 
-final _logger = Logger("LnUrlCubit");
+final Logger _logger = Logger('LnUrlCubit');
 
 class LnUrlCubit extends Cubit<LnUrlState> {
   final BreezSDKLiquid _breezSdkLiquid;
@@ -24,7 +24,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     try {
       return await _breezSdkLiquid.instance!.lnurlWithdraw(req: req);
     } catch (e) {
-      _logger.severe("lnurlWithdraw error", e);
+      _logger.severe('lnurlWithdraw error', e);
       rethrow;
     }
   }
@@ -35,7 +35,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     try {
       return await _breezSdkLiquid.instance!.prepareLnurlPay(req: req);
     } catch (e) {
-      _logger.severe("prepareLnurlPay error", e);
+      _logger.severe('prepareLnurlPay error', e);
       rethrow;
     }
   }
@@ -46,7 +46,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     try {
       return await _breezSdkLiquid.instance!.lnurlPay(req: req);
     } catch (e) {
-      _logger.severe("lnurlPay error", e);
+      _logger.severe('lnurlPay error', e);
       rethrow;
     }
   }
@@ -57,7 +57,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     try {
       return await _breezSdkLiquid.instance!.lnurlAuth(reqData: reqData);
     } catch (e) {
-      _logger.severe("lnurlAuth error", e);
+      _logger.severe('lnurlAuth error', e);
       rethrow;
     }
   }
@@ -71,7 +71,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     if (outgoing && amount.toInt() > balance) {
       throw const InsufficientLocalBalanceError();
     }
-    var limits = outgoing ? lightningLimits.send : lightningLimits.receive;
+    final Limits limits = outgoing ? lightningLimits.send : lightningLimits.receive;
     if (amount > limits.maxSat) {
       throw PaymentExceededLimitError(limits.maxSat.toInt());
     }

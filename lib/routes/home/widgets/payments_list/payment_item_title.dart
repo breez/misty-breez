@@ -15,11 +15,11 @@ class PaymentItemTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var title = paymentData.title;
+    String title = paymentData.title;
     if (paymentData.paymentType == PaymentType.receive && title.isDefaultTitleWithLiquidNaming) {
-      final userProfileCubit = context.read<UserProfileCubit>();
-      final userProfileState = userProfileCubit.state;
-      title = "Payment to ${userProfileState.profileSettings.name}";
+      final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
+      final UserProfileState userProfileState = userProfileCubit.state;
+      title = 'Payment to ${userProfileState.profileSettings.name}';
     }
     return Text(
       title,

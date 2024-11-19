@@ -4,14 +4,14 @@ class FillViewPortColumnScrollView extends StatelessWidget {
   final List<Widget> children;
 
   const FillViewPortColumnScrollView({
-    super.key,
     required this.children,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) {
+      builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -19,7 +19,6 @@ class FillViewPortColumnScrollView extends StatelessWidget {
             ),
             child: IntrinsicHeight(
               child: Column(
-                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: children,
               ),

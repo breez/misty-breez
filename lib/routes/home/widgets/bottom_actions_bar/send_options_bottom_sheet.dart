@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/account/account_cubit.dart';
@@ -10,7 +11,7 @@ import 'package:l_breez/theme/theme.dart';
 class SendOptionsBottomSheet extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
 
-  const SendOptionsBottomSheet({super.key, required this.firstPaymentItemKey});
+  const SendOptionsBottomSheet({required this.firstPaymentItemKey, super.key});
 
   @override
   State<SendOptionsBottomSheet> createState() => _SendOptionsBottomSheetState();
@@ -19,19 +20,19 @@ class SendOptionsBottomSheet extends StatefulWidget {
 class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return BlocBuilder<AccountCubit, AccountState>(
-      builder: (context, account) {
-        final hasBalance = account.hasBalance;
+      builder: (BuildContext context, AccountState account) {
+        final bool hasBalance = account.hasBalance;
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             const SizedBox(height: 8.0),
             ListTile(
               enabled: hasBalance,
               leading: BottomActionItemImage(
-                iconAssetPath: "assets/icons/paste.png",
+                iconAssetPath: 'assets/icons/paste.png',
                 enabled: hasBalance,
               ),
               title: Text(
@@ -39,7 +40,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
                 style: bottomSheetTextStyle,
               ),
               onTap: () {
-                final navigatorState = Navigator.of(context);
+                final NavigatorState navigatorState = Navigator.of(context);
                 navigatorState.pop();
                 navigatorState.pushNamed(EnterPaymentInfoPage.routeName);
               },
@@ -52,7 +53,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
             ListTile(
               enabled: hasBalance,
               leading: BottomActionItemImage(
-                iconAssetPath: "assets/icons/bitcoin.png",
+                iconAssetPath: 'assets/icons/bitcoin.png',
                 enabled: hasBalance,
               ),
               title: Text(
@@ -60,7 +61,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
                 style: bottomSheetTextStyle,
               ),
               onTap: () {
-                final navigatorState = Navigator.of(context);
+                final NavigatorState navigatorState = Navigator.of(context);
                 navigatorState.pop();
                 navigatorState.pushNamed(SendChainSwapPage.routeName);
               },

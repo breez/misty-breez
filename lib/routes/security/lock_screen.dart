@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:l_breez/routes/home/home_page.dart';
 import 'package:l_breez/routes/security/widget/pin_code_widget.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/route.dart';
+import 'package:nested/nested.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
@@ -16,27 +18,27 @@ import 'package:service_injector/service_injector.dart';
 class LockScreen extends StatelessWidget {
   final AuthorizedAction authorizedAction;
 
-  static const routeName = "lockscreen";
+  static const String routeName = 'lockscreen';
 
-  const LockScreen({super.key, required this.authorizedAction});
+  const LockScreen({required this.authorizedAction, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final navigator = Navigator.of(context);
+    final BreezTranslations texts = context.texts();
+    final NavigatorState navigator = Navigator.of(context);
 
     return PopScope(
       canPop: false,
       child: Scaffold(
         body: BlocBuilder<SecurityCubit, SecurityState>(
-          builder: (context, state) {
+          builder: (BuildContext context, SecurityState state) {
             return PinCodeWidget(
               label: texts.lock_screen_enter_pin,
               localAuthenticationOption: state.localAuthenticationOption,
-              testPinCodeFunction: (pin) async {
+              testPinCodeFunction: (String pin) async {
                 bool pinMatches = false;
                 try {
-                  final securityCubit = context.read<SecurityCubit>();
+                  final SecurityCubit securityCubit = context.read<SecurityCubit>();
                   pinMatches = await securityCubit.testPin(pin);
                 } catch (e) {
                   return TestPinResult(
@@ -55,8 +57,8 @@ class LockScreen extends StatelessWidget {
                 }
               },
               testBiometricsFunction: () async {
-                final securityCubit = context.read<SecurityCubit>();
-                bool pinMatches = await securityCubit.localAuthentication(
+                final SecurityCubit securityCubit = context.read<SecurityCubit>();
+                final bool pinMatches = await securityCubit.localAuthentication(
                   texts.security_and_backup_validate_biometrics_reason,
                 );
                 if (pinMatches) {
@@ -95,15 +97,15 @@ enum AuthorizedAction {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final injector = ServiceInjector();
+  final ServiceInjector injector = ServiceInjector();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: Directory(
-      join((await getApplicationDocumentsDirectory()).path, "preview_storage"),
+      join((await getApplicationDocumentsDirectory()).path, 'preview_storage'),
     ),
   );
   runApp(
     MultiBlocProvider(
-      providers: [
+      providers: <SingleChildWidget>[
         BlocProvider<SecurityCubit>(
           create: (BuildContext context) => SecurityCubit(injector.keychain),
         ),
@@ -111,11 +113,11 @@ void main() async {
       child: MaterialApp(
         theme: breezLightTheme,
         home: LayoutBuilder(
-          builder: (context, _) => Center(
+          builder: (BuildContext context, _) => Center(
             child: TextButton(
-              child: const Text("Launch lock screen"),
+              child: const Text('Launch lock screen'),
               onPressed: () => Navigator.of(context).push(
-                FadeInRoute(
+                FadeInRoute<void>(
                   builder: (_) => const LockScreen(
                     authorizedAction: AuthorizedAction.popPage,
                   ),

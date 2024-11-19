@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -26,28 +27,28 @@ class LnUrlPaymentPage extends StatefulWidget {
   final LnUrlPayRequestData requestData;
   final String? comment;
 
-  static const routeName = "/lnurl_payment";
-  static const paymentMethod = PaymentMethod.lightning;
+  static const String routeName = '/lnurl_payment';
+  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
 
-  const LnUrlPaymentPage({super.key, this.isConfirmation = false, required this.requestData, this.comment});
+  const LnUrlPaymentPage({required this.requestData, super.key, this.isConfirmation = false, this.comment});
 
   @override
   State<StatefulWidget> createState() => LnUrlPaymentPageState();
 }
 
 class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _descriptionController = TextEditingController();
-  final _amountController = TextEditingController();
-  final _amountFocusNode = FocusNode();
-  var _doneAction = KeyboardDoneAction();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final FocusNode _amountFocusNode = FocusNode();
+  KeyboardDoneAction _doneAction = KeyboardDoneAction();
 
   bool _isFixedAmount = false;
   bool _isLoading = true;
   bool _isFormEnabled = true;
   bool _isCalculatingFees = false;
-  String errorMessage = "";
+  String errorMessage = '';
   LightningPaymentLimitsResponse? _lightningLimits;
 
   PrepareLnUrlPayResponse? _prepareResponse;
@@ -55,7 +56,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   @override
   void initState() {
     super.initState();
-    _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
+    _doneAction = KeyboardDoneAction(focusNodes: <FocusNode>[_amountFocusNode]);
 
     _isFixedAmount = widget.requestData.minSendable == widget.requestData.maxSendable;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -66,17 +67,17 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   Future<void> _fetchLightningLimits() async {
     setState(() {
       _isLoading = true;
-      errorMessage = "";
+      errorMessage = '';
     });
-    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+    final PaymentLimitsCubit paymentLimitsCubit = context.read<PaymentLimitsCubit>();
     try {
-      final response = await paymentLimitsCubit.fetchLightningLimits();
+      final LightningPaymentLimitsResponse? response = await paymentLimitsCubit.fetchLightningLimits();
       setState(() {
         _lightningLimits = response;
       });
       await _handleLightningPaymentLimitsResponse();
     } catch (error) {
-      final texts = getSystemAppLocalizations();
+      final BreezTranslations texts = getSystemAppLocalizations();
       String message = extractExceptionMessage(error, texts);
       if (error is LnUrlPayError_ServiceConnectivity) {
         message = texts.lnurl_fetch_invoice_error_message(
@@ -95,18 +96,18 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   }
 
   Future<void> _handleLightningPaymentLimitsResponse() async {
-    final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
-    final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
-    final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
-    final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
-    final effectiveMinSat = min(
+    final int minNetworkLimit = _lightningLimits!.send.minSat.toInt();
+    final int maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
+    final int minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
+    final int maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
+    final int effectiveMinSat = min(
       max(minNetworkLimit, minSendableSat),
       maxNetworkLimit,
     );
-    final rawMaxSat = min(maxNetworkLimit, maxSendableSat);
-    final effectiveMaxSat = max(minNetworkLimit, rawMaxSat);
+    final int rawMaxSat = min(maxNetworkLimit, maxSendableSat);
+    final int effectiveMaxSat = max(minNetworkLimit, rawMaxSat);
     _updateFormFields(amountSat: minSendableSat);
-    final errorMessage = validatePayment(
+    final String? errorMessage = validatePayment(
       amountSat: _isFixedAmount ? minSendableSat : effectiveMinSat,
       effectiveMinSat: effectiveMinSat,
       rawMaxSat: rawMaxSat,
@@ -123,32 +124,32 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     required int amountSat,
   }) {
     if (!_isFixedAmount) {
-      final currencyCubit = context.read<CurrencyCubit>();
-      final currencyState = currencyCubit.state;
+      final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+      final CurrencyState currencyState = currencyCubit.state;
 
       _amountController.text = currencyState.bitcoinCurrency.format(
         amountSat,
         includeDisplayName: false,
       );
     }
-    _descriptionController.text = widget.comment ?? "";
+    _descriptionController.text = widget.comment ?? '';
   }
 
   Future<void> _prepareLnUrlPayment(int amountSat) async {
-    final texts = context.texts();
-    final lnUrlCubit = context.read<LnUrlCubit>();
+    final BreezTranslations texts = context.texts();
+    final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
     try {
       setState(() {
         _isCalculatingFees = true;
         _prepareResponse = null;
-        errorMessage = "";
+        errorMessage = '';
       });
-      final req = PrepareLnUrlPayRequest(
+      final PrepareLnUrlPayRequest req = PrepareLnUrlPayRequest(
         data: widget.requestData,
         amountMsat: BigInt.from(amountSat * 1000),
         validateSuccessActionUrl: false,
       );
-      final response = await lnUrlCubit.prepareLnurlPay(req: req);
+      final PrepareLnUrlPayResponse response = await lnUrlCubit.prepareLnurlPay(req: req);
       setState(() {
         _prepareResponse = response;
       });
@@ -175,8 +176,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -185,7 +186,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         title: Text(texts.lnurl_fetch_invoice_pay_to_payee(widget.requestData.domain)),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
-        builder: (context, currencyState) {
+        builder: (BuildContext context, CurrencyState currencyState) {
           if (_isLoading) {
             return Center(
               child: Loader(
@@ -194,12 +195,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
             );
           }
 
-          final metadataMap = {
-            for (var v in json.decode(widget.requestData.metadataStr)) v[0] as String: v[1],
+          final Map<String, dynamic> metadataMap = <String, dynamic>{
+            for (dynamic v in json.decode(widget.requestData.metadataStr)) v[0] as String: v[1],
           };
-          String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
-          String payeeName = metadataMap["text/identifier"] ?? widget.requestData.domain;
-          String? metadataText = metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
+          final String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
+          final String payeeName = metadataMap['text/identifier'] ?? widget.requestData.domain;
+          final String? metadataText = metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
 
           if (_lightningLimits == null) {
             if (errorMessage.isEmpty) {
@@ -215,15 +216,15 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
             );
           }
 
-          final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
-          final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
-          final minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
-          final maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
-          final effectiveMinSat = min(
+          final int minNetworkLimit = _lightningLimits!.send.minSat.toInt();
+          final int maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
+          final int minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
+          final int maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
+          final int effectiveMinSat = min(
             max(minNetworkLimit, minSendableSat),
             maxNetworkLimit,
           );
-          final effectiveMaxSat = max(
+          final int effectiveMaxSat = max(
             minNetworkLimit,
             min(maxNetworkLimit, maxSendableSat),
           );
@@ -234,14 +235,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
               child: SingleChildScrollView(
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Padding(
                       padding: EdgeInsets.zero,
                       child: Center(child: LNURLMetadataImage(base64String: base64String)),
                     ),
-                    if (_isFixedAmount) ...[
+                    if (_isFixedAmount) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: LnPaymentHeader(
@@ -251,7 +251,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ),
                       ),
                     ],
-                    if (!_isFixedAmount) ...[
+                    if (!_isFixedAmount) ...<Widget>[
                       AmountFormField(
                         context: context,
                         texts: texts,
@@ -261,14 +261,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         enabled: _isFormEnabled,
                         enableInteractiveSelection: _isFormEnabled,
                         controller: _amountController,
-                        validatorFn: (amountSat) => validatePayment(
+                        validatorFn: (int amountSat) => validatePayment(
                           amountSat: amountSat,
                           effectiveMinSat: effectiveMinSat,
                           effectiveMaxSat: effectiveMaxSat,
                         ),
-                        returnFN: (amountStr) async {
+                        returnFN: (String amountStr) async {
                           if (amountStr.isNotEmpty) {
-                            final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
+                            final int amountSat = currencyState.bitcoinCurrency.parse(amountStr);
                             setState(() {
                               _amountController.text = currencyState.bitcoinCurrency.format(
                                 amountSat,
@@ -278,7 +278,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                             _formKey.currentState?.validate();
                           }
                         },
-                        onFieldSubmitted: (amountStr) async {
+                        onFieldSubmitted: (String amountStr) async {
                           if (amountStr.isNotEmpty) {
                             _formKey.currentState?.validate();
                           }
@@ -287,14 +287,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         errorMaxLines: 3,
                       ),
                     ],
-                    if (!_isFixedAmount) ...[
+                    if (!_isFixedAmount) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: LnUrlPaymentLimits(
                           limitsResponse: _lightningLimits,
                           minSendableSat: minSendableSat,
                           maxSendableSat: maxSendableSat,
-                          onTap: (amountSat) async {
+                          onTap: (int amountSat) async {
                             _amountFocusNode.unfocus();
                             setState(() {
                               _amountController.text = currencyState.bitcoinCurrency.format(
@@ -306,7 +306,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           },
                         ),
                       ),
-                      if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...[
+                      if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...<Widget>[
                         const SizedBox(height: 8.0),
                         AutoSizeText(
                           errorMessage,
@@ -318,13 +318,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ),
                       ],
                     ],
-                    if (_prepareResponse != null && _isFixedAmount) ...[
+                    if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: LnPaymentAmount(amountSat: maxSendableSat),
                       ),
                     ],
-                    if (_isFixedAmount) ...[
+                    if (_isFixedAmount) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: LnPaymentFee(
@@ -333,7 +333,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ),
                       ),
                     ],
-                    if (metadataText != null && metadataText.isNotEmpty) ...[
+                    if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: LnPaymentDescription(
@@ -341,12 +341,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ),
                       ),
                     ],
-                    if (widget.requestData.commentAllowed > 0) ...[
+                    if (widget.requestData.commentAllowed > 0) ...<Widget>[
                       LnUrlPaymentComment(
                         enabled: _isFormEnabled,
                         descriptionController: _descriptionController,
                         maxCommentLength: widget.requestData.commentAllowed.toInt(),
-                      )
+                      ),
                     ],
                   ],
                 ),
@@ -398,13 +398,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   String? validatePayment({
     required int amountSat,
     required int effectiveMinSat,
-    int? rawMaxSat,
     required int effectiveMaxSat,
+    int? rawMaxSat,
     bool throwError = false,
   }) {
-    final texts = context.texts();
-    final currencyCubit = context.read<CurrencyCubit>();
-    final currencyState = currencyCubit.state;
+    final BreezTranslations texts = context.texts();
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
 
     String? message;
     if (_lightningLimits == null) {
@@ -412,10 +412,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     }
 
     if (!widget.isConfirmation && !_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
-      final minNetworkLimit = _lightningLimits!.send.minSat.toInt();
-      final maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
-      final minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
-      final maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
+      final int minNetworkLimit = _lightningLimits!.send.minSat.toInt();
+      final int maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
+      final String minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
+      final String maxNetworkLimitFormatted = currencyState.bitcoinCurrency.format(maxNetworkLimit);
       message = texts.invoice_payment_validator_error_payment_outside_network_limits(
         minNetworkLimitFormatted,
         maxNetworkLimitFormatted,
@@ -424,26 +424,24 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         _isFormEnabled = false;
       });
     } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
-      final networkLimit = currencyState.bitcoinCurrency.format(
+      final String networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,
-        includeDisplayName: true,
       );
       message = texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit);
       setState(() {
         _isFormEnabled = false;
       });
     } else if (amountSat > effectiveMaxSat) {
-      final networkLimit = "(${currencyState.bitcoinCurrency.format(
+      final String networkLimit = '(${currencyState.bitcoinCurrency.format(
         effectiveMaxSat,
-        includeDisplayName: true,
-      )})";
+      )})';
       message = throwError
           ? texts.valid_payment_error_exceeds_the_limit(networkLimit)
           : texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat);
     } else if (amountSat < effectiveMinSat) {
-      final effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+      final String effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
       message = throwError
-          ? "${texts.invoice_payment_validator_error_payment_below_invoice_limit(effMinSendableFormatted)}."
+          ? '${texts.invoice_payment_validator_error_payment_below_invoice_limit(effMinSendableFormatted)}.'
           : texts.lnurl_payment_page_error_below_limit(effectiveMinSat);
     } else {
       message = PaymentValidator(
@@ -453,7 +451,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       ).validateOutgoing(amountSat);
     }
     setState(() {
-      errorMessage = message ?? "";
+      errorMessage = message ?? '';
     });
     if (message != null && throwError) {
       throw message;
@@ -462,25 +460,26 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   }
 
   void _validateLnUrlPayment(int amount, bool outgoing) {
-    final accountCubit = context.read<AccountCubit>();
-    final accountState = accountCubit.state;
-    final balance = accountState.walletInfo!.balanceSat.toInt();
-    final lnUrlCubit = context.read<LnUrlCubit>();
+    final AccountCubit accountCubit = context.read<AccountCubit>();
+    final AccountState accountState = accountCubit.state;
+    final int balance = accountState.walletInfo!.balanceSat.toInt();
+    final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
   }
 
   Future<void> _openConfirmationPage() async {
-    final currencyCubit = context.read<CurrencyCubit>();
-    final currencyState = currencyCubit.state;
-    final amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
-    final amountMsat = BigInt.from(amountSat * 1000);
-    final requestData = widget.requestData.copyWith(
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
+    final int amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
+    final BigInt amountMsat = BigInt.from(amountSat * 1000);
+    final LnUrlPayRequestData requestData = widget.requestData.copyWith(
       minSendable: amountMsat,
       maxSendable: amountMsat,
     );
-    PrepareLnUrlPayResponse? prepareResponse = await Navigator.of(context).push<PrepareLnUrlPayResponse?>(
+    final PrepareLnUrlPayResponse? prepareResponse =
+        await Navigator.of(context).push<PrepareLnUrlPayResponse?>(
       FadeInRoute<PrepareLnUrlPayResponse?>(
-        builder: (_) => BlocProvider(
+        builder: (_) => BlocProvider<PaymentLimitsCubit>(
           create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
           child: LnUrlPaymentPage(
             isConfirmation: true,
@@ -491,7 +490,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       ),
     );
     if (prepareResponse == null || !context.mounted) {
-      return Future.value();
+      return Future<void>.value();
     }
     if (mounted) {
       Navigator.pop(context, prepareResponse);

@@ -6,27 +6,27 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("WithdrawFundsAmountTextFormField");
+final Logger _logger = Logger('WithdrawFundsAmountTextFormField');
 
 class WithdrawFundsAmountTextFormField extends AmountFormField {
   WithdrawFundsAmountTextFormField({
-    super.key,
     required super.bitcoinCurrency,
     required super.context,
     required TextEditingController super.controller,
     required bool withdrawMaxValue,
     required WithdrawFundsPolicy policy,
     required BigInt balance,
+    super.key,
   }) : super(
           texts: context.texts(),
           readOnly: policy.withdrawKind == WithdrawKind.unexpectedFunds || withdrawMaxValue,
-          validatorFn: (amount) {
-            _logger.info("Validator called for $amount");
+          validatorFn: (int amount) {
+            _logger.info('Validator called for $amount');
             return PaymentValidator(
               currency: bitcoinCurrency,
               texts: context.texts(),
-              validatePayment: (amount, outgoing) {
-                _logger.info("Validating $amount $policy");
+              validatePayment: (int amount, bool outgoing) {
+                _logger.info('Validating $amount $policy');
                 if (outgoing && amount > balance.toInt()) {
                   throw const InsufficientLocalBalanceError();
                 }

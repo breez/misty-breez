@@ -13,11 +13,11 @@ class DigitButtonWidget extends StatelessWidget {
     this.icon,
     this.foregroundColor = Colors.white,
     this.onPressed,
-  }) : assert(digit != null || icon != null, "Either digit or icon must be provided");
+  }) : assert(digit != null || icon != null, 'Either digit or icon must be provided');
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return Center(
       child: InkWell(
@@ -48,11 +48,11 @@ class DigitButtonWidget extends StatelessWidget {
 void main() {
   runApp(
     Preview(
-      List.generate(
+      List<Widget>.generate(
         10,
-        (index) => DigitButtonWidget(
-          digit: "$index",
-          onPressed: (digit) => debugPrint("Digit: $digit"),
+        (int index) => DigitButtonWidget(
+          digit: '$index',
+          onPressed: (String? digit) => debugPrint('Digit: $digit'),
         ),
       ),
     ),

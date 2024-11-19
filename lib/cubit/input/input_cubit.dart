@@ -2,6 +2,7 @@ library input_bloc;
 
 import 'dart:async';
 
+import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:device_client/device_client.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -13,13 +14,13 @@ import 'package:service_injector/service_injector.dart';
 
 export 'input_state.dart';
 
-final _logger = Logger("InputCubit");
+final Logger _logger = Logger('InputCubit');
 
 class InputCubit extends Cubit<InputState> {
   final LightningLinksService _lightningLinks;
   final DeviceClient _deviceClient;
 
-  final _decodeInvoiceController = StreamController<InputData>();
+  final StreamController<InputData> _decodeInvoiceController = StreamController<InputData>();
 
   InputCubit(
     this._lightningLinks,
@@ -29,28 +30,28 @@ class InputCubit extends Cubit<InputState> {
   }
 
   void _initializeInputCubit() async {
-    _logger.info("initializeInputCubit");
-    _watchIncomingInvoices().listen((inputState) => emit(inputState!));
+    _logger.info('initializeInputCubit');
+    _watchIncomingInvoices().listen((InputState? inputState) => emit(inputState!));
   }
 
   void addIncomingInput(String input, InputSource source) {
-    _logger.info("addIncomingInput: $input source: $source");
+    _logger.info('addIncomingInput: $input source: $source');
     _decodeInvoiceController.add(InputData(data: input, source: source));
   }
 
   Future<void> trackPaymentEvents(String? paymentDestination) async {
-    _logger.info("Tracking incoming payment events for: $paymentDestination");
-    final paymentDestinationIsEmpty = paymentDestination == null || paymentDestination.isEmpty;
-    await ServiceInjector().breezSdkLiquid.paymentEventStream.firstWhere((paymentEvent) {
-      final payment = paymentEvent.payment;
-      final receivedPaymentDestination = payment.destination ?? "";
-      final doesDestinationMatch =
+    _logger.info('Tracking incoming payment events for: $paymentDestination');
+    final bool paymentDestinationIsEmpty = paymentDestination == null || paymentDestination.isEmpty;
+    await ServiceInjector().breezSdkLiquid.paymentEventStream.firstWhere((PaymentEvent paymentEvent) {
+      final Payment payment = paymentEvent.payment;
+      final String receivedPaymentDestination = payment.destination ?? '';
+      final bool doesDestinationMatch =
           paymentDestinationIsEmpty || receivedPaymentDestination == paymentDestination;
-      final isPaymentReceived = payment.paymentType == PaymentType.receive &&
+      final bool isPaymentReceived = payment.paymentType == PaymentType.receive &&
           (payment.status == PaymentState.pending || payment.status == PaymentState.complete);
 
       if (doesDestinationMatch && isPaymentReceived) {
-        _logger.info("Payment Received! Destination: ${payment.destination}, Status: ${payment.status}");
+        _logger.info('Payment Received! Destination: ${payment.destination}, Status: ${payment.status}');
         return true;
       }
       return false;
@@ -58,38 +59,39 @@ class InputCubit extends Cubit<InputState> {
   }
 
   Stream<InputState?> _watchIncomingInvoices() {
-    _logger.info("watchIncomingInvoices");
-    return Rx.merge([
-      _decodeInvoiceController.stream.doOnData((event) => _logger.info("decodeInvoiceController: $event")),
+    _logger.info('watchIncomingInvoices');
+    return Rx.merge(<Stream<InputData>>[
+      _decodeInvoiceController.stream
+          .doOnData((InputData event) => _logger.info('decodeInvoiceController: $event')),
       _lightningLinks.linksNotifications
-          .map((data) => InputData(data: data, source: InputSource.hyperlink))
-          .doOnData((event) => _logger.info("lightningLinks: $event")),
+          .map((String data) => InputData(data: data, source: InputSource.hyperlink))
+          .doOnData((InputData event) => _logger.info('lightningLinks: $event')),
       _deviceClient.clipboardStream
           .distinct()
           .skip(1)
-          .map((data) => InputData(data: data, source: InputSource.clipboard))
-          .doOnData((event) => _logger.info("clipboardStream: $event")),
-    ]).asyncMap((input) async {
+          .map((String data) => InputData(data: data, source: InputSource.clipboard))
+          .doOnData((InputData event) => _logger.info('clipboardStream: $event')),
+    ]).asyncMap((InputData input) async {
       _logger.info("Incoming input: '$input'");
       // Emit an empty InputState with isLoading to display a loader on UI layer
       emit(const InputState.loading());
       try {
-        final parsedInput = await parse(input: input.data);
+        final InputType parsedInput = await parse(input: input.data);
         return await _handleParsedInput(parsedInput, input.source);
       } catch (e) {
-        _logger.severe("Failed to parse input", e);
+        _logger.severe('Failed to parse input', e);
         return const InputState.empty();
       }
     });
   }
 
   Future<InputState> handlePaymentRequest(InputType_Bolt11 inputData, InputSource source) async {
-    _logger.info("handlePaymentRequest: $inputData source: $source");
+    _logger.info('handlePaymentRequest: $inputData source: $source');
     return InputState.invoice(inputData.invoice, source);
   }
 
   Future<InputState> _handleParsedInput(InputType parsedInput, InputSource source) async {
-    _logger.info("handleParsedInput: $source => ${inputTypeToString(parsedInput)}");
+    _logger.info('handleParsedInput: $source => ${inputTypeToString(parsedInput)}');
     InputState result;
     if (parsedInput is InputType_Bolt11) {
       result = await handlePaymentRequest(parsedInput, source);
@@ -110,12 +112,12 @@ class InputCubit extends Cubit<InputState> {
     } else {
       result = const InputState.empty();
     }
-    _logger.fine("handleParsedInput: result: $result");
+    _logger.fine('handleParsedInput: result: $result');
     return result;
   }
 
   Future<InputType> parseInput({required String input}) async {
-    _logger.info("parseInput: $input");
+    _logger.info('parseInput: $input');
     return await parse(input: input);
   }
 }

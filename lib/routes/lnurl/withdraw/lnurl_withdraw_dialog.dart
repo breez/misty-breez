@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,7 @@ import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
 import 'package:l_breez/widgets/single_button_bottom_bar.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("LNURLWithdrawDialog");
+final Logger _logger = Logger('LNURLWithdrawDialog');
 
 class LNURLWithdrawDialog extends StatefulWidget {
   final Function(LNURLPageResult? result) onFinish;
@@ -22,10 +23,10 @@ class LNURLWithdrawDialog extends StatefulWidget {
   final int amountSats;
 
   const LNURLWithdrawDialog({
-    super.key,
     required this.requestData,
     required this.amountSats,
     required this.onFinish,
+    super.key,
   });
 
   @override
@@ -65,9 +66,9 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     });
   }
 
-  FutureOr<LNURLPageResult> _processResultWithAnimation(result) {
+  FutureOr<LNURLPageResult> _processResultWithAnimation(LNURLPageResult result) {
     if (mounted && result.error == null) {
-      _controller.addStatusListener((status) {
+      _controller.addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.dismissed) {
           _onFinish(result);
         }
@@ -87,8 +88,8 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
@@ -99,14 +100,14 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
         child: Dialog.fullscreen(
           child: FutureBuilder<LNURLPageResult>(
             future: _lnurlWithdrawFuture,
-            builder: (context, snapshot) {
-              final snapshotError = snapshot.error ?? snapshot.data?.error;
+            builder: (BuildContext context, AsyncSnapshot<LNURLPageResult> snapshot) {
+              final Object? snapshotError = snapshot.error ?? snapshot.data?.error;
 
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: <Widget>[
                     const Expanded(child: SizedBox.expand()),
                     Text(
                       texts.lnurl_withdraw_dialog_title,
@@ -115,7 +116,7 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
                     const SizedBox(height: 24),
                     if (snapshotError == null)
                       Column(
-                        children: [
+                        children: <Widget>[
                           LoadingAnimatedText(
                             loadingMessage: texts.lnurl_withdraw_dialog_wait,
                             textStyle: themeData.dialogTheme.contentTextStyle,
@@ -139,7 +140,6 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
                       data: breezDarkTheme,
                       child: SingleButtonBottomBar(
                         text: texts.lnurl_withdraw_dialog_action_close,
-                        stickToBottom: false,
                         onPressed: () => _onFinish(null),
                       ),
                     ),
@@ -154,37 +154,37 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
   }
 
   Future<LNURLPageResult> _lnurlWithdraw() async {
-    final lnurlCubit = context.read<LnUrlCubit>();
+    final LnUrlCubit lnurlCubit = context.read<LnUrlCubit>();
     _logger.info(
-      "LNURL withdraw of ${widget.amountSats} sats where "
-      "min is ${widget.requestData.minWithdrawable.toInt() ~/ 1000} sats "
-      "and max is ${widget.requestData.maxWithdrawable.toInt() ~/ 1000} sats.",
+      'LNURL withdraw of ${widget.amountSats} sats where '
+      'min is ${widget.requestData.minWithdrawable.toInt() ~/ 1000} sats '
+      'and max is ${widget.requestData.maxWithdrawable.toInt() ~/ 1000} sats.',
     );
     try {
-      final req = LnUrlWithdrawRequest(
+      final LnUrlWithdrawRequest req = LnUrlWithdrawRequest(
         amountMsat: BigInt.from(widget.amountSats * 1000),
         data: widget.requestData,
         description: widget.requestData.defaultDescription,
       );
-      final result = await lnurlCubit.lnurlWithdraw(req: req);
+      final LnUrlWithdrawResult result = await lnurlCubit.lnurlWithdraw(req: req);
       return _handleLnUrlWithdrawResult(result);
     } catch (e) {
-      _logger.warning("Error withdrawing LNURL payment", e);
+      _logger.warning('Error withdrawing LNURL payment', e);
       return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: e);
     }
   }
 
   LNURLPageResult _handleLnUrlWithdrawResult(LnUrlWithdrawResult result) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     if (result is LnUrlWithdrawResult_Ok) {
-      _logger.info("LNURL withdraw success for ${result.data.invoice.paymentHash}");
+      _logger.info('LNURL withdraw success for ${result.data.invoice.paymentHash}');
       return const LNURLPageResult(protocol: LnUrlProtocol.withdraw);
     } else if (result is LnUrlWithdrawResult_ErrorStatus) {
-      _logger.warning("LNURL withdraw failed: ${result.data.reason}");
+      _logger.warning('LNURL withdraw failed: ${result.data.reason}');
       return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: result.data.reason);
     } else {
-      _logger.warning("Unknown response from lnurlWithdraw: $result");
+      _logger.warning('Unknown response from lnurlWithdraw: $result');
       return LNURLPageResult(protocol: LnUrlProtocol.withdraw, error: texts.lnurl_payment_page_unknown_error);
     }
   }
@@ -196,7 +196,7 @@ class _LNURLWithdrawDialogState extends State<LNURLWithdrawDialog> with SingleTi
     setState(() {
       finishCalled = true;
     });
-    _logger.info("Finishing with result $result");
+    _logger.info('Finishing with result $result');
     widget.onFinish(result);
   }
 }

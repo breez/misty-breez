@@ -1,10 +1,11 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/widgets/flushbar.dart';
 import 'package:l_breez/widgets/link_launcher.dart';
 import 'package:service_injector/service_injector.dart';
 
-// TODO: Liquid - This file is unused - Re-add for swap tx's after input parser is implemented
+// TODO(erdemyerebasmaz): Liquid - This file is unused - Re-add for swap tx's after input parser is implemented
 class TxWidget extends StatelessWidget {
   final String txURL;
   final String txID;
@@ -12,17 +13,17 @@ class TxWidget extends StatelessWidget {
   final EdgeInsets? padding;
 
   const TxWidget({
-    super.key,
     required this.txURL,
     required this.txID,
+    super.key,
     this.txLabel,
     this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    var textStyle = DefaultTextStyle.of(context).style;
+    final BreezTranslations texts = context.texts();
+    TextStyle textStyle = DefaultTextStyle.of(context).style;
     textStyle = textStyle.copyWith(
       fontSize: textStyle.fontSize! * 0.8,
     );
@@ -30,7 +31,7 @@ class TxWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [
+      children: <Widget>[
         Padding(
           padding: padding ?? const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: LinkLauncher(

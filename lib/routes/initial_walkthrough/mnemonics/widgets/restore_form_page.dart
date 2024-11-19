@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/widgets/restore_form.dart';
 import 'package:l_breez/utils/exceptions.dart';
@@ -13,11 +14,11 @@ class RestoreFormPage extends StatefulWidget {
   final List<String> initialWords;
 
   const RestoreFormPage({
-    super.key,
     required this.currentPage,
     required this.lastPage,
     required this.changePage,
-    this.initialWords = const [],
+    super.key,
+    this.initialWords = const <String>[],
   });
 
   @override
@@ -25,7 +26,7 @@ class RestoreFormPage extends StatefulWidget {
 }
 
 class RestoreFormPageState extends State<RestoreFormPage> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   List<TextEditingController> textEditingControllers =
       List<TextEditingController>.generate(12, (_) => TextEditingController());
@@ -38,18 +39,18 @@ class RestoreFormPageState extends State<RestoreFormPage> {
     super.initState();
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
-    for (var i = 0; i < textEditingControllers.length && i < widget.initialWords.length; i++) {
+    for (int i = 0; i < textEditingControllers.length && i < widget.initialWords.length; i++) {
       textEditingControllers[i].text = widget.initialWords[i];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var themeData = Theme.of(context);
-    final texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
+      children: <Widget>[
         RestoreForm(
           formKey: _formKey,
           currentPage: widget.currentPage,
@@ -57,7 +58,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
           textEditingControllers: textEditingControllers,
           autoValidateMode: _autoValidateMode,
         ),
-        if (_hasError) ...[
+        if (_hasError) ...<Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
             child: Text(
@@ -66,7 +67,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
                 fontSize: 12,
               ),
             ),
-          )
+          ),
         ],
         SingleButtonBottomBar(
           text: widget.currentPage + 1 == (widget.lastPage + 1)
@@ -92,10 +93,12 @@ class RestoreFormPageState extends State<RestoreFormPage> {
     );
   }
 
-  Future _validateMnemonics() async {
-    final texts = context.texts();
-    final mnemonic =
-        textEditingControllers.map((controller) => controller.text.toLowerCase().trim()).toList().join(" ");
+  Future<void> _validateMnemonics() async {
+    final BreezTranslations texts = context.texts();
+    final String mnemonic = textEditingControllers
+        .map((TextEditingController controller) => controller.text.toLowerCase().trim())
+        .toList()
+        .join(' ');
     try {
       Navigator.pop(context, mnemonic);
     } catch (e) {

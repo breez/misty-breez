@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:l_breez/routes/home/widgets/app_bar/account_required_actions.dart';
 import 'package:l_breez/theme/theme.dart';
-
-import 'account_required_actions.dart';
 
 class HomeAppBar extends AppBar {
   HomeAppBar({
-    super.key,
     required ThemeData themeData,
     required GlobalKey<ScaffoldState> scaffoldKey,
+    super.key,
   }) : super(
           centerTitle: false,
-          actions: [
+          actions: <Widget>[
             const Padding(
               padding: EdgeInsets.all(14.0),
               child: AccountRequiredActionsIndicator(),
@@ -19,7 +18,7 @@ class HomeAppBar extends AppBar {
           ],
           leading: IconButton(
             icon: SvgPicture.asset(
-              "assets/icons/hamburger.svg",
+              'assets/icons/hamburger.svg',
               height: 24.0,
               width: 24.0,
               colorFilter: ColorFilter.mode(
@@ -32,7 +31,7 @@ class HomeAppBar extends AppBar {
           title: IconButton(
             padding: EdgeInsets.zero,
             icon: SvgPicture.asset(
-              "assets/images/liquid-logo-color.svg",
+              'assets/images/liquid-logo-color.svg',
               colorFilter: ColorFilter.mode(
                 themeData.appBarTheme.actionsIconTheme!.color!,
                 BlendMode.srcATop,

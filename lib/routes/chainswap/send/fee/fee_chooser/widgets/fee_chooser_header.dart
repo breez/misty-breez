@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -27,19 +28,18 @@ class _FeeChooserHeaderState extends State<FeeChooserHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final accountCubit = context.read<AccountCubit>();
-    final accountState = accountCubit.state;
-    final texts = context.texts();
+    final AccountCubit accountCubit = context.read<AccountCubit>();
+    final AccountState accountState = accountCubit.state;
+    final BreezTranslations texts = context.texts();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+      children: <Widget>[
         Row(
-          mainAxisSize: MainAxisSize.max,
           children: List<FeeOptionButton>.generate(
             widget.feeOptions.length,
-            (index) {
-              var feeOption = widget.feeOptions.elementAt(index);
+            (int index) {
+              final FeeOption feeOption = widget.feeOptions.elementAt(index);
               return FeeOptionButton(
                 index: index,
                 text: feeOption.getDisplayName(texts),

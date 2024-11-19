@@ -11,9 +11,9 @@ class SimpleSwitch extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
 
   const SimpleSwitch({
-    super.key,
     required this.text,
     required this.switchValue,
+    super.key,
     this.trailing,
     this.group,
     this.onTap,

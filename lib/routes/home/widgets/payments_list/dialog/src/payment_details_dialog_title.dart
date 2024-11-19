@@ -6,15 +6,15 @@ import 'package:l_breez/theme/theme.dart';
 class PaymentDetailsDialogTitle extends StatelessWidget {
   final PaymentData paymentData;
 
-  const PaymentDetailsDialogTitle({super.key, required this.paymentData});
+  const PaymentDetailsDialogTitle({required this.paymentData, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
 
     return Stack(
-      children: [
+      children: <Widget>[
         Container(
           decoration: ShapeDecoration(
             shape: const RoundedRectangleBorder(

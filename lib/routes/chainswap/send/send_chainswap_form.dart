@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -11,7 +12,7 @@ import 'package:l_breez/routes/chainswap/send/withdraw_funds_model.dart';
 import 'package:l_breez/widgets/amount_form_field/sat_amount_form_field_formatter.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("SendChainSwapForm");
+final Logger _logger = Logger('SendChainSwapForm');
 
 class SendChainSwapForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -24,15 +25,15 @@ class SendChainSwapForm extends StatefulWidget {
   final OnchainPaymentLimitsResponse paymentLimits;
 
   const SendChainSwapForm({
-    super.key,
     required this.formKey,
     required this.amountController,
     required this.addressController,
     required this.onChanged,
     required this.withdrawMaxValue,
-    this.btcAddressData,
     required this.bitcoinCurrency,
     required this.paymentLimits,
+    super.key,
+    this.btcAddressData,
   });
 
   @override
@@ -40,7 +41,7 @@ class SendChainSwapForm extends StatefulWidget {
 }
 
 class _SendChainSwapFormState extends State<SendChainSwapForm> {
-  final _validatorHolder = ValidatorHolder();
+  final ValidatorHolder _validatorHolder = ValidatorHolder();
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
   }
 
   void _fillBtcAddressData(BitcoinAddressData addressData) {
-    _logger.info("Filling BTC Address data for ${addressData.address}");
+    _logger.info('Filling BTC Address data for ${addressData.address}');
     widget.addressController.text = addressData.address;
     if (addressData.amountSat != null) {
       _setAmount(addressData.amountSat!.toInt());
@@ -68,14 +69,14 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Form(
         key: widget.formKey,
         child: Column(
-          children: [
+          children: <Widget>[
             BitcoinAddressTextFormField(
               controller: widget.addressController,
               validatorHolder: _validatorHolder,
@@ -106,11 +107,11 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
                   setState(() {
                     widget.onChanged(value);
                     if (value) {
-                      final accountCubit = context.read<AccountCubit>();
-                      final accountState = accountCubit.state;
+                      final AccountCubit accountCubit = context.read<AccountCubit>();
+                      final AccountState accountState = accountCubit.state;
                       _setAmount(accountState.walletInfo!.balanceSat.toInt());
                     } else {
-                      widget.amountController.text = "";
+                      widget.amountController.text = '';
                     }
                   });
                 },

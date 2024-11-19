@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/date.dart';
@@ -15,8 +16,8 @@ class CalendarDialog extends StatefulWidget {
 }
 
 class CalendarDialogState extends State<CalendarDialog> {
-  final _startDateController = TextEditingController();
-  final _endDateController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
   DateTime _endDate = DateTime.now();
   DateTime _startDate = DateTime.now();
 
@@ -30,17 +31,16 @@ class CalendarDialogState extends State<CalendarDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return AlertDialog(
       title: Text(
         texts.pos_transactions_range_dialog_title,
       ),
       content: Row(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           Flexible(
             child: _selectDateButton(
               texts.pos_transactions_range_dialog_start,
@@ -57,7 +57,7 @@ class CalendarDialogState extends State<CalendarDialog> {
           ),
         ],
       ),
-      actions: [
+      actions: <Widget>[
         TextButton(
           onPressed: _clearFilter,
           child: Text(
@@ -80,11 +80,11 @@ class CalendarDialogState extends State<CalendarDialog> {
 
   void _applyFilter(BuildContext context) {
     // Check if filter is unchanged
-    final navigator = Navigator.of(context);
+    final NavigatorState navigator = Navigator.of(context);
     if (_startDate != widget.firstDate || _endDate.day != DateTime.now().day) {
       navigator.pop(
-        [
-          DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0),
+        <DateTime>[
+          DateTime(_startDate.year, _startDate.month, _startDate.day),
           DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
         ],
       );
@@ -98,7 +98,7 @@ class CalendarDialogState extends State<CalendarDialog> {
     TextEditingController textEditingController,
     bool isStartBtn,
   ) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return GestureDetector(
       onTap: () {
@@ -127,15 +127,15 @@ class CalendarDialogState extends State<CalendarDialog> {
   }
 
   Future<void> _selectDate(BuildContext context, bool isStartBtn) async {
-    // TODO: Show error if end date is earlier than start date or do not allow picking an earlier date at all
-    DateTime? selectedDate = await showDatePicker(
+    // TODO(erdemyerebasmaz): Show error if end date is earlier than start date or do not allow picking an earlier date at all
+    final DateTime? selectedDate = await showDatePicker(
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
       initialDate: isStartBtn ? _startDate : _endDate,
       firstDate: widget.firstDate,
       lastDate: DateTime.now(),
-      builder: (context, child) {
-        final themeData = Theme.of(context);
+      builder: (BuildContext context, Widget? child) {
+        final ThemeData themeData = Theme.of(context);
         return Theme(
           data: themeData.isLightTheme
               ? themeData.copyWith(colorScheme: themeData.colorScheme.copyWith(onSurface: Colors.black))
@@ -144,7 +144,7 @@ class CalendarDialogState extends State<CalendarDialog> {
         );
       },
     );
-    Duration difference =
+    final Duration difference =
         isStartBtn ? selectedDate!.difference(_endDate) : selectedDate!.difference(_startDate);
     if (difference.inDays < 0) {
       setState(() {
@@ -165,12 +165,12 @@ class CalendarDialogState extends State<CalendarDialog> {
     }
   }
 
-  _clearFilter() {
+  void _clearFilter() {
     setState(() {
       _startDate = widget.firstDate;
       _endDate = DateTime.now();
-      _startDateController.text = "";
-      _endDateController.text = "";
+      _startDateController.text = '';
+      _endDateController.text = '';
     });
   }
 }

@@ -46,14 +46,14 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute> with Tic
       ),
     );
 
-    _slideAnimationController.addStatusListener((status) {
+    _slideAnimationController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(seconds: 2), () {
+        Future<void>.delayed(const Duration(seconds: 2), () {
           _slideAnimationController.reverse();
         });
       }
       if (status == AnimationStatus.reverse) {
-        Future.delayed(const Duration(milliseconds: 400), () {
+        Future<void>.delayed(const Duration(milliseconds: 400), () {
           setState(() {
             showParticles = widget.particlesEnabled;
           });
@@ -62,7 +62,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute> with Tic
       }
     });
 
-    _particlesController.addStatusListener((status) {
+    _particlesController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         if (mounted) {
           Navigator.of(context).pop();
@@ -80,9 +80,9 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute> with Tic
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return Stack(
-      children: [
+      children: <Widget>[
         if (!showParticles)
           SlideTransition(
             position: _slideAnimation,

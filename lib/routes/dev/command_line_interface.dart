@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/dev/widget/command_list.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -10,12 +11,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _logger = Logger("CommandsList");
+final Logger _logger = Logger('CommandsList');
 
 class CommandLineInterface extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const CommandLineInterface({super.key, required this.scaffoldKey});
+  const CommandLineInterface({required this.scaffoldKey, super.key});
 
   @override
   State<CommandLineInterface> createState() => _CommandLineInterfaceState();
@@ -24,7 +25,7 @@ class CommandLineInterface extends StatefulWidget {
 class _CommandLineInterfaceState extends State<CommandLineInterface> {
   //final _breezSdkLiquid = ServiceInjector().breezSdkLiquid;
 
-  final _cliInputController = TextEditingController();
+  final TextEditingController _cliInputController = TextEditingController();
   final FocusNode _cliEntryFocusNode = FocusNode();
 
   String _cliText = '';
@@ -32,15 +33,14 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
   TextStyle _cliTextStyle = smallTextStyle;
   bool _showDefaultCommands = true;
   bool isLoading = false;
-  var _richCliText = <TextSpan>[];
+  List<TextSpan> _richCliText = <TextSpan>[];
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(left: 10.0),
@@ -53,7 +53,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                   decoration: InputDecoration(
                     hintText: texts.developers_page_cli_hint,
                   ),
-                  onSubmitted: (command) {
+                  onSubmitted: (String command) {
                     _sendCommand(command);
                   },
                 ),
@@ -73,7 +73,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                     _cliInputController.clear();
                     _showDefaultCommands = true;
                     _lastCommand = '';
-                    _cliText = "";
+                    _cliText = '';
                   });
                 },
               ),
@@ -81,7 +81,6 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
           ),
         ),
         Expanded(
-          flex: 1,
           child: Container(
             padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
             child: Container(
@@ -90,12 +89,10 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                 border: _showDefaultCommands
                     ? null
                     : Border.all(
-                        width: 1.0,
                         color: const Color(0x80FFFFFF),
                       ),
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _showDefaultCommands
@@ -127,11 +124,11 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
                               tooltip: texts.developers_page_cli_result_share_tooltip,
                               onPressed: () {
                                 _shareFile(
-                                  _lastCommand.split(" ")[0],
+                                  _lastCommand.split(' ')[0],
                                   _cliText,
                                 );
                               },
-                            )
+                            ),
                           ],
                         ),
                   Expanded(
@@ -154,8 +151,8 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
   }
 
   void _sendCommand(String command) async {
-    _logger.info("Send command: $command");
-    final texts = context.texts();
+    _logger.info('Send command: $command');
+    final BreezTranslations texts = context.texts();
 
     if (command.isNotEmpty) {
       FocusScope.of(context).requestFocus(FocusNode());
@@ -165,9 +162,9 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
       });
       const JsonEncoder encoder = JsonEncoder.withIndent('    ');
       try {
-        var commandArgs = command.split(RegExp(r"\s"));
+        final List<String> commandArgs = command.split(RegExp(r'\s'));
         if (commandArgs.isEmpty) {
-          _logger.info("Command args is empty, skipping");
+          _logger.info('Command args is empty, skipping');
           setState(() {
             isLoading = false;
           });
@@ -184,13 +181,13 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
           case 'listInvoices':
           case 'closeAllChannels':
           case 'stop':
-            final command = commandArgs[0].toLowerCase();
-            _logger.info("executing command: $command");
-            // TODO: Liquid - Add execute_commands to Dart bindings
-            const answer = ""; // await _breezSdkLiquid.executeCommand(command: command);
-            _logger.info("Received answer: $answer");
+            final String command = commandArgs[0].toLowerCase();
+            _logger.info('executing command: $command');
+            // TODO(erdemyerebasmaz): Liquid - Add execute_commands to Dart bindings
+            const String answer = ''; // await _breezSdkLiquid.executeCommand(command: command);
+            _logger.info('Received answer: $answer');
             reply = encoder.convert(answer);
-            _logger.info("Reply: $reply");
+            _logger.info('Reply: $reply');
             break;
           default:
             throw texts.developers_page_cli_unsupported_command;
@@ -203,7 +200,7 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
           isLoading = false;
         });
       } catch (error) {
-        _logger.warning("Error happening", error);
+        _logger.warning('Error happening', error);
         setState(() {
           _showDefaultCommands = false;
           _cliText = error.toString();
@@ -218,11 +215,11 @@ class _CommandLineInterfaceState extends State<CommandLineInterface> {
 
   void _shareFile(String command, String text) async {
     Directory tempDir = await getTemporaryDirectory();
-    tempDir = await tempDir.createTemp("command");
-    String filePath = '${tempDir.path}/$command.json';
-    File file = File(filePath);
+    tempDir = await tempDir.createTemp('command');
+    final String filePath = '${tempDir.path}/$command.json';
+    final File file = File(filePath);
     await file.writeAsString(text, flush: true);
-    final xFile = XFile(filePath);
-    Share.shareXFiles([xFile]);
+    final XFile xFile = XFile(filePath);
+    Share.shareXFiles(<XFile>[xFile]);
   }
 }
