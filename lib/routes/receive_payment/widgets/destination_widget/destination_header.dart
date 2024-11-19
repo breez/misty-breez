@@ -25,22 +25,21 @@ class DestinationHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          if (paymentMethod != null && paymentMethod!.isNotEmpty) ...[Text(paymentMethod!)],
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (destination != null) ...[
-                _ShareIcon(
-                  destination: destination,
-                  paymentMethod: paymentMethod,
-                ),
-                _CopyIcon(
-                  destination: destination,
-                  paymentMethod: paymentMethod,
-                ),
-              ]
-            ],
-          ),
+          if (paymentMethod != null && paymentMethod!.isNotEmpty) ...[
+            Text(paymentMethod!),
+          ],
+          if (destination != null) ...[
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              _ShareIcon(
+                destination: destination,
+                paymentMethod: paymentMethod,
+              ),
+              _CopyIcon(
+                destination: destination,
+                paymentMethod: paymentMethod,
+              ),
+            ]),
+          ],
         ],
       ),
     );

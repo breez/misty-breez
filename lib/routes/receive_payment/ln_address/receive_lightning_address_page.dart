@@ -43,27 +43,24 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
         return Scaffold(
           body: webhookState.isLoading
               ? const DestinationWidgetPlaceholder()
-              : (webhookState.lnurlPayError != null)
+              : webhookState.lnurlPayError != null
                   ? ScrollableErrorMessageWidget(
                       title: webhookState.lnurlPayErrorTitle ?? texts.lightning_address_service_error_title,
                       message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
                     )
-                  : Padding(
-                      padding: const EdgeInsets.only(bottom: 40.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            if (webhookState.lnurlPayUrl != null)
-                              DestinationWidget(
-                                isLnAddress: true,
-                                destination: webhookState.lnurlPayUrl!,
-                                title: texts.receive_payment_method_lightning_address,
-                                infoWidget: const PaymentLimitsMessageBox(),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  : webhookState.lnurlPayUrl != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 40.0),
+                          child: SingleChildScrollView(
+                            child: DestinationWidget(
+                              isLnAddress: true,
+                              destination: webhookState.lnurlPayUrl,
+                              title: texts.receive_payment_method_lightning_address,
+                              infoWidget: const PaymentLimitsMessageBox(),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
           bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
             builder: (BuildContext context, PaymentLimitsState snapshot) {
               return webhookState.lnurlPayError != null || snapshot.hasError
