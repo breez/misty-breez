@@ -7,13 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/lnurl/payment/widgets/widgets.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_dialog.dart';
+import 'package:l_breez/routes/lnurl/withdraw/widgets/lnurl_withdraw_header.dart';
 import 'package:l_breez/routes/receive_payment/lnurl/widgets/lnurl_withdraw_limits.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/always_disabled_focus_node.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
@@ -190,54 +191,52 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (widget.requestData.defaultDescription.isNotEmpty) ...[
-                          TextFormField(
-                            controller: _descriptionController,
-                            keyboardType: TextInputType.multiline,
-                            textInputAction: TextInputAction.done,
-                            maxLines: null,
-                            readOnly: !_isFormEnabled,
-                            enabled: _isFormEnabled,
-                            focusNode: AlwaysDisabledFocusNode(),
-                            decoration: InputDecoration(
-                              labelText: texts.payment_details_dialog_action_for_payment_description,
+                        if (_isFixedAmount) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: LnWithdrawHeader(
+                              callback: widget.requestData.callback,
+                              amountSat: minWithdrawableSat,
+                              errorMessage: errorMessage,
                             ),
-                            style: FieldTextStyle.textStyle,
-                          )
-                        ],
-                        AmountFormField(
-                          context: context,
-                          texts: texts,
-                          bitcoinCurrency: currencyState.bitcoinCurrency,
-                          focusNode: _isFixedAmount ? AlwaysDisabledFocusNode() : _amountFocusNode,
-                          readOnly: !_isFormEnabled || _isFixedAmount,
-                          enabled: _isFormEnabled,
-                          controller: _amountController,
-                          validatorFn: (amountSat) => validatePayment(
-                            amountSat: amountSat,
-                            effectiveMinSat: effectiveMinSat,
-                            effectiveMaxSat: effectiveMaxSat,
                           ),
-                          returnFN: (amountStr) async {
-                            if (amountStr.isNotEmpty) {
-                              final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
-                              setState(() {
-                                _amountController.text = currencyState.bitcoinCurrency.format(
-                                  amountSat,
-                                  includeDisplayName: false,
-                                );
-                              });
-                              _formKey.currentState?.validate();
-                            }
-                          },
-                          onFieldSubmitted: (amountStr) async {
-                            if (amountStr.isNotEmpty) {
-                              _formKey.currentState?.validate();
-                            }
-                          },
-                          style: FieldTextStyle.textStyle,
-                          errorMaxLines: 3,
-                        ),
+                        ],
+                        if (!_isFixedAmount) ...[
+                          AmountFormField(
+                            context: context,
+                            texts: texts,
+                            bitcoinCurrency: currencyState.bitcoinCurrency,
+                            focusNode: _amountFocusNode,
+                            autofocus: _isFormEnabled && errorMessage.isEmpty,
+                            enabled: _isFormEnabled,
+                            enableInteractiveSelection: _isFormEnabled,
+                            controller: _amountController,
+                            validatorFn: (amountSat) => validatePayment(
+                              amountSat: amountSat,
+                              effectiveMinSat: effectiveMinSat,
+                              effectiveMaxSat: effectiveMaxSat,
+                            ),
+                            returnFN: (amountStr) async {
+                              if (amountStr.isNotEmpty) {
+                                final amountSat = currencyState.bitcoinCurrency.parse(amountStr);
+                                setState(() {
+                                  _amountController.text = currencyState.bitcoinCurrency.format(
+                                    amountSat,
+                                    includeDisplayName: false,
+                                  );
+                                });
+                                _formKey.currentState?.validate();
+                              }
+                            },
+                            onFieldSubmitted: (amountStr) async {
+                              if (amountStr.isNotEmpty) {
+                                _formKey.currentState?.validate();
+                              }
+                            },
+                            style: FieldTextStyle.textStyle,
+                            errorMaxLines: 3,
+                          ),
+                        ],
                         if (!_isFixedAmount) ...[
                           const SizedBox(height: 8.0),
                           Padding(
@@ -267,6 +266,14 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                             textAlign: TextAlign.left,
                             style: FieldTextStyle.labelStyle.copyWith(
                               color: themeData.colorScheme.error,
+                            ),
+                          ),
+                        ],
+                        if (widget.requestData.defaultDescription.isNotEmpty) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: LnPaymentDescription(
+                              metadataText: widget.requestData.defaultDescription,
                             ),
                           ),
                         ],

@@ -35,6 +35,7 @@ class AmountFormField extends TextFormField {
     super.onFieldSubmitted,
     super.onSaved,
     super.enabled,
+    super.enableInteractiveSelection,
     super.onChanged,
     bool? readOnly,
     bool? autofocus,

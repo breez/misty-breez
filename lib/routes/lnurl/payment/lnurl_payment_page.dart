@@ -259,6 +259,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         focusNode: _amountFocusNode,
                         autofocus: _isFormEnabled && errorMessage.isEmpty,
                         enabled: _isFormEnabled,
+                        enableInteractiveSelection: _isFormEnabled,
                         controller: _amountController,
                         validatorFn: (amountSat) => validatePayment(
                           amountSat: amountSat,
