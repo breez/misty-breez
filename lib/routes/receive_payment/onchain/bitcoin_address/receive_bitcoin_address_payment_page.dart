@@ -91,17 +91,17 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
       ),
       bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
         builder: (BuildContext context, PaymentLimitsState snapshot) {
-          return snapshot.lightningPaymentLimits == null
-              ? const SizedBox.shrink()
-              : snapshot.hasError
-                  ? SingleButtonBottomBar(
-                      stickToBottom: true,
-                      text: texts.invoice_btc_address_action_retry,
-                      onPressed: () {
-                        final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
-                        paymentLimitsCubit.fetchOnchainLimits();
-                      },
-                    )
+          return snapshot.hasError
+              ? SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.invoice_btc_address_action_retry,
+                  onPressed: () {
+                    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                    paymentLimitsCubit.fetchOnchainLimits();
+                  },
+                )
+              : snapshot.lightningPaymentLimits == null
+                  ? const SizedBox.shrink()
                   : prepareResponseFuture == null && receivePaymentResponseFuture == null
                       ? SingleButtonBottomBar(
                           stickToBottom: true,
