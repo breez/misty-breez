@@ -13,6 +13,11 @@ class InputState {
     InputSource source,
   ) = LnInvoiceInputState;
 
+  const factory InputState.bolt12Offer(
+    LNOffer lnOffer,
+    InputSource source,
+  ) = LnOfferInputState;
+
   const factory InputState.lnUrlPay(
     LnUrlPayRequestData data,
     InputSource source,
@@ -92,7 +97,7 @@ class LnInvoiceInputState extends InputState {
 
   @override
   String toString() {
-    return 'InvoiceInputState{lnInvoice: $lnInvoice, source: $source}';
+    return 'LnInvoiceInputState{lnInvoice: $lnInvoice, source: $source}';
   }
 
   @override
@@ -105,6 +110,32 @@ class LnInvoiceInputState extends InputState {
 
   @override
   int get hashCode => lnInvoice.hashCode ^ source.hashCode;
+}
+
+class LnOfferInputState extends InputState {
+  const LnOfferInputState(
+    this.lnOffer,
+    this.source,
+  ) : super._();
+
+  final LNOffer lnOffer;
+  final InputSource source;
+
+  @override
+  String toString() {
+    return 'LnOfferInputState{lnInvoice: $lnOffer, source: $source}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LnOfferInputState &&
+          runtimeType == other.runtimeType &&
+          lnOffer == other.lnOffer &&
+          source == other.source;
+
+  @override
+  int get hashCode => lnOffer.hashCode ^ source.hashCode;
 }
 
 class LnUrlPayInputState extends InputState {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/routes/send_payment/lightning/ln_offer_payment_page.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
@@ -118,6 +119,16 @@ Route<dynamic>? onGenerateRoute({
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: LnPaymentPage(
                         lnInvoice: settings.arguments as LNInvoice,
+                      ),
+                    ),
+                    settings: settings,
+                  );
+                case LnOfferPaymentPage.routeName:
+                  return FadeInRoute<PrepareSendResponse?>(
+                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                      child: LnOfferPaymentPage(
+                        lnOffer: settings.arguments as LNOffer,
                       ),
                     ),
                     settings: settings,
