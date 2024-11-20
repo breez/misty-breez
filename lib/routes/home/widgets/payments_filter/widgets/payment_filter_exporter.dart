@@ -25,7 +25,7 @@ class PaymentFilterExporter extends StatelessWidget {
       builder: (BuildContext context, AccountState account) {
         return Padding(
           padding: const EdgeInsets.only(),
-          child: PopupMenuButton<Choice>(
+          child: PopupMenuButton<PaymentFilterChoice>(
             color: themeData.colorScheme.surface,
             icon: Icon(
               Icons.more_vert,
@@ -34,10 +34,10 @@ class PaymentFilterExporter extends StatelessWidget {
             padding: EdgeInsets.zero,
             offset: const Offset(12, 24),
             onSelected: _select,
-            itemBuilder: (BuildContext context) => <PopupMenuItem<Choice>>[
-              PopupMenuItem<Choice>(
+            itemBuilder: (BuildContext context) => <PopupMenuItem<PaymentFilterChoice>>[
+              PopupMenuItem<PaymentFilterChoice>(
                 height: 36,
-                value: Choice(() => _exportPayments(context)),
+                value: PaymentFilterChoice(() => _exportPayments(context)),
                 child: Text(
                   texts.payments_filter_action_export,
                   style: themeData.textTheme.labelLarge,
@@ -50,7 +50,7 @@ class PaymentFilterExporter extends StatelessWidget {
     );
   }
 
-  void _select(Choice choice) {
+  void _select(PaymentFilterChoice choice) {
     choice.function();
   }
 
@@ -104,8 +104,8 @@ class PaymentFilterExporter extends StatelessWidget {
   }
 }
 
-class Choice {
-  const Choice(this.function);
+class PaymentFilterChoice {
+  const PaymentFilterChoice(this.function);
 
   final Function function;
 }

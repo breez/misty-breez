@@ -128,7 +128,3 @@ class _DigitMaskedWidgetPreviewState extends State<DigitMaskedWidgetPreview> {
     );
   }
 }
-
-void main() {
-  runApp(const DigitMaskedWidgetPreview());
-}

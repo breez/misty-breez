@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/refund/refund.dart';
+import 'package:l_breez/routes/routes.dart';
 
 class RefundableSwapList extends StatelessWidget {
   final List<RefundableSwap> refundables;

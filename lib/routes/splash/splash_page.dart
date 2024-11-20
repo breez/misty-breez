@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
-import 'package:l_breez/routes/splash/splash_animation_widget.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class SplashPage extends StatefulWidget {
@@ -33,8 +32,15 @@ class SplashPageState extends State<SplashPage> {
       ),
       child: Theme(
         data: breezLightTheme,
-        child: const Scaffold(
-          body: SplashAnimationWidget(),
+        child: Scaffold(
+          body: Center(
+            child: Image.asset(
+              'assets/animations/splash-animation.gif',
+              fit: BoxFit.contain,
+              gaplessPlayback: true,
+              width: MediaQuery.of(context).size.width / 3,
+            ),
+          ),
         ),
       ),
     );

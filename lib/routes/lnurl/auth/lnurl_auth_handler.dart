@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/lnurl/auth/login_text.dart';
-import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
+
+export 'login_text.dart';
 
 final Logger _logger = Logger('HandleLNURLAuthRequest');
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/widgets/widgets.dart';
 
 class DigitButtonWidget extends StatelessWidget {
   final String? digit;
@@ -43,18 +42,4 @@ class DigitButtonWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(
-    Preview(
-      List<Widget>.generate(
-        10,
-        (int index) => DigitButtonWidget(
-          digit: '$index',
-          onPressed: (String? digit) => debugPrint('Digit: $digit'),
-        ),
-      ),
-    ),
-  );
 }

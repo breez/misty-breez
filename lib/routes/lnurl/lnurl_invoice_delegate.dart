@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/lnurl/auth/lnurl_auth_handler.dart';
-import 'package:l_breez/routes/lnurl/payment/lnurl_payment_handler.dart';
-import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
-import 'package:l_breez/routes/lnurl/withdraw/lnurl_withdraw_handler.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('HandleLNURL');

@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:l_breez/handlers/handlers.dart';
-import 'package:l_breez/routes/home/home.dart';
-import 'package:l_breez/routes/security/auto_lock_mixin.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class Home extends StatefulWidget {

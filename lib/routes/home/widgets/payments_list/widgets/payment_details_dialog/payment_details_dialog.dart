@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/home/home.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:logging/logging.dart';
 
 export 'widgets/widgets.dart';

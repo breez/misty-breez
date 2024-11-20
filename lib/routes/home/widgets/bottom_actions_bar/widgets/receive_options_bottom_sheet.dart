@@ -1,8 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/home/home.dart';
-import 'package:l_breez/routes/receive_payment/receive_payment.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class ReceiveOptionsBottomSheet extends StatelessWidget {

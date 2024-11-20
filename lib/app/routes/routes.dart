@@ -2,23 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/dev/developers_view.dart';
-import 'package:l_breez/routes/enter_payment_info/enter_payment_info_page.dart';
-import 'package:l_breez/routes/fiat_currencies/fiat_currency_settings.dart';
-import 'package:l_breez/routes/home/home.dart';
-import 'package:l_breez/routes/initial_walkthrough/initial_walkthrough.dart';
-import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
-import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
-import 'package:l_breez/routes/qr_scan/qr_scan.dart';
-import 'package:l_breez/routes/receive_payment/receive_payment.dart';
-import 'package:l_breez/routes/refund/refund.dart';
-import 'package:l_breez/routes/security/lock_screen.dart';
-import 'package:l_breez/routes/security/secured_page.dart';
-import 'package:l_breez/routes/security/security_page.dart';
-import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
-import 'package:l_breez/routes/send_payment/lightning/ln_payment_page.dart';
-import 'package:l_breez/routes/send_payment/lnurl/lnurl_payment_page.dart';
-import 'package:l_breez/routes/splash/splash_page.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
@@ -172,10 +156,10 @@ Route<dynamic>? onGenerateRoute({
                     builder: (BuildContext _) => const DevelopersView(),
                     settings: settings,
                   );
-                case QRScan.routeName:
+                case QRScanView.routeName:
                   return MaterialPageRoute<String>(
                     fullscreenDialog: true,
-                    builder: (BuildContext _) => const QRScan(),
+                    builder: (BuildContext _) => const QRScanView(),
                     settings: settings,
                   );
               }
