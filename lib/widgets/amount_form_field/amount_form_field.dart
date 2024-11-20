@@ -6,8 +6,10 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
-import 'package:l_breez/widgets/amount_form_field/currency_converter_dialog.dart';
-import 'package:l_breez/widgets/amount_form_field/sat_amount_form_field_formatter.dart';
+import 'package:l_breez/widgets/widgets.dart';
+
+export 'currency_converter_dialog.dart';
+export 'sat_amount_form_field_formatter.dart';
 
 class AmountFormField extends TextFormField {
   final FiatConversion? fiatConversion;
@@ -16,12 +18,12 @@ class AmountFormField extends TextFormField {
   final BreezTranslations texts;
 
   AmountFormField({
-    super.key,
     required this.bitcoinCurrency,
-    this.fiatConversion,
     required this.validatorFn,
     required this.texts,
     required BuildContext context,
+    super.key,
+    this.fiatConversion,
     Color? iconColor,
     Function(String amount)? returnFN,
     super.controller,
@@ -35,6 +37,7 @@ class AmountFormField extends TextFormField {
     super.onFieldSubmitted,
     super.onSaved,
     super.enabled,
+    super.enableInteractiveSelection,
     super.onChanged,
     bool? readOnly,
     bool? autofocus,
@@ -55,7 +58,7 @@ class AmountFormField extends TextFormField {
                     icon: Image.asset(
                       (fiatConversion?.currencyData != null)
                           ? fiatConversion!.logoPath
-                          : "assets/icons/btc_convert.png",
+                          : 'assets/icons/btc_convert.png',
                       color: iconColor ?? BreezColors.white[500],
                     ),
                     padding: const EdgeInsets.only(top: 21.0),
@@ -66,9 +69,8 @@ class AmountFormField extends TextFormField {
                       builder: (_) => CurrencyConverterDialog(
                         context.read<CurrencyCubit>(),
                         returnFN ??
-                            (value) => controller!.text = bitcoinCurrency.format(
+                            (String value) => controller!.text = bitcoinCurrency.format(
                                   bitcoinCurrency.parse(value),
-                                  includeCurrencySymbol: false,
                                   includeDisplayName: false,
                                 ),
                         validatorFn,
@@ -77,28 +79,28 @@ class AmountFormField extends TextFormField {
                   ),
           ),
           inputFormatters: bitcoinCurrency != BitcoinCurrency.sat
-              ? [
+              ? <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(bitcoinCurrency.whitelistedPattern),
                   TextInputFormatter.withFunction(
-                    (_, newValue) => newValue.copyWith(
+                    (_, TextEditingValue newValue) => newValue.copyWith(
                       text: newValue.text.replaceAll(',', '.'),
                     ),
                   ),
                 ]
-              : [SatAmountFormFieldFormatter()],
+              : <TextInputFormatter>[SatAmountFormFieldFormatter()],
           readOnly: readOnly ?? false,
         );
 
   @override
   FormFieldValidator<String?> get validator {
-    return (value) {
+    return (String? value) {
       if (value!.isEmpty) {
         return texts.amount_form_insert_hint(
           bitcoinCurrency.displayName,
         );
       }
       try {
-        int intAmount = bitcoinCurrency.parse(value);
+        final int intAmount = bitcoinCurrency.parse(value);
         if (intAmount <= 0) {
           return texts.amount_form_error_invalid_amount;
         }

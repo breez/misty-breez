@@ -10,11 +10,11 @@ class CurrencyState {
   final List<FiatCurrency> fiatCurrenciesData;
 
   CurrencyState({
-    this.fiatCurrenciesData = const [],
-    this.exchangeRates = const {},
-    this.preferredCurrencies = const ["USD", "EUR", "GBP", "JPY"],
-    this.fiatId = "USD",
-    this.bitcoinTicker = "SAT",
+    this.fiatCurrenciesData = const <FiatCurrency>[],
+    this.exchangeRates = const <String, Rate>{},
+    this.preferredCurrencies = const <String>['USD', 'EUR', 'GBP', 'JPY'],
+    this.fiatId = 'USD',
+    this.bitcoinTicker = 'SAT',
   });
 
   CurrencyState.initial() : this();
@@ -44,7 +44,7 @@ class CurrencyState {
   bool get fiatEnabled => fiatCurrency != null && fiatExchangeRate != null;
 
   FiatCurrency? fiatById(String id) {
-    for (var fc in fiatCurrenciesData) {
+    for (FiatCurrency fc in fiatCurrenciesData) {
       if (fc.id == id) {
         return fc;
       }
@@ -53,8 +53,8 @@ class CurrencyState {
   }
 
   FiatConversion? fiatConversion() {
-    final currency = fiatCurrency;
-    final exchange = fiatExchangeRate;
+    final FiatCurrency? currency = fiatCurrency;
+    final double? exchange = fiatExchangeRate;
     if (currency != null && exchange != null) {
       return FiatConversion(currency, exchange);
     } else {
@@ -64,12 +64,12 @@ class CurrencyState {
 
   CurrencyState.fromJson(Map<String, dynamic> json)
       : preferredCurrencies = (json['preferredCurrencies'] as List<dynamic>).cast<String>(),
-        exchangeRates = {},
-        fiatCurrenciesData = [],
+        exchangeRates = <String, Rate>{},
+        fiatCurrenciesData = <FiatCurrency>[],
         fiatId = json['fiatId'],
         bitcoinTicker = json['bitcoinTicker'];
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'preferredCurrencies': preferredCurrencies,
         'fiatId': fiatId,
         'bitcoinTicker': bitcoinTicker,

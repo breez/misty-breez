@@ -6,7 +6,7 @@ import 'package:theme_provider/theme_provider.dart';
 class AppThemeManager extends StatefulWidget {
   final Widget child;
 
-  const AppThemeManager({super.key, required this.child});
+  const AppThemeManager({required this.child, super.key});
 
   @override
   AppThemeManagerState createState() => AppThemeManagerState();
@@ -29,8 +29,8 @@ class AppThemeManagerState extends State<AppThemeManager> {
   Widget build(BuildContext context) {
     return ThemeProvider(
       saveThemesOnChange: true,
-      onInitCallback: (controller, previouslySavedThemeFuture) async {
-        String? savedTheme = await previouslySavedThemeFuture;
+      onInitCallback: (ThemeController controller, Future<String?> previouslySavedThemeFuture) async {
+        final String? savedTheme = await previouslySavedThemeFuture;
         if (savedTheme != null) {
           controller.setTheme(savedTheme);
         } else {
@@ -50,15 +50,15 @@ class AppThemeManagerState extends State<AppThemeManager> {
           description: 'Blue Theme',
         ),
       ],
-      child: FutureBuilder(
+      child: FutureBuilder<void>(
         future: loadThemeFromDiskFuture,
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SizedBox.shrink();
           }
           return ThemeConsumer(
             child: Builder(
-              builder: (context) {
+              builder: (BuildContext context) {
                 SystemChrome.setSystemUIOverlayStyle(
                   SystemUiOverlayStyle(
                     systemNavigationBarColor: ThemeProvider.themeOf(context).data.bottomAppBarTheme.color,

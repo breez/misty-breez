@@ -10,14 +10,15 @@ class CustomData {
   Color navigationDrawerHeaderBgColor;
   Color navigationDrawerBgColor;
 
-  CustomData(
-      {required this.loaderColorBlendMode,
-      required this.loaderAssetPath,
-      required this.pendingTextColor,
-      required this.dashboardBgColor,
-      required this.paymentListBgColor,
-      required this.navigationDrawerHeaderBgColor,
-      required this.navigationDrawerBgColor});
+  CustomData({
+    required this.loaderColorBlendMode,
+    required this.loaderAssetPath,
+    required this.pendingTextColor,
+    required this.dashboardBgColor,
+    required this.paymentListBgColor,
+    required this.navigationDrawerHeaderBgColor,
+    required this.navigationDrawerBgColor,
+  });
 }
 
 final CustomData blueThemeCustomData = CustomData(

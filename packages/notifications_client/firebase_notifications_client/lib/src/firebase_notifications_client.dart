@@ -8,11 +8,12 @@ import 'package:rxdart/rxdart.dart';
 
 export 'package:firebase_notifications_client/src/model/notifications_client.dart';
 
-final _logger = Logger("FirebaseNotifications");
+final Logger _logger = Logger('FirebaseNotifications');
 
 class FirebaseNotificationsClient implements NotificationsClient {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final _notificationController = BehaviorSubject<Map<dynamic, dynamic>>();
+  final BehaviorSubject<Map<dynamic, dynamic>> _notificationController =
+      BehaviorSubject<Map<dynamic, dynamic>>();
 
   @override
   Stream<Map<dynamic, dynamic>> get notifications => _notificationController.stream;
@@ -23,23 +24,23 @@ class FirebaseNotificationsClient implements NotificationsClient {
   }
 
   Future<void> _onMessage(RemoteMessage message) async {
-    _logger.info("_onMessage = ${message.data}");
-    final data = _extractData(message.data);
+    _logger.info('_onMessage = ${message.data}');
+    final Map<dynamic, dynamic>? data = _extractData(message.data);
     if (data != null) {
       _notificationController.add(data);
     }
   }
 
   Future<void> _onResume(RemoteMessage message) async {
-    _logger.info("_onResume = ${message.data}");
-    final data = _extractData(message.data);
+    _logger.info('_onResume = ${message.data}');
+    final Map<dynamic, dynamic>? data = _extractData(message.data);
     if (data != null) {
       _notificationController.add(data);
     }
   }
 
   Map<dynamic, dynamic>? _extractData(Map<String, dynamic> data) {
-    var extractedData = data["data"] ?? data["aps"] ?? data;
+    dynamic extractedData = data['data'] ?? data['aps'] ?? data;
     if (extractedData is String) {
       extractedData = json.decode(extractedData);
     }
@@ -48,23 +49,15 @@ class FirebaseNotificationsClient implements NotificationsClient {
 
   @override
   Future<String?> getToken() async {
-    _logger.info("getToken");
-    final firebaseNotificationSettings = await _firebaseMessaging.requestPermission(
-      sound: true,
-      badge: true,
-      alert: true,
-      announcement: false,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-    );
+    _logger.info('getToken');
+    final NotificationSettings firebaseNotificationSettings = await _firebaseMessaging.requestPermission();
 
     _logger.config('User granted permission: ${firebaseNotificationSettings.authorizationStatus}');
     if (firebaseNotificationSettings.authorizationStatus == AuthorizationStatus.authorized) {
-      _logger.info("Authorized to get token");
+      _logger.info('Authorized to get token');
       return _firebaseMessaging.getToken();
     } else {
-      _logger.warning("Unauthorized to get token");
+      _logger.warning('Unauthorized to get token');
       return null;
     }
   }

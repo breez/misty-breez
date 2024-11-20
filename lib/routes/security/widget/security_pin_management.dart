@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -8,9 +9,8 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/security/change_pin_page.dart';
 import 'package:l_breez/routes/security/widget/local_auth_switch.dart';
 import 'package:l_breez/routes/security/widget/security_pin_interval.dart';
-import 'package:l_breez/widgets/designsystem/switch/simple_switch.dart';
-import 'package:l_breez/widgets/preview/preview.dart';
-import 'package:l_breez/widgets/route.dart';
+import 'package:l_breez/widgets/widgets.dart';
+import 'package:nested/nested.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
@@ -20,16 +20,16 @@ class SecurityPinManagement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final navigator = Navigator.of(context);
-    final securityCubit = context.read<SecurityCubit>();
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final NavigatorState navigator = Navigator.of(context);
+    final SecurityCubit securityCubit = context.read<SecurityCubit>();
 
     return BlocBuilder<SecurityCubit, SecurityState>(
-      builder: (context, state) {
+      builder: (BuildContext context, SecurityState state) {
         if (state.pinStatus == PinStatus.enabled) {
           return Column(
-            children: [
+            children: <Widget>[
               SimpleSwitch(
                 text: texts.security_and_backup_pin_option_deactivate,
                 switchValue: true,
@@ -52,7 +52,7 @@ class SecurityPinManagement extends StatelessWidget {
                   size: 30.0,
                 ),
                 onTap: () => navigator.push(
-                  FadeInRoute(
+                  FadeInRoute<void>(
                     builder: (_) => const ChangePinPage(),
                   ),
                 ),
@@ -76,7 +76,7 @@ class SecurityPinManagement extends StatelessWidget {
               size: 30.0,
             ),
             onTap: () => navigator.push(
-              FadeInRoute(
+              FadeInRoute<void>(
                 builder: (_) => const ChangePinPage(),
               ),
             ),
@@ -89,21 +89,21 @@ class SecurityPinManagement extends StatelessWidget {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final injector = ServiceInjector();
+  final ServiceInjector injector = ServiceInjector();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: Directory(
-      join((await getApplicationDocumentsDirectory()).path, "preview_storage"),
+      join((await getApplicationDocumentsDirectory()).path, 'preview_storage'),
     ),
   );
   runApp(
     MultiBlocProvider(
-      providers: [
+      providers: <SingleChildWidget>[
         BlocProvider<SecurityCubit>(
           create: (BuildContext context) => SecurityCubit(injector.keychain),
         ),
       ],
       child: const Preview(
-        [
+        <Widget>[
           SecurityPinManagement(),
         ],
       ),

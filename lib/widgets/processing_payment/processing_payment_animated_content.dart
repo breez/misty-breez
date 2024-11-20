@@ -11,7 +11,6 @@ class ProcessingPaymentAnimatedContent extends StatelessWidget {
   final Widget child;
 
   const ProcessingPaymentAnimatedContent({
-    super.key,
     required this.color,
     required this.opacity,
     required this.moment,
@@ -19,19 +18,20 @@ class ProcessingPaymentAnimatedContent extends StatelessWidget {
     required this.startHeight,
     required this.transitionAnimation,
     required this.child,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final queryData = MediaQuery.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final MediaQueryData queryData = MediaQuery.of(context);
 
     return Opacity(
       opacity: opacity,
       child: Material(
         color: Colors.transparent,
         child: Stack(
-          children: [
+          children: <Widget>[
             PositionedTransition(
               rect: transitionAnimation,
               child: Container(

@@ -6,8 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/security/widget/digit_masked_widget.dart';
 import 'package:l_breez/routes/security/widget/num_pad_widget.dart';
-import 'package:l_breez/widgets/preview/preview.dart';
-import 'package:l_breez/widgets/shake_widget.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class PinCodeWidget extends StatefulWidget {
   final int pinLength;
@@ -17,10 +16,10 @@ class PinCodeWidget extends StatefulWidget {
   final Future<TestPinResult> Function()? testBiometricsFunction;
 
   const PinCodeWidget({
-    super.key,
-    this.pinLength = 6,
     required this.label,
     required this.testPinCodeFunction,
+    super.key,
+    this.pinLength = 6,
     this.testBiometricsFunction,
     this.localAuthenticationOption = LocalAuthenticationOption.none,
   });
@@ -30,8 +29,8 @@ class PinCodeWidget extends StatefulWidget {
 }
 
 class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProviderStateMixin {
-  String errorMessage = "";
-  String pinCode = "";
+  String errorMessage = '';
+  String pinCode = '';
   late ShakeController _digitsShakeController;
 
   @override
@@ -42,18 +41,17 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final themeData = Theme.of(context);
+    final Size size = MediaQuery.of(context).size;
+    final ThemeData themeData = Theme.of(context);
 
     return SafeArea(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
+        children: <Widget>[
           Flexible(
             flex: 20,
             child: Center(
               child: SvgPicture.asset(
-                "assets/images/liquid-logo-color.svg",
+                'assets/images/liquid-logo-color.svg',
                 width: size.width / 3,
                 colorFilter: const ColorFilter.mode(
                   Colors.white,
@@ -66,15 +64,15 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
             flex: 30,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
+              children: <Widget>[
                 Text(widget.label),
                 ShakeWidget(
                   controller: _digitsShakeController,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
+                    children: List<Widget>.generate(
                       widget.pinLength,
-                      (index) => Padding(
+                      (int index) => Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DigitMaskedWidget(
                           filled: pinCode.length > index,
@@ -96,7 +94,6 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
           Flexible(
             flex: 50,
             child: NumPadWidget(
-              lhsActionKey: ActionKey.clear,
               rhsActionKey: pinCode.isNotEmpty
                   ? ActionKey.backspace
                   : widget.localAuthenticationOption.isFacial
@@ -105,46 +102,46 @@ class _PinCodeWidgetState extends State<PinCodeWidget> with SingleTickerProvider
                               widget.localAuthenticationOption.isOtherBiometric
                           ? ActionKey.fingerprint
                           : ActionKey.backspace,
-              onDigitPressed: (digit) {
+              onDigitPressed: (String digit) {
                 setState(() {
                   if (pinCode.length < widget.pinLength) {
                     pinCode += digit;
-                    errorMessage = "";
+                    errorMessage = '';
                   }
                   if (pinCode.length == widget.pinLength) {
-                    widget.testPinCodeFunction(pinCode).then((result) {
+                    widget.testPinCodeFunction(pinCode).then((TestPinResult result) {
                       if (!result.success) {
                         setState(() {
                           errorMessage = result.errorMessage!;
-                          pinCode = "";
+                          pinCode = '';
                           _digitsShakeController.shake();
                         });
                       } else if (result.clearOnSuccess) {
                         setState(() {
-                          pinCode = "";
+                          pinCode = '';
                         });
                       }
                     });
                   }
                 });
               },
-              onActionKeyPressed: (action) {
+              onActionKeyPressed: (ActionKey action) {
                 setState(() {
                   if (action == ActionKey.clear) {
-                    pinCode = "";
-                    errorMessage = "";
+                    pinCode = '';
+                    errorMessage = '';
                   } else if (action == ActionKey.backspace && pinCode.isNotEmpty) {
                     pinCode = pinCode.substring(0, pinCode.length - 1);
-                    errorMessage = "";
+                    errorMessage = '';
                   } else if (action == ActionKey.fingerprint || action == ActionKey.faceId) {
-                    widget.testBiometricsFunction?.call().then((result) {
+                    widget.testBiometricsFunction?.call().then((TestPinResult result) {
                       if (!result.success) {
-                        pinCode = "";
+                        pinCode = '';
                         errorMessage = result.errorMessage!;
                         _digitsShakeController.shake();
                       } else if (result.clearOnSuccess) {
-                        pinCode = "";
-                        errorMessage = "";
+                        pinCode = '';
+                        errorMessage = '';
                       }
                     });
                   }
@@ -167,61 +164,60 @@ class TestPinResult {
     this.success, {
     this.clearOnSuccess = false,
     this.errorMessage,
-  }) : assert(success || errorMessage != null, "errorMessage must be provided if success is false");
+  }) : assert(success || errorMessage != null, 'errorMessage must be provided if success is false');
 }
 
 void main() {
   runApp(
     Preview(
-      [
+      <Widget>[
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text("Small space, wrong pin code, face id:"),
+          child: Text('Small space, wrong pin code, face id:'),
         ),
         SizedBox(
           height: 280, // anything smaller than this will overflow some pixels
           child: PinCodeWidget(
-            label: "First example",
+            label: 'First example',
             localAuthenticationOption: LocalAuthenticationOption.faceId,
-            testPinCodeFunction: (pin) => SynchronousFuture(
-              const TestPinResult(false, errorMessage: "Wrong pin code"),
+            testPinCodeFunction: (String pin) => SynchronousFuture<TestPinResult>(
+              const TestPinResult(false, errorMessage: 'Wrong pin code'),
             ),
-            testBiometricsFunction: () => SynchronousFuture(
-              const TestPinResult(false, errorMessage: "Wrong pin code"),
+            testBiometricsFunction: () => SynchronousFuture<TestPinResult>(
+              const TestPinResult(false, errorMessage: 'Wrong pin code'),
             ),
           ),
         ),
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text("Medium space, correct pin code, fingerprint:"),
+          child: Text('Medium space, correct pin code, fingerprint:'),
         ),
         SizedBox(
           height: 400,
           child: PinCodeWidget(
-            label: "Second example",
+            label: 'Second example',
             localAuthenticationOption: LocalAuthenticationOption.fingerprint,
-            testPinCodeFunction: (pin) => SynchronousFuture(
+            testPinCodeFunction: (String pin) => SynchronousFuture<TestPinResult>(
               const TestPinResult(true),
             ),
-            testBiometricsFunction: () => SynchronousFuture(
+            testBiometricsFunction: () => SynchronousFuture<TestPinResult>(
               const TestPinResult(true),
             ),
           ),
         ),
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text("Large space, correct/incorrect randomly, no local auth:"),
+          child: Text('Large space, correct/incorrect randomly, no local auth:'),
         ),
         SizedBox(
           height: 600,
           child: PinCodeWidget(
-            label: "Third example",
-            localAuthenticationOption: LocalAuthenticationOption.none,
-            testPinCodeFunction: (pin) async {
-              return TestPinResult(Random().nextBool(), errorMessage: "A random error");
+            label: 'Third example',
+            testPinCodeFunction: (String pin) async {
+              return TestPinResult(Random().nextBool(), errorMessage: 'A random error');
             },
             testBiometricsFunction: () async {
-              return TestPinResult(Random().nextBool(), errorMessage: "A random error");
+              return TestPinResult(Random().nextBool(), errorMessage: 'A random error');
             },
           ),
         ),

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:breez_liquid/breez_liquid.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("AccountState");
+final Logger _logger = Logger('AccountState');
 
 class AccountState {
   final bool isRestoring;
@@ -43,17 +43,17 @@ class AccountState {
   bool get hasBalance => walletInfo != null && walletInfo!.balanceSat > BigInt.zero;
 
   Map<String, dynamic>? toJson() {
-    return {
-      "isRestoring": isRestoring,
-      "isOnboardingComplete": isOnboardingComplete,
-      "walletInfo": walletInfo?.toJson(),
+    return <String, dynamic>{
+      'isRestoring': isRestoring,
+      'isOnboardingComplete': isOnboardingComplete,
+      'walletInfo': walletInfo?.toJson(),
     };
   }
 
   factory AccountState.fromJson(Map<String, dynamic> json) {
     return AccountState(
-      isRestoring: json["isRestoring"] ?? false,
-      isOnboardingComplete: json["isOnboardingComplete"] ?? false,
+      isRestoring: json['isRestoring'] ?? false,
+      isOnboardingComplete: json['isOnboardingComplete'] ?? false,
       didCompleteInitialSync: false,
       walletInfo: GetInfoResponseFromJson.fromJson(json['walletInfo']),
     );
@@ -65,7 +65,7 @@ class AccountState {
 
 extension GetInfoResponseToJson on GetInfoResponse {
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'balanceSat': balanceSat.toString(),
       'pendingSendSat': pendingSendSat.toString(),
       'pendingReceiveSat': pendingReceiveSat.toString(),
@@ -78,7 +78,7 @@ extension GetInfoResponseToJson on GetInfoResponse {
 extension GetInfoResponseFromJson on GetInfoResponse {
   static GetInfoResponse? fromJson(Map<String, dynamic>? json) {
     if (json == null) {
-      _logger.info("walletInfo is missing from AccountState JSON.");
+      _logger.info('walletInfo is missing from AccountState JSON.');
       return null;
     }
 
@@ -87,7 +87,7 @@ extension GetInfoResponseFromJson on GetInfoResponse {
         json['pendingReceiveSat'] == null ||
         json['fingerprint'] == null ||
         json['pubkey'] == null) {
-      _logger.warning("GetInfoResponse has missing fields on AccountState JSON.");
+      _logger.warning('GetInfoResponse has missing fields on AccountState JSON.');
       return null;
     }
 

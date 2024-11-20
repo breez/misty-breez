@@ -8,7 +8,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
-final _logger = Logger("DeepLinkClient");
+final Logger _logger = Logger('DeepLinkClient');
 
 class DeepLinkClient {
   final StreamController<String> _linksNotificationsController = BehaviorSubject<String>();
@@ -22,20 +22,19 @@ class DeepLinkClient {
   }
 
   void listen() async {
-    var data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
     if (data != null) {
       publishLink(data);
     }
 
-    _dynamicLinks!.onLink.listen((data) {
+    _dynamicLinks!.onLink.listen((PendingDynamicLinkData data) {
       publishLink(data);
-    }).onError((err) {
-      _logger.severe("Failed to fetch dynamic link $err", err);
-      return Future.value(null);
+    }).onError((Object err) {
+      _logger.severe('Failed to fetch dynamic link $err', err);
     });
   }
 
-  publishLink(PendingDynamicLinkData data) async {
+  void publishLink(PendingDynamicLinkData data) {
     final Uri uri = data.link;
     _linksNotificationsController.add(uri.toString());
   }
@@ -46,10 +45,10 @@ class DeepLinkClient {
 
   Future<String> generateSessionInviteLink(SessionLink link) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
-      uriPrefix: "https://breez.page.link",
+      uriPrefix: 'https://breez.page.link',
       link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
-      androidParameters: const AndroidParameters(packageName: "com.breez.liquid.l_breez"),
-      iosParameters: const IOSParameters(bundleId: "com.breez.liquid.lBreez"),
+      androidParameters: const AndroidParameters(packageName: 'com.breez.liquid.l_breez'),
+      iosParameters: const IOSParameters(bundleId: 'com.breez.liquid.lBreez'),
     );
     final ShortDynamicLink shortLink = await _dynamicLinks!.buildShortLink(parameters);
 

@@ -37,15 +37,15 @@ final VendorTheme fastbitcoins = VendorTheme(
 );
 final VendorTheme xsats = VendorTheme(iconBgColor: const Color(0xFF000000));
 
-final Map<String, VendorTheme> vendorTheme = {
-  "bitrefill": bitrefill,
-  "ln.pizza": lnpizza,
-  "fixedfloat": fixedfloat,
-  "lnmarkets": lnmarkets,
-  "boltz": boltz,
-  "lightnite": lightnite,
-  "spendl": spendl,
-  "kollider": kollider,
-  "fastbitcoins": fastbitcoins,
-  "xsats": xsats,
+final Map<String, VendorTheme> vendorTheme = <String, VendorTheme>{
+  'bitrefill': bitrefill,
+  'ln.pizza': lnpizza,
+  'fixedfloat': fixedfloat,
+  'lnmarkets': lnmarkets,
+  'boltz': boltz,
+  'lightnite': lightnite,
+  'spendl': spendl,
+  'kollider': kollider,
+  'fastbitcoins': fastbitcoins,
+  'xsats': xsats,
 };

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 
 class LNURLMetadataText extends StatefulWidget {
-  const LNURLMetadataText({super.key, required this.metadataText});
+  const LNURLMetadataText({required this.metadataText, super.key});
 
   final String metadataText;
 
@@ -49,9 +50,9 @@ class LNURLMetadataImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (base64String != null) {
-      final bytes = base64Decode(base64String!);
+      final Uint8List bytes = base64Decode(base64String!);
       if (bytes.isNotEmpty) {
-        const imageSize = 128.0;
+        const double imageSize = 128.0;
         return ConstrainedBox(
           constraints: const BoxConstraints(
             minHeight: imageSize,

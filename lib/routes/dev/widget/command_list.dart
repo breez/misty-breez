@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/dev/widget/command.dart';
-import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class CommandList extends StatelessWidget {
   final bool loading;
@@ -11,18 +11,18 @@ class CommandList extends StatelessWidget {
   final FocusNode focusNode;
 
   const CommandList({
+    required this.inputController,
+    required this.focusNode,
     super.key,
     this.loading = false,
     this.defaults = false,
-    this.fallback = const [],
+    this.fallback = const <TextSpan>[],
     this.fallbackTextStyle = const TextStyle(),
-    required this.inputController,
-    required this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     if (loading) {
       return const Center(
@@ -38,45 +38,45 @@ class CommandList extends StatelessWidget {
           dividerColor: Colors.transparent,
         ),
         child: ListView(
-          children: [
+          children: <Widget>[
             ExpansionTile(
-              title: const Text("General"),
-              children: [
+              title: const Text('General'),
+              children: <Widget>[
                 Command(
-                  "generateDiagnosticData",
-                  (c) => _onCommand(context, c),
+                  'generateDiagnosticData',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "getInfo",
-                  (c) => _onCommand(context, c),
+                  'getInfo',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "listPeers",
-                  (c) => _onCommand(context, c),
+                  'listPeers',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "listPeerChannels",
-                  (c) => _onCommand(context, c),
+                  'listPeerChannels',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "listFunds",
-                  (c) => _onCommand(context, c),
+                  'listFunds',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "listPayments",
-                  (c) => _onCommand(context, c),
+                  'listPayments',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "listInvoices",
-                  (c) => _onCommand(context, c),
+                  'listInvoices',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "closeAllChannels",
-                  (c) => _onCommand(context, c),
+                  'closeAllChannels',
+                  (String c) => _onCommand(context, c),
                 ),
                 Command(
-                  "stop",
-                  (c) => _onCommand(context, c),
+                  'stop',
+                  (String c) => _onCommand(context, c),
                 ),
               ],
             ),
@@ -86,13 +86,13 @@ class CommandList extends StatelessWidget {
     }
 
     return ListView(
-      children: [
+      children: <Widget>[
         RichText(
           text: TextSpan(
             style: fallbackTextStyle,
             children: fallback,
           ),
-        )
+        ),
       ],
     );
   }

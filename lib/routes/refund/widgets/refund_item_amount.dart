@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -11,12 +12,11 @@ class RefundItemAmount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final currencyState = context.read<CurrencyCubit>().state;
+    final BreezTranslations texts = context.texts();
+    final CurrencyState currencyState = context.read<CurrencyCubit>().state;
 
     return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
+      children: <Widget>[
         Expanded(
           child: Text(
             texts.get_refund_amount(currencyState.bitcoinCurrency.format(confirmedSats)),

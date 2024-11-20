@@ -1,12 +1,12 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
-// TODO: Ensure that any changes to [PaymentDetails] are reflected here on each extension.
+// TODO(erdemyerebasmaz): Ensure that any changes to [PaymentDetails] are reflected here on each extension.
 extension PaymentDetailsMapExtension on PaymentDetails {
   T map<T>({
+    required T Function() orElse,
     T Function(PaymentDetails_Bitcoin details)? bitcoin,
     T Function(PaymentDetails_Lightning details)? lightning,
     T Function(PaymentDetails_Liquid details)? liquid,
-    required T Function() orElse,
   }) {
     if (this is PaymentDetails_Bitcoin) {
       return bitcoin != null ? bitcoin(this as PaymentDetails_Bitcoin) : orElse();
@@ -23,7 +23,7 @@ extension PaymentDetailsMapExtension on PaymentDetails {
 extension PaymentDetailsToJson on PaymentDetails {
   Map<String, dynamic>? toJson() {
     return map(
-      lightning: (details) => {
+      lightning: (PaymentDetails_Lightning details) => <String, dynamic>{
         'type': 'lightning',
         'swapId': details.swapId,
         'description': details.description,
@@ -32,12 +32,12 @@ extension PaymentDetailsToJson on PaymentDetails {
         'refundTxId': details.refundTxId,
         'refundTxAmountSat': details.refundTxAmountSat?.toString(),
       },
-      liquid: (details) => {
+      liquid: (PaymentDetails_Liquid details) => <String, dynamic>{
         'type': 'liquid',
         'destination': details.destination,
         'description': details.description,
       },
-      bitcoin: (details) => {
+      bitcoin: (PaymentDetails_Bitcoin details) => <String, dynamic>{
         'type': 'bitcoin',
         'swapId': details.swapId,
         'description': details.description,
@@ -89,17 +89,17 @@ extension PaymentDetailsExtension on PaymentDetails {
     return (identical(this, other)) ||
         other.runtimeType == runtimeType &&
             other.map(
-              lightning: (o) =>
+              lightning: (PaymentDetails_Lightning o) =>
                   o.swapId == (this as PaymentDetails_Lightning).swapId &&
                   o.description == (this as PaymentDetails_Lightning).description &&
                   o.preimage == (this as PaymentDetails_Lightning).preimage &&
                   o.bolt11 == (this as PaymentDetails_Lightning).bolt11 &&
                   o.refundTxId == (this as PaymentDetails_Lightning).refundTxId &&
                   o.refundTxAmountSat == (this as PaymentDetails_Lightning).refundTxAmountSat,
-              liquid: (o) =>
+              liquid: (PaymentDetails_Liquid o) =>
                   o.destination == (this as PaymentDetails_Liquid).destination &&
                   o.description == (this as PaymentDetails_Liquid).description,
-              bitcoin: (o) =>
+              bitcoin: (PaymentDetails_Bitcoin o) =>
                   o.swapId == (this as PaymentDetails_Bitcoin).swapId &&
                   o.description == (this as PaymentDetails_Bitcoin).description &&
                   o.refundTxId == (this as PaymentDetails_Bitcoin).refundTxId &&
@@ -112,10 +112,11 @@ extension PaymentDetailsExtension on PaymentDetails {
 extension PaymentDetailsHashCode on PaymentDetails {
   int calculateHashCode() {
     return map(
-      lightning: (o) =>
+      lightning: (PaymentDetails_Lightning o) =>
           Object.hash(o.swapId, o.description, o.preimage, o.bolt11, o.refundTxId, o.refundTxAmountSat),
-      liquid: (o) => Object.hash(o.destination, o.description),
-      bitcoin: (o) => Object.hash(o.swapId, o.description, o.refundTxId, o.refundTxAmountSat),
+      liquid: (PaymentDetails_Liquid o) => Object.hash(o.destination, o.description),
+      bitcoin: (PaymentDetails_Bitcoin o) =>
+          Object.hash(o.swapId, o.description, o.refundTxId, o.refundTxAmountSat),
       orElse: () => 0,
     );
   }

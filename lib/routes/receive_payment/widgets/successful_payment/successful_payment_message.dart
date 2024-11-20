@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 
 class SuccessfulPaymentMessage extends StatelessWidget {
@@ -6,12 +7,11 @@ class SuccessfulPaymentMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(
@@ -30,7 +30,7 @@ class SuccessfulPaymentMessage extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Image(
-              image: const AssetImage("assets/icons/ic_done.png"),
+              image: const AssetImage('assets/icons/ic_done.png'),
               height: 48.0,
               color: themeData.primaryColorLight, // Circle Color
             ),

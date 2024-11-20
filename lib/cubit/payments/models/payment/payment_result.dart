@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/utils/exceptions.dart';
@@ -41,14 +42,14 @@ class PaymentResultError {
   });
 
   factory PaymentResultError.fromException(String paymentHash, Object? error, {BuildContext? context}) {
-    final texts = context?.texts() ?? getSystemAppLocalizations();
-    String? displayMessage = error != null ? extractExceptionMessage(error, texts) : null;
+    final BreezTranslations texts = context?.texts() ?? getSystemAppLocalizations();
+    final String? displayMessage = error != null ? extractExceptionMessage(error, texts) : null;
     return PaymentResultError(
       message: displayMessage != null
           ? texts.payment_error_to_send(displayMessage)
           : texts.payment_error_to_send_unknown_reason,
       paymentHash: paymentHash,
-      comment: error?.toString() ?? "Unknown error",
+      comment: error?.toString() ?? 'Unknown error',
     );
   }
 

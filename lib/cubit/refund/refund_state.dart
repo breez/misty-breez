@@ -8,7 +8,7 @@ class RefundState {
   RefundState({
     this.refundables,
     this.refundTxId,
-    this.error = "",
+    this.error = '',
   });
 
   RefundState.initial() : this();

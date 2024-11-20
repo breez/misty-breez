@@ -10,10 +10,10 @@ class LoadingAnimatedText extends StatefulWidget {
 
   const LoadingAnimatedText({
     super.key,
-    this.loadingMessage = "",
+    this.loadingMessage = '',
     this.textStyle,
     this.textAlign,
-    this.textElements = const [],
+    this.textElements = const <TextSpan>[],
   });
 
   @override
@@ -29,7 +29,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
   @override
   void initState() {
     super.initState();
-    _loadingTimer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
+    _loadingTimer = Timer.periodic(const Duration(milliseconds: 400), (Timer timer) {
       setState(() {
         _timerIteration++;
       });
@@ -44,29 +44,30 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
 
   @override
   Widget build(BuildContext context) {
-    var textElements = widget.textElements.toList();
-    var themeData = Theme.of(context);
+    final List<TextSpan> textElements = widget.textElements.toList();
+    final ThemeData themeData = Theme.of(context);
     return RichText(
-        text: TextSpan(
-          style: widget.textStyle ??
-              themeData.textTheme.bodyMedium?.copyWith(
-                color: themeData.colorScheme.onSecondary,
-              ),
-          text: widget.loadingMessage,
-          children: textElements
-            ..addAll(
-              <TextSpan>[
-                TextSpan(text: loadingDots),
-                TextSpan(
-                  text: paddingDots,
-                  style: const TextStyle(color: Colors.transparent),
-                )
-              ],
+      text: TextSpan(
+        style: widget.textStyle ??
+            themeData.textTheme.bodyMedium?.copyWith(
+              color: themeData.colorScheme.onSecondary,
             ),
-        ),
-        textAlign: widget.textAlign ?? TextAlign.center);
+        text: widget.loadingMessage,
+        children: textElements
+          ..addAll(
+            <TextSpan>[
+              TextSpan(text: loadingDots),
+              TextSpan(
+                text: paddingDots,
+                style: const TextStyle(color: Colors.transparent),
+              ),
+            ],
+          ),
+      ),
+      textAlign: widget.textAlign ?? TextAlign.center,
+    );
   }
 
-  String get loadingDots => List.filled(_timerIteration % 4, ".").join("");
-  String get paddingDots => List.filled(3 - _timerIteration % 4, ".").join("");
+  String get loadingDots => List<String>.filled(_timerIteration % 4, '.').join();
+  String get paddingDots => List<String>.filled(3 - _timerIteration % 4, '.').join();
 }

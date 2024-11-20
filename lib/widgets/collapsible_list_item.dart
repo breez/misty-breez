@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/widgets/flushbar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -12,18 +13,18 @@ class CollapsibleListItem extends StatelessWidget {
   final TextStyle userStyle;
 
   const CollapsibleListItem({
-    super.key,
     required this.title,
+    required this.userStyle,
+    super.key,
     this.sharedValue,
     this.labelGroup,
-    required this.userStyle,
   });
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = context.texts();
-    final textTheme = themeData.primaryTextTheme;
+    final ThemeData themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final TextTheme textTheme = themeData.primaryTextTheme;
 
     return ListTileTheme(
       contentPadding: EdgeInsets.zero,
@@ -40,14 +41,13 @@ class CollapsibleListItem extends StatelessWidget {
             maxLines: 1,
             group: labelGroup,
           ),
-          children: [
+          children: <Widget>[
             Row(
-              mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 0.0),
+                    padding: const EdgeInsets.only(left: 16.0),
                     child: Text(
                       sharedValue ?? texts.collapsible_list_default_value,
                       textAlign: TextAlign.left,
@@ -64,7 +64,7 @@ class CollapsibleListItem extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
+                      children: <Widget>[
                         IconButton(
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.only(right: 8.0),

@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 
 class ProcessingPaymentTitle extends StatelessWidget {
@@ -8,8 +9,8 @@ class ProcessingPaymentTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Container(
       height: 64.0,

@@ -45,14 +45,14 @@ ProfileColor? profileColorFromName(String? name, BreezTranslations texts) {
   if (name == null) {
     return null;
   }
-  final key = name.toLowerCase();
-  final localizedNames = _colorsFromName[texts.locale] ?? {};
+  final String key = name.toLowerCase();
+  final Map<String, ProfileColor> localizedNames = _colorsFromName[texts.locale] ?? <String, ProfileColor>{};
 
   if (localizedNames.containsKey(key)) {
     return localizedNames[key];
   }
 
-  for (var map in _colorsFromName.values) {
+  for (Map<String, ProfileColor> map in _colorsFromName.values) {
     if (map.containsKey(key)) {
       return map[key];
     }
@@ -116,7 +116,7 @@ extension ProfileColorExtension on ProfileColor {
       case ProfileColor.coral:
         return texts.app_color_coral;
       default:
-        return "";
+        return '';
     }
   }
 
@@ -178,23 +178,23 @@ extension ProfileColorExtension on ProfileColor {
   }
 }
 
-Map<String, Map<String, ProfileColor>> _colorsFromName = {
-  "bg": _buildColorsFromName(BreezTranslationsBg()),
-  "cz": _buildColorsFromName(BreezTranslationsCs()),
-  "cs": _buildColorsFromName(BreezTranslationsCs()),
-  "de": _buildColorsFromName(BreezTranslationsDe()),
-  "el": _buildColorsFromName(BreezTranslationsEl()),
-  "en": _buildColorsFromName(BreezTranslationsEn()),
-  "es": _buildColorsFromName(BreezTranslationsEs()),
-  "fi": _buildColorsFromName(BreezTranslationsFi()),
-  "fr": _buildColorsFromName(BreezTranslationsFr()),
-  "it": _buildColorsFromName(BreezTranslationsIt()),
-  "pt": _buildColorsFromName(BreezTranslationsPt()),
-  "sk": _buildColorsFromName(BreezTranslationsSk()),
-  "sv": _buildColorsFromName(BreezTranslationsSv()),
+Map<String, Map<String, ProfileColor>> _colorsFromName = <String, Map<String, ProfileColor>>{
+  'bg': _buildColorsFromName(BreezTranslationsBg()),
+  'cz': _buildColorsFromName(BreezTranslationsCs()),
+  'cs': _buildColorsFromName(BreezTranslationsCs()),
+  'de': _buildColorsFromName(BreezTranslationsDe()),
+  'el': _buildColorsFromName(BreezTranslationsEl()),
+  'en': _buildColorsFromName(BreezTranslationsEn()),
+  'es': _buildColorsFromName(BreezTranslationsEs()),
+  'fi': _buildColorsFromName(BreezTranslationsFi()),
+  'fr': _buildColorsFromName(BreezTranslationsFr()),
+  'it': _buildColorsFromName(BreezTranslationsIt()),
+  'pt': _buildColorsFromName(BreezTranslationsPt()),
+  'sk': _buildColorsFromName(BreezTranslationsSk()),
+  'sv': _buildColorsFromName(BreezTranslationsSv()),
 };
 
-Map<String, ProfileColor> _buildColorsFromName(BreezTranslations local) => {
+Map<String, ProfileColor> _buildColorsFromName(BreezTranslations local) => <String, ProfileColor>{
       local.app_color_salmon.toLowerCase(): ProfileColor.salmon,
       local.app_color_blue.toLowerCase(): ProfileColor.blue,
       local.app_color_turquoise.toLowerCase(): ProfileColor.turquoise,

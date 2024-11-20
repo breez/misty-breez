@@ -1,8 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/loading_animated_text.dart';
-import 'package:l_breez/widgets/processing_payment/processing_payment_title.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class ProcessingPaymentContent extends StatelessWidget {
   final GlobalKey? dialogKey;
@@ -16,17 +16,17 @@ class ProcessingPaymentContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final customData = themeData.customData;
-    final queryData = MediaQuery.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final CustomData customData = themeData.customData;
+    final MediaQueryData queryData = MediaQuery.of(context);
 
     return SingleChildScrollView(
       child: Column(
         key: dialogKey,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           const ProcessingPaymentTitle(),
           Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
@@ -35,7 +35,7 @@ class ProcessingPaymentContent extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: <Widget>[
                   LoadingAnimatedText(
                     loadingMessage: texts.processing_payment_dialog_wait,
                     textStyle: themeData.dialogTheme.contentTextStyle,

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,15 +9,14 @@ import 'package:l_breez/routes/initial_walkthrough/beta_warning_dialog.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/enter_mnemonics_page.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/flushbar.dart';
-import 'package:l_breez/widgets/loader.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-final _logger = Logger("InitialWalkthrough");
+final Logger _logger = Logger('InitialWalkthrough');
 
 class InitialWalkthroughPage extends StatefulWidget {
-  static const routeName = "/intro";
+  static const String routeName = '/intro';
 
   const InitialWalkthroughPage({super.key});
 
@@ -29,13 +29,13 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   AnimationController? _controller;
   Animation<int>? _animation;
 
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final themeProvider = ThemeProvider.controllerOf(context);
+      final ThemeController themeProvider = ThemeProvider.controllerOf(context);
       themeProvider.setTheme('light');
     });
     _startBreezLogoAnimation();
@@ -61,8 +61,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
@@ -75,9 +75,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           body: Padding(
             padding: const EdgeInsets.only(top: 24.0),
             child: Stack(
-              children: [
+              children: <Widget>[
                 Column(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                       flex: 200,
                       child: Container(),
@@ -87,7 +87,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       child: AnimatedBuilder(
                         animation: _animation!,
                         builder: (BuildContext context, Widget? child) {
-                          String frame = _animation!.value.toString().padLeft(2, '0');
+                          final String frame = _animation!.value.toString().padLeft(2, '0');
                           return Image.asset(
                             'assets/animations/welcome/frame_${frame}_delay-0.04s.png',
                             gaplessPlayback: true,
@@ -160,8 +160,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void _letsBreez() async {
-    _logger.info("Lets breez");
-    bool approved = await showDialog(
+    _logger.info('Lets breez');
+    final bool approved = await showDialog(
       useRootNavigator: false,
       context: context,
       barrierDismissible: false,
@@ -169,22 +169,24 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         return const BetaWarningDialog();
       },
     );
-    if (approved) connect();
+    if (approved) {
+      connect();
+    }
   }
 
   void connect({String? mnemonic}) async {
-    final connectionService = context.read<SdkConnectivityCubit>();
-    final securityCubit = context.read<SecurityCubit>();
-    final accountCubit = context.read<AccountCubit>();
+    final SdkConnectivityCubit connectionService = context.read<SdkConnectivityCubit>();
+    final SecurityCubit securityCubit = context.read<SecurityCubit>();
+    final AccountCubit accountCubit = context.read<AccountCubit>();
 
-    final isRestore = mnemonic != null;
+    final bool isRestore = mnemonic != null;
     _logger.info("${isRestore ? "Restore" : "Starting new"} wallet");
-    final texts = context.texts();
-    final navigator = Navigator.of(context);
-    var loaderRoute = createLoaderRoute(context);
+    final BreezTranslations texts = context.texts();
+    final NavigatorState navigator = Navigator.of(context);
+    final TransparentPageRoute<void> loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
 
-    final themeProvider = ThemeProvider.controllerOf(context);
+    final ThemeController themeProvider = ThemeProvider.controllerOf(context);
     try {
       if (isRestore) {
         await connectionService.restore(mnemonic: mnemonic);
@@ -199,9 +201,11 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     } catch (error) {
       _logger.info("Failed to ${isRestore ? "restore" : "register"} wallet.", error);
       if (isRestore) {
-        _restoreWalletFromMnemonicSeed(initialWords: mnemonic.split(" "));
+        _restoreWalletFromMnemonicSeed(initialWords: mnemonic.split(' '));
       }
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       showFlushbar(context, message: extractExceptionMessage(error, texts));
       return;
     } finally {
@@ -212,8 +216,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void _restoreWalletFromMnemonicSeed({
     List<String>? initialWords,
   }) async {
-    _logger.info("Restore wallet from mnemonic seed");
-    String? mnemonic = await _getMnemonic(initialWords: initialWords);
+    _logger.info('Restore wallet from mnemonic seed');
+    final String? mnemonic = await _getMnemonic(initialWords: initialWords);
     if (mnemonic != null) {
       connect(mnemonic: mnemonic);
     }
@@ -222,7 +226,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Future<String?> _getMnemonic({
     List<String>? initialWords,
   }) async {
-    _logger.info("Get mnemonic, initialWords: ${initialWords?.length}");
+    _logger.info('Get mnemonic, initialWords: ${initialWords?.length}');
     return await Navigator.of(context).pushNamed<String>(
       EnterMnemonicsPage.routeName,
       arguments: initialWords,

@@ -1,16 +1,17 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/security/widget/pin_code_widget.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("SecuredPage");
+final Logger _logger = Logger('SecuredPage');
 
 class SecuredPage<T> extends StatefulWidget {
   final Widget securedWidget;
 
-  const SecuredPage({super.key, required this.securedWidget});
+  const SecuredPage({required this.securedWidget, super.key});
 
   @override
   State<SecuredPage<T>> createState() => _SecuredPageState<T>();
@@ -32,32 +33,32 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
       child: _allowed
           ? widget.securedWidget
           : BlocBuilder<SecurityCubit, SecurityState>(
-              key: ValueKey(DateTime.now().millisecondsSinceEpoch),
-              builder: (context, state) {
-                _logger.info("Building with: $state");
+              key: ValueKey<int>(DateTime.now().millisecondsSinceEpoch),
+              builder: (BuildContext context, SecurityState state) {
+                _logger.info('Building with: $state');
                 if (state.pinStatus == PinStatus.enabled && !_allowed) {
-                  final texts = context.texts();
+                  final BreezTranslations texts = context.texts();
                   return Scaffold(
                     appBar: AppBar(
                       key: GlobalKey<ScaffoldState>(),
                     ),
                     body: PinCodeWidget(
                       label: texts.lock_screen_enter_pin,
-                      testPinCodeFunction: (pin) async {
-                        _logger.info("Testing pin code");
+                      testPinCodeFunction: (String pin) async {
+                        _logger.info('Testing pin code');
                         bool pinMatches = false;
                         try {
-                          final securityCubit = context.read<SecurityCubit>();
+                          final SecurityCubit securityCubit = context.read<SecurityCubit>();
                           pinMatches = await securityCubit.testPin(pin);
                         } catch (e) {
-                          _logger.severe("Pin code test failed", e);
+                          _logger.severe('Pin code test failed', e);
                           return TestPinResult(
                             false,
                             errorMessage: texts.lock_screen_pin_match_exception,
                           );
                         }
                         if (pinMatches) {
-                          _logger.info("Pin matches");
+                          _logger.info('Pin matches');
                           setState(() {
                             _allowed = true;
                           });

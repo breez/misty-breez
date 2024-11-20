@@ -1,34 +1,35 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/widgets/designsystem/switch/simple_switch.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class LocalAuthSwitch extends StatelessWidget {
   const LocalAuthSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final securityCubit = context.read<SecurityCubit>();
+    final SecurityCubit securityCubit = context.read<SecurityCubit>();
 
     return FutureBuilder<LocalAuthenticationOption>(
       future: securityCubit.localAuthenticationOption(),
       initialData: LocalAuthenticationOption.none,
-      builder: (context, snapshot) {
-        final availableOption = snapshot.data ?? LocalAuthenticationOption.none;
+      builder: (BuildContext context, AsyncSnapshot<LocalAuthenticationOption> snapshot) {
+        final LocalAuthenticationOption availableOption = snapshot.data ?? LocalAuthenticationOption.none;
         if (availableOption == LocalAuthenticationOption.none) {
           return Container();
         } else {
           return BlocBuilder<SecurityCubit, SecurityState>(
-            builder: (context, state) {
-              final localAuthEnabled = state.localAuthenticationOption != LocalAuthenticationOption.none;
+            builder: (BuildContext context, SecurityState state) {
+              final bool localAuthEnabled = state.localAuthenticationOption != LocalAuthenticationOption.none;
               return SimpleSwitch(
                 text: _localAuthenticationOptionLabel(
                   context,
                   localAuthEnabled ? state.localAuthenticationOption : availableOption,
                 ),
                 switchValue: localAuthEnabled,
-                onChanged: (value) => _localAuthenticationOptionChanged(context, value),
+                onChanged: (bool value) => _localAuthenticationOptionChanged(context, value),
               );
             },
           );
@@ -38,18 +39,18 @@ class LocalAuthSwitch extends StatelessWidget {
   }
 
   void _localAuthenticationOptionChanged(BuildContext context, bool switchEnabled) {
-    final texts = context.texts();
-    final securityCubit = context.read<SecurityCubit>();
+    final BreezTranslations texts = context.texts();
+    final SecurityCubit securityCubit = context.read<SecurityCubit>();
     if (switchEnabled) {
       securityCubit.localAuthentication(texts.security_and_backup_validate_biometrics_reason).then(
-        (authenticated) {
+        (bool authenticated) {
           if (authenticated) {
             securityCubit.enableLocalAuthentication();
           } else {
             securityCubit.clearLocalAuthentication();
           }
         },
-        onError: (error) {
+        onError: (Object error) {
           securityCubit.clearLocalAuthentication();
         },
       );
@@ -62,7 +63,7 @@ class LocalAuthSwitch extends StatelessWidget {
     BuildContext context,
     LocalAuthenticationOption authenticationOption,
   ) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
     switch (authenticationOption) {
       case LocalAuthenticationOption.face:
         return texts.security_and_backup_enable_biometric_option_face;

@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_header.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_qr_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/flushbar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("DestinationWidget");
+export 'widgets/widgets.dart';
+
+final Logger _logger = Logger('DestinationWidget');
 
 class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
@@ -42,7 +42,9 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.isLnAddress) _trackNewPayments();
+    if (widget.isLnAddress) {
+      _trackNewPayments();
+    }
   }
 
   @override
@@ -57,13 +59,13 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   }
 
   String? getUpdatedDestination(DestinationWidget oldWidget) {
-    final hasUpdatedDestination = widget.destination != oldWidget.destination;
+    final bool hasUpdatedDestination = widget.destination != oldWidget.destination;
     if (widget.destination != null && hasUpdatedDestination) {
       return widget.destination!;
     }
 
-    final newSnapshotDestination = widget.snapshot?.data?.destination;
-    final oldSnapshotDestination = oldWidget.snapshot?.data?.destination;
+    final String? newSnapshotDestination = widget.snapshot?.data?.destination;
+    final String? oldSnapshotDestination = oldWidget.snapshot?.data?.destination;
     if (newSnapshotDestination != null && newSnapshotDestination != oldSnapshotDestination) {
       return newSnapshotDestination;
     }
@@ -78,42 +80,48 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   }
 
   void _trackNewPayments() {
-    _logger.info("Tracking new payments.");
-    final paymentsCubit = context.read<PaymentsCubit>();
+    _logger.info('Tracking new payments.');
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
     _receivedPaymentSubscription?.cancel();
     _receivedPaymentSubscription = paymentsCubit.stream
         .skip(1) // Skips the initial state
-        .distinct((previous, next) => previous.payments.first.id == next.payments.first.id)
-        .map((paymentState) => paymentState.payments.isNotEmpty ? paymentState.payments.first : null)
+        .distinct(
+          (PaymentsState previous, PaymentsState next) =>
+              previous.payments.first.id == next.payments.first.id,
+        )
+        .map(
+          (PaymentsState paymentState) =>
+              paymentState.payments.isNotEmpty ? paymentState.payments.first : null,
+        )
         .where(
-          (payment) =>
+          (PaymentData? payment) =>
               payment != null &&
               payment.paymentType == PaymentType.receive &&
               payment.status == PaymentState.pending,
         )
         .listen(
-      (payment) {
+      (PaymentData? payment) {
         // Null cases are filtered out on where clause
-        final newPayment = payment!;
+        final PaymentData newPayment = payment!;
         _logger.info(
-          "Payment Received! Id: ${newPayment.id} Destination: ${newPayment.destination}, Status: ${newPayment.status}",
+          'Payment Received! Id: ${newPayment.id} Destination: ${newPayment.destination}, Status: ${newPayment.status}',
         );
         _onPaymentFinished(true);
       },
-      onError: (e) => _onTrackPaymentError(e),
+      onError: (Object e) => _onTrackPaymentError(e),
     );
   }
 
   void _trackPaymentEvents(String? destination) {
-    final inputCubit = context.read<InputCubit>();
+    final InputCubit inputCubit = context.read<InputCubit>();
     inputCubit
         .trackPaymentEvents(destination)
         .then((_) => _onPaymentFinished(true))
-        .catchError((e) => _onTrackPaymentError(e));
+        .catchError((Object e) => _onTrackPaymentError(e));
   }
 
-  void _onTrackPaymentError(dynamic e) {
-    _logger.warning("Failed to track payment", e);
+  void _onTrackPaymentError(Object e) {
+    _logger.warning('Failed to track payment', e);
     if (mounted) {
       showFlushbar(context, message: extractExceptionMessage(e, context.texts()));
     }
@@ -121,21 +129,25 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   }
 
   void _onPaymentFinished(bool isSuccess) {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     if (isSuccess) {
-      final navigator = Navigator.of(context);
+      final NavigatorState navigator = Navigator.of(context);
       // Only pop if the destination is not an LN Address,
       // as there's no way to 1:1 match payments on the LN Address page.
-      if (!widget.isLnAddress) navigator.pop();
+      if (!widget.isLnAddress) {
+        navigator.pop();
+      }
       navigator.push(
-        PageRouteBuilder(
+        PageRouteBuilder<void>(
           opaque: false,
           pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(particlesEnabled: false),
         ),
       );
     } else {
       if (!widget.isLnAddress) {
-        showFlushbar(context, title: "", message: "Payment failed.");
+        showFlushbar(context, title: '', message: 'Payment failed.');
       }
     }
   }
@@ -144,7 +156,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
           child: DestinationHeader(

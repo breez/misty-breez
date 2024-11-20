@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class Loader extends StatelessWidget {
   final double? value;
@@ -28,11 +28,23 @@ class Loader extends StatelessWidget {
   }
 }
 
-TransparentPageRoute createLoaderRoute(BuildContext context,
-    {String message = "", double opacity = 0.5, Future? action, Function? onClose}) {
-  return TransparentPageRoute((context) {
-    return TransparentRouteLoader(message: message, opacity: opacity, action: action, onClose: onClose);
-  });
+TransparentPageRoute<void> createLoaderRoute(
+  BuildContext context, {
+  String message = '',
+  double opacity = 0.5,
+  Future<void>? action,
+  VoidCallback? onClose,
+}) {
+  return TransparentPageRoute<void>(
+    (BuildContext context) {
+      return TransparentRouteLoader(
+        message: message,
+        opacity: opacity,
+        action: action,
+        onClose: onClose,
+      );
+    },
+  );
 }
 
 class FullScreenLoader extends StatelessWidget {
@@ -43,18 +55,19 @@ class FullScreenLoader extends StatelessWidget {
   final Color bgColor;
   final Function? onClose;
 
-  const FullScreenLoader(
-      {super.key,
-      this.message,
-      this.opacity = 0.5,
-      this.value,
-      this.progressColor,
-      this.bgColor = Colors.black,
-      this.onClose});
+  const FullScreenLoader({
+    super.key,
+    this.message,
+    this.opacity = 0.5,
+    this.value,
+    this.progressColor,
+    this.bgColor = Colors.black,
+    this.onClose,
+  });
 
   @override
   Widget build(BuildContext context) {
-    var mediaQuerySize = MediaQuery.of(context).size;
+    final Size mediaQuerySize = MediaQuery.of(context).size;
     return Material(
       type: MaterialType.transparency,
       child: Stack(
@@ -70,10 +83,9 @@ class FullScreenLoader extends StatelessWidget {
               width: mediaQuerySize.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Loader(value: value, label: message, color: progressColor),
-                  if (message != null) ...[
+                  if (message != null) ...<Widget>[
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Text(
@@ -81,12 +93,12 @@ class FullScreenLoader extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  ]
+                  ],
                 ],
               ),
             ),
           ),
-          if (onClose != null) ...[
+          if (onClose != null) ...<Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
               child: Align(
@@ -108,11 +120,16 @@ class FullScreenLoader extends StatelessWidget {
 class TransparentRouteLoader extends StatefulWidget {
   final String message;
   final double opacity;
-  final Future? action;
+  final Future<dynamic>? action;
   final Function? onClose;
 
-  const TransparentRouteLoader(
-      {super.key, required this.message, this.opacity = 0.5, this.action, this.onClose});
+  const TransparentRouteLoader({
+    required this.message,
+    super.key,
+    this.opacity = 0.5,
+    this.action,
+    this.onClose,
+  });
 
   @override
   State<StatefulWidget> createState() {
