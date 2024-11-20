@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/security/widget/digit_button_widget.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:l_breez/routes/routes.dart';
 
 class NumPadWidget extends StatelessWidget {
   final ActionKey lhsActionKey;
@@ -85,51 +84,4 @@ extension _ActionKeyIconExtension on ActionKey {
         return Icons.delete_forever;
     }
   }
-}
-
-void main() {
-  void digitFun(String digit) => debugPrint('Digit pressed: $digit');
-  void actionKeyFun(ActionKey actionKey) => debugPrint('Action key pressed: $actionKey');
-
-  runApp(
-    Preview(
-      <Widget>[
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Small space, default action key (backspace):'),
-        ),
-        SizedBox(
-          height: 200,
-          child: NumPadWidget(
-            onDigitPressed: digitFun,
-            onActionKeyPressed: actionKeyFun,
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Medium space, FaceId action key:'),
-        ),
-        SizedBox(
-          height: 400,
-          child: NumPadWidget(
-            rhsActionKey: ActionKey.faceId,
-            onDigitPressed: digitFun,
-            onActionKeyPressed: actionKeyFun,
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Large space, Fingerprint action key:'),
-        ),
-        SizedBox(
-          height: 600,
-          child: NumPadWidget(
-            rhsActionKey: ActionKey.fingerprint,
-            onDigitPressed: digitFun,
-            onActionKeyPressed: actionKeyFun,
-          ),
-        ),
-      ],
-    ),
-  );
 }

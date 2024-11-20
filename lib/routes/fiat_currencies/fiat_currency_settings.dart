@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/fiat_currencies/fiat_currency_list_tile.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';

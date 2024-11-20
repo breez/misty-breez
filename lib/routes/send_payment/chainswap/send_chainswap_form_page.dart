@@ -3,7 +3,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';

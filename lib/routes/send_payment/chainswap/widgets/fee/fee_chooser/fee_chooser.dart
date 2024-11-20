@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
+import 'package:l_breez/routes/routes.dart';
 
 class FeeChooser extends StatefulWidget {
   final int amountSat;

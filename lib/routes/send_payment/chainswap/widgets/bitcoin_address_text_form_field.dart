@@ -2,8 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/qr_scan/qr_scan.dart';
-import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
@@ -63,7 +62,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
           tooltip: texts.bitcoin_address_scan_tooltip,
           onPressed: () {
             _logger.info('Start qr code scan');
-            Navigator.pushNamed<String>(context, QRScan.routeName).then(
+            Navigator.pushNamed<String>(context, QRScanView.routeName).then(
               (String? barcode) async {
                 _logger.info("Scanned string: '$barcode'");
                 if (barcode == null) {

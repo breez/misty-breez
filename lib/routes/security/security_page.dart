@@ -1,9 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/security/widget/mnemonics/security_mnemonics_management.dart';
-import 'package:l_breez/routes/security/widget/security_pin_management.dart';
-import 'package:l_breez/theme/theme.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 
 class SecurityPage extends StatelessWidget {
@@ -34,13 +32,4 @@ class SecurityPage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(
-    MaterialApp(
-      theme: breezLightTheme,
-      home: const SecurityPage(),
-    ),
-  );
 }

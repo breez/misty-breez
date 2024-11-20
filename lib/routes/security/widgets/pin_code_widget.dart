@@ -1,11 +1,7 @@
-import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/security/widget/digit_masked_widget.dart';
-import 'package:l_breez/routes/security/widget/num_pad_widget.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class PinCodeWidget extends StatefulWidget {
@@ -165,63 +161,4 @@ class TestPinResult {
     this.clearOnSuccess = false,
     this.errorMessage,
   }) : assert(success || errorMessage != null, 'errorMessage must be provided if success is false');
-}
-
-void main() {
-  runApp(
-    Preview(
-      <Widget>[
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Small space, wrong pin code, face id:'),
-        ),
-        SizedBox(
-          height: 280, // anything smaller than this will overflow some pixels
-          child: PinCodeWidget(
-            label: 'First example',
-            localAuthenticationOption: LocalAuthenticationOption.faceId,
-            testPinCodeFunction: (String pin) => SynchronousFuture<TestPinResult>(
-              const TestPinResult(false, errorMessage: 'Wrong pin code'),
-            ),
-            testBiometricsFunction: () => SynchronousFuture<TestPinResult>(
-              const TestPinResult(false, errorMessage: 'Wrong pin code'),
-            ),
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Medium space, correct pin code, fingerprint:'),
-        ),
-        SizedBox(
-          height: 400,
-          child: PinCodeWidget(
-            label: 'Second example',
-            localAuthenticationOption: LocalAuthenticationOption.fingerprint,
-            testPinCodeFunction: (String pin) => SynchronousFuture<TestPinResult>(
-              const TestPinResult(true),
-            ),
-            testBiometricsFunction: () => SynchronousFuture<TestPinResult>(
-              const TestPinResult(true),
-            ),
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Large space, correct/incorrect randomly, no local auth:'),
-        ),
-        SizedBox(
-          height: 600,
-          child: PinCodeWidget(
-            label: 'Third example',
-            testPinCodeFunction: (String pin) async {
-              return TestPinResult(Random().nextBool(), errorMessage: 'A random error');
-            },
-            testBiometricsFunction: () async {
-              return TestPinResult(Random().nextBool(), errorMessage: 'A random error');
-            },
-          ),
-        ),
-      ],
-    ),
-  );
 }

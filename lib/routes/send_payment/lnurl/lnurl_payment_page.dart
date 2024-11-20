@@ -8,14 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/lnurl/widgets/lnurl_metadata.dart';
-import 'package:l_breez/routes/send_payment/lnurl/widgets/widgets.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
+
+export 'widgets/widgets.dart';
 
 class LnUrlPaymentPage extends StatefulWidget {
   final bool isConfirmation;

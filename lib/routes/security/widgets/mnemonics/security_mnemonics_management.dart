@@ -3,8 +3,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_confirmation_page.dart';
-import 'package:l_breez/routes/initial_walkthrough/mnemonics/mnemonics_page.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 

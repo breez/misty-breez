@@ -24,10 +24,10 @@ class RestoreForm extends StatefulWidget {
   });
 
   @override
-  RestoreFormPageState createState() => RestoreFormPageState();
+  RestoreFormState createState() => RestoreFormState();
 }
 
-class RestoreFormPageState extends State<RestoreForm> {
+class RestoreFormState extends State<RestoreForm> {
   List<FocusNode> focusNodes = List<FocusNode>.generate(12, (_) => FocusNode());
 
   late AutovalidateMode _autoValidateMode;

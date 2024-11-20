@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
-import 'package:l_breez/routes/dev/developers_view.dart';
-import 'package:l_breez/routes/fiat_currencies/fiat_currency_settings.dart';
-import 'package:l_breez/routes/home/home.dart';
-import 'package:l_breez/routes/refund/refund.dart';
-import 'package:l_breez/routes/security/security_page.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 export 'widgets/widgets.dart';

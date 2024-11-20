@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/receive_payment/receive_payment.dart';
+import 'package:l_breez/routes/routes.dart';
 
 export 'successful_payment_message.dart';
 

@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/user_profile.dart';
-import 'package:l_breez/routes/home/home.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:theme_provider/theme_provider.dart';

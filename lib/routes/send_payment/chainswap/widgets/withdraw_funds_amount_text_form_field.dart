@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/send_payment/chainswap/chainswap.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/security/widget/pin_code_widget.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:nested/nested.dart';

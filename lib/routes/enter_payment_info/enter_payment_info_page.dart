@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/qr_scan/qr_scan.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
@@ -110,7 +110,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     final BreezTranslations texts = context.texts();
 
     Focus.maybeOf(context)?.unfocus();
-    Navigator.pushNamed<String>(context, QRScan.routeName).then((String? barcode) async {
+    Navigator.pushNamed<String>(context, QRScanView.routeName).then((String? barcode) async {
       if (barcode == null || barcode.isEmpty) {
         if (context.mounted) {
           showFlushbar(context, message: texts.qr_code_not_detected_error);
