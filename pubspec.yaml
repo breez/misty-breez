@@ -86,7 +86,7 @@ dependencies:
   # Doesn't support: Linux Mac Windows
   image_picker: ^1.1.2
   ini: ^2.1.0
-  intl: ^0.20.0
+  intl: ^0.19.0
   # Doesn't support: Linux Mac
   local_auth: ^2.3.0
   local_auth_android: <1.0.44 # Flutter 3.24+
