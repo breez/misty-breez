@@ -1,31 +1,27 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_liquid/breez_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
-import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
-import 'package:l_breez/widgets/keyboard_done_action.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("ReceiveLightningPaymentPage");
+final Logger _logger = Logger('ReceiveLightningPaymentPage');
 
 class ReceiveLightningPaymentPage extends StatefulWidget {
-  static const routeName = "/receive_lightning";
-  static const paymentMethod = PaymentMethod.lightning;
-  static const pageIndex = 0;
+  static const String routeName = '/receive_lightning';
+  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
+  static const int pageIndex = 0;
 
   const ReceiveLightningPaymentPage({super.key});
 
@@ -34,13 +30,13 @@ class ReceiveLightningPaymentPage extends StatefulWidget {
 }
 
 class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final _descriptionController = TextEditingController();
-  final _amountController = TextEditingController();
-  final _amountFocusNode = FocusNode();
-  var _doneAction = KeyboardDoneAction();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final FocusNode _amountFocusNode = FocusNode();
+  KeyboardDoneAction _doneAction = KeyboardDoneAction();
 
   Future<PrepareReceiveResponse>? prepareResponseFuture;
   Future<ReceivePaymentResponse>? receivePaymentResponseFuture;
@@ -51,7 +47,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     if (_amountFocusNode.canRequestFocus) {
       _amountFocusNode.requestFocus();
     }
-    _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
+    _doneAction = KeyboardDoneAction(focusNodes: <FocusNode>[_amountFocusNode]);
   }
 
   @override
@@ -62,8 +58,8 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -75,7 +71,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
               message: texts.payment_limits_generic_error_message(snapshot.errorMessage),
             );
           }
-          final lightningPaymentLimits = snapshot.lightningPaymentLimits;
+          final LightningPaymentLimitsResponse? lightningPaymentLimits = snapshot.lightningPaymentLimits;
           if (lightningPaymentLimits == null) {
             return Center(
               child: Loader(
@@ -101,7 +97,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                   stickToBottom: true,
                   text: texts.invoice_btc_address_action_retry,
                   onPressed: () {
-                    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                    final PaymentLimitsCubit paymentLimitsCubit = context.read<PaymentLimitsCubit>();
                     paymentLimitsCubit.fetchLightningLimits();
                   },
                 )
@@ -117,14 +113,14 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                             }
                           },
                         )
-                      : FutureBuilder(
+                      : FutureBuilder<PrepareReceiveResponse>(
                           future: prepareResponseFuture,
                           builder: (
                             BuildContext context,
                             AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
                           ) {
                             if (prepareSnapshot.hasData) {
-                              return FutureBuilder(
+                              return FutureBuilder<ReceivePaymentResponse>(
                                 future: receivePaymentResponseFuture,
                                 builder: (
                                   BuildContext context,
@@ -152,22 +148,20 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   }
 
   Widget _buildForm(LightningPaymentLimitsResponse lightningPaymentLimits) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
-      builder: (context, currencyState) {
+      builder: (BuildContext context, CurrencyState currencyState) {
         return Form(
           key: _formKey,
           child: Column(
-            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               TextFormField(
                 controller: _descriptionController,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.done,
                 maxLines: null,
-                readOnly: false,
                 maxLength: 90,
                 maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: InputDecoration(
@@ -183,7 +177,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                 autofocus: true,
                 readOnly: false,
                 controller: _amountController,
-                validatorFn: (v) => validatePayment(v, lightningPaymentLimits),
+                validatorFn: (int v) => validatePayment(v, lightningPaymentLimits),
                 style: FieldTextStyle.textStyle,
               ),
               Padding(
@@ -207,13 +201,13 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   }
 
   Widget _buildQRCode() {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
-    return FutureBuilder(
+    return FutureBuilder<PrepareReceiveResponse>(
       future: prepareResponseFuture,
       builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
         if (prepareSnapshot.hasData) {
-          return FutureBuilder(
+          return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
             builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
               return DestinationWidget(
@@ -239,12 +233,13 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   void _createInvoice() {
     _doneAction.dispose();
     _logger
-        .info("Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}");
-    final paymentsCubit = context.read<PaymentsCubit>();
-    final currencyCubit = context.read<CurrencyCubit>();
+        .info('Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}');
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
 
-    final payerAmountSat = BigInt.from(currencyCubit.state.bitcoinCurrency.parse(_amountController.text));
-    final prepareReceiveResponse = paymentsCubit.prepareReceivePayment(
+    final BigInt payerAmountSat =
+        BigInt.from(currencyCubit.state.bitcoinCurrency.parse(_amountController.text));
+    final Future<PrepareReceiveResponse> prepareReceiveResponse = paymentsCubit.prepareReceivePayment(
       paymentMethod: PaymentMethod.lightning,
       payerAmountSat: payerAmountSat,
     );
@@ -252,7 +247,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     setState(() {
       prepareResponseFuture = prepareReceiveResponse;
     });
-    prepareReceiveResponse.then((prepareReceiveResponse) {
+    prepareReceiveResponse.then((PrepareReceiveResponse prepareReceiveResponse) {
       setState(() {
         receivePaymentResponseFuture = paymentsCubit.receivePayment(
           prepareResponse: prepareReceiveResponse,
@@ -263,18 +258,19 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   }
 
   String? validatePayment(int amount, LightningPaymentLimitsResponse lightningPaymentLimits) {
-    var currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
-      validatePayment: (amount, outgoing) => _validatePayment(amount, outgoing, lightningPaymentLimits),
+      validatePayment: (int amount, bool outgoing) =>
+          _validatePayment(amount, outgoing, lightningPaymentLimits),
       currency: currencyCubit.state.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }
 
   void _validatePayment(int amount, bool outgoing, LightningPaymentLimitsResponse lightningPaymentLimits) {
-    final accountState = context.read<AccountCubit>().state;
-    final balance = accountState.walletInfo!.balanceSat.toInt();
-    final lnUrlCubit = context.read<LnUrlCubit>();
+    final AccountState accountState = context.read<AccountCubit>().state;
+    final int balance = accountState.walletInfo!.balanceSat.toInt();
+    final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
     return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, lightningPaymentLimits, balance);
   }
 }

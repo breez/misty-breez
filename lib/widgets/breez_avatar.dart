@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,19 +25,19 @@ class BreezAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color avatarBgColor = backgroundColor ?? sessionAvatarBackgroundColor;
+    final Color avatarBgColor = backgroundColor ?? sessionAvatarBackgroundColor;
 
-    if ((avatarURL ?? "").isNotEmpty) {
-      if (avatarURL!.startsWith("breez://profile_image?")) {
-        var queryParams = Uri.parse(avatarURL!).queryParameters;
-        return _GeneratedAvatar(radius, queryParams["animal"], queryParams["color"], avatarBgColor);
+    if ((avatarURL ?? '').isNotEmpty) {
+      if (avatarURL!.startsWith('breez://profile_image?')) {
+        final Map<String, String> queryParams = Uri.parse(avatarURL!).queryParameters;
+        return _GeneratedAvatar(radius, queryParams['animal'], queryParams['color'], avatarBgColor);
       }
 
-      if (Uri.tryParse(avatarURL!)?.scheme.startsWith("http") ?? false) {
+      if (Uri.tryParse(avatarURL!)?.scheme.startsWith('http') ?? false) {
         return _NetworkImageAvatar(avatarURL!, radius);
       }
 
-      if (Uri.tryParse(avatarURL!)?.scheme.startsWith("data") ?? false) {
+      if (Uri.tryParse(avatarURL!)?.scheme.startsWith('data') ?? false) {
         return _DataImageAvatar(avatarURL!, radius);
       }
 
@@ -58,7 +60,7 @@ class _UnknownAvatar extends StatelessWidget {
       backgroundColor: backgroundColor,
       radius: radius,
       child: SvgPicture.asset(
-        "assets/icons/alien.svg",
+        'assets/icons/alien.svg',
         colorFilter: const ColorFilter.mode(
           Color.fromARGB(255, 0, 166, 68),
           BlendMode.srcATop,
@@ -80,7 +82,7 @@ class _GeneratedAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
     return CircleAvatar(
       radius: radius,
       backgroundColor: sessionAvatarBackgroundColor,
@@ -108,7 +110,7 @@ class _FileImageAvatar extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius),
         child: isPreview
             ? Image.file(File(filePath))
-            : FutureBuilder(
+            : FutureBuilder<File?>(
                 future: UserProfileImageCache().getProfileImageFile(fileName: filePath),
                 builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
                   if (snapshot.hasData && snapshot.data != null) {
@@ -148,8 +150,8 @@ class _DataImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final uri = UriData.parse(avatarURL);
-    final bytes = uri.contentAsBytes();
+    final UriData uri = UriData.parse(avatarURL);
+    final Uint8List bytes = uri.contentAsBytes();
     return CircleAvatar(
       backgroundColor: sessionAvatarBackgroundColor,
       radius: radius,

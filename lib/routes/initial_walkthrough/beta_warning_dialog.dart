@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 
 class BetaWarningDialog extends StatefulWidget {
@@ -21,8 +22,8 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Theme(
       data: themeData.copyWith(
@@ -37,7 +38,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: _getContent(context),
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             onPressed: () => exit(0),
             child: Text(
@@ -66,10 +67,10 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
   }
 
   List<Widget> _getContent(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
-    return [
+    return <Widget>[
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: Text(
@@ -80,9 +81,9 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: 16.0, bottom: 0.0),
+        padding: const EdgeInsets.only(top: 16.0),
         child: Row(
-          children: [
+          children: <Widget>[
             Theme(
               data: themeData.copyWith(
                 unselectedWidgetColor: themeData.textTheme.labelLarge!.color,
@@ -90,7 +91,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
               child: Checkbox(
                 activeColor: themeData.canvasColor,
                 value: _isUnderstood,
-                onChanged: (value) {
+                onChanged: (bool? value) {
                   setState(() {
                     _isUnderstood = value == true;
                   });

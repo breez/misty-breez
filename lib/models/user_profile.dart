@@ -50,10 +50,10 @@ class UserProfileSettings {
         animal = json['animal'],
         image = json['image'],
         hideBalance = json['hideBalance'] ?? false,
-        appMode = AppMode.values[json["appMode"] ?? 0],
+        appMode = AppMode.values[json['appMode'] ?? 0],
         expandPreferences = json['expandPreferences'] ?? true;
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'name': name,
         'color': color,
         'animal': animal,

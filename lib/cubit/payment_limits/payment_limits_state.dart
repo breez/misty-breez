@@ -8,7 +8,7 @@ class PaymentLimitsState {
   PaymentLimitsState({
     this.lightningPaymentLimits,
     this.onchainPaymentLimits,
-    this.errorMessage = "",
+    this.errorMessage = '',
   });
 
   PaymentLimitsState.initial() : this();

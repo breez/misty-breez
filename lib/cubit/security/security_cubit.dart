@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:keychain/keychain.dart';
-import 'package:l_breez/cubit/security/security_cubit.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/types/auth_messages_ios.dart';
@@ -15,20 +15,20 @@ import 'package:logging/logging.dart';
 
 export 'security_state.dart';
 
-final _logger = Logger("SecurityCubit");
+final Logger _logger = Logger('SecurityCubit');
 
-const String pinCodeKey = "pinCode";
+const String pinCodeKey = 'pinCode';
 
-class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
+class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityState> {
   final KeyChain keyChain;
 
-  final _auth = LocalAuthentication();
+  final LocalAuthentication _auth = LocalAuthentication();
   Timer? _autoLock;
 
   SecurityCubit(this.keyChain) : super(const SecurityState.initial()) {
     hydrate();
-    FGBGEvents.stream.listen((event) {
-      final lockInterval = state.lockInterval;
+    FGBGEvents.stream.listen((FGBGType event) {
+      final Duration lockInterval = state.lockInterval;
       if (event == FGBGType.foreground) {
         _autoLock?.cancel();
         _autoLock = null;
@@ -43,13 +43,13 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
     });
   }
 
-  Future setPin(String pin) async {
+  Future<void> setPin(String pin) async {
     await keyChain.write(pinCodeKey, pin);
     emit(state.copyWith(pinStatus: PinStatus.enabled));
   }
 
   Future<bool> testPin(String pin) async {
-    final storedPin = await keyChain.read(pinCodeKey);
+    final String? storedPin = await keyChain.read(pinCodeKey);
     if (storedPin == null) {
       _setLockState(LockState.locked);
       throw SecurityStorageException();
@@ -57,35 +57,41 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
     return storedPin == pin;
   }
 
-  Future clearPin() async {
+  Future<void> clearPin() async {
     await keyChain.delete(pinCodeKey);
     emit(state.copyWith(pinStatus: PinStatus.disabled));
     _setLockState(LockState.unlocked);
   }
 
-  Future setLockInterval(Duration lockInterval) async {
-    emit(state.copyWith(
-      lockInterval: lockInterval,
-    ));
+  Future<void> setLockInterval(Duration lockInterval) async {
+    emit(
+      state.copyWith(
+        lockInterval: lockInterval,
+      ),
+    );
     _setLockState(LockState.unlocked);
   }
 
-  Future clearLocalAuthentication() async {
-    emit(state.copyWith(
-      localAuthenticationOption: LocalAuthenticationOption.none,
-    ));
+  Future<void> clearLocalAuthentication() async {
+    emit(
+      state.copyWith(
+        localAuthenticationOption: LocalAuthenticationOption.none,
+      ),
+    );
     _setLockState(LockState.unlocked);
   }
 
-  Future enableLocalAuthentication() async {
-    emit(state.copyWith(
-      localAuthenticationOption: await localAuthenticationOption(),
-    ));
+  Future<void> enableLocalAuthentication() async {
+    emit(
+      state.copyWith(
+        localAuthenticationOption: await localAuthenticationOption(),
+      ),
+    );
     _setLockState(LockState.unlocked);
   }
 
   Future<LocalAuthenticationOption> localAuthenticationOption() async {
-    final availableBiometrics = await _auth.getAvailableBiometrics();
+    final List<BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
     if (availableBiometrics.contains(BiometricType.face)) {
       return defaultTargetPlatform == TargetPlatform.iOS
           ? LocalAuthenticationOption.faceId
@@ -96,19 +102,19 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
           ? LocalAuthenticationOption.touchId
           : LocalAuthenticationOption.fingerprint;
     }
-    final otherBiometrics = await _auth.isDeviceSupported();
+    final bool otherBiometrics = await _auth.isDeviceSupported();
     return otherBiometrics ? LocalAuthenticationOption.other : LocalAuthenticationOption.none;
   }
 
   Future<bool> localAuthentication(String localizedReason) async {
     try {
-      final authenticated = await _auth.authenticate(
+      final bool authenticated = await _auth.authenticate(
         options: const AuthenticationOptions(
           biometricOnly: true,
           useErrorDialogs: false,
         ),
         localizedReason: localizedReason,
-        authMessages: const [
+        authMessages: const <AuthMessages>[
           AndroidAuthMessages(),
           IOSAuthMessages(),
         ],
@@ -116,10 +122,10 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
       _setLockState(authenticated ? LockState.unlocked : LockState.locked);
       return authenticated;
     } on PlatformException catch (error) {
-      if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
+      if (error.code == 'LockedOut' || error.code == 'PermanentlyLockedOut') {
         throw error.message!;
       }
-      _logger.severe("Error Code: ${error.code} - Message: ${error.message}", error);
+      _logger.severe('Error Code: ${error.code} - Message: ${error.message}', error);
       await _auth.stopAuthentication();
       _setLockState(LockState.locked);
       return false;
@@ -132,7 +138,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin {
 
   @override
   SecurityState? fromJson(Map<String, dynamic> json) {
-    final state = SecurityState.fromJson(json);
+    final SecurityState state = SecurityState.fromJson(json);
     _setLockState(state.pinStatus == PinStatus.enabled ? LockState.locked : LockState.unlocked);
     return state;
   }

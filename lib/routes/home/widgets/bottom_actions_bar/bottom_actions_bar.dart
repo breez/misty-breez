@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/receive_options_bottom_sheet.dart';
-import 'package:l_breez/routes/home/widgets/bottom_actions_bar/send_options_bottom_sheet.dart';
+import 'package:l_breez/routes/home/home.dart';
 
-import 'bottom_action_item.dart';
+export 'widgets/widgets.dart';
 
 class BottomActionsBar extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
@@ -17,15 +17,14 @@ class BottomActionsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final actionsGroup = AutoSizeGroup();
+    final AutoSizeGroup actionsGroup = AutoSizeGroup();
 
     return BottomAppBar(
       child: SizedBox(
         height: 60,
         child: Row(
-          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: <Widget>[
             SendOptions(
               firstPaymentItemKey: firstPaymentItemKey,
               actionsGroup: actionsGroup,
@@ -34,7 +33,7 @@ class BottomActionsBar extends StatelessWidget {
             ReceiveOptions(
               firstPaymentItemKey: firstPaymentItemKey,
               actionsGroup: actionsGroup,
-            )
+            ),
           ],
         ),
       ),
@@ -47,19 +46,19 @@ class SendOptions extends StatelessWidget {
   final AutoSizeGroup actionsGroup;
 
   const SendOptions({
-    super.key,
     required this.firstPaymentItemKey,
     required this.actionsGroup,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return BottomActionItem(
       onPress: () => showModalBottomSheet(
         context: context,
-        builder: (context) {
+        builder: (BuildContext context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
                   systemNavigationBarColor: Theme.of(context).canvasColor,
@@ -74,7 +73,7 @@ class SendOptions extends StatelessWidget {
       ),
       group: actionsGroup,
       text: texts.bottom_action_bar_send,
-      iconAssetPath: "assets/icons/send-action.png",
+      iconAssetPath: 'assets/icons/send-action.png',
     );
   }
 }
@@ -84,18 +83,18 @@ class ReceiveOptions extends StatelessWidget {
   final AutoSizeGroup actionsGroup;
 
   const ReceiveOptions({
-    super.key,
     required this.firstPaymentItemKey,
     required this.actionsGroup,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
     return BottomActionItem(
       onPress: () => showModalBottomSheet(
         context: context,
-        builder: (context) {
+        builder: (BuildContext context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
                   systemNavigationBarColor: Theme.of(context).canvasColor,
@@ -110,7 +109,7 @@ class ReceiveOptions extends StatelessWidget {
       ),
       group: actionsGroup,
       text: texts.bottom_action_bar_receive,
-      iconAssetPath: "assets/icons/receive-action.png",
+      iconAssetPath: 'assets/icons/receive-action.png',
     );
   }
 }

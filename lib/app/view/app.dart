@@ -4,9 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/app/app_theme_manager/app_theme_manager.dart';
 import 'package:l_breez/app/routes/routes.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/home/home_page.dart';
+import 'package:l_breez/routes/home/home.dart';
 import 'package:l_breez/routes/security/lock_screen.dart';
 import 'package:l_breez/routes/splash/splash_page.dart';
+import 'package:nested/nested.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -16,16 +17,16 @@ class App extends StatelessWidget {
   final SdkConnectivityCubit sdkConnectivityCubit;
 
   const App({
-    super.key,
     required this.injector,
     required this.accountCubit,
     required this.sdkConnectivityCubit,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
+      providers: <SingleChildWidget>[
         BlocProvider<AccountCubit>(
           lazy: false,
           create: (BuildContext context) => accountCubit,
@@ -33,7 +34,7 @@ class App extends StatelessWidget {
         BlocProvider<PaymentsCubit>(
           create: (BuildContext context) => PaymentsCubit(injector.breezSdkLiquid),
         ),
-        BlocProvider(
+        BlocProvider<SdkConnectivityCubit>(
           create: (BuildContext context) => sdkConnectivityCubit,
         ),
         BlocProvider<RefundCubit>(
@@ -95,33 +96,35 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return AppThemeManager(
       child: BlocBuilder<AccountCubit, AccountState>(
-        builder: (context, accountState) {
-          return BlocBuilder<SecurityCubit, SecurityState>(builder: (context, securityState) {
-            return MaterialApp(
-              key: _appKey,
-              title: "Misty ${getSystemAppLocalizations().app_name}",
-              theme: ThemeProvider.themeOf(context).data,
-              localizationsDelegates: localizationsDelegates(),
-              supportedLocales: supportedLocales(),
-              builder: (BuildContext context, Widget? child) {
-                const kMaxTitleTextScaleFactor = 1.3;
+        builder: (BuildContext context, AccountState accountState) {
+          return BlocBuilder<SecurityCubit, SecurityState>(
+            builder: (BuildContext context, SecurityState securityState) {
+              return MaterialApp(
+                key: _appKey,
+                title: 'Misty ${getSystemAppLocalizations().app_name}',
+                theme: ThemeProvider.themeOf(context).data,
+                localizationsDelegates: localizationsDelegates(),
+                supportedLocales: supportedLocales(),
+                builder: (BuildContext context, Widget? child) {
+                  const double kMaxTitleTextScaleFactor = 1.3;
 
-                return MediaQuery.withClampedTextScaling(
-                  maxScaleFactor: kMaxTitleTextScaleFactor,
-                  child: child!,
-                );
-              },
-              initialRoute: securityState.pinStatus == PinStatus.enabled
-                  ? LockScreen.routeName
-                  : !accountState.isOnboardingComplete
-                      ? SplashPage.routeName
-                      : Home.routeName,
-              onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
-                settings: settings,
-                homeNavigatorKey: _homeNavigatorKey,
-              ),
-            );
-          });
+                  return MediaQuery.withClampedTextScaling(
+                    maxScaleFactor: kMaxTitleTextScaleFactor,
+                    child: child!,
+                  );
+                },
+                initialRoute: securityState.pinStatus == PinStatus.enabled
+                    ? LockScreen.routeName
+                    : !accountState.isOnboardingComplete
+                        ? SplashPage.routeName
+                        : Home.routeName,
+                onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
+                  settings: settings,
+                  homeNavigatorKey: _homeNavigatorKey,
+                ),
+              );
+            },
+          );
         },
       ),
     );

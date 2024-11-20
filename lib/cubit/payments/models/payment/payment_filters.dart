@@ -34,17 +34,16 @@ class PaymentFilters implements Exception {
 
   factory PaymentFilters.fromJson(Map<String, dynamic> json) {
     return PaymentFilters(
-      filters: PaymentType.values,
-      fromTimestamp: json["fromTimestamp"],
-      toTimestamp: json["toTimestamp"],
+      fromTimestamp: json['fromTimestamp'],
+      toTimestamp: json['toTimestamp'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      "filters": filters.toString(),
-      "fromTimestamp": fromTimestamp,
-      "toTimestamp": toTimestamp,
+    return <String, dynamic>{
+      'filters': filters.toString(),
+      'fromTimestamp': fromTimestamp,
+      'toTimestamp': toTimestamp,
     };
   }
 
@@ -53,7 +52,7 @@ class PaymentFilters implements Exception {
 
   @override
   int get hashCode => Object.hash(
-        filters?.map((type) => type.hashCode).toList() ?? [],
+        filters?.map((PaymentType type) => type.hashCode).toList() ?? <dynamic>[],
         fromTimestamp,
         toTimestamp,
       );

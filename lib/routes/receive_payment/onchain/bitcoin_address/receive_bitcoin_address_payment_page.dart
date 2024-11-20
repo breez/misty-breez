@@ -1,25 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/destination_widget/destination_widget.dart';
-import 'package:l_breez/routes/receive_payment/widgets/payment_info_message_box/payment_fees_message_box.dart';
+import 'package:l_breez/routes/receive_payment/receive_payment.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
-import 'package:l_breez/widgets/amount_form_field/amount_form_field.dart';
-import 'package:l_breez/widgets/keyboard_done_action.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/scrollable_error_message_widget.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
-  static const routeName = "/receive_bitcoin_address";
-  static const paymentMethod = PaymentMethod.bitcoinAddress;
-  static const pageIndex = 2;
+  static const String routeName = '/receive_bitcoin_address';
+  static const PaymentMethod paymentMethod = PaymentMethod.bitcoinAddress;
+  static const int pageIndex = 2;
 
   const ReceiveBitcoinAddressPaymentPage({super.key});
 
@@ -28,13 +24,13 @@ class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
 }
 
 class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddressPaymentPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final _descriptionController = TextEditingController();
-  final _amountController = TextEditingController();
-  final _amountFocusNode = FocusNode();
-  var _doneAction = KeyboardDoneAction();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final FocusNode _amountFocusNode = FocusNode();
+  KeyboardDoneAction _doneAction = KeyboardDoneAction();
 
   Future<PrepareReceiveResponse>? prepareResponseFuture;
   Future<ReceivePaymentResponse>? receivePaymentResponseFuture;
@@ -45,7 +41,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     if (_amountFocusNode.canRequestFocus) {
       _amountFocusNode.requestFocus();
     }
-    _doneAction = KeyboardDoneAction(focusNodes: [_amountFocusNode]);
+    _doneAction = KeyboardDoneAction(focusNodes: <FocusNode>[_amountFocusNode]);
   }
 
   @override
@@ -56,7 +52,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Scaffold(
       key: _scaffoldKey,
@@ -68,9 +64,9 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
               message: texts.payment_limits_generic_error_message(snapshot.errorMessage),
             );
           }
-          final onchainPaymentLimits = snapshot.onchainPaymentLimits;
+          final OnchainPaymentLimitsResponse? onchainPaymentLimits = snapshot.onchainPaymentLimits;
           if (onchainPaymentLimits == null) {
-            final themeData = Theme.of(context);
+            final ThemeData themeData = Theme.of(context);
 
             return Center(
               child: Loader(
@@ -96,7 +92,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                   stickToBottom: true,
                   text: texts.invoice_btc_address_action_retry,
                   onPressed: () {
-                    final paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                    final PaymentLimitsCubit paymentLimitsCubit = context.read<PaymentLimitsCubit>();
                     paymentLimitsCubit.fetchOnchainLimits();
                   },
                 )
@@ -112,14 +108,14 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                             }
                           },
                         )
-                      : FutureBuilder(
+                      : FutureBuilder<PrepareReceiveResponse>(
                           future: prepareResponseFuture,
                           builder: (
                             BuildContext context,
                             AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
                           ) {
                             if (prepareSnapshot.hasData) {
-                              return FutureBuilder(
+                              return FutureBuilder<ReceivePaymentResponse>(
                                 future: receivePaymentResponseFuture,
                                 builder: (
                                   BuildContext context,
@@ -147,13 +143,13 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
   }
 
   Widget _buildQRCode() {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
-    return FutureBuilder(
+    return FutureBuilder<PrepareReceiveResponse>(
       future: prepareResponseFuture,
       builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
         if (prepareSnapshot.hasData) {
-          return FutureBuilder(
+          return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
             builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
               return DestinationWidget(
@@ -177,16 +173,16 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
   }
 
   BlocBuilder<CurrencyCubit, CurrencyState> _buildForm(OnchainPaymentLimitsResponse onchainPaymentLimits) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
-      builder: (context, currencyState) {
+      builder: (BuildContext context, CurrencyState currencyState) {
         return Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               TextFormField(
                 controller: _descriptionController,
                 keyboardType: TextInputType.multiline,
@@ -206,7 +202,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                 focusNode: _amountFocusNode,
                 autofocus: true,
                 controller: _amountController,
-                validatorFn: (v) => validatePayment(v, onchainPaymentLimits),
+                validatorFn: (int v) => validatePayment(v, onchainPaymentLimits),
                 style: FieldTextStyle.textStyle,
               ),
               Padding(
@@ -221,7 +217,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                   maxLines: 1,
                   minFontSize: MinFontSize(context).minFontSize,
                 ),
-              )
+              ),
             ],
           ),
         );
@@ -229,13 +225,13 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     );
   }
 
-  Future _createSwap() async {
+  void _createSwap() {
     _doneAction.dispose();
-    final paymentsCubit = context.read<PaymentsCubit>();
-    final currencyCubit = context.read<CurrencyCubit>();
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
 
-    final payerAmountSat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
-    final prepareReceiveResponse = paymentsCubit.prepareReceivePayment(
+    final int payerAmountSat = currencyCubit.state.bitcoinCurrency.parse(_amountController.text);
+    final Future<PrepareReceiveResponse> prepareReceiveResponse = paymentsCubit.prepareReceivePayment(
       paymentMethod: PaymentMethod.bitcoinAddress,
       payerAmountSat: BigInt.from(payerAmountSat),
     );
@@ -243,7 +239,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     setState(() {
       prepareResponseFuture = prepareReceiveResponse;
     });
-    prepareReceiveResponse.then((prepareReceiveResponse) {
+    prepareReceiveResponse.then((PrepareReceiveResponse prepareReceiveResponse) {
       setState(() {
         receivePaymentResponseFuture = paymentsCubit.receivePayment(
           prepareResponse: prepareReceiveResponse,
@@ -256,18 +252,18 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
   }
 
   String? validatePayment(int amount, OnchainPaymentLimitsResponse onchainPaymentLimits) {
-    var currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
-      validatePayment: (amount, outgoing) => _validateSwap(amount, outgoing, onchainPaymentLimits),
+      validatePayment: (int amount, bool outgoing) => _validateSwap(amount, outgoing, onchainPaymentLimits),
       currency: currencyCubit.state.bitcoinCurrency,
       texts: context.texts(),
     ).validateIncoming(amount);
   }
 
   void _validateSwap(int amount, bool outgoing, OnchainPaymentLimitsResponse onchainPaymentLimits) {
-    final accountState = context.read<AccountCubit>().state;
-    final balance = accountState.walletInfo!.balanceSat.toInt();
-    final chainSwapCubit = context.read<ChainSwapCubit>();
+    final AccountState accountState = context.read<AccountCubit>().state;
+    final int balance = accountState.walletInfo!.balanceSat.toInt();
+    final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
     return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, onchainPaymentLimits, balance);
   }
 }

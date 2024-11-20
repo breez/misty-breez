@@ -4,11 +4,11 @@ class LoadingOrError extends StatelessWidget {
   final Object? error;
   final String displayErrorMessage;
 
-  const LoadingOrError({super.key, this.error, required this.displayErrorMessage});
+  const LoadingOrError({required this.displayErrorMessage, super.key, this.error});
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     if (error == null) {
       return SizedBox(

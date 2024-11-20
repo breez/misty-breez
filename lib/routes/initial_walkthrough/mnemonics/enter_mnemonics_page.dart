@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/initial_walkthrough/mnemonics/widgets/restore_form_page.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -6,9 +7,9 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 class EnterMnemonicsPage extends StatefulWidget {
   final List<String> initialWords;
 
-  static const routeName = "/enter_mnemonics";
+  static const String routeName = '/enter_mnemonics';
 
-  const EnterMnemonicsPage({super.key, required this.initialWords});
+  const EnterMnemonicsPage({required this.initialWords, super.key});
 
   @override
   EnterMnemonicsPageState createState() => EnterMnemonicsPageState();
@@ -20,8 +21,8 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final query = MediaQuery.of(context);
+    final BreezTranslations texts = context.texts();
+    final MediaQueryData query = MediaQuery.of(context);
 
     return PopScope(
       canPop: _currentPage == 1,

@@ -7,8 +7,8 @@ class SingleButtonBottomBar extends StatelessWidget {
   final bool stickToBottom;
 
   const SingleButtonBottomBar({
-    super.key,
     required this.text,
+    super.key,
     this.onPressed,
     this.stickToBottom = false,
   });
@@ -21,7 +21,7 @@ class SingleButtonBottomBar extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           ConstrainedBox(
             constraints: const BoxConstraints(
               minHeight: 48.0,
@@ -52,7 +52,7 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 48.0,

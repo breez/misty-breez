@@ -9,10 +9,10 @@ class PodcastShareLink {
   }
 
   static PodcastShareLink fromLinkQuery(String queryStr) {
-    Map<String, String> query = Uri.splitQueryString(queryStr);
+    final Map<String, String> query = Uri.splitQueryString(queryStr);
     return PodcastShareLink(
-      Uri.decodeComponent(query["feedURL"]!),
-      episodeID: query["episodeID"] == null ? null : Uri.decodeComponent(query["episodeID"]!),
+      Uri.decodeComponent(query['feedURL']!),
+      episodeID: query['episodeID'] == null ? null : Uri.decodeComponent(query['episodeID']!),
     );
   }
 }

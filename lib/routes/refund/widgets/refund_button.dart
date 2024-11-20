@@ -1,21 +1,20 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/widgets/error_dialog.dart';
-import 'package:l_breez/widgets/loader.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class RefundButton extends StatelessWidget {
   final RefundRequest req;
 
-  const RefundButton({super.key, required this.req});
+  const RefundButton({required this.req, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return SingleButtonBottomBar(
       text: texts.sweep_all_coins_action_confirm,
@@ -23,20 +22,22 @@ class RefundButton extends StatelessWidget {
     );
   }
 
-  Future _refund(BuildContext context) async {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final refundCubit = context.read<RefundCubit>();
+  Future<void> _refund(BuildContext context) async {
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
+    final RefundCubit refundCubit = context.read<RefundCubit>();
 
-    final navigator = Navigator.of(context);
-    var loaderRoute = createLoaderRoute(context);
+    final NavigatorState navigator = Navigator.of(context);
+    final TransparentPageRoute<void> loaderRoute = createLoaderRoute(context);
     navigator.push(loaderRoute);
     try {
       await refundCubit.refund(req: req);
-      navigator.popUntil((route) => route.settings.name == "/");
+      navigator.popUntil((Route<dynamic> route) => route.settings.name == '/');
     } catch (e) {
       navigator.pop(loaderRoute);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       promptError(
         context,
         null,

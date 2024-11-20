@@ -10,15 +10,15 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
-final _logger = Logger("BreezLogger");
-final _breezSdkLiquidLogger = Logger("BreezSdkLiquid");
+final Logger _logger = Logger('BreezLogger');
+final Logger _breezSdkLiquidLogger = Logger('BreezSdkLiquid');
 
 class BreezLogger {
   BreezLogger() {
     Logger.root.level = Level.CONFIG;
 
     if (kDebugMode) {
-      Logger.root.onRecord.listen((record) {
+      Logger.root.onRecord.listen((LogRecord record) {
         // Dart analyzer doesn't understand that here we are in debug mode so we have to use kDebugMode again
         if (kDebugMode) {
           print(_recordToString(record));
@@ -30,89 +30,95 @@ class BreezLogger {
 
     FlutterError.onError = (FlutterErrorDetails details) async {
       FlutterError.presentError(details);
-      final name = details.context?.name ?? "FlutterError";
-      final exception = details.exceptionAsString();
-      _logger.severe("$exception -- $name", details, details.stack);
+      final String name = details.context?.name ?? 'FlutterError';
+      final String exception = details.exceptionAsString();
+      _logger.severe('$exception -- $name', details, details.stack);
     };
 
-    DeviceInfoPlugin().deviceInfo.then((deviceInfo) {
-      _logger.info("Device info:");
-      deviceInfo.data.forEach((key, value) => _logger.info("$key: $value"));
-    }, onError: (error) {
-      _logger.severe("Failed to get device info", error);
-    });
+    DeviceInfoPlugin().deviceInfo.then(
+      (BaseDeviceInfo deviceInfo) {
+        _logger.info('Device info:');
+        deviceInfo.data.forEach((String key, dynamic value) => _logger.info('$key: $value'));
+      },
+      onError: (Object? error) {
+        _logger.severe('Failed to get device info', error);
+      },
+    );
   }
 
   void _createSessionLogFile() async {
     try {
-      final config = await AppConfig.instance();
-      final appDir = Directory(config.sdkConfig.workingDir);
+      final AppConfig config = await AppConfig.instance();
+      final Directory appDir = Directory(config.sdkConfig.workingDir);
 
       _pruneLogs(appDir);
 
-      final logFile = File("${appDir.path}/logs/${DateTime.now().millisecondsSinceEpoch}.app.log");
+      final File logFile = File('${appDir.path}/logs/${DateTime.now().millisecondsSinceEpoch}.app.log');
       logFile.createSync(recursive: true);
 
-      final sync = logFile.openWrite(mode: FileMode.append);
+      final IOSink sync = logFile.openWrite(mode: FileMode.append);
       Logger.root.onRecord.listen(
-        (record) => sync.writeln(_recordToString(record)),
+        (LogRecord record) => sync.writeln(_recordToString(record)),
         onDone: () async {
           await sync.flush();
           await sync.close();
         },
       );
     } catch (e) {
-      _logger.severe("Failed to create log file", e);
+      _logger.severe('Failed to create log file', e);
     }
   }
 
   void _pruneLogs(Directory appDir) {
-    final loggingFolder = Directory("${appDir.path}/logs/");
-    if (!loggingFolder.existsSync()) return;
+    final Directory loggingFolder = Directory('${appDir.path}/logs/');
+    if (!loggingFolder.existsSync()) {
+      return;
+    }
 
     // Get and sort log files by modified date
-    final logFiles = loggingFolder
+    final List<File> logFiles = loggingFolder
         .listSync(followLinks: false)
         .whereType<File>()
-        .where((file) => file.path.endsWith('.log'))
+        .where((File file) => file.path.endsWith('.log'))
         .toList()
-      ..sort((a, b) => a.statSync().modified.compareTo(b.statSync().modified));
+      ..sort((File a, File b) => a.statSync().modified.compareTo(b.statSync().modified));
 
     // Delete all except the last 10 log files
     if (logFiles.length > 10) {
-      final filesToDelete = logFiles.take(logFiles.length - 10);
-      for (var file in filesToDelete) {
+      final Iterable<File> filesToDelete = logFiles.take(logFiles.length - 10);
+      for (File file in filesToDelete) {
         file.deleteSync();
       }
     }
   }
 
   void registerBreezSdkLiquidLogs(BreezSDKLiquid breezSdkLiquid) {
-    breezSdkLiquid.logStream.listen((e) => _logBreezSdkLiquidEntries(e, _breezSdkLiquidLogger));
+    breezSdkLiquid.logStream
+        .listen((liquid_sdk.LogEntry e) => _logBreezSdkLiquidEntries(e, _breezSdkLiquidLogger));
   }
 
   void _logBreezSdkLiquidEntries(liquid_sdk.LogEntry log, Logger logger) {
     switch (log.level) {
-      case "ERROR":
+      case 'ERROR':
         logger.severe(log.line);
         break;
-      case "WARN":
+      case 'WARN':
         logger.warning(log.line);
         break;
-      case "INFO":
+      case 'INFO':
         logger.info(log.line);
         break;
-      case "DEBUG":
+      case 'DEBUG':
         logger.config(log.line);
         break;
-      case "TRACE":
+      case 'TRACE':
         logger.finest(log.line);
         break;
     }
   }
 
   String _recordToString(LogRecord record) =>
-      "[${record.loggerName}] {${record.level.name}} (${_formatTime(record.time)}) : ${record.message}"
+      '[${record.loggerName}] {${record.level.name}} (${_formatTime(record.time)}) : ${record.message}'
       "${record.error != null ? "\n${record.error}" : ""}"
       "${record.stackTrace != null ? "\n${record.stackTrace}" : ""}";
 
@@ -120,13 +126,13 @@ class BreezLogger {
 }
 
 void shareLog() async {
-  var config = await AppConfig.instance();
-  final appDir = config.sdkConfig.workingDir;
-  final encoder = ZipFileEncoder();
-  final zipFilePath = "$appDir/l-breez.logs.zip";
+  final AppConfig config = await AppConfig.instance();
+  final String appDir = config.sdkConfig.workingDir;
+  final ZipFileEncoder encoder = ZipFileEncoder();
+  final String zipFilePath = '$appDir/l-breez.logs.zip';
   encoder.create(zipFilePath);
-  encoder.addDirectory(Directory("$appDir/logs/"));
+  encoder.addDirectory(Directory('$appDir/logs/'));
   encoder.close();
-  final zipFile = XFile(zipFilePath);
-  Share.shareXFiles([zipFile]);
+  final XFile zipFile = XFile(zipFilePath);
+  Share.shareXFiles(<XFile>[zipFile]);
 }

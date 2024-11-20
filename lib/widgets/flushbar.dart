@@ -1,9 +1,10 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 
-Flushbar showFlushbar(
+Flushbar<dynamic> showFlushbar(
   BuildContext context, {
   String? title,
   Widget? icon,
@@ -16,11 +17,11 @@ Flushbar showFlushbar(
   bool Function()? onDismiss,
   Duration duration = const Duration(seconds: 8),
 }) {
-  final themeData = Theme.of(context);
-  final texts = context.texts();
+  final ThemeData themeData = Theme.of(context);
+  final BreezTranslations texts = context.texts();
 
-  Flushbar? flush;
-  flush = Flushbar(
+  Flushbar<dynamic>? flush;
+  flush = Flushbar<dynamic>(
     isDismissible: isDismissible,
     flushbarPosition: position,
     titleText: title == null
@@ -42,7 +43,7 @@ Flushbar showFlushbar(
         ? null
         : TextButton(
             onPressed: () {
-              bool dismiss = onDismiss != null ? onDismiss() : true;
+              final bool dismiss = onDismiss != null ? onDismiss() : true;
               if (dismiss) {
                 flush!.dismiss(true);
               }
@@ -60,7 +61,7 @@ Flushbar showFlushbar(
 }
 
 void popFlushbars(BuildContext context) {
-  Navigator.popUntil(context, (route) {
+  Navigator.popUntil(context, (Route<dynamic> route) {
     return route.settings.name != FLUSHBAR_ROUTE_NAME;
   });
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/security/widget/digit_button_widget.dart';
-import 'package:l_breez/widgets/preview/preview.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class NumPadWidget extends StatelessWidget {
   final ActionKey lhsActionKey;
@@ -9,28 +9,27 @@ class NumPadWidget extends StatelessWidget {
   final Function(ActionKey) onActionKeyPressed;
 
   const NumPadWidget({
+    required this.onDigitPressed,
+    required this.onActionKeyPressed,
     super.key,
     this.lhsActionKey = ActionKey.clear,
     this.rhsActionKey = ActionKey.backspace,
-    required this.onDigitPressed,
-    required this.onActionKeyPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        ...List.generate(
+      children: <Widget>[
+        ...List<Widget>.generate(
           3,
-          (r) => Expanded(
+          (int r) => Expanded(
             child: Row(
-              children: List.generate(
+              children: List<Widget>.generate(
                 3,
-                (c) => Expanded(
+                (int c) => Expanded(
                   child: DigitButtonWidget(
-                    digit: "${c + 1 + 3 * r}",
-                    onPressed: (digit) => onDigitPressed(digit!),
+                    digit: '${c + 1 + 3 * r}',
+                    onPressed: (String? digit) => onDigitPressed(digit!),
                   ),
                 ),
               ),
@@ -39,7 +38,7 @@ class NumPadWidget extends StatelessWidget {
         ),
         Expanded(
           child: Row(
-            children: [
+            children: <Widget>[
               Expanded(
                 child: DigitButtonWidget(
                   icon: lhsActionKey.icon,
@@ -48,14 +47,14 @@ class NumPadWidget extends StatelessWidget {
               ),
               Expanded(
                 child: DigitButtonWidget(
-                  digit: "0",
-                  onPressed: (digit) => onDigitPressed(digit!),
+                  digit: '0',
+                  onPressed: (String? digit) => onDigitPressed(digit!),
                 ),
               ),
               Expanded(
                 child: DigitButtonWidget(
                   icon: rhsActionKey.icon,
-                  onPressed: (digit) => onActionKeyPressed(rhsActionKey),
+                  onPressed: (String? digit) => onActionKeyPressed(rhsActionKey),
                 ),
               ),
             ],
@@ -89,15 +88,15 @@ extension _ActionKeyIconExtension on ActionKey {
 }
 
 void main() {
-  digitFun(digit) => debugPrint("Digit pressed: $digit");
-  actionKeyFun(actionKey) => debugPrint("Action key pressed: $actionKey");
+  void digitFun(String digit) => debugPrint('Digit pressed: $digit');
+  void actionKeyFun(ActionKey actionKey) => debugPrint('Action key pressed: $actionKey');
 
   runApp(
     Preview(
-      [
+      <Widget>[
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text("Small space, default action key (backspace):"),
+          child: Text('Small space, default action key (backspace):'),
         ),
         SizedBox(
           height: 200,
@@ -108,7 +107,7 @@ void main() {
         ),
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text("Medium space, FaceId action key:"),
+          child: Text('Medium space, FaceId action key:'),
         ),
         SizedBox(
           height: 400,
@@ -120,7 +119,7 @@ void main() {
         ),
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text("Large space, Fingerprint action key:"),
+          child: Text('Large space, Fingerprint action key:'),
         ),
         SizedBox(
           height: 600,

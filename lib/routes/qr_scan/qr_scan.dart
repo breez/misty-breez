@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,10 +10,10 @@ import 'package:l_breez/routes/qr_scan/scan_overlay.dart';
 import 'package:logging/logging.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-final _logger = Logger("QRScan");
+final Logger _logger = Logger('QRScan');
 
 class QRScan extends StatefulWidget {
-  static const routeName = "/qr_scan";
+  static const String routeName = '/qr_scan';
 
   const QRScan({super.key});
 
@@ -25,8 +26,6 @@ class QRScanState extends State<QRScan> {
   bool popped = false;
   final MobileScannerController cameraController = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates,
-    facing: CameraFacing.back,
-    torchEnabled: false,
   );
 
   late StreamSubscription<BarcodeCapture> _barcodeSubscription;
@@ -39,18 +38,18 @@ class QRScanState extends State<QRScan> {
 
   void onDetect(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
-    for (final barcode in barcodes) {
-      _logger.info("Barcode detected. ${barcode.displayValue}");
+    for (final Barcode barcode in barcodes) {
+      _logger.info('Barcode detected. ${barcode.displayValue}');
       if (popped || !mounted) {
-        _logger.info("Skipping, already popped or not mounted");
+        _logger.info('Skipping, already popped or not mounted');
         return;
       }
-      final code = barcode.rawValue;
+      final String? code = barcode.rawValue;
       if (code == null) {
-        _logger.warning("Failed to scan QR code.");
+        _logger.warning('Failed to scan QR code.');
       } else {
         popped = true;
-        _logger.info("Popping read QR code: $code");
+        _logger.info('Popping read QR code: $code');
         Navigator.of(context).pop(code);
       }
     }
@@ -66,7 +65,7 @@ class QRScanState extends State<QRScan> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [
+        children: <Widget>[
           Positioned.fill(
             child: Column(
               children: <Widget>[
@@ -76,27 +75,27 @@ class QRScanState extends State<QRScan> {
                     key: qrKey,
                     controller: cameraController,
                   ),
-                )
+                ),
               ],
             ),
           ),
           const ScanOverlay(),
           SafeArea(
             child: Stack(
-              children: [
+              children: <Widget>[
                 Positioned(
                   right: 10,
                   top: 5,
                   child: ImagePickerButton(cameraController: cameraController),
                 ),
-                if (defaultTargetPlatform == TargetPlatform.iOS) ...[
+                if (defaultTargetPlatform == TargetPlatform.iOS) ...<Widget>[
                   const Positioned(
                     bottom: 30.0,
                     right: 0,
                     left: 0,
                     child: QRScanCancelButton(),
                   ),
-                ]
+                ],
               ],
             ),
           ),
@@ -113,13 +112,13 @@ class ImagePickerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final BreezTranslations texts = context.texts();
+    final ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
 
     return IconButton(
       padding: const EdgeInsets.fromLTRB(0, 32, 24, 0),
       icon: SvgPicture.asset(
-        "assets/icons/image.svg",
+        'assets/icons/image.svg',
         colorFilter: const ColorFilter.mode(
           Colors.white,
           BlendMode.srcATop,
@@ -130,25 +129,29 @@ class ImagePickerButton extends StatelessWidget {
       onPressed: () async {
         final ImagePicker picker = ImagePicker();
 
-        final XFile? image = await picker.pickImage(source: ImageSource.gallery).catchError((err) {
-          _logger.warning("Failed to pick image", err);
-          return null;
-        });
+        final XFile? image = await picker.pickImage(source: ImageSource.gallery).catchError(
+          (Object err) {
+            _logger.warning('Failed to pick image', err);
+            return null;
+          },
+        );
 
-        if (image == null) return;
+        if (image == null) {
+          return;
+        }
 
-        var filePath = image.path;
-        _logger.info("Picked image: $filePath");
+        final String filePath = image.path;
+        _logger.info('Picked image: $filePath');
 
         final BarcodeCapture? barcodes = await cameraController.analyzeImage(filePath).catchError(
-          (err) {
-            _logger.warning("Failed to analyze image", err);
+          (Object err) {
+            _logger.warning('Failed to analyze image', err);
             return null;
           },
         );
 
         if (barcodes == null) {
-          _logger.info("No QR code found in image");
+          _logger.info('No QR code found in image');
           scaffoldMessenger.showSnackBar(SnackBar(content: Text(texts.qr_scan_gallery_failed)));
         }
       },
@@ -161,7 +164,7 @@ class QRScanCancelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Center(
       child: Container(

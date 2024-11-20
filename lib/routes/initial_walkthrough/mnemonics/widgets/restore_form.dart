@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -14,12 +15,12 @@ class RestoreForm extends StatefulWidget {
   final AutovalidateMode autoValidateMode;
 
   const RestoreForm({
-    super.key,
     required this.formKey,
     required this.currentPage,
     required this.lastPage,
     required this.textEditingControllers,
     required this.autoValidateMode,
+    super.key,
   });
 
   @override
@@ -44,17 +45,16 @@ class RestoreFormPageState extends State<RestoreForm> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(6, (index) {
-            final itemIndex = index + (6 * (widget.currentPage - 1));
-            return TypeAheadFormField(
+          children: List<Widget>.generate(6, (int index) {
+            final int itemIndex = index + (6 * (widget.currentPage - 1));
+            return TypeAheadFormField<String>(
               textFieldConfiguration: TextFieldConfiguration(
                 autocorrect: false,
                 controller: widget.textEditingControllers[itemIndex],
                 textInputAction: TextInputAction.next,
-                onSubmitted: (text) async {
-                  final suggestions = await _getSuggestions(text);
+                onSubmitted: (String text) async {
+                  final List<String> suggestions = await _getSuggestions(text);
                   widget.textEditingControllers[itemIndex].text =
                       suggestions.length == 1 ? suggestions.first : text;
                   if (itemIndex + 1 < focusNodes.length) {
@@ -63,12 +63,12 @@ class RestoreFormPageState extends State<RestoreForm> {
                 },
                 focusNode: focusNodes[itemIndex],
                 decoration: InputDecoration(
-                  labelText: "${itemIndex + 1}",
+                  labelText: '${itemIndex + 1}',
                 ),
                 style: FieldTextStyle.textStyle,
               ),
               autovalidateMode: _autoValidateMode,
-              validator: (text) => _onValidate(context, text!),
+              validator: (String? text) => _onValidate(context, text!),
               suggestionsCallback: _getSuggestions,
               hideOnEmpty: true,
               hideOnLoading: true,
@@ -81,7 +81,7 @@ class RestoreFormPageState extends State<RestoreForm> {
                   maxHeight: 180,
                 ),
               ),
-              itemBuilder: <BuildContext, String>(context, suggestion) {
+              itemBuilder: <BuildContext, String>(BuildContext context, dynamic suggestion) {
                 return Container(
                   decoration: const BoxDecoration(
                     border: Border(
@@ -100,7 +100,7 @@ class RestoreFormPageState extends State<RestoreForm> {
                   ),
                 );
               },
-              onSuggestionSelected: <String>(suggestion) {
+              onSuggestionSelected: <String>(dynamic suggestion) {
                 widget.textEditingControllers[itemIndex].text = suggestion;
                 if (itemIndex + 1 < focusNodes.length) {
                   focusNodes[itemIndex + 1].requestFocus();
@@ -114,7 +114,7 @@ class RestoreFormPageState extends State<RestoreForm> {
   }
 
   String? _onValidate(BuildContext context, String text) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
     if (text.isEmpty) {
       return texts.enter_backup_phrase_missing_word;
     }
@@ -124,12 +124,12 @@ class RestoreFormPageState extends State<RestoreForm> {
     return null;
   }
 
-  FutureOr<List<String>> _getSuggestions(pattern) {
+  FutureOr<List<String>> _getSuggestions(String pattern) {
     if (pattern.toString().isEmpty) {
-      return List.empty();
+      return List<String>.empty();
     } else {
-      var suggestionList = wordlist.where((item) => item.startsWith(pattern)).toList();
-      return suggestionList.isNotEmpty ? suggestionList : List.empty();
+      final List<String> suggestionList = wordlist.where((String item) => item.startsWith(pattern)).toList();
+      return suggestionList.isNotEmpty ? suggestionList : List<String>.empty();
     }
   }
 }

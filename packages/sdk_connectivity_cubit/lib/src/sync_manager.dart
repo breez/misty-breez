@@ -5,9 +5,9 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:logging/logging.dart';
 
-final _logger = Logger("SyncManager");
+final Logger _logger = Logger('SyncManager');
 
-const syncIntervalSeconds = 60;
+const int syncIntervalSeconds = 60;
 
 class SyncManager {
   StreamSubscription<FGBGType>? _lifecycleSubscription;
@@ -19,29 +19,29 @@ class SyncManager {
   SyncManager(this.wallet);
 
   void startSyncing() {
-    _logger.info("Starting Sync Manager.");
-    _lifecycleSubscription = FGBGEvents.stream.skip(1).listen((event) async {
+    _logger.info('Starting Sync Manager.');
+    _lifecycleSubscription = FGBGEvents.stream.skip(1).listen((FGBGType event) async {
       if (event == FGBGType.foreground && _shouldSync()) {
         await _sync();
       }
     });
-    _logger.info("Subscribed to lifecycle events.");
+    _logger.info('Subscribed to lifecycle events.');
 
     // Force a sync after Network is back
-    // TODO: Liquid SDK - This sync should happen on SDK layer after re-establishing connection
+    // TODO(erdemyerebasmaz): Liquid SDK - This sync should happen on SDK layer after re-establishing connection
     _networkSubscription = Connectivity().onConnectivityChanged.skip(1).listen(
-      (event) async {
-        final hasNetworkConnection = !(event.contains(ConnectivityResult.none) ||
+      (List<ConnectivityResult> event) async {
+        final bool hasNetworkConnection = !(event.contains(ConnectivityResult.none) ||
             event.every(
-              (result) => result == ConnectivityResult.vpn,
+              (ConnectivityResult result) => result == ConnectivityResult.vpn,
             ));
         if (hasNetworkConnection) {
-          _logger.info("Re-established network connection.");
+          _logger.info('Re-established network connection.');
           await _sync();
         }
       },
     );
-    _logger.info("Subscribed to network events.");
+    _logger.info('Subscribed to network events.');
   }
 
   bool _shouldSync() => DateTime.now().difference(_lastSync).inSeconds > syncIntervalSeconds;
@@ -49,15 +49,15 @@ class SyncManager {
   Future<void> _sync() async {
     if (wallet != null) {
       try {
-        _logger.info("Syncing.");
+        _logger.info('Syncing.');
         await wallet!.sync();
         _lastSync = DateTime.now();
-        _logger.info("Synced successfully.");
+        _logger.info('Synced successfully.');
       } catch (e) {
-        _logger.warning("Failed to sync. Reason: $e");
+        _logger.warning('Failed to sync. Reason: $e');
       }
     } else {
-      _logger.info("Wallet has disconnected. Shutting down Sync Manager.");
+      _logger.info('Wallet has disconnected. Shutting down Sync Manager.');
       disconnect();
     }
   }

@@ -8,10 +8,10 @@ class ScrollableErrorMessageWidget extends StatefulWidget {
   final String message;
 
   const ScrollableErrorMessageWidget({
+    required this.message,
     super.key,
     this.padding,
     this.title,
-    required this.message,
   });
 
   @override
@@ -23,15 +23,14 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
 
     return Padding(
       padding: widget.padding ?? const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           if (widget.title != null && widget.title!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
@@ -56,7 +55,7 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
                 child: AutoSizeText(
                   widget.message,
                   style: themeData.errorTextStyle,
-                  textAlign: widget.message.length > 40 && !widget.message.contains("\n")
+                  textAlign: widget.message.length > 40 && !widget.message.contains('\n')
                       ? TextAlign.start
                       : TextAlign.left,
                 ),

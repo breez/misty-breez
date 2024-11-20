@@ -1,8 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/routes/refund/refund_page.dart';
-import 'package:l_breez/widgets/single_button_bottom_bar.dart';
+import 'package:l_breez/routes/refund/refund.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class RefundItemAction extends StatefulWidget {
   final RefundableSwap swapInfo;
@@ -16,12 +17,12 @@ class RefundItemAction extends StatefulWidget {
 class _RefundItemActionState extends State<RefundItemAction> {
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
+    final BreezTranslations texts = context.texts();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: SizedBox(

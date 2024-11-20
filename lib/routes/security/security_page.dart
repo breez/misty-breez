@@ -1,4 +1,5 @@
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/security/widget/mnemonics/security_mnemonics_management.dart';
 import 'package:l_breez/routes/security/widget/security_pin_management.dart';
@@ -6,14 +7,14 @@ import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 
 class SecurityPage extends StatelessWidget {
-  static const routeName = "/security";
+  static const String routeName = '/security';
 
   const SecurityPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -25,7 +26,7 @@ class SecurityPage extends StatelessWidget {
         ),
       ),
       body: ListView(
-        children: const [
+        children: const <Widget>[
           SecurityPinManagement(),
           Divider(),
           SecurityMnemonicsManagement(),

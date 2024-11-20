@@ -4,7 +4,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
 
-// TODO: Liquid - Remove if having PaymentData is not necessary with Liquid SDK
+// TODO(erdemyerebasmaz): Liquid - Remove if having PaymentData is not necessary with Liquid SDK
 /// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
 /// info to avoid conflicts and make it easier to differentiate when reading the code.
 class PaymentData {
@@ -33,13 +33,13 @@ class PaymentData {
   });
 
   factory PaymentData.fromPayment(Payment payment, BreezTranslations texts) {
-    final factory = _PaymentDataFactory(payment, texts);
+    final _PaymentDataFactory factory = _PaymentDataFactory(payment, texts);
 
     return PaymentData(
-      id: payment.txId ?? "",
+      id: payment.txId ?? '',
       title: factory._title(),
-      destination: payment.destination ?? "",
-      txId: payment.txId ?? "",
+      destination: payment.destination ?? '',
+      txId: payment.txId ?? '',
       paymentTime: factory._paymentTime(),
       amountSat: payment.amountSat.toInt(),
       feeSat: payment.feesSat.toInt(),
@@ -50,7 +50,7 @@ class PaymentData {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'id': id,
       'title': title,
       'destination': destination,
@@ -120,14 +120,16 @@ class _PaymentDataFactory {
   _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
-    var title = _texts.payment_info_title_unknown;
-    final description = _payment.details.map(
-      lightning: (details) => details.description,
-      bitcoin: (details) => details.description,
-      liquid: (details) => details.description,
-      orElse: () => "",
+    final String title = _texts.payment_info_title_unknown;
+    final String description = _payment.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.description,
+      bitcoin: (PaymentDetails_Bitcoin details) => details.description,
+      liquid: (PaymentDetails_Liquid details) => details.description,
+      orElse: () => '',
     );
-    if (description.isNotEmpty) return description;
+    if (description.isNotEmpty) {
+      return description;
+    }
     return title;
   }
 

@@ -5,12 +5,12 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/connectivity/connectivity_state.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
 
 export 'connectivity_state.dart';
 
-final _logger = Logger("ConnectivityCubit");
+final Logger _logger = Logger('ConnectivityCubit');
 
 class ConnectivityCubit extends Cubit<ConnectivityState> {
   final Connectivity _connectivity = Connectivity();
@@ -24,7 +24,7 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
   void _initializeConnectivityCubit() {
     checkConnectivity();
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
-      (connectivityResult) async {
+      (List<ConnectivityResult> connectivityResult) async {
         _updateConnectivityResult(connectivityResult);
       },
     );
@@ -32,17 +32,17 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
 
   Future<void> checkConnectivity() async {
     try {
-      final connectivityResult = await _connectivity.checkConnectivity();
+      final List<ConnectivityResult> connectivityResult = await _connectivity.checkConnectivity();
       _updateConnectivityResult(connectivityResult);
     } on PlatformException catch (e) {
-      _logger.severe("Failed to check connectivity", e);
+      _logger.severe('Failed to check connectivity', e);
       rethrow;
     }
   }
 
   void _updateConnectivityResult(List<ConnectivityResult> connectivityResult) {
     emit(state.copyWith(connectivityResult: connectivityResult));
-    _logger.info("ConnectivityState changed to: $state");
+    _logger.info('ConnectivityState changed to: $state');
   }
 
   @override

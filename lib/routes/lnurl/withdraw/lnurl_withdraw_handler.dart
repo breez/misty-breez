@@ -1,31 +1,31 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/payment_limits/payment_limits_cubit.dart';
-import 'package:l_breez/routes/home/home_page.dart';
+import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/home/home.dart';
 import 'package:l_breez/routes/lnurl/widgets/lnurl_page_result.dart';
 import 'package:l_breez/routes/receive_payment/lnurl/lnurl_withdraw_page.dart';
 import 'package:l_breez/routes/receive_payment/widgets/successful_payment/successful_payment.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/error_dialog.dart';
-import 'package:l_breez/widgets/transparent_page_route.dart';
+import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
-final _logger = Logger("HandleLNURLWithdrawPageResult");
+final Logger _logger = Logger('HandleLNURLWithdrawPageResult');
 
 Future<LNURLPageResult?> handleWithdrawRequest(
   BuildContext context,
   LnUrlWithdrawRequestData requestData,
 ) async {
-  Completer<LNURLPageResult?> completer = Completer();
-  final texts = context.texts();
+  final Completer<LNURLPageResult?> completer = Completer<LNURLPageResult?>();
+  final BreezTranslations texts = context.texts();
   Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (_) => BlocProvider(
+    MaterialPageRoute<void>(
+      builder: (_) => BlocProvider<PaymentLimitsCubit>(
         create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
         child: Scaffold(
           appBar: AppBar(
@@ -33,12 +33,14 @@ Future<LNURLPageResult?> handleWithdrawRequest(
             title: Text(texts.lnurl_withdraw_page_title),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: LnUrlWithdrawPage(
               requestData: requestData,
               onFinish: (LNURLPageResult? response) {
                 completer.complete(response);
-                Navigator.of(context).popUntil((route) => route.settings.name == Home.routeName);
+                Navigator.of(context).popUntil(
+                  (Route<dynamic> route) => route.settings.name == Home.routeName,
+                );
               },
             ),
           ),
@@ -51,11 +53,11 @@ Future<LNURLPageResult?> handleWithdrawRequest(
 }
 
 void handleLNURLWithdrawPageResult(BuildContext context, LNURLPageResult result) {
-  _logger.info("handle $result");
+  _logger.info('handle $result');
   if (result.hasError) {
     _logger.info("Handle LNURL withdraw page result with error '${result.error}'");
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
     promptError(
       context,
       texts.invoice_receive_fail,
@@ -66,9 +68,11 @@ void handleLNURLWithdrawPageResult(BuildContext context, LNURLPageResult result)
     );
     throw result.error!;
   } else {
-    _logger.info("Handle LNURL withdraw page result with success");
+    _logger.info('Handle LNURL withdraw page result with success');
     Navigator.of(context).push(
-      TransparentPageRoute((ctx) => const SuccessfulPaymentRoute()),
+      TransparentPageRoute<void>(
+        (BuildContext ctx) => const SuccessfulPaymentRoute(),
+      ),
     );
   }
 }

@@ -8,52 +8,68 @@ class FieldTextStyle {
   static TextStyle labelStyle = TextStyle(color: BreezColors.white[200], letterSpacing: 0.4);
 }
 
-const balanceAmountTextStyle =
+const TextStyle balanceAmountTextStyle =
     TextStyle(fontSize: 28, fontWeight: FontWeight.w600, height: 1.56, fontFamily: 'IBMPlexSans');
-const balanceCurrencyTextStyle =
+const TextStyle balanceCurrencyTextStyle =
     TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.52, fontFamily: 'IBMPlexSans');
-const balanceFiatConversionTextStyle = TextStyle(
-    fontSize: 16, letterSpacing: 0.2, fontWeight: FontWeight.w500, height: 1.24, fontFamily: 'IBMPlexSans');
-final toolbarTextStyle = const TextTheme(
+const TextStyle balanceFiatConversionTextStyle = TextStyle(
+  fontSize: 16,
+  letterSpacing: 0.2,
+  fontWeight: FontWeight.w500,
+  height: 1.24,
+  fontFamily: 'IBMPlexSans',
+);
+final TextStyle? toolbarTextStyle = const TextTheme(
   titleLarge: TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
 ).bodyMedium;
-final titleTextStyle = const TextTheme(
+final TextStyle? titleTextStyle = const TextTheme(
   titleLarge: TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
 ).titleLarge;
 const TextStyle drawerItemTextStyle = TextStyle(height: 1.2, letterSpacing: 0.25, fontSize: 14.3);
 const TextStyle bottomAppBarBtnStyle = TextStyle(
-    color: Colors.white,
-    fontSize: 13.5,
-    letterSpacing: 1.2,
-    fontWeight: FontWeight.w600,
-    height: 1.24,
-    fontFamily: 'IBMPlexSans');
+  color: Colors.white,
+  fontSize: 13.5,
+  letterSpacing: 1.2,
+  fontWeight: FontWeight.w600,
+  height: 1.24,
+  fontFamily: 'IBMPlexSans',
+);
 const TextStyle bottomSheetTextStyle = TextStyle(
-    fontFamily: 'IBMPlexSans', fontSize: 15, letterSpacing: 1.2, fontWeight: FontWeight.w400, height: 1.30);
+  fontFamily: 'IBMPlexSans',
+  fontSize: 15,
+  letterSpacing: 1.2,
+  fontWeight: FontWeight.w400,
+  height: 1.30,
+);
 final TextStyle bottomSheetMenuItemStyle =
     TextStyle(color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
 final TextStyle blueLinkStyle = TextStyle(color: BreezColors.blue[500], fontSize: 16.0, height: 1.5);
 final TextStyle textStyle = TextStyle(color: BreezColors.white[400], fontSize: 16.0);
-const TextStyle navigationDrawerHandleStyle =
-    TextStyle(fontSize: 16.0, letterSpacing: 0.2, color: Color.fromRGBO(255, 255, 255, 0.6));
+const TextStyle navigationDrawerHandleStyle = TextStyle(
+  fontSize: 16.0,
+  letterSpacing: 0.2,
+  color: Color.fromRGBO(255, 255, 255, 0.6),
+);
 const TextStyle validatorStyle = TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
 final TextStyle welcomeTextStyle = TextStyle(color: BreezColors.white[500], fontSize: 16.0, height: 1.1);
 final TextStyle buttonStyle = TextStyle(color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25);
 final TextStyle whiteButtonStyle =
     TextStyle(color: BreezColors.white[500], fontSize: 14.3, letterSpacing: 1.25);
 final TextStyle cancelButtonStyle = TextStyle(
-    color: BreezColors.red[600],
-    letterSpacing: 1.25,
-    height: 1.16,
-    fontSize: 14.0,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'IBMPlexSans');
+  color: BreezColors.red[600],
+  letterSpacing: 1.25,
+  height: 1.16,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w500,
+  fontFamily: 'IBMPlexSans',
+);
 final TextStyle restoreLinkStyle = TextStyle(
-    color: BreezColors.white[300],
-    fontSize: 12.0,
-    letterSpacing: 0.4,
-    height: 1.2,
-    decoration: TextDecoration.underline);
+  color: BreezColors.white[300],
+  fontSize: 12.0,
+  letterSpacing: 0.4,
+  height: 1.2,
+  decoration: TextDecoration.underline,
+);
 final TextStyle snackBarStyle =
     TextStyle(color: BreezColors.white[500], fontSize: 14.0, letterSpacing: 0.25, height: 1.2);
 final TextStyle fiatConversionTitleStyle =

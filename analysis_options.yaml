@@ -1,1 +1,41 @@
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    require_trailing_commas: true
+    prefer_single_quotes: true
+    always_declare_return_types: true
+    prefer_final_fields: true
+    cancel_subscriptions: true
+    close_sinks: true
+    combinators_ordering: true
+    comment_references: true
+    invalid_case_patterns: true
+    one_member_abstracts: true
+    avoid_shadowing_type_parameters: true
+    always_put_control_body_on_new_line: true
+    prefer_const_constructors: true
+    always_put_required_named_parameters_first: true
+    always_specify_types: true
+    always_use_package_imports: true
+    avoid_empty_else: true
+    avoid_escaping_inner_quotes: true
+    avoid_init_to_null: true
+    avoid_multiple_declarations_per_line: true
+    avoid_null_checks_in_equality_operators: true
+    avoid_print: true
+    avoid_private_typedef_functions: true
+    avoid_redundant_argument_values: true
+    avoid_renaming_method_parameters: true
+    avoid_return_types_on_setters: true
+    await_only_futures: true
+    prefer_is_empty: true
+    unnecessary_null_in_if_null_operators: true
+    # Flutter
+    flutter_style_todos: true
+    avoid_function_literals_in_foreach_calls: true
+    prefer_const_constructors_in_immutables: true
+    use_build_context_synchronously: true
+    avoid_relative_lib_imports: true
+    prefer_final_locals: true
+    use_key_in_widget_constructors: true

@@ -9,7 +9,7 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final raw = newValue.text.replaceAll(_pattern, '');
+    final String raw = newValue.text.replaceAll(_pattern, '');
     if (raw.isEmpty) {
       return newValue.copyWith(
         text: '',
@@ -24,14 +24,13 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
       value = 0;
     }
 
-    final formatted = BitcoinCurrency.sat.format(
+    final String formatted = BitcoinCurrency.sat.format(
       value,
       includeDisplayName: false,
-      includeCurrencySymbol: false,
     );
 
-    var diff = formatted.length - oldValue.text.length;
-    var newOffset = newValue.selection.start;
+    final int diff = formatted.length - oldValue.text.length;
+    int newOffset = newValue.selection.start;
     if (formatted != oldValue.text) {
       if (diff > 1) {
         newOffset += 1;
@@ -53,6 +52,6 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
 // Workaround on https://github.com/flutter/flutter/issues/30369
 extension StringFormattedOnSatAmountFormFieldFormatter on String {
   String formatBySatAmountFormFieldFormatter() => SatAmountFormFieldFormatter()
-      .formatEditUpdate(const TextEditingValue(text: ""), TextEditingValue(text: this))
+      .formatEditUpdate(const TextEditingValue(), TextEditingValue(text: this))
       .text;
 }

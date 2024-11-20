@@ -2,19 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/home/widgets/bubble_painter.dart';
-import 'package:l_breez/routes/home/widgets/dashboard/wallet_dashboard_header_delegate.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/fixed_sliver_delegate.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/header_filter_chip.dart';
-import 'package:l_breez/routes/home/widgets/payments_filter/payments_filter_sliver.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/payments_list.dart';
-import 'package:l_breez/routes/home/widgets/payments_list/placeholder_payment_item.dart';
-import 'package:l_breez/routes/home/widgets/status_text.dart';
+import 'package:l_breez/routes/home/home.dart';
 import 'package:l_breez/theme/theme.dart';
 
-const _kFilterMaxSize = 64.0;
-const _kPaymentListItemHeight = 72.0;
-const _kPlaceholderListItemCount = 8;
+const double _kFilterMaxSize = 64.0;
+const double _kPaymentListItemHeight = 72.0;
+const int _kPlaceholderListItemCount = 8;
 
 class AccountPage extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
@@ -29,28 +22,27 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AccountCubit, AccountState>(
-      builder: (context, accountState) {
+      builder: (BuildContext context, AccountState accountState) {
         return BlocBuilder<PaymentsCubit, PaymentsState>(
-          builder: (context, paymentsState) {
-            final nonFilteredPayments = paymentsState.payments;
-            final paymentFilters = paymentsState.paymentFilters;
-            final filteredPayments = paymentsState.filteredPayments;
+          builder: (BuildContext context, PaymentsState paymentsState) {
+            final List<PaymentData> nonFilteredPayments = paymentsState.payments;
+            final PaymentFilters paymentFilters = paymentsState.paymentFilters;
+            final List<PaymentData> filteredPayments = paymentsState.filteredPayments;
 
-            List<Widget> slivers = [];
+            final List<Widget> slivers = <Widget>[];
 
             slivers.add(
               const SliverPersistentHeader(
-                floating: false,
                 delegate: WalletDashboardHeaderDelegate(),
                 pinned: true,
               ),
             );
 
-            bool showPaymentsList = filteredPayments.isNotEmpty;
-            bool hasTypeFilter = paymentFilters.filters != PaymentType.values;
-            int? startDate = paymentFilters.fromTimestamp;
-            int? endDate = paymentFilters.toTimestamp;
-            bool hasDateFilter = startDate != null && endDate != null;
+            final bool showPaymentsList = filteredPayments.isNotEmpty;
+            final bool hasTypeFilter = paymentFilters.filters != PaymentType.values;
+            final int? startDate = paymentFilters.fromTimestamp;
+            final int? endDate = paymentFilters.toTimestamp;
+            final bool hasDateFilter = startDate != null && endDate != null;
             if (showPaymentsList || hasTypeFilter) {
               slivers.add(
                 PaymentsFilterSliver(
@@ -97,7 +89,7 @@ class AccountPage extends StatelessWidget {
                 SliverFixedExtentList(
                   itemExtent: _kPaymentListItemHeight + 8.0,
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) => const PlaceholderPaymentItem(),
+                    (BuildContext context, int index) => const PlaceholderPaymentItem(),
                     childCount: _kPlaceholderListItemCount,
                   ),
                 ),
@@ -120,7 +112,7 @@ class AccountPage extends StatelessWidget {
                 SliverPersistentHeader(
                   delegate: FixedSliverDelegate(
                     250.0,
-                    builder: (context, shrinkedHeight, overlapContent) {
+                    builder: (BuildContext context, double shrinkedHeight, bool overlapContent) {
                       return const Padding(
                         padding: EdgeInsets.fromLTRB(40.0, 120.0, 40.0, 0.0),
                         child: StatusText(),
@@ -134,10 +126,11 @@ class AccountPage extends StatelessWidget {
             return Container(
               color: Theme.of(context).customData.dashboardBgColor,
               child: Stack(
-                key: const Key("account_sliver"),
+                key: const Key('account_sliver'),
                 fit: StackFit.expand,
-                children: [
-                  if (!showPaymentsList && !(accountState.isRestoring && nonFilteredPayments.isEmpty)) ...[
+                children: <Widget>[
+                  if (!showPaymentsList &&
+                      !(accountState.isRestoring && nonFilteredPayments.isEmpty)) ...<Widget>[
                     CustomPaint(painter: BubblePainter(context)),
                   ],
                   CustomScrollView(
@@ -158,12 +151,14 @@ class AccountPage extends StatelessWidget {
     bool hasDateFilters,
     int paymentsSize,
   ) {
-    if (paymentsSize == 0) return 0.0;
+    if (paymentsSize == 0) {
+      return 0.0;
+    }
 
-    final screenSize = MediaQuery.of(context).size;
-    double listHeightSpace = screenSize.height - kMinExtent - kToolbarHeight - _kFilterMaxSize - 25.0;
-    double dateFilterSpace = hasDateFilters ? 0.65 : 0.0;
-    double requiredSpace = (_kPaymentListItemHeight + 8) * (paymentsSize + 1 + dateFilterSpace);
+    final Size screenSize = MediaQuery.of(context).size;
+    final double listHeightSpace = screenSize.height - kMinExtent - kToolbarHeight - _kFilterMaxSize - 25.0;
+    final double dateFilterSpace = hasDateFilters ? 0.65 : 0.0;
+    final double requiredSpace = (_kPaymentListItemHeight + 8) * (paymentsSize + 1 + dateFilterSpace);
     return (listHeightSpace - requiredSpace).clamp(0.0, listHeightSpace);
   }
 }

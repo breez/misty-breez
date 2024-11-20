@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -16,8 +17,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
-    var themeData = Theme.of(context);
+    final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Theme(
       data: themeData.copyWith(
@@ -49,7 +50,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             ],
           ),
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
@@ -61,7 +62,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              final backupCubit = context.read<BackupCubit>();
+              final BackupCubit backupCubit = context.read<BackupCubit>();
               await backupCubit.backup();
             },
             child: Text(
@@ -69,7 +70,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               style: themeData.primaryTextTheme.labelLarge,
               maxLines: 1,
             ),
-          )
+          ),
         ],
       ),
     );

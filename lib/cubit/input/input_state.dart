@@ -1,6 +1,5 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/model/src/input/input_printer.dart';
-import 'package:l_breez/cubit/model/src/input/input_source.dart';
+import 'package:l_breez/cubit/cubit.dart';
 
 class InputState {
   const InputState._();
