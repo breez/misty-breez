@@ -361,33 +361,25 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
+              : !_isFixedAmount
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
-                      text: texts.ln_payment_action_close,
-                      onPressed: () {
-                        Navigator.of(context).pop();
+                      text: texts.lnurl_payment_page_action_next,
+                      enabled: _isFormEnabled,
+                      onPressed: () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          await _openConfirmationPage();
+                        }
                       },
                     )
-                  : !_isFixedAmount
-                      ? SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.lnurl_payment_page_action_next,
-                          onPressed: () async {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              await _openConfirmationPage();
-                            }
-                          },
-                        )
-                      : _prepareResponse != null
-                          ? SingleButtonBottomBar(
-                              stickToBottom: true,
-                              text: texts.ln_payment_action_send,
-                              onPressed: () async {
-                                Navigator.pop(context, _prepareResponse);
-                              },
-                            )
-                          : const SizedBox.shrink(),
+                  : SingleButtonBottomBar(
+                      stickToBottom: true,
+                      enabled: _prepareResponse != null && errorMessage.isEmpty,
+                      text: texts.ln_payment_action_send,
+                      onPressed: () async {
+                        Navigator.pop(context, _prepareResponse);
+                      },
+                    ),
     );
   }
 

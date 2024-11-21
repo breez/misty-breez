@@ -291,23 +291,16 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
-                  ? SingleButtonBottomBar(
-                      stickToBottom: true,
-                      text: texts.qr_code_dialog_action_close,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  : SingleButtonBottomBar(
-                      stickToBottom: true,
-                      text: texts.invoice_action_redeem,
-                      onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          _withdraw();
-                        }
-                      },
-                    ),
+              : SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.invoice_action_redeem,
+                  enabled: _isFormEnabled || _isFixedAmount && errorMessage.isEmpty,
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      _withdraw();
+                    }
+                  },
+                ),
     );
   }
 

@@ -5,12 +5,14 @@ class SingleButtonBottomBar extends StatelessWidget {
   final VoidCallback? onPressed;
   final String text;
   final bool stickToBottom;
+  final bool enabled;
 
   const SingleButtonBottomBar({
     required this.text,
     super.key,
     this.onPressed,
     this.stickToBottom = false,
+    this.enabled = false,
   });
 
   @override
@@ -30,6 +32,7 @@ class SingleButtonBottomBar extends StatelessWidget {
             child: SubmitButton(
               text,
               onPressed,
+              enabled: enabled,
             ),
           ),
         ],
@@ -66,7 +69,7 @@ class SubmitButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
           ),
         ),
-        onPressed: onPressed,
+        onPressed: enabled ? onPressed : null,
         child: AutoSizeText(
           text,
           maxLines: 1,

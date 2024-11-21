@@ -189,23 +189,14 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : errorMessage.isNotEmpty
-                  ? SingleButtonBottomBar(
-                      stickToBottom: true,
-                      text: texts.ln_payment_action_close,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  : _prepareResponse != null
-                      ? SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.ln_payment_action_send,
-                          onPressed: () async {
-                            Navigator.pop(context, _prepareResponse);
-                          },
-                        )
-                      : const SizedBox.shrink(),
+              : SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.ln_payment_action_send,
+                  enabled: _prepareResponse != null && errorMessage.isEmpty,
+                  onPressed: () async {
+                    Navigator.pop(context, _prepareResponse);
+                  },
+                ),
     );
   }
 
