@@ -2,6 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
@@ -27,7 +28,12 @@ class DestinationHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           if (paymentMethod != null && paymentMethod!.isNotEmpty) ...<Widget>[
-            Text(paymentMethod!),
+            Text(
+              paymentMethod!,
+              style: FieldTextStyle.textStyle.copyWith(
+                fontSize: 18.0,
+              ),
+            ),
           ],
           if (destination != null) ...<Widget>[
             Row(

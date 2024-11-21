@@ -70,7 +70,9 @@ class LnUrlWithdrawLimits extends StatelessWidget {
       children: <Widget>[
         RichText(
           text: TextSpan(
-            style: FieldTextStyle.labelStyle,
+            style: FieldTextStyle.labelStyle.copyWith(
+              fontSize: 14.3,
+            ),
             children: <TextSpan>[
               TextSpan(
                 text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),

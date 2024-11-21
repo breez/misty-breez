@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class ScrollableErrorMessageWidget extends StatefulWidget {
-  final EdgeInsets? padding;
+  final EdgeInsets padding;
+  final EdgeInsets contentPadding;
   final String? title;
   final String message;
+  final TextStyle? titleStyle;
+  final TextStyle? errorTextStyle;
 
   const ScrollableErrorMessageWidget({
     required this.message,
     super.key,
-    this.padding,
+    this.padding = const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+    this.contentPadding = EdgeInsets.zero,
     this.title,
+    this.titleStyle,
+    this.errorTextStyle,
   });
 
   @override
@@ -26,7 +32,7 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
     final ThemeData themeData = Theme.of(context);
 
     return Padding(
-      padding: widget.padding ?? const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+      padding: widget.padding,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,28 +42,37 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
               padding: const EdgeInsets.only(bottom: 4.0),
               child: AutoSizeText(
                 widget.title!,
-                style: themeData.textTheme.labelMedium,
+                style: widget.titleStyle ??
+                    themeData.textTheme.labelMedium!.copyWith(
+                      fontSize: 18.0,
+                    ),
                 textAlign: TextAlign.left,
                 maxLines: 1,
               ),
             ),
-          Container(
-            constraints: const BoxConstraints(
-              maxHeight: 100,
-              minWidth: double.infinity,
-            ),
-            child: Scrollbar(
-              controller: _scrollController,
-              radius: const Radius.circular(16.0),
-              thumbVisibility: true,
-              child: SingleChildScrollView(
+          Padding(
+            padding: widget.contentPadding,
+            child: Container(
+              constraints: const BoxConstraints(
+                maxHeight: 200,
+                minWidth: double.infinity,
+              ),
+              child: Scrollbar(
                 controller: _scrollController,
-                child: AutoSizeText(
-                  widget.message,
-                  style: themeData.errorTextStyle,
-                  textAlign: widget.message.length > 40 && !widget.message.contains('\n')
-                      ? TextAlign.start
-                      : TextAlign.left,
+                radius: const Radius.circular(16.0),
+                thumbVisibility: true,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: AutoSizeText(
+                    widget.message,
+                    style: widget.errorTextStyle ??
+                        themeData.errorTextStyle.copyWith(
+                          fontSize: 16.0,
+                        ),
+                    textAlign: widget.message.length > 40 && !widget.message.contains('\n')
+                        ? TextAlign.start
+                        : TextAlign.left,
+                  ),
                 ),
               ),
             ),

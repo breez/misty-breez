@@ -149,6 +149,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
   Widget _buildForm(LightningPaymentLimitsResponse lightningPaymentLimits) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (BuildContext context, CurrencyState currencyState) {
@@ -166,6 +167,10 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                 maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: InputDecoration(
                   labelText: texts.invoice_description_label,
+                  labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
                 ),
                 style: FieldTextStyle.textStyle,
               ),
@@ -179,6 +184,14 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                 controller: _amountController,
                 validatorFn: (int v) => validatePayment(v, lightningPaymentLimits),
                 style: FieldTextStyle.textStyle,
+                errorStyle: FieldTextStyle.labelStyle.copyWith(
+                  fontSize: 18.0,
+                  color: themeData.colorScheme.error,
+                ),
+                labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),

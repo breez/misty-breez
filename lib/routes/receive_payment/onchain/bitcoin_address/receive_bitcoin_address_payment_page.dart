@@ -174,6 +174,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
   BlocBuilder<CurrencyCubit, CurrencyState> _buildForm(OnchainPaymentLimitsResponse onchainPaymentLimits) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (BuildContext context, CurrencyState currencyState) {
@@ -204,6 +205,14 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                 controller: _amountController,
                 validatorFn: (int v) => validatePayment(v, onchainPaymentLimits),
                 style: FieldTextStyle.textStyle,
+                errorStyle: FieldTextStyle.labelStyle.copyWith(
+                  fontSize: 18.0,
+                  color: themeData.colorScheme.error,
+                ),
+                labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),

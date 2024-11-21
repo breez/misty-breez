@@ -177,7 +177,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
           );
 
           return Padding(
-            padding: const EdgeInsets.only(bottom: 40.0),
+            padding: const EdgeInsets.symmetric(vertical: 24.0),
             child: SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -186,6 +186,10 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        const Padding(
+                          padding: EdgeInsets.zero,
+                          child: Center(child: LNURLMetadataImage()),
+                        ),
                         if (_isFixedAmount) ...<Widget>[
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -230,12 +234,31 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                             },
                             style: FieldTextStyle.textStyle,
                             errorMaxLines: 3,
+                            errorStyle: FieldTextStyle.labelStyle.copyWith(
+                              fontSize: 18.0,
+                              color: themeData.colorScheme.error,
+                            ),
+                            labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                              fontSize: 18.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                        if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...<Widget>[
+                          const SizedBox(height: 8.0),
+                          AutoSizeText(
+                            errorMessage,
+                            maxLines: 3,
+                            textAlign: TextAlign.left,
+                            style: FieldTextStyle.labelStyle.copyWith(
+                              fontSize: 18.0,
+                              color: themeData.colorScheme.error,
+                            ),
                           ),
                         ],
                         if (!_isFixedAmount) ...<Widget>[
-                          const SizedBox(height: 8.0),
                           Padding(
-                            padding: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.only(top: 8, bottom: 16),
                             child: LnUrlWithdrawLimits(
                               limitsResponse: _lightningLimits,
                               minWithdrawableSat: minWithdrawableSat,
@@ -250,17 +273,6 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                 });
                                 _formKey.currentState?.validate();
                               },
-                            ),
-                          ),
-                        ],
-                        if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...<Widget>[
-                          const SizedBox(height: 8.0),
-                          AutoSizeText(
-                            errorMessage,
-                            maxLines: 3,
-                            textAlign: TextAlign.left,
-                            style: FieldTextStyle.labelStyle.copyWith(
-                              color: themeData.colorScheme.error,
                             ),
                           ),
                         ],
