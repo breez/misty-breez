@@ -73,35 +73,35 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
               constraints: const BoxConstraints(
                 minWidth: double.infinity,
               ),
-              child: _showFiatCurrency && fiatConversion != null
-                  ? Text(
-                      fiatConversion.format(widget.totalAmount),
-                      style: balanceAmountTextStyle.copyWith(
-                        color: themeData.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
-                  : RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: balanceAmountTextStyle.copyWith(
-                          color: themeData.colorScheme.onSurface,
-                        ),
-                        text: currencyState.bitcoinCurrency.format(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: balanceAmountTextStyle.copyWith(
+                    color: themeData.colorScheme.onSurface,
+                  ),
+                  text: _showFiatCurrency && fiatConversion != null
+                      ? fiatConversion.format(
+                          widget.totalAmount,
+                          addCurrencySymbol: false,
+                          includeDisplayName: true,
+                        )
+                      : currencyState.bitcoinCurrency.format(
                           widget.totalAmount,
                           removeTrailingZeros: true,
                           includeDisplayName: false,
                         ),
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: ' ${currencyState.bitcoinCurrency.displayName}',
-                            style: balanceCurrencyTextStyle.copyWith(
-                              color: themeData.colorScheme.onSurface,
-                            ),
-                          ),
-                        ],
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text: _showFiatCurrency && fiatConversion != null
+                          ? ''
+                          : ' ${currencyState.bitcoinCurrency.displayName}',
+                      style: balanceCurrencyTextStyle.copyWith(
+                        color: themeData.colorScheme.onSurface,
                       ),
                     ),
+                  ],
+                ),
+              ),
             ),
           ),
           /*

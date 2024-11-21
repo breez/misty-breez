@@ -46,6 +46,8 @@ class FiatConversion {
 
   String formatFiat(
     double fiatAmount, {
+    bool includeDisplayName = false,
+    bool addCurrencySymbol = true,
     bool removeTrailingZeros = false,
   }) {
     final Locale locale = getSystemLocale();
@@ -70,7 +72,11 @@ class FiatConversion {
       formatter.maximumFractionDigits = fractionSize;
       formattedAmount = formatter.format(fiatAmount);
     }
-    formattedAmount = (symbolPosition == 1) ? formattedAmount + symbolText : symbolText + formattedAmount;
+    if (addCurrencySymbol) {
+      formattedAmount = (symbolPosition == 1) ? formattedAmount + symbolText : symbolText + formattedAmount;
+    } else if (includeDisplayName) {
+      formattedAmount += ' ${currencyData.id}';
+    }
     if (removeTrailingZeros) {
       final RegExp removeTrailingZeros = RegExp(r'([.]0*)(?!.*\d)');
       formattedAmount = formattedAmount.replaceAll(removeTrailingZeros, '');

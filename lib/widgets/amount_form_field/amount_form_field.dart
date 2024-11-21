@@ -1,15 +1,14 @@
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
-export 'currency_converter_dialog.dart';
-export 'sat_amount_form_field_formatter.dart';
+export 'currency_converter_bottom_sheet.dart';
+export 'input_formatter/sat_amount_form_field_formatter.dart';
+export 'widgets/widgets.dart';
 
 class AmountFormField extends TextFormField {
   final FiatConversion? fiatConversion;
@@ -60,20 +59,23 @@ class AmountFormField extends TextFormField {
                           ? fiatConversion!.logoPath
                           : 'assets/icons/btc_convert.png',
                       color: iconColor ?? BreezColors.white[500],
+                      height: 28,
                     ),
-                    padding: const EdgeInsets.only(top: 21.0),
+                    padding: const EdgeInsets.only(bottom: 8.0),
                     alignment: Alignment.bottomRight,
-                    onPressed: () => showDialog(
-                      useRootNavigator: false,
+                    onPressed: () => showModalBottomSheet(
                       context: context,
-                      builder: (_) => CurrencyConverterDialog(
-                        context.read<CurrencyCubit>(),
-                        returnFN ??
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                      ),
+                      isScrollControlled: true,
+                      builder: (BuildContext context) => CurrencyConverterBottomSheet(
+                        onConvert: returnFN ??
                             (String value) => controller!.text = bitcoinCurrency.format(
                                   bitcoinCurrency.parse(value),
                                   includeDisplayName: false,
                                 ),
-                        validatorFn,
+                        validatorFn: validatorFn,
                       ),
                     ),
                   ),
