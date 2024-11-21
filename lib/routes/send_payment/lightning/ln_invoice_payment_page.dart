@@ -138,42 +138,43 @@ class LnPaymentPageState extends State<LnPaymentPage> {
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: LnPaymentHeader(
-                        payeeName: '',
-                        totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
-                        errorMessage: errorMessage,
-                      ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Padding(
+                    padding: EdgeInsets.zero,
+                    child: Center(child: LNURLMetadataImage()),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: LnPaymentHeader(
+                      payeeName: '',
+                      totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
+                      errorMessage: errorMessage,
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: LnPaymentAmount(amountSat: amountSat!),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: LnPaymentFee(
+                      isCalculatingFees: _isCalculatingFees,
+                      feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                    ),
+                  ),
+                  if (widget.lnInvoice.description != null &&
+                      widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnPaymentAmount(amountSat: amountSat!),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnPaymentFee(
-                        isCalculatingFees: _isCalculatingFees,
-                        feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                      child: LnPaymentDescription(
+                        metadataText: widget.lnInvoice.description!,
                       ),
                     ),
-                    if (widget.lnInvoice.description != null &&
-                        widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnPaymentDescription(
-                          metadataText: widget.lnInvoice.description!,
-                        ),
-                      ),
-                    ],
                   ],
-                ),
+                ],
               ),
             ),
           );
