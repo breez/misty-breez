@@ -12,7 +12,7 @@ class SingleButtonBottomBar extends StatelessWidget {
     super.key,
     this.onPressed,
     this.stickToBottom = false,
-    this.enabled = false,
+    this.enabled = true,
   });
 
   @override
