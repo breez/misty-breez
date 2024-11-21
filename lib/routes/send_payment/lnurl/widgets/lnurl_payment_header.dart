@@ -44,17 +44,20 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
         children: <Widget>[
           Text(
             widget.payeeName,
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headlineMedium!
-                .copyWith(fontSize: 16, color: Colors.white),
+            style: themeData.primaryTextTheme.headlineMedium!.copyWith(
+              fontSize: 18,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
           Text(
             widget.payeeName.isEmpty
                 ? texts.payment_request_dialog_requested
                 : texts.payment_request_dialog_requesting,
-            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(
+              fontSize: 18,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
           GestureDetector(
@@ -107,8 +110,13 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
           /*
           if (fiatConversion != null) ...[
             AutoSizeText(
-              "≈ ${fiatConversion.format(widget.totalAmount)}",
+              fiatConversion.format(
+                widget.totalAmount,
+                addCurrencySymbol: false,
+                includeDisplayName: true,
+              ),
               style: balanceFiatConversionTextStyle.copyWith(
+                fontSize: 18.0,
                 color: themeData.colorScheme.onSurface.withOpacity(0.7),
               ),
               textAlign: TextAlign.center,
@@ -120,7 +128,7 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
               widget.errorMessage,
               textAlign: TextAlign.center,
               style: themeData.primaryTextTheme.displaySmall?.copyWith(
-                fontSize: 14.3,
+                fontSize: 18,
                 color: themeData.colorScheme.error,
               ),
             ),

@@ -32,9 +32,15 @@ class LnUrlPaymentComment extends StatelessWidget {
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
       decoration: InputDecoration(
         labelText: texts.lnurl_payment_page_comment_label,
-        labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
+        labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+          fontSize: 18.0,
+          color: Colors.white,
+        ),
       ),
-      style: themeData.paymentItemSubtitleTextStyle.copyWith(color: Colors.white70),
+      style: themeData.paymentItemSubtitleTextStyle.copyWith(
+        fontSize: 16,
+        color: Colors.white70,
+      ),
     );
   }
 }

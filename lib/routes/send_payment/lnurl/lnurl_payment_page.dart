@@ -262,6 +262,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           effectiveMinSat: effectiveMinSat,
                           effectiveMaxSat: effectiveMaxSat,
                         ),
+                        errorStyle: FieldTextStyle.labelStyle.copyWith(
+                          fontSize: 18.0,
+                          color: themeData.colorScheme.error,
+                        ),
+                        labelStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                        ),
                         returnFN: (String amountStr) async {
                           if (amountStr.isNotEmpty) {
                             final int amountSat = currencyState.bitcoinCurrency.parse(amountStr);
@@ -282,26 +290,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         style: FieldTextStyle.textStyle,
                         errorMaxLines: 3,
                       ),
-                    ],
-                    if (!_isFixedAmount) ...<Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: LnUrlPaymentLimits(
-                          limitsResponse: _lightningLimits,
-                          minSendableSat: minSendableSat,
-                          maxSendableSat: maxSendableSat,
-                          onTap: (int amountSat) async {
-                            _amountFocusNode.unfocus();
-                            setState(() {
-                              _amountController.text = currencyState.bitcoinCurrency.format(
-                                amountSat,
-                                includeDisplayName: false,
-                              );
-                            });
-                            _formKey.currentState?.validate();
-                          },
-                        ),
-                      ),
                       if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...<Widget>[
                         const SizedBox(height: 8.0),
                         AutoSizeText(
@@ -309,10 +297,33 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           maxLines: 3,
                           textAlign: TextAlign.left,
                           style: FieldTextStyle.labelStyle.copyWith(
+                            fontSize: 18.0,
                             color: themeData.colorScheme.error,
                           ),
                         ),
                       ],
+                    ],
+                    if (!_isFixedAmount) ...<Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 16),
+                        child: LnUrlPaymentLimits(
+                          limitsResponse: _lightningLimits,
+                          minSendableSat: minSendableSat,
+                          maxSendableSat: maxSendableSat,
+                          onTap: (int amountSat) async {
+                            if (_isFormEnabled) {
+                              _amountFocusNode.unfocus();
+                              setState(() {
+                                _amountController.text = currencyState.bitcoinCurrency.format(
+                                  amountSat,
+                                  includeDisplayName: false,
+                                );
+                              });
+                              _formKey.currentState?.validate();
+                            }
+                          },
+                        ),
+                      ),
                     ],
                     if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
                       Padding(
@@ -331,7 +342,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     ],
                     if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        padding: const EdgeInsets.only(top: 8.0),
                         child: LnPaymentDescription(
                           metadataText: metadataText,
                         ),

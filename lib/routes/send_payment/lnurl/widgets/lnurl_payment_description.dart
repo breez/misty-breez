@@ -19,7 +19,10 @@ class LnPaymentDescription extends StatelessWidget {
       children: <Widget>[
         AutoSizeText(
           texts.ln_payment_description_label,
-          style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
+          style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+            fontSize: 18.0,
+            color: Colors.white,
+          ),
           textAlign: TextAlign.left,
           maxLines: 1,
         ),

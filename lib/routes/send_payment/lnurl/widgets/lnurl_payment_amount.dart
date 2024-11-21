@@ -24,7 +24,10 @@ class LnPaymentAmount extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
             texts.ln_payment_amount_label,
-            style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+              fontSize: 18.0,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.left,
             maxLines: 1,
           ),
@@ -35,7 +38,10 @@ class LnPaymentAmount extends StatelessWidget {
             reverse: true,
             child: AutoSizeText(
               currencyState.bitcoinCurrency.format(amountSat),
-              style: TextStyle(color: themeData.colorScheme.error),
+              style: TextStyle(
+                fontSize: 18.0,
+                color: themeData.colorScheme.error,
+              ),
               textAlign: TextAlign.right,
               maxLines: 1,
             ),

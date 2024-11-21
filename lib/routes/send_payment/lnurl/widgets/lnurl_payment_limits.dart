@@ -67,7 +67,9 @@ class LnUrlPaymentLimits extends StatelessWidget {
 
     return RichText(
       text: TextSpan(
-        style: FieldTextStyle.labelStyle,
+        style: FieldTextStyle.labelStyle.copyWith(
+          fontSize: 14.3,
+        ),
         children: <TextSpan>[
           TextSpan(
             text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),
