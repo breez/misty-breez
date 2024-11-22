@@ -347,7 +347,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
               : SingleButtonBottomBar(
                   stickToBottom: true,
                   text: texts.invoice_action_redeem,
-                  enabled: _isFormEnabled || _isFixedAmount && errorMessage.isEmpty,
+                  enabled: (!_isFixedAmount && _isFormEnabled) || (_isFixedAmount && errorMessage.isEmpty),
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
                       _withdraw();
