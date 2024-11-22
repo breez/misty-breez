@@ -5,18 +5,17 @@ import 'package:l_breez/app/app_theme_manager/app_theme_manager.dart';
 import 'package:l_breez/app/routes/routes.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:nested/nested.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class App extends StatelessWidget {
   final ServiceInjector injector;
-  final AccountCubit accountCubit;
   final SdkConnectivityCubit sdkConnectivityCubit;
 
   const App({
     required this.injector,
-    required this.accountCubit,
     required this.sdkConnectivityCubit,
     super.key,
   });
@@ -27,7 +26,7 @@ class App extends StatelessWidget {
       providers: <SingleChildWidget>[
         BlocProvider<AccountCubit>(
           lazy: false,
-          create: (BuildContext context) => accountCubit,
+          create: (BuildContext context) => AccountCubit(injector.breezSdkLiquid),
         ),
         BlocProvider<PaymentsCubit>(
           create: (BuildContext context) => PaymentsCubit(injector.breezSdkLiquid),
@@ -89,42 +88,60 @@ class AppView extends StatefulWidget {
 class _AppViewState extends State<AppView> {
   final GlobalKey _appKey = GlobalKey();
   final GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
+  late Future<bool> _isOnboardingCompleteFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _isOnboardingCompleteFuture = OnboardingPreferences.isOnboardingComplete();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AppThemeManager(
-      child: BlocBuilder<AccountCubit, AccountState>(
-        builder: (BuildContext context, AccountState accountState) {
-          return BlocBuilder<SecurityCubit, SecurityState>(
-            builder: (BuildContext context, SecurityState securityState) {
-              return MaterialApp(
-                key: _appKey,
-                title: 'Misty ${getSystemAppLocalizations().app_name}',
-                theme: ThemeProvider.themeOf(context).data,
-                localizationsDelegates: localizationsDelegates(),
-                supportedLocales: supportedLocales(),
-                builder: (BuildContext context, Widget? child) {
-                  const double kMaxTitleTextScaleFactor = 1.3;
+    return FutureBuilder<bool>(
+      future: _isOnboardingCompleteFuture,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (!snapshot.hasData) {
+          return Container(color: breezLightTheme.canvasColor);
+        }
 
-                  return MediaQuery.withClampedTextScaling(
-                    maxScaleFactor: kMaxTitleTextScaleFactor,
-                    child: child!,
+        final bool isOnboardingComplete = snapshot.data ?? false;
+
+        return AppThemeManager(
+          child: BlocBuilder<AccountCubit, AccountState>(
+            builder: (BuildContext context, AccountState accountState) {
+              return BlocBuilder<SecurityCubit, SecurityState>(
+                builder: (BuildContext context, SecurityState securityState) {
+                  return MaterialApp(
+                    key: _appKey,
+                    title: 'Misty ${getSystemAppLocalizations().app_name}',
+                    theme: ThemeProvider.themeOf(context).data,
+                    localizationsDelegates: localizationsDelegates(),
+                    supportedLocales: supportedLocales(),
+                    builder: (BuildContext context, Widget? child) {
+                      const double kMaxTitleTextScaleFactor = 1.3;
+
+                      return MediaQuery.withClampedTextScaling(
+                        maxScaleFactor: kMaxTitleTextScaleFactor,
+                        child: child!,
+                      );
+                    },
+                    initialRoute: securityState.pinStatus == PinStatus.enabled
+                        ? LockScreen.routeName
+                        : !isOnboardingComplete
+                            ? SplashPage.routeName
+                            : Home.routeName,
+                    onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
+                      settings: settings,
+                      homeNavigatorKey: _homeNavigatorKey,
+                    ),
                   );
                 },
-                initialRoute: securityState.pinStatus == PinStatus.enabled
-                    ? LockScreen.routeName
-                    : !accountState.isOnboardingComplete
-                        ? SplashPage.routeName
-                        : Home.routeName,
-                onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
-                  settings: settings,
-                  homeNavigatorKey: _homeNavigatorKey,
-                ),
               );
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -194,7 +194,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       } else {
         await connectionService.register();
       }
-      accountCubit.setOnboardingComplete(true);
+      await OnboardingPreferences.setOnboardingComplete(true);
       themeProvider.setTheme('dark');
       navigator.pushReplacementNamed('/');
     } catch (error) {

@@ -7,13 +7,11 @@ final Logger _logger = Logger('AccountState');
 
 class AccountState {
   final bool isRestoring;
-  final bool isOnboardingComplete;
   final bool didCompleteInitialSync;
   final GetInfoResponse? walletInfo;
 
   const AccountState({
     required this.isRestoring,
-    required this.isOnboardingComplete,
     required this.didCompleteInitialSync,
     required this.walletInfo,
   });
@@ -21,20 +19,17 @@ class AccountState {
   AccountState.initial()
       : this(
           isRestoring: false,
-          isOnboardingComplete: false,
           didCompleteInitialSync: false,
           walletInfo: null,
         );
 
   AccountState copyWith({
     bool? isRestoring,
-    bool? isOnboardingComplete,
     bool? didCompleteInitialSync,
     GetInfoResponse? walletInfo,
   }) {
     return AccountState(
       isRestoring: isRestoring ?? this.isRestoring,
-      isOnboardingComplete: isOnboardingComplete ?? this.isOnboardingComplete,
       didCompleteInitialSync: didCompleteInitialSync ?? this.didCompleteInitialSync,
       walletInfo: walletInfo ?? this.walletInfo,
     );
@@ -45,7 +40,6 @@ class AccountState {
   Map<String, dynamic>? toJson() {
     return <String, dynamic>{
       'isRestoring': isRestoring,
-      'isOnboardingComplete': isOnboardingComplete,
       'walletInfo': walletInfo?.toJson(),
     };
   }
@@ -53,7 +47,6 @@ class AccountState {
   factory AccountState.fromJson(Map<String, dynamic> json) {
     return AccountState(
       isRestoring: json['isRestoring'] ?? false,
-      isOnboardingComplete: json['isOnboardingComplete'] ?? false,
       didCompleteInitialSync: false,
       walletInfo: GetInfoResponseFromJson.fromJson(json['walletInfo']),
     );

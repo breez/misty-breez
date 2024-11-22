@@ -7,12 +7,10 @@ void main() {
   bootstrap(
     (
       ServiceInjector injector,
-      AccountCubit accountCubit,
       SdkConnectivityCubit sdkConnectivityCubit,
     ) =>
         App(
       injector: injector,
-      accountCubit: accountCubit,
       sdkConnectivityCubit: sdkConnectivityCubit,
     ),
   );
