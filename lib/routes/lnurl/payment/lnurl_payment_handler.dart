@@ -3,10 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:l_breez/widgets/payment_status_sheets/processing_payment_sheet.dart';
 import 'package:logging/logging.dart';
-
-export 'success_action/success_action_dialog.dart';
 
 final Logger _logger = Logger('HandleLNURLPayRequest');
 
@@ -24,20 +22,15 @@ Future<LNURLPageResult?> handlePayRequest(
     return Future<LNURLPageResult?>.value();
   }
 
-  // Show Processing Payment Dialog
-  return await showDialog(
-    useRootNavigator: false,
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => ProcessingPaymentDialog(
-      isLnUrlPayment: true,
-      firstPaymentItemKey: firstPaymentItemKey,
-      paymentFunc: () async {
-        final LnUrlCubit lnurlCubit = context.read<LnUrlCubit>();
-        final LnUrlPayRequest req = LnUrlPayRequest(prepareResponse: prepareResponse);
-        return await lnurlCubit.lnurlPay(req: req);
-      },
-    ),
+  // Show Processing Payment Sheet
+  return await showProcessingPaymentSheet(
+    context,
+    isLnUrlPayment: true,
+    paymentFunc: () async {
+      final LnUrlCubit lnurlCubit = context.read<LnUrlCubit>();
+      final LnUrlPayRequest req = LnUrlPayRequest(prepareResponse: prepareResponse);
+      return await lnurlCubit.lnurlPay(req: req);
+    },
   ).then((dynamic result) {
     if (result is LnUrlPayResult) {
       if (result is LnUrlPayResult_EndpointSuccess) {
@@ -67,6 +60,7 @@ Future<LNURLPageResult?> handlePayRequest(
 
 void handleLNURLPaymentPageResult(BuildContext context, LNURLPageResult result) {
   if (result.successAction != null) {
+    // TODO(erdemyerebasmaz): Remove _handleSuccessAction or refactor it to only log success action message contents
     _handleSuccessAction(context, result.successAction!);
   } else if (result.hasError) {
     _logger.info("Handle LNURL payment page result with error '${result.error}'");
@@ -74,7 +68,7 @@ void handleLNURLPaymentPageResult(BuildContext context, LNURLPageResult result) 
   }
 }
 
-Future<void> _handleSuccessAction(BuildContext context, SuccessActionProcessed successAction) {
+void _handleSuccessAction(BuildContext context, SuccessActionProcessed successAction) {
   String message = '';
   String? url;
   if (successAction is SuccessActionProcessed_Message) {
@@ -93,12 +87,4 @@ Future<void> _handleSuccessAction(BuildContext context, SuccessActionProcessed s
       throw Exception(result.reason);
     }
   }
-  return showDialog(
-    useRootNavigator: false,
-    context: context,
-    builder: (_) => SuccessActionDialog(
-      message: message,
-      url: url,
-    ),
-  );
 }

@@ -114,19 +114,13 @@ class InputHandler extends Handler {
       return Future<dynamic>.value();
     }
 
-    // Show Processing Payment Dialog
-    return await showDialog(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => ProcessingPaymentDialog(
-        isLnUrlPayment: true,
-        firstPaymentItemKey: firstPaymentItemKey,
-        paymentFunc: () async {
-          final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-          return await paymentsCubit.sendPayment(prepareResponse);
-        },
-      ),
+    // Show Processing Payment Sheet
+    return await showProcessingPaymentSheet(
+      context,
+      paymentFunc: () async {
+        final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+        return await paymentsCubit.sendPayment(prepareResponse);
+      },
     ).then((dynamic result) {
       if (result is String && context.mounted) {
         showFlushbar(context, message: result);
