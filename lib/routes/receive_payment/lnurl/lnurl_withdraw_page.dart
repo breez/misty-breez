@@ -18,7 +18,6 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
-export 'lnurl_withdraw_dialog.dart';
 export 'widgets/widgets.dart';
 
 final Logger _logger = Logger('LnUrlWithdrawPage');
@@ -368,18 +367,13 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
 
     final NavigatorState navigator = Navigator.of(context);
     navigator.pop();
-    // TODO(erdemyerebasmaz): Instead of showing LNURLWithdrawDialog. Call LNURL withdraw and consequently payment success animation.
-    showDialog(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => LnurlWithdrawDialog(
-        requestData: data,
-        amountSats: currencyCubit.state.bitcoinCurrency.parse(
-          _amountController.text,
-        ),
-        onFinish: widget.onFinish,
+    showRedeemingFundsSheet(
+      context,
+      requestData: data,
+      amountSats: currencyCubit.state.bitcoinCurrency.parse(
+        _amountController.text,
       ),
+      onFinish: widget.onFinish,
     );
   }
 
