@@ -36,7 +36,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
 
             final List<Widget> warnings = <Widget>[];
 
-            if (!accountState.didCompleteInitialSync) {
+            /*if (!accountState.didCompleteInitialSync) {
               _logger.info('Adding sync warning.');
               warnings.add(
                 WarningAction(
@@ -49,7 +49,7 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
                   ),
                 ),
               );
-            }
+            }*/
 
             if (securityState.verificationStatus == VerificationStatus.unverified) {
               _logger.info('Adding mnemonic verification warning.');
