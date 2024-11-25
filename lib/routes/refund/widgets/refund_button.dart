@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
@@ -32,7 +33,9 @@ class RefundButton extends StatelessWidget {
     navigator.push(loaderRoute);
     try {
       await refundCubit.refund(req: req);
-      navigator.popUntil((Route<dynamic> route) => route.settings.name == '/');
+      navigator.popUntil(
+        (Route<dynamic> route) => route.settings.name == Home.routeName,
+      );
     } catch (e) {
       navigator.pop(loaderRoute);
       if (!context.mounted) {

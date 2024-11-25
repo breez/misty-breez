@@ -43,7 +43,10 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void initState() {
     super.initState();
     if (widget.isLnAddress) {
-      _trackNewPayments();
+      // Ignore new payments for a duration upon generating LN Address.
+      // This delay is added to avoid popping the page before user gets the chance to copy,
+      // share or get their LN address scanned.
+      Future<void>.delayed(const Duration(milliseconds: 1600), () => _trackNewPayments());
     }
   }
 
@@ -133,22 +136,9 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       return;
     }
     if (isSuccess) {
-      final NavigatorState navigator = Navigator.of(context);
-      // Only pop if the destination is not an LN Address,
-      // as there's no way to 1:1 match payments on the LN Address page.
-      if (!widget.isLnAddress) {
-        navigator.pop();
-      }
-      navigator.push(
-        PageRouteBuilder<void>(
-          opaque: false,
-          pageBuilder: (_, __, ___) => const SuccessfulPaymentRoute(particlesEnabled: false),
-        ),
-      );
+      showPaymentReceivedSheet(context);
     } else {
-      if (!widget.isLnAddress) {
-        showFlushbar(context, title: '', message: 'Payment failed.');
-      }
+      showFlushbar(context, title: '', message: 'Payment failed.');
     }
   }
 

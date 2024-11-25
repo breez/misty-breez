@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
-Future<dynamic> showPaymentSentSheet(BuildContext context) {
+Future<dynamic> showPaymentReceivedSheet(BuildContext context) {
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (BuildContext context) => const PaymentSentSheet(),
+    builder: (BuildContext context) => const PaymentReceivedSheet(),
   );
 }
 
-class PaymentSentSheet extends StatefulWidget {
-  const PaymentSentSheet({super.key});
+class PaymentReceivedSheet extends StatefulWidget {
+  const PaymentReceivedSheet({super.key});
 
   @override
-  PaymentSentSheetState createState() => PaymentSentSheetState();
+  PaymentReceivedSheetState createState() => PaymentReceivedSheetState();
 }
 
-class PaymentSentSheetState extends State<PaymentSentSheet> {
+class PaymentReceivedSheetState extends State<PaymentReceivedSheet> {
   @override
   void initState() {
     super.initState();
     // Close the bottom sheet after 2.25 seconds
     Future<void>.delayed(const Duration(milliseconds: 2250), () {
       if (mounted) {
-        Navigator.of(context).pop();
+        Navigator.of(context).popUntil(
+          (Route<dynamic> route) => route.settings.name == Home.routeName,
+        );
       }
     });
   }
@@ -38,7 +41,7 @@ class PaymentSentSheetState extends State<PaymentSentSheet> {
       height: mediaQuerySize.height,
       width: mediaQuerySize.width,
       color: themeData.colorScheme.surface,
-      child: const PaymentSentContent(),
+      child: const PaymentReceivedContent(),
     );
   }
 }
