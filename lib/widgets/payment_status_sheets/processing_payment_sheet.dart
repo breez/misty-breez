@@ -63,6 +63,10 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
               Navigator.of(context).pop(payResult);
             }
           });
+        } else {
+          Navigator.of(context).pop();
+          final BreezTranslations texts = getSystemAppLocalizations();
+          showFlushbar(context, message: texts.payment_error_to_send_unknown_reason);
         }
       } else {
         Navigator.of(context).pop();
