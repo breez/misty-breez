@@ -1,5 +1,3 @@
-import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:lottie/lottie.dart';
@@ -9,7 +7,6 @@ class PaymentReceivedContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
     return Column(
@@ -18,7 +15,8 @@ class PaymentReceivedContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
-            texts.successful_payment_received,
+            // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
+            'Payment Received',
             style: themeData.dialogTheme.titleTextStyle!.copyWith(
               fontSize: 24.0,
               color: themeData.isLightTheme ? null : Colors.white,
