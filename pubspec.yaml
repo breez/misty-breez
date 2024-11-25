@@ -111,7 +111,6 @@ dependencies:
   shared_preferences: ^2.3.3
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
   shimmer: ^3.0.0
-  simple_animations: <5.1.0 # Flutter 3.24+
   synchronized: <3.2.0 # Flutter 3.24+
   theme_provider: ^0.6.0
   timeago: ^3.7.0
