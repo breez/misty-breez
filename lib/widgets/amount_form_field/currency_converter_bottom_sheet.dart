@@ -192,9 +192,12 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                     child: SingleButtonBottomBar(
                       text: texts.currency_converter_dialog_action_done,
-                      enabled: _fiatAmountController.text.isNotEmpty,
                       expand: true,
                       onPressed: () {
+                        if (_fiatAmountController.text.isEmpty) {
+                          Navigator.pop(context);
+                          return;
+                        }
                         if (_formKey.currentState?.validate() ?? false) {
                           final double inputAmount = double.tryParse(_fiatAmountController.text) ?? 0;
                           final int convertedAmount = state.fiatConversion()?.fiatToSat(inputAmount) ?? 0;
