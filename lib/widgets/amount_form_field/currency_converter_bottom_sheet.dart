@@ -65,7 +65,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
     });
 
     _colorAnimation = ColorTween(
-      begin: themeData.primaryTextTheme.titleSmall!.color,
+      begin: themeData.primaryTextTheme.titleSmall!.color!.withOpacity(0.7),
       end: themeData.textTheme.headlineMedium!.color,
     ).animate(_animationController!)
       ..addListener(() {
@@ -135,10 +135,19 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Align(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 8.0),
+                    width: 40.0,
+                    height: 6.5,
+                    decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(50)),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    texts.currency_converter_dialog_title,
+                    // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
+                    'Select Fiat Currency:',
                     style: themeData.primaryTextTheme.headlineMedium!.copyWith(
                       fontSize: 18.0,
                       color: Colors.white,
@@ -156,7 +165,12 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                     });
                   },
                 ),
-                const Divider(),
+                const Divider(
+                  height: 32.0,
+                  color: Colors.white24,
+                  indent: 16.0,
+                  endIndent: 16.0,
+                ),
                 FiatInputField(
                   formKey: _formKey,
                   controller: _fiatAmountController,
@@ -164,6 +178,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                   fiatConversion: state.fiatConversion(),
                   validatorFn: widget.validatorFn,
                 ),
+                const SizedBox(height: 8.0),
                 SatEquivalentLabel(
                   controller: _fiatAmountController,
                 ),
@@ -171,12 +186,14 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                   exchangeRateNotifier: _exchangeRateNotifier,
                   colorAnimation: _colorAnimation,
                 ),
+                const SizedBox(height: 8.0),
                 Align(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                     child: SingleButtonBottomBar(
                       text: texts.currency_converter_dialog_action_done,
                       enabled: _fiatAmountController.text.isNotEmpty,
+                      expand: true,
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           final double inputAmount = double.tryParse(_fiatAmountController.text) ?? 0;

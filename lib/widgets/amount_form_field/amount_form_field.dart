@@ -57,29 +57,39 @@ class AmountFormField extends TextFormField {
             errorMaxLines: errorMaxLines,
             suffixIcon: (readOnly ?? false)
                 ? null
-                : IconButton(
-                    icon: Image.asset(
-                      (fiatConversion?.currencyData != null)
-                          ? fiatConversion!.logoPath
-                          : 'assets/icons/btc_convert.png',
-                      color: iconColor ?? BreezColors.white[500],
-                      height: 28,
-                    ),
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    alignment: Alignment.bottomRight,
-                    onPressed: () => showModalBottomSheet(
-                      context: context,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                : Theme(
+                    data: Theme.of(context).copyWith(
+                      bottomSheetTheme: const BottomSheetThemeData(
+                        dragHandleColor: Colors.white10,
+                        dragHandleSize: Size(112, 2),
                       ),
-                      isScrollControlled: true,
-                      builder: (BuildContext context) => CurrencyConverterBottomSheet(
-                        onConvert: returnFN ??
-                            (String value) => controller!.text = bitcoinCurrency.format(
+                    ),
+                    child: IconButton(
+                      icon: Image.asset(
+                        (fiatConversion?.currencyData != null)
+                            ? fiatConversion!.logoPath
+                            : 'assets/icons/btc_convert.png',
+                        color: iconColor ?? BreezColors.white[500],
+                        height: 28,
+                      ),
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      alignment: Alignment.bottomRight,
+                      onPressed: () => showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                        isScrollControlled: true,
+                        builder: (BuildContext context) => CurrencyConverterBottomSheet(
+                          onConvert: returnFN ??
+                              (String value) {
+                                return controller!.text = bitcoinCurrency.format(
                                   bitcoinCurrency.parse(value),
                                   includeDisplayName: false,
-                                ),
-                        validatorFn: validatorFn,
+                                );
+                              },
+                          validatorFn: validatorFn,
+                        ),
                       ),
                     ),
                   ),

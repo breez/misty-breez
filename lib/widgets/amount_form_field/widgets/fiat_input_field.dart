@@ -38,12 +38,7 @@ class FiatInputField extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: borderSide,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: borderSide,
-            ),
+            labelText: 'Amount in sats',
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(color: errorBorderColor),
             ),
