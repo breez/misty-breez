@@ -265,9 +265,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
                       child: Column(
                         children: <Widget>[
-                          if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
-                            LnPaymentDescription(
-                              metadataText: metadataText,
+                          if (!_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16.0),
+                              child: LnPaymentDescription(
+                                metadataText: metadataText,
+                              ),
                             ),
                           ],
                           if (!_isFixedAmount) ...<Widget>[
@@ -410,7 +413,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           ],
                           if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.only(bottom: 8.0),
                               child: LnPaymentAmount(
                                 amountSat: maxSendableSat,
                                 hasError: !(_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty),
@@ -423,6 +426,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                               child: LnPaymentFee(
                                 isCalculatingFees: _isCalculatingFees,
                                 feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                              ),
+                            ),
+                          ],
+                          if (_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: LnPaymentDescription(
+                                metadataText: metadataText,
                               ),
                             ),
                           ],

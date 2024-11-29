@@ -57,10 +57,7 @@ class LnPaymentFee extends StatelessWidget {
                         texts.ln_payment_fee_amount_positive(
                           currencyState.bitcoinCurrency.format(feesSat!),
                         ),
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: themeData.colorScheme.error.withOpacity(0.8),
-                        ),
+                        style: const TextStyle(fontSize: 18.0),
                         textAlign: TextAlign.right,
                         maxLines: 1,
                       )

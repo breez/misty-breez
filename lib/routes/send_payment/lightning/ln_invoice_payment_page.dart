@@ -167,7 +167,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                     child: Column(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          padding: const EdgeInsets.only(bottom: 8.0),
                           child: LnPaymentAmount(
                             amountSat: amountSat!,
                             hasError: errorMessage.isNotEmpty,
