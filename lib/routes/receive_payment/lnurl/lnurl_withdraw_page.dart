@@ -238,7 +238,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                 ),
                                 style: FieldTextStyle.textStyle,
                               ),
-                              if (!_isFixedAmount) ...[
+                              if (!_isFixedAmount) ...<Widget>[
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[

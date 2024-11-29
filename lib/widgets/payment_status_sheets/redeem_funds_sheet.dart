@@ -116,7 +116,7 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Expanded(child: SizedBox.expand()),
-                if (snapshotError == null) ...[
+                if (snapshotError == null) ...<Widget>[
                   Text(
                     texts.lnurl_withdraw_dialog_title,
                     style: themeData.dialogTheme.titleTextStyle!.copyWith(
