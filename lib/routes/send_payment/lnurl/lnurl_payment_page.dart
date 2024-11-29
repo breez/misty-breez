@@ -273,6 +273,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           if (!_isFixedAmount) ...<Widget>[
                             Column(
                               children: <Widget>[
+                                const SizedBox(height: 16.0),
                                 AmountFormField(
                                   context: context,
                                   texts: texts,

@@ -229,7 +229,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                   indent: 0.0,
                   endIndent: 0.0,
                 ),
-                const SizedBox(height: 8.0),
+                const SizedBox(height: 16.0),
                 AmountFormField(
                   context: context,
                   texts: texts,

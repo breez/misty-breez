@@ -242,7 +242,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    const SizedBox(height: 8.0),
+                                    const SizedBox(height: 16.0),
                                     AmountFormField(
                                       context: context,
                                       texts: texts,
