@@ -108,7 +108,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     );
     final int rawMaxSat = min(maxNetworkLimit, maxSendableSat);
     final int effectiveMaxSat = max(minNetworkLimit, rawMaxSat);
-    _updateFormFields(amountSat: minSendableSat);
+    _updateFormFields(amountSat: effectiveMinSat);
     final String? errorMessage = validatePayment(
       amountSat: _isFixedAmount ? minSendableSat : effectiveMinSat,
       effectiveMinSat: effectiveMinSat,
