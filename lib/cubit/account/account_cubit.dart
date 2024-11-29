@@ -7,15 +7,16 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
 
 export 'account_state.dart';
+export 'onboarding_preferences.dart';
 
 final Logger _logger = Logger('AccountCubit');
 
 class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> {
   final BreezSDKLiquid breezSdkLiquid;
 
-  AccountCubit({
-    required this.breezSdkLiquid,
-  }) : super(AccountState.initial()) {
+  AccountCubit(
+    this.breezSdkLiquid,
+  ) : super(AccountState.initial()) {
     hydrate();
     _listenAccountChanges();
     _listenInitialSyncEvent();
@@ -52,9 +53,5 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
 
   void setIsRestoring(bool isRestoring) {
     emit(state.copyWith(isRestoring: isRestoring));
-  }
-
-  void setOnboardingComplete(bool isComplete) {
-    emit(state.copyWith(isOnboardingComplete: isComplete));
   }
 }

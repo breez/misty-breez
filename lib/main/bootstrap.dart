@@ -25,7 +25,6 @@ final Logger _logger = Logger('Bootstrap');
 
 typedef AppBuilder = Widget Function(
   ServiceInjector serviceInjector,
-  AccountCubit accountCubit,
   SdkConnectivityCubit sdkConnectivityCubit,
 );
 
@@ -63,12 +62,11 @@ Future<void> bootstrap(AppBuilder builder) async {
     HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: Directory(p.join(appDir.path, 'bloc_storage')),
     );
-    final AccountCubit accountCubit = AccountCubit(breezSdkLiquid: injector.breezSdkLiquid);
     final SdkConnectivityCubit sdkConnectivityCubit = SdkConnectivityCubit(
       breezSdkLiquid: injector.breezSdkLiquid,
       credentialsManager: injector.credentialsManager,
     );
-    final bool isOnboardingComplete = accountCubit.state.isOnboardingComplete;
+    final bool isOnboardingComplete = await OnboardingPreferences.isOnboardingComplete();
     if (isOnboardingComplete) {
       _logger.info('Reconnect if secure storage has mnemonic.');
       final String? mnemonic = await injector.credentialsManager.restoreMnemonic();
@@ -76,7 +74,7 @@ Future<void> bootstrap(AppBuilder builder) async {
         await sdkConnectivityCubit.reconnect(mnemonic: mnemonic);
       }
     }
-    runApp(builder(injector, accountCubit, sdkConnectivityCubit));
+    runApp(builder(injector, sdkConnectivityCubit));
   }, (Object error, StackTrace stackTrace) async {
     if (error is! FlutterErrorDetails) {
       _logger.severe('FlutterError: $error', error, stackTrace);
