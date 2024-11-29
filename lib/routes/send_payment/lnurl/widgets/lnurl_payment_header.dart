@@ -55,8 +55,8 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
                 ? texts.payment_request_dialog_requested
                 : texts.payment_request_dialog_requesting,
             style: themeData.primaryTextTheme.displaySmall!.copyWith(
-              fontSize: 18,
-              color: Colors.white,
+              fontSize: 16,
+              color: Colors.white70,
             ),
             textAlign: TextAlign.center,
           ),

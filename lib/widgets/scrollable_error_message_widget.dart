@@ -9,6 +9,7 @@ class ScrollableErrorMessageWidget extends StatefulWidget {
   final String message;
   final TextStyle? titleStyle;
   final TextStyle? errorTextStyle;
+  final bool showIcon;
 
   const ScrollableErrorMessageWidget({
     required this.message,
@@ -18,6 +19,7 @@ class ScrollableErrorMessageWidget extends StatefulWidget {
     this.title,
     this.titleStyle,
     this.errorTextStyle,
+    this.showIcon = false,
   });
 
   @override
@@ -37,6 +39,17 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          if (widget.showIcon)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 32.0),
+                child: Icon(
+                  Icons.warning,
+                  size: 100.0,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+              ),
+            ),
           if (widget.title != null && widget.title!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 4.0),

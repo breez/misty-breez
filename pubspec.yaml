@@ -59,6 +59,8 @@ dependencies:
       url: https://github.com/breez/DragAndDropLists
       ref: 38cc3155a6161730b4ec476d781873afb7ec4846
   duration: ^4.0.3
+  dotted_box: ^0.0.3
+  dotted_decoration: ^2.0.0
   email_validator: ^3.0.0
   extended_image: ^9.0.7
   ffi: ^2.1.3

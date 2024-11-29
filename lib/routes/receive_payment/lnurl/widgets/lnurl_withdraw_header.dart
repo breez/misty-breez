@@ -44,8 +44,8 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
           Text(
             'Redeeming funds from',
             style: themeData.primaryTextTheme.displaySmall!.copyWith(
-              fontSize: 18,
-              color: Colors.white,
+              fontSize: 16,
+              color: Colors.white70,
             ),
             textAlign: TextAlign.center,
           ),

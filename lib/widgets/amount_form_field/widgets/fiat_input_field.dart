@@ -26,8 +26,6 @@ class FiatInputField extends StatelessWidget {
     }
 
     final ThemeData themeData = Theme.of(context);
-    final BorderSide borderSide =
-        themeData.isLightTheme ? const BorderSide(color: Colors.white70) : greyBorderSide;
     final Color errorBorderColor = themeData.isLightTheme ? Colors.red : themeData.colorScheme.error;
 
     return Padding(

@@ -1,3 +1,4 @@
+import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 
@@ -28,19 +29,22 @@ class WarningBox extends StatelessWidget {
     return Padding(
       padding: boxPadding,
       child: Container(
-        padding: contentPadding,
-        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: _backgroundColor(),
-          borderRadius: const BorderRadius.all(Radius.circular(6)),
-          border: Border.all(
-            color: borderColor ?? Theme.of(context).warningBoxBorderColor,
-          ),
+          color: backgroundColor ?? warningBoxColor,
+          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         ),
-        child: child,
+        child: Container(
+          padding: contentPadding,
+          width: MediaQuery.of(context).size.width,
+          decoration: DottedDecoration(
+            shape: Shape.box,
+            dash: const <int>[3, 2],
+            color: borderColor ?? Theme.of(context).warningBoxBorderColor,
+            borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+          ),
+          child: child,
+        ),
       ),
     );
   }
-
-  Color _backgroundColor() => backgroundColor ?? warningBoxColor;
 }

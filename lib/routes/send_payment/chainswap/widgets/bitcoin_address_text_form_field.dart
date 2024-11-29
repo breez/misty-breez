@@ -49,9 +49,16 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
       controller: widget.controller,
       autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
+        prefixIconConstraints: BoxConstraints.tight(
+          const Size(16, 56),
+        ),
+        prefixIcon: const SizedBox.shrink(),
+        contentPadding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
+        border: const OutlineInputBorder(),
         labelText: texts.withdraw_funds_btc_address,
         suffixIcon: IconButton(
           alignment: Alignment.bottomRight,
+          padding: const EdgeInsets.only(bottom: 12.0, right: 12.0),
           icon: Image(
             image: const AssetImage('assets/icons/qr_scan.png'),
             color: BreezColors.white[500],

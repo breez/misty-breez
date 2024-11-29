@@ -5,12 +5,14 @@ import 'package:l_breez/routes/routes.dart';
 class DestinationQRWidget extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
+  final String? paymentMethod;
   final void Function()? onLongPress;
   final Widget? infoWidget;
 
   const DestinationQRWidget({
     required this.snapshot,
     required this.destination,
+    this.paymentMethod,
     super.key,
     this.onLongPress,
     this.infoWidget,
@@ -31,6 +33,11 @@ class DestinationQRWidget extends StatelessWidget {
                   child: DestinationQRImage(
                     destination: destination,
                   ),
+                ),
+                DestinationActions(
+                  snapshot: snapshot,
+                  destination: destination,
+                  paymentMethod: paymentMethod,
                 ),
                 if (infoWidget != null) ...<Widget>[
                   SizedBox(

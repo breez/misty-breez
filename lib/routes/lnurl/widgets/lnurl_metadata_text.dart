@@ -32,8 +32,10 @@ class _LNURLMetadataTextState extends State<LNURLMetadataText> {
           child: AutoSizeText(
             widget.metadataText,
             style: themeData.primaryTextTheme.displaySmall!.copyWith(
-              fontSize: 16.0,
-              color: Colors.white70,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              height: 1.156,
             ),
             minFontSize: MinFontSize(context).minFontSize,
           ),

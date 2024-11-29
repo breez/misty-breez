@@ -137,43 +137,72 @@ class LnPaymentPageState extends State<LnPaymentPage> {
           }
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            padding: const EdgeInsets.fromLTRB(16, 32, 16, 40),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   const Padding(
-                    padding: EdgeInsets.zero,
+                    padding: EdgeInsets.only(bottom: 16),
                     child: Center(child: LNURLMetadataImage()),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.only(bottom: 32),
                     child: LnPaymentHeader(
                       payeeName: '',
                       totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
                       errorMessage: errorMessage,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: LnPaymentAmount(amountSat: amountSat!),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: LnPaymentFee(
-                      isCalculatingFees: _isCalculatingFees,
-                      feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
-                    ),
-                  ),
-                  if (widget.lnInvoice.description != null &&
-                      widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnPaymentDescription(
-                        metadataText: widget.lnInvoice.description!,
+                  Container(
+                    decoration: const ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
                       ),
+                      color: Color.fromRGBO(40, 59, 74, 0.5),
                     ),
-                  ],
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: LnPaymentAmount(
+                            amountSat: amountSat!,
+                            hasError: errorMessage.isNotEmpty,
+                          ),
+                        ),
+                        if (_prepareResponse != null && _prepareResponse!.feesSat.toInt() != 0) ...<Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: LnPaymentFee(
+                              isCalculatingFees: _isCalculatingFees,
+                              feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                            ),
+                          ),
+                        ],
+                        if (widget.lnInvoice.description != null &&
+                            widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: LnPaymentDescription(
+                              metadataText: widget.lnInvoice.description!,
+                            ),
+                          ),
+                        ],
+                      ].expand((Widget widget) sync* {
+                        yield widget;
+                        yield const Divider(
+                          height: 32.0,
+                          color: Color.fromRGBO(40, 59, 74, 1),
+                          indent: 0.0,
+                          endIndent: 0.0,
+                        );
+                      }).toList()
+                        ..removeLast(),
+                    ),
+                  ),
                 ],
               ),
             ),
