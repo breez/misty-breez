@@ -31,6 +31,7 @@ class LoadingOrError extends StatelessWidget {
     final BreezTranslations texts = context.texts();
 
     return ScrollableErrorMessageWidget(
+      showIcon: true,
       title: '${texts.qr_code_dialog_warning_message_error}:',
       message: extractExceptionMessage(error!, texts),
       padding: EdgeInsets.zero,

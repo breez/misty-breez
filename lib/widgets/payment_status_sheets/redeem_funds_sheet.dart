@@ -116,14 +116,14 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Expanded(child: SizedBox.expand()),
-                Text(
-                  texts.lnurl_withdraw_dialog_title,
-                  style: themeData.dialogTheme.titleTextStyle!.copyWith(
-                    color: themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
+                if (snapshotError == null) ...[
+                  Text(
+                    texts.lnurl_withdraw_dialog_title,
+                    style: themeData.dialogTheme.titleTextStyle!.copyWith(
+                      color: themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                if (snapshotError == null)
+                  const SizedBox(height: 24),
                   Column(
                     children: <Widget>[
                       LoadingAnimatedText(
@@ -140,9 +140,11 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
                         gaplessPlayback: true,
                       ),
                     ],
-                  )
-                else
+                  ),
+                ],
+                if (snapshotError != null)
                   ScrollableErrorMessageWidget(
+                    showIcon: true,
                     title: texts.lnurl_withdraw_page_unknown_error_title,
                     titleStyle: FieldTextStyle.labelStyle.copyWith(
                       color: themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,

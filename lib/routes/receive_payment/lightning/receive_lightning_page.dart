@@ -190,6 +190,12 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                   ),
                   style: FieldTextStyle.textStyle,
                 ),
+                const Divider(
+                  height: 32.0,
+                  color: Color.fromRGBO(40, 59, 74, 1),
+                  indent: 0.0,
+                  endIndent: 0.0,
+                ),
                 const SizedBox(height: 8.0),
                 AmountFormField(
                   context: context,
@@ -219,16 +225,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                     minFontSize: MinFontSize(context).minFontSize,
                   ),
                 ),
-              ].expand((Widget widget) sync* {
-                yield widget;
-                yield const Divider(
-                  height: 32.0,
-                  color: Color.fromRGBO(40, 59, 74, 1),
-                  indent: 0.0,
-                  endIndent: 0.0,
-                );
-              }).toList()
-                ..removeLast(),
+              ],
             ),
           ),
         );
