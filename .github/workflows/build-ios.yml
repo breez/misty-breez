@@ -138,6 +138,9 @@ jobs:
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal
 
+      - name: Set IPHONEOS_DEPLOYMENT_TARGET 
+        run: echo "IPHONEOS_DEPLOYMENT_TARGET=13.0" >> $GITHUB_ENV
+
       - name: Install Protoc
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         uses: arduino/setup-protoc@v3
