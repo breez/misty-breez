@@ -1,19 +1,18 @@
-import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
 
 class DestinationQRWidget extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
+  final String? paymentMethod;
   final void Function()? onLongPress;
   final Widget? infoWidget;
 
   const DestinationQRWidget({
     required this.snapshot,
     required this.destination,
+    this.paymentMethod,
     super.key,
     this.onLongPress,
     this.infoWidget,
@@ -21,17 +20,10 @@ class DestinationQRWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BreezTranslations texts = context.texts();
-
     final String? destination = this.destination ?? snapshot?.data?.destination;
 
     return AnimatedCrossFade(
-      firstChild: LoadingOrError(
-        error: snapshot?.error,
-        displayErrorMessage: snapshot?.error != null
-            ? extractExceptionMessage(snapshot!.error!, texts)
-            : texts.qr_code_dialog_warning_message_error,
-      ),
+      firstChild: LoadingOrError(error: snapshot?.error),
       secondChild: destination == null
           ? const SizedBox.shrink()
           : Column(
@@ -41,6 +33,11 @@ class DestinationQRWidget extends StatelessWidget {
                   child: DestinationQRImage(
                     destination: destination,
                   ),
+                ),
+                DestinationActions(
+                  snapshot: snapshot,
+                  destination: destination,
+                  paymentMethod: paymentMethod,
                 ),
                 if (infoWidget != null) ...<Widget>[
                   SizedBox(

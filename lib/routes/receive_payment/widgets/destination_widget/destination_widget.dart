@@ -17,7 +17,7 @@ final Logger _logger = Logger('DestinationWidget');
 class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
-  final String? title;
+  final String? paymentMethod;
   final void Function()? onLongPress;
   final Widget? infoWidget;
   final bool isLnAddress;
@@ -26,7 +26,7 @@ class DestinationWidget extends StatefulWidget {
     super.key,
     this.snapshot,
     this.destination,
-    this.title,
+    this.paymentMethod,
     this.onLongPress,
     this.infoWidget,
     this.isLnAddress = false,
@@ -155,21 +155,14 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: DestinationHeader(
-            snapshot: widget.snapshot,
-            destination: widget.destination,
-            paymentMethod: widget.title,
-          ),
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: DestinationQRWidget(
             snapshot: widget.snapshot,
             destination: widget.destination,
+            paymentMethod: widget.paymentMethod,
             onLongPress: widget.onLongPress,
             infoWidget: widget.infoWidget,
           ),

@@ -4,7 +4,12 @@ import 'package:l_breez/theme/theme.dart';
 class FieldTextStyle {
   FieldTextStyle._();
 
-  static TextStyle textStyle = TextStyle(color: BreezColors.white[500], fontSize: 16.4, letterSpacing: 0.15);
+  static TextStyle textStyle = TextStyle(
+    color: BreezColors.white[500],
+    fontSize: 18.0,
+    letterSpacing: 0.15,
+    height: 1.234,
+  );
   static TextStyle labelStyle = TextStyle(color: BreezColors.white[200], letterSpacing: 0.4);
 }
 
@@ -44,7 +49,14 @@ const TextStyle bottomSheetTextStyle = TextStyle(
 final TextStyle bottomSheetMenuItemStyle =
     TextStyle(color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
 final TextStyle blueLinkStyle = TextStyle(color: BreezColors.blue[500], fontSize: 16.0, height: 1.5);
-final TextStyle textStyle = TextStyle(color: BreezColors.white[400], fontSize: 16.0);
+final TextStyle textStyle = TextStyle(color: BreezColors.white[300], fontSize: 16.0);
+
+const TextStyle paymentLimitInformationTextStyle = TextStyle(
+  color: Colors.white54,
+  fontSize: 14.0,
+  height: 1.182,
+  fontWeight: FontWeight.w400,
+);
 const TextStyle navigationDrawerHandleStyle = TextStyle(
   fontSize: 16.0,
   letterSpacing: 0.2,
@@ -114,6 +126,20 @@ final TextStyle smallTextStyle = TextStyle(
 const TextStyle warningStyle = TextStyle(
   color: Color(0xffffe685),
   fontSize: 16.0,
+);
+
+const TextStyle counterTextStyle = TextStyle(
+  color: Colors.white54,
+  fontSize: 14.0,
+  height: 1.182,
+  fontWeight: FontWeight.w400,
+);
+
+final TextStyle focusedCounterTextStyle = TextStyle(
+  color: BreezColors.white[500],
+  fontSize: 14.0,
+  height: 1.182,
+  fontWeight: FontWeight.w400,
 );
 
 extension ThemeExtensions on ThemeData {

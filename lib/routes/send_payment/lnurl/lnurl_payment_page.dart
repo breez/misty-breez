@@ -35,9 +35,13 @@ class LnUrlPaymentPage extends StatefulWidget {
 class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final TextEditingController _descriptionController = TextEditingController();
+  final FocusNode _descriptionFocusNode = FocusNode();
+
   final TextEditingController _amountController = TextEditingController();
   final FocusNode _amountFocusNode = FocusNode();
+
   KeyboardDoneAction _doneAction = KeyboardDoneAction();
 
   bool _isFixedAmount = false;
@@ -48,6 +52,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   LightningPaymentLimitsResponse? _lightningLimits;
 
   PrepareLnUrlPayResponse? _prepareResponse;
+
+  bool _useEntireBalance = false;
 
   @override
   void initState() {
@@ -234,12 +240,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.zero,
+                      padding: const EdgeInsets.only(bottom: 32),
                       child: Center(child: LNURLMetadataImage(base64String: base64String)),
                     ),
                     if (_isFixedAmount) ...<Widget>[
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.only(bottom: 32),
                         child: LnPaymentHeader(
                           payeeName: payeeName,
                           totalAmount: maxSendableSat + (_prepareResponse?.feesSat.toInt() ?? 0),
@@ -247,103 +253,198 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ),
                       ),
                     ],
-                    if (!_isFixedAmount) ...<Widget>[
-                      AmountFormField(
-                        context: context,
-                        texts: texts,
-                        bitcoinCurrency: currencyState.bitcoinCurrency,
-                        focusNode: _amountFocusNode,
-                        autofocus: _isFormEnabled && errorMessage.isEmpty,
-                        enabled: _isFormEnabled,
-                        enableInteractiveSelection: _isFormEnabled,
-                        controller: _amountController,
-                        validatorFn: (int amountSat) => validatePayment(
-                          amountSat: amountSat,
-                          effectiveMinSat: effectiveMinSat,
-                          effectiveMaxSat: effectiveMaxSat,
-                        ),
-                        returnFN: (String amountStr) async {
-                          if (amountStr.isNotEmpty) {
-                            final int amountSat = currencyState.bitcoinCurrency.parse(amountStr);
-                            setState(() {
-                              _amountController.text = currencyState.bitcoinCurrency.format(
-                                amountSat,
-                                includeDisplayName: false,
-                              );
-                            });
-                            _formKey.currentState?.validate();
-                          }
-                        },
-                        onFieldSubmitted: (String amountStr) async {
-                          if (amountStr.isNotEmpty) {
-                            _formKey.currentState?.validate();
-                          }
-                        },
-                        style: FieldTextStyle.textStyle,
-                        errorMaxLines: 3,
-                      ),
-                    ],
-                    if (!_isFixedAmount) ...<Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: LnUrlPaymentLimits(
-                          limitsResponse: _lightningLimits,
-                          minSendableSat: minSendableSat,
-                          maxSendableSat: maxSendableSat,
-                          onTap: (int amountSat) async {
-                            _amountFocusNode.unfocus();
-                            setState(() {
-                              _amountController.text = currencyState.bitcoinCurrency.format(
-                                amountSat,
-                                includeDisplayName: false,
-                              );
-                            });
-                            _formKey.currentState?.validate();
-                          },
-                        ),
-                      ),
-                      if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...<Widget>[
-                        const SizedBox(height: 8.0),
-                        AutoSizeText(
-                          errorMessage,
-                          maxLines: 3,
-                          textAlign: TextAlign.left,
-                          style: FieldTextStyle.labelStyle.copyWith(
-                            color: themeData.colorScheme.error,
+                    Container(
+                      decoration: const ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(12),
                           ),
                         ),
-                      ],
-                    ],
-                    if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnPaymentAmount(amountSat: maxSendableSat),
+                        color: Color.fromRGBO(40, 59, 74, 0.5),
                       ),
-                    ],
-                    if (_isFixedAmount) ...<Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnPaymentFee(
-                          isCalculatingFees: _isCalculatingFees,
-                          feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
-                        ),
+                      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                      child: Column(
+                        children: <Widget>[
+                          if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
+                            LnPaymentDescription(
+                              metadataText: metadataText,
+                            ),
+                          ],
+                          if (!_isFixedAmount) ...<Widget>[
+                            Column(
+                              children: <Widget>[
+                                AmountFormField(
+                                  context: context,
+                                  texts: texts,
+                                  bitcoinCurrency: currencyState.bitcoinCurrency,
+                                  focusNode: _amountFocusNode,
+                                  autofocus: _isFormEnabled && errorMessage.isEmpty,
+                                  enabled: _isFormEnabled || !_useEntireBalance,
+                                  enableInteractiveSelection: _isFormEnabled,
+                                  controller: _amountController,
+                                  validatorFn: (int amountSat) => validatePayment(
+                                    amountSat: amountSat,
+                                    effectiveMinSat: effectiveMinSat,
+                                    effectiveMaxSat: effectiveMaxSat,
+                                  ),
+                                  errorStyle: FieldTextStyle.labelStyle.copyWith(
+                                    fontSize: 18.0,
+                                    color: themeData.colorScheme.error,
+                                  ),
+                                  returnFN: (String amountStr) async {
+                                    if (amountStr.isNotEmpty) {
+                                      final int amountSat = currencyState.bitcoinCurrency.parse(amountStr);
+                                      setState(() {
+                                        _amountController.text = currencyState.bitcoinCurrency.format(
+                                          amountSat,
+                                          includeDisplayName: false,
+                                        );
+                                      });
+                                      _formKey.currentState?.validate();
+                                    }
+                                  },
+                                  onFieldSubmitted: (String amountStr) async {
+                                    if (amountStr.isNotEmpty) {
+                                      _formKey.currentState?.validate();
+                                    }
+                                  },
+                                  style: FieldTextStyle.textStyle,
+                                  errorMaxLines: 3,
+                                ),
+                                if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...<Widget>[
+                                  const SizedBox(height: 8.0),
+                                  AutoSizeText(
+                                    errorMessage,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.left,
+                                    style: FieldTextStyle.labelStyle.copyWith(
+                                      fontSize: 18.0,
+                                      color: themeData.colorScheme.error,
+                                    ),
+                                  ),
+                                ],
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 12.0, bottom: 8),
+                                  child: LnUrlPaymentLimits(
+                                    limitsResponse: _lightningLimits,
+                                    minSendableSat: minSendableSat,
+                                    maxSendableSat: maxSendableSat,
+                                    onTap: (int amountSat) async {
+                                      if (_isFormEnabled) {
+                                        _amountFocusNode.unfocus();
+                                        setState(() {
+                                          _amountController.text = currencyState.bitcoinCurrency.format(
+                                            amountSat,
+                                            includeDisplayName: false,
+                                          );
+                                        });
+                                        _formKey.currentState?.validate();
+                                      }
+                                    },
+                                  ),
+                                ),
+                                BlocBuilder<AccountCubit, AccountState>(
+                                  builder: (BuildContext context, AccountState accountState) {
+                                    return ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Text(
+                                        texts.withdraw_funds_use_all_funds,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.0,
+                                          height: 1.208,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'IBMPlexSans',
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
+                                          accountState.walletInfo!.balanceSat.toInt(),
+                                        )}',
+                                        style: const TextStyle(
+                                          color: Color.fromRGBO(182, 188, 193, 1),
+                                          fontSize: 14 + .0,
+                                          height: 1.182,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'IBMPlexSans',
+                                        ),
+                                      ),
+                                      trailing: Padding(
+                                        padding: const EdgeInsets.only(bottom: 4.0),
+                                        child: Switch(
+                                          value: _useEntireBalance,
+                                          activeColor: Colors.white,
+                                          activeTrackColor: themeData.primaryColor,
+                                          onChanged: (bool value) async {
+                                            setState(
+                                              () {
+                                                setState(() {
+                                                  _useEntireBalance = value;
+                                                });
+                                                if (value) {
+                                                  final String formattedAmount = currencyState.bitcoinCurrency
+                                                      .format(
+                                                        accountState.walletInfo!.balanceSat.toInt(),
+                                                        includeDisplayName: false,
+                                                        userInput: true,
+                                                      )
+                                                      .formatBySatAmountFormFieldFormatter();
+                                                  setState(() {
+                                                    _amountController.text = formattedAmount;
+                                                  });
+                                                  _formKey.currentState?.validate();
+                                                } else {
+                                                  _amountController.text = '';
+                                                }
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                          if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: LnPaymentAmount(
+                                amountSat: maxSendableSat,
+                                hasError: !(_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty),
+                              ),
+                            ),
+                          ],
+                          if (_prepareResponse != null && _prepareResponse!.feesSat.toInt() != 0) ...<Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: LnPaymentFee(
+                                isCalculatingFees: _isCalculatingFees,
+                                feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                              ),
+                            ),
+                          ],
+                          if (widget.requestData.commentAllowed > 0) ...<Widget>[
+                            LnUrlPaymentComment(
+                              enabled: _isFormEnabled,
+                              descriptionController: _descriptionController,
+                              descriptionFocusNode: _descriptionFocusNode,
+                              maxCommentLength: widget.requestData.commentAllowed.toInt(),
+                            ),
+                          ],
+                        ].expand((Widget widget) sync* {
+                          yield widget;
+                          yield const Divider(
+                            height: 32.0,
+                            color: Color.fromRGBO(40, 59, 74, 1),
+                            indent: 0.0,
+                            endIndent: 0.0,
+                          );
+                        }).toList()
+                          ..removeLast(),
                       ),
-                    ],
-                    if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnPaymentDescription(
-                          metadataText: metadataText,
-                        ),
-                      ),
-                    ],
-                    if (widget.requestData.commentAllowed > 0) ...<Widget>[
-                      LnUrlPaymentComment(
-                        enabled: _isFormEnabled,
-                        descriptionController: _descriptionController,
-                        maxCommentLength: widget.requestData.commentAllowed.toInt(),
-                      ),
-                    ],
+                    ),
                   ],
                 ),
               ),
@@ -361,33 +462,25 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
+              : !_isFixedAmount
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
-                      text: texts.ln_payment_action_close,
-                      onPressed: () {
-                        Navigator.of(context).pop();
+                      text: texts.lnurl_payment_page_action_next,
+                      enabled: _isFormEnabled,
+                      onPressed: () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          await _openConfirmationPage();
+                        }
                       },
                     )
-                  : !_isFixedAmount
-                      ? SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.lnurl_payment_page_action_next,
-                          onPressed: () async {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              await _openConfirmationPage();
-                            }
-                          },
-                        )
-                      : _prepareResponse != null
-                          ? SingleButtonBottomBar(
-                              stickToBottom: true,
-                              text: texts.ln_payment_action_send,
-                              onPressed: () async {
-                                Navigator.pop(context, _prepareResponse);
-                              },
-                            )
-                          : const SizedBox.shrink(),
+                  : SingleButtonBottomBar(
+                      stickToBottom: true,
+                      enabled: _prepareResponse != null && errorMessage.isEmpty,
+                      text: texts.ln_payment_action_send,
+                      onPressed: () async {
+                        Navigator.pop(context, _prepareResponse);
+                      },
+                    ),
     );
   }
 
@@ -431,14 +524,16 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       final String networkLimit = '(${currencyState.bitcoinCurrency.format(
         effectiveMaxSat,
       )})';
+      // TODO(erdemyerebasmaz): Add necessary messages to Breez-Translations that uses formatted string for amount
       message = throwError
           ? texts.valid_payment_error_exceeds_the_limit(networkLimit)
-          : texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat);
+          : '${texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat)} ${currencyState.bitcoinCurrency.displayName}';
     } else if (amountSat < effectiveMinSat) {
       final String effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+      // TODO(erdemyerebasmaz): Add necessary messages to Breez-Translations that uses formatted string for amount
       message = throwError
           ? '${texts.invoice_payment_validator_error_payment_below_invoice_limit(effMinSendableFormatted)}.'
-          : texts.lnurl_payment_page_error_below_limit(effectiveMinSat);
+          : '${texts.lnurl_payment_page_error_below_limit(effectiveMinSat)} ${currencyState.bitcoinCurrency.displayName}';
     } else {
       message = PaymentValidator(
         validatePayment: _validateLnUrlPayment,

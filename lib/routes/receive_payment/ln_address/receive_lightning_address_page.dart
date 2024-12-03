@@ -42,18 +42,30 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
               ? const DestinationWidgetPlaceholder()
               : webhookState.lnurlPayError != null
                   ? ScrollableErrorMessageWidget(
+                      showIcon: true,
                       title: webhookState.lnurlPayErrorTitle ?? texts.lightning_address_service_error_title,
                       message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
                     )
                   : webhookState.lnurlPayUrl != null
                       ? Padding(
-                          padding: const EdgeInsets.only(bottom: 40.0),
+                          padding: const EdgeInsets.only(top: 32.0, bottom: 40.0),
                           child: SingleChildScrollView(
-                            child: DestinationWidget(
-                              isLnAddress: true,
-                              destination: webhookState.lnurlPayUrl,
-                              title: texts.receive_payment_method_lightning_address,
-                              infoWidget: const PaymentLimitsMessageBox(),
+                            child: Container(
+                              decoration: const ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
+                                color: Color.fromRGBO(40, 59, 74, 0.5),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+                              child: DestinationWidget(
+                                isLnAddress: true,
+                                destination: webhookState.lnurlPayUrl,
+                                paymentMethod: texts.receive_payment_method_lightning_address,
+                                infoWidget: const PaymentLimitsMessageBox(),
+                              ),
                             ),
                           ),
                         )

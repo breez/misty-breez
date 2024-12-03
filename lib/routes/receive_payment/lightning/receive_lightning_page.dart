@@ -34,6 +34,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController _descriptionController = TextEditingController();
+  final FocusNode _descriptionFocusNode = FocusNode();
   final TextEditingController _amountController = TextEditingController();
   final FocusNode _amountFocusNode = FocusNode();
   KeyboardDoneAction _doneAction = KeyboardDoneAction();
@@ -67,6 +68,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
         builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
             return ScrollableErrorMessageWidget(
+              showIcon: true,
               title: texts.payment_limits_generic_error_title,
               message: texts.payment_limits_generic_error_message(snapshot.errorMessage),
             );
@@ -82,7 +84,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
           return prepareResponseFuture == null
               ? Padding(
-                  padding: const EdgeInsets.only(bottom: 40.0),
+                  padding: const EdgeInsets.only(top: 32, bottom: 40.0),
                   child: SingleChildScrollView(
                     child: _buildForm(lightningPaymentLimits),
                   ),
@@ -149,51 +151,85 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
   Widget _buildForm(LightningPaymentLimitsResponse lightningPaymentLimits) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (BuildContext context, CurrencyState currencyState) {
-        return Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                controller: _descriptionController,
-                keyboardType: TextInputType.multiline,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                maxLength: 90,
-                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                decoration: InputDecoration(
-                  labelText: texts.invoice_description_label,
-                ),
-                style: FieldTextStyle.textStyle,
+        return Container(
+          decoration: const ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
               ),
-              AmountFormField(
-                context: context,
-                texts: texts,
-                bitcoinCurrency: currencyState.bitcoinCurrency,
-                focusNode: _amountFocusNode,
-                autofocus: true,
-                readOnly: false,
-                controller: _amountController,
-                validatorFn: (int v) => validatePayment(v, lightningPaymentLimits),
-                style: FieldTextStyle.textStyle,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: AutoSizeText(
-                  texts.invoice_min_payment_limit(
-                    currencyState.bitcoinCurrency.format(
-                      lightningPaymentLimits.receive.minSat.toInt(),
+            ),
+            color: Color.fromRGBO(40, 59, 74, 0.5),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextFormField(
+                  focusNode: _descriptionFocusNode,
+                  controller: _descriptionController,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.done,
+                  maxLines: null,
+                  maxLength: 90,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  decoration: InputDecoration(
+                    prefixIconConstraints: BoxConstraints.tight(
+                      const Size(16, 56),
                     ),
+                    prefixIcon: const SizedBox.shrink(),
+                    contentPadding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                    border: const OutlineInputBorder(),
+                    labelText: texts.invoice_description_label,
+                    counterStyle: _descriptionFocusNode.hasFocus ? focusedCounterTextStyle : counterTextStyle,
                   ),
-                  style: textStyle,
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
+                  style: FieldTextStyle.textStyle,
                 ),
-              ),
-            ],
+                const SizedBox(height: 8.0),
+                AmountFormField(
+                  context: context,
+                  texts: texts,
+                  bitcoinCurrency: currencyState.bitcoinCurrency,
+                  focusNode: _amountFocusNode,
+                  autofocus: true,
+                  readOnly: false,
+                  controller: _amountController,
+                  validatorFn: (int v) => validatePayment(v, lightningPaymentLimits),
+                  style: FieldTextStyle.textStyle,
+                  errorStyle: FieldTextStyle.labelStyle.copyWith(
+                    fontSize: 18.0,
+                    color: themeData.colorScheme.error,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: AutoSizeText(
+                    texts.invoice_min_payment_limit(
+                      currencyState.bitcoinCurrency.format(
+                        lightningPaymentLimits.receive.minSat.toInt(),
+                      ),
+                    ),
+                    style: paymentLimitInformationTextStyle,
+                    maxLines: 1,
+                    minFontSize: MinFontSize(context).minFontSize,
+                  ),
+                ),
+              ].expand((Widget widget) sync* {
+                yield widget;
+                yield const Divider(
+                  height: 32.0,
+                  color: Color.fromRGBO(40, 59, 74, 1),
+                  indent: 0.0,
+                  endIndent: 0.0,
+                );
+              }).toList()
+                ..removeLast(),
+            ),
           ),
         );
       },
@@ -210,11 +246,22 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
             builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
-              return DestinationWidget(
-                snapshot: receiveSnapshot,
-                title: context.texts().receive_payment_method_lightning_invoice,
-                infoWidget: PaymentFeesMessageBox(
-                  feesSat: prepareSnapshot.data!.feesSat.toInt(),
+              return Container(
+                decoration: const ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  color: Color.fromRGBO(40, 59, 74, 0.5),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                child: DestinationWidget(
+                  snapshot: receiveSnapshot,
+                  paymentMethod: context.texts().receive_payment_method_lightning_invoice,
+                  infoWidget: PaymentFeesMessageBox(
+                    feesSat: prepareSnapshot.data!.feesSat.toInt(),
+                  ),
                 ),
               );
             },

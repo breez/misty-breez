@@ -5,12 +5,16 @@ class SingleButtonBottomBar extends StatelessWidget {
   final VoidCallback? onPressed;
   final String text;
   final bool stickToBottom;
+  final bool enabled;
+  final bool expand;
 
   const SingleButtonBottomBar({
     required this.text,
     super.key,
     this.onPressed,
     this.stickToBottom = false,
+    this.enabled = true,
+    this.expand = false,
   });
 
   @override
@@ -20,7 +24,7 @@ class SingleButtonBottomBar extends StatelessWidget {
         bottom: stickToBottom ? MediaQuery.of(context).viewInsets.bottom + 40.0 : 40.0,
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
         children: <Widget>[
           ConstrainedBox(
             constraints: const BoxConstraints(
@@ -30,6 +34,8 @@ class SingleButtonBottomBar extends StatelessWidget {
             child: SubmitButton(
               text,
               onPressed,
+              enabled: enabled,
+              expand: expand,
             ),
           ),
         ],
@@ -42,17 +48,21 @@ class SubmitButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final String text;
   final bool enabled;
+  final bool expand;
 
   const SubmitButton(
     this.text,
     this.onPressed, {
     super.key,
     this.enabled = true,
+    this.expand = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 48.0,
@@ -60,13 +70,15 @@ class SubmitButton extends StatelessWidget {
       ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: enabled ? themeData.primaryColor : themeData.disabledColor,
+          backgroundColor: themeData.primaryColor,
           elevation: 0.0,
+          disabledBackgroundColor: themeData.disabledColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
+          minimumSize: expand ? Size(screenWidth, 48) : null,
         ),
-        onPressed: onPressed,
+        onPressed: enabled ? onPressed : null,
         child: AutoSizeText(
           text,
           maxLines: 1,

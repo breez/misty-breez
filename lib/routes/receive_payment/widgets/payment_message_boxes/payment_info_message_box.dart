@@ -11,11 +11,14 @@ class PaymentInfoMessageBox extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return WarningBox(
-      boxPadding: const EdgeInsets.symmetric(vertical: 16),
-      contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
+      boxPadding: EdgeInsets.zero,
+      backgroundColor: themeData.colorScheme.error.withOpacity(0.1),
+      contentPadding: const EdgeInsets.all(16.0),
       child: Text(
         message,
-        style: themeData.textTheme.titleLarge,
+        style: themeData.textTheme.titleLarge?.copyWith(
+          color: themeData.colorScheme.error,
+        ),
         textAlign: TextAlign.center,
       ),
     );

@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 
 class LNURLMetadataText extends StatefulWidget {
@@ -20,9 +16,11 @@ class _LNURLMetadataTextState extends State<LNURLMetadataText> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+
     return Container(
       constraints: const BoxConstraints(
-        maxHeight: 200,
+        maxHeight: 120,
         minWidth: double.infinity,
       ),
       child: Scrollbar(
@@ -33,41 +31,16 @@ class _LNURLMetadataTextState extends State<LNURLMetadataText> {
           controller: _scrollController,
           child: AutoSizeText(
             widget.metadataText,
-            style: Theme.of(context).paymentItemSubtitleTextStyle.copyWith(color: Colors.white70),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              height: 1.156,
+            ),
             minFontSize: MinFontSize(context).minFontSize,
           ),
         ),
       ),
     );
-  }
-}
-
-class LNURLMetadataImage extends StatelessWidget {
-  final String? base64String;
-
-  const LNURLMetadataImage({super.key, this.base64String});
-
-  @override
-  Widget build(BuildContext context) {
-    if (base64String != null) {
-      final Uint8List bytes = base64Decode(base64String!);
-      if (bytes.isNotEmpty) {
-        const double imageSize = 128.0;
-        return ConstrainedBox(
-          constraints: const BoxConstraints(
-            minHeight: imageSize,
-            minWidth: imageSize,
-            maxWidth: imageSize,
-            maxHeight: imageSize,
-          ),
-          child: Image.memory(
-            bytes,
-            width: imageSize,
-            fit: BoxFit.fitWidth,
-          ),
-        );
-      }
-    }
-    return const SizedBox.shrink();
   }
 }

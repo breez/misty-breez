@@ -7,8 +7,13 @@ import 'package:l_breez/cubit/cubit.dart';
 
 class LnPaymentAmount extends StatelessWidget {
   final int amountSat;
+  final bool hasError;
 
-  const LnPaymentAmount({required this.amountSat, super.key});
+  const LnPaymentAmount({
+    required this.amountSat,
+    required this.hasError,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +29,10 @@ class LnPaymentAmount extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
             texts.ln_payment_amount_label,
-            style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+              fontSize: 18.0,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.left,
             maxLines: 1,
           ),
@@ -35,7 +43,10 @@ class LnPaymentAmount extends StatelessWidget {
             reverse: true,
             child: AutoSizeText(
               currencyState.bitcoinCurrency.format(amountSat),
-              style: TextStyle(color: themeData.colorScheme.error),
+              style: TextStyle(
+                fontSize: 18.0,
+                color: hasError ? themeData.colorScheme.error : Colors.white,
+              ),
               textAlign: TextAlign.right,
               maxLines: 1,
             ),

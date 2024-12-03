@@ -5,8 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
+import 'package:logging/logging.dart';
+
+final Logger _logger = Logger('SendChainSwapPage');
 
 class SendChainSwapPage extends StatefulWidget {
   final BitcoinAddressData? btcAddressData;
@@ -21,10 +25,13 @@ class SendChainSwapPage extends StatefulWidget {
 
 class _SendChainSwapPageState extends State<SendChainSwapPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -35,16 +42,24 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
       body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
         builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                child: Text(
-                  texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
-                  textAlign: TextAlign.center,
-                ),
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ScrollableErrorMessageWidget(
+                showIcon: true,
+                title: texts.payment_limits_generic_error_title,
+                message: extractExceptionMessage(snapshot.errorMessage, texts),
               ),
             );
           }
+          final OnchainPaymentLimitsResponse? onchainPaymentLimits = snapshot.onchainPaymentLimits;
+          if (onchainPaymentLimits == null) {
+            return Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
+            );
+          }
+
           if (snapshot.onchainPaymentLimits == null) {
             final ThemeData themeData = Theme.of(context);
 
@@ -58,12 +73,87 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
           final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
           final CurrencyState currencyState = currencyCubit.state;
           return SendChainSwapFormPage(
+            formKey: _formKey,
+            amountController: _amountController,
             bitcoinCurrency: currencyState.bitcoinCurrency,
             paymentLimits: snapshot.onchainPaymentLimits!,
             btcAddressData: widget.btcAddressData,
           );
         },
       ),
+      bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
+        builder: (BuildContext context, PaymentLimitsState snapshot) {
+          return snapshot.hasError
+              ? SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.invoice_btc_address_action_retry,
+                  onPressed: () {
+                    final PaymentLimitsCubit paymentLimitsCubit = context.read<PaymentLimitsCubit>();
+                    paymentLimitsCubit.fetchOnchainLimits();
+                  },
+                )
+              : snapshot.lightningPaymentLimits == null
+                  ? const SizedBox.shrink()
+                  : SingleButtonBottomBar(
+                      text: texts.withdraw_funds_action_next,
+                      onPressed: _prepareSendChainSwap,
+                    );
+        },
+      ),
     );
+  }
+
+  void _prepareSendChainSwap() async {
+    final BreezTranslations texts = context.texts();
+    final NavigatorState navigator = Navigator.of(context);
+    if (_formKey.currentState?.validate() ?? false) {
+      final TransparentPageRoute<void> loaderRoute = createLoaderRoute(context);
+      navigator.push(loaderRoute);
+      try {
+        final int amount = _getAmount();
+        if (loaderRoute.isActive) {
+          navigator.removeRoute(loaderRoute);
+        }
+        navigator.push(
+          FadeInRoute<void>(
+            builder: (_) => SendChainSwapConfirmationPage(
+              amountSat: amount,
+              onchainRecipientAddress: _amountController.text,
+              isMaxValue: false,
+            ),
+          ),
+        );
+      } catch (error) {
+        if (loaderRoute.isActive) {
+          navigator.removeRoute(loaderRoute);
+        }
+        _logger.severe('Received error: $error');
+        if (!context.mounted) {
+          return;
+        }
+        showFlushbar(
+          context,
+          message: texts.reverse_swap_upstream_generic_error_message(
+            extractExceptionMessage(error, texts),
+          ),
+        );
+      } finally {
+        if (loaderRoute.isActive) {
+          navigator.removeRoute(loaderRoute);
+        }
+      }
+    }
+  }
+
+  int _getAmount() {
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
+    int amount = 0;
+    try {
+      amount = currencyState.bitcoinCurrency.parse(_amountController.text);
+    } catch (e) {
+      _logger.warning('Failed to parse the input amount', e);
+    }
+    return amount;
   }
 }

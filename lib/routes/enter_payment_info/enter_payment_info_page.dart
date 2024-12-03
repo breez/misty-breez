@@ -50,48 +50,65 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  controller: _paymentInfoController,
-                  decoration: InputDecoration(
-                    labelText: texts.enter_payment_info_page_label,
-                    suffixIcon: IconButton(
-                      padding: const EdgeInsets.only(top: 21.0),
-                      alignment: Alignment.bottomRight,
-                      icon: Image(
-                        image: const AssetImage('assets/icons/qr_scan.png'),
-                        color: themeData.iconTheme.color,
-                        width: 24.0,
-                        height: 24.0,
+            child: Container(
+              decoration: const ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
+                ),
+                color: Color.fromRGBO(40, 59, 74, 0.5),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    controller: _paymentInfoController,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      prefixIconConstraints: BoxConstraints.tight(
+                        const Size(16, 56),
                       ),
-                      tooltip: texts.enter_payment_info_page_scan_tooltip,
-                      onPressed: () => _scanBarcode(),
+                      prefixIcon: const SizedBox.shrink(),
+                      contentPadding: EdgeInsets.zero,
+                      labelText: texts.enter_payment_info_page_label,
+                      suffixIcon: IconButton(
+                        padding: const EdgeInsets.only(bottom: 12.0, right: 12.0),
+                        alignment: Alignment.bottomRight,
+                        icon: Image(
+                          image: const AssetImage('assets/icons/qr_scan.png'),
+                          color: themeData.iconTheme.color,
+                          width: 24.0,
+                          height: 24.0,
+                        ),
+                        tooltip: texts.enter_payment_info_page_scan_tooltip,
+                        onPressed: () => _scanBarcode(),
+                      ),
+                    ),
+                    style: FieldTextStyle.textStyle,
+                    validator: (String? value) => errorMessage.isNotEmpty ? errorMessage : null,
+                    onFieldSubmitted: (String input) async {
+                      if (input.isNotEmpty) {
+                        setState(() {
+                          _paymentInfoController.text = input;
+                        });
+                        await _validateInput();
+                      }
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      texts.enter_payment_info_page_label_expanded,
+                      style: FieldTextStyle.labelStyle.copyWith(
+                        fontSize: 13.0,
+                      ),
                     ),
                   ),
-                  style: FieldTextStyle.textStyle,
-                  validator: (String? value) => errorMessage.isNotEmpty ? errorMessage : null,
-                  onFieldSubmitted: (String input) async {
-                    if (input.isNotEmpty) {
-                      setState(() {
-                        _paymentInfoController.text = input;
-                      });
-                      await _validateInput();
-                    }
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    texts.enter_payment_info_page_label_expanded,
-                    style: FieldTextStyle.labelStyle.copyWith(
-                      fontSize: 13.0,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -137,43 +137,73 @@ class LnPaymentPageState extends State<LnPaymentPage> {
           }
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: LnPaymentHeader(
-                        payeeName: '',
-                        totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
-                        errorMessage: errorMessage,
-                      ),
+            padding: const EdgeInsets.fromLTRB(16, 32, 16, 40),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 16),
+                    child: Center(child: LNURLMetadataImage()),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 32),
+                    child: LnPaymentHeader(
+                      payeeName: '',
+                      totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
+                      errorMessage: errorMessage,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnPaymentAmount(amountSat: amountSat!),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: LnPaymentFee(
-                        isCalculatingFees: _isCalculatingFees,
-                        feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
-                      ),
-                    ),
-                    if (widget.lnInvoice.description != null &&
-                        widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LnPaymentDescription(
-                          metadataText: widget.lnInvoice.description!,
+                  ),
+                  Container(
+                    decoration: const ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
                         ),
                       ),
-                    ],
-                  ],
-                ),
+                      color: Color.fromRGBO(40, 59, 74, 0.5),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: LnPaymentAmount(
+                            amountSat: amountSat!,
+                            hasError: errorMessage.isNotEmpty,
+                          ),
+                        ),
+                        if (_prepareResponse != null && _prepareResponse!.feesSat.toInt() != 0) ...<Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: LnPaymentFee(
+                              isCalculatingFees: _isCalculatingFees,
+                              feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                            ),
+                          ),
+                        ],
+                        if (widget.lnInvoice.description != null &&
+                            widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: LnPaymentDescription(
+                              metadataText: widget.lnInvoice.description!,
+                            ),
+                          ),
+                        ],
+                      ].expand((Widget widget) sync* {
+                        yield widget;
+                        yield const Divider(
+                          height: 32.0,
+                          color: Color.fromRGBO(40, 59, 74, 1),
+                          indent: 0.0,
+                          endIndent: 0.0,
+                        );
+                      }).toList()
+                        ..removeLast(),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -189,23 +219,14 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : errorMessage.isNotEmpty
-                  ? SingleButtonBottomBar(
-                      stickToBottom: true,
-                      text: texts.ln_payment_action_close,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  : _prepareResponse != null
-                      ? SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.ln_payment_action_send,
-                          onPressed: () async {
-                            Navigator.pop(context, _prepareResponse);
-                          },
-                        )
-                      : const SizedBox.shrink(),
+              : SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.ln_payment_action_send,
+                  enabled: _prepareResponse != null && errorMessage.isEmpty,
+                  onPressed: () async {
+                    Navigator.pop(context, _prepareResponse);
+                  },
+                ),
     );
   }
 
@@ -227,14 +248,16 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       final String networkLimit = '(${currencyState.bitcoinCurrency.format(
         effectiveMaxSat,
       )})';
+      // TODO(erdemyerebasmaz): Add necessary messages to Breez-Translations that uses formatted string for amount
       message = throwError
           ? texts.valid_payment_error_exceeds_the_limit(networkLimit)
-          : texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat);
+          : '${texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat)} ${currencyState.bitcoinCurrency.displayName}';
     } else if (amountSat < effectiveMinSat) {
       final String effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
+      // TODO(erdemyerebasmaz): Add necessary messages to Breez-Translations that uses formatted string for amount
       message = throwError
           ? '${texts.invoice_payment_validator_error_payment_below_invoice_limit(effMinSendableFormatted)}.'
-          : texts.lnurl_payment_page_error_below_limit(effectiveMinSat);
+          : '${texts.lnurl_payment_page_error_below_limit(effectiveMinSat)} ${currencyState.bitcoinCurrency.displayName}';
     } else {
       message = PaymentValidator(
         validatePayment: _validateLnUrlPayment,

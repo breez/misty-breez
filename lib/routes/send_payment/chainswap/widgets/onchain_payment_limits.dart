@@ -10,13 +10,13 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/src/theme.dart';
 
-class LnUrlPaymentLimits extends StatelessWidget {
-  final LightningPaymentLimitsResponse? limitsResponse;
+class OnchainPaymentLimits extends StatelessWidget {
+  final OnchainPaymentLimitsResponse? limitsResponse;
   final int minSendableSat;
   final int maxSendableSat;
   final Future<void> Function(int amountSat) onTap;
 
-  const LnUrlPaymentLimits({
+  const OnchainPaymentLimits({
     required this.limitsResponse,
     required this.minSendableSat,
     required this.maxSendableSat,

@@ -43,15 +43,18 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
         children: <Widget>[
           Text(
             'Redeeming funds from',
-            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(
+              fontSize: 16,
+              color: Colors.white70,
+            ),
             textAlign: TextAlign.center,
           ),
           Text(
             domain,
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headlineMedium!
-                .copyWith(fontSize: 16, color: Colors.white),
+            style: themeData.primaryTextTheme.headlineMedium!.copyWith(
+              fontSize: 18,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
           GestureDetector(
@@ -70,42 +73,47 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
               constraints: const BoxConstraints(
                 minWidth: double.infinity,
               ),
-              child: _showFiatCurrency && fiatConversion != null
-                  ? Text(
-                      fiatConversion.format(widget.amountSat),
-                      style: balanceAmountTextStyle.copyWith(
-                        color: themeData.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
-                  : RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: balanceAmountTextStyle.copyWith(
-                          color: themeData.colorScheme.onSurface,
-                        ),
-                        text: currencyState.bitcoinCurrency.format(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: balanceAmountTextStyle.copyWith(
+                    color: themeData.colorScheme.onSurface,
+                  ),
+                  text: _showFiatCurrency && fiatConversion != null
+                      ? fiatConversion.format(
+                          widget.amountSat,
+                          addCurrencySymbol: false,
+                          includeDisplayName: true,
+                        )
+                      : currencyState.bitcoinCurrency.format(
                           widget.amountSat,
                           removeTrailingZeros: true,
                           includeDisplayName: false,
                         ),
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: ' ${currencyState.bitcoinCurrency.displayName}',
-                            style: balanceCurrencyTextStyle.copyWith(
-                              color: themeData.colorScheme.onSurface,
-                            ),
-                          ),
-                        ],
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text: _showFiatCurrency && fiatConversion != null
+                          ? ''
+                          : ' ${currencyState.bitcoinCurrency.displayName}',
+                      style: balanceCurrencyTextStyle.copyWith(
+                        color: themeData.colorScheme.onSurface,
                       ),
                     ),
+                  ],
+                ),
+              ),
             ),
           ),
           /*
           if (fiatConversion != null) ...[
             AutoSizeText(
-              "≈ ${fiatConversion.format(widget.totalAmount)}",
+              fiatConversion.format(
+                widget.amountSat,
+                addCurrencySymbol: false,
+                includeDisplayName: true,
+              ),
               style: balanceFiatConversionTextStyle.copyWith(
+                fontSize: 18.0,
                 color: themeData.colorScheme.onSurface.withOpacity(0.7),
               ),
               textAlign: TextAlign.center,
@@ -117,7 +125,7 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
               widget.errorMessage,
               textAlign: TextAlign.center,
               style: themeData.primaryTextTheme.displaySmall?.copyWith(
-                fontSize: 14.3,
+                fontSize: 18.0,
                 color: themeData.colorScheme.error,
               ),
             ),

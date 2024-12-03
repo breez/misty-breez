@@ -10,9 +10,17 @@ class DestinationQRImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1,
-      child: SizedBox(
+      child: Container(
         width: 230.0,
         height: 230.0,
+        clipBehavior: Clip.antiAlias,
+        decoration: const ShapeDecoration(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(4),
+            ),
+          ),
+        ),
         child: CompactQRImage(
           data: destination,
         ),

@@ -96,6 +96,7 @@ class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTi
       child: FadeTransition(
         opacity: _opacityAnimation,
         child: Dialog.fullscreen(
+          backgroundColor: themeData.colorScheme.surface,
           child: FutureBuilder<LNURLPageResult>(
             future: _lnurlWithdrawFuture,
             builder: (BuildContext context, AsyncSnapshot<LNURLPageResult> snapshot) {
@@ -109,7 +110,9 @@ class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTi
                     const Expanded(child: SizedBox.expand()),
                     Text(
                       texts.lnurl_withdraw_dialog_title,
-                      style: themeData.dialogTheme.titleTextStyle,
+                      style: themeData.dialogTheme.titleTextStyle!.copyWith(
+                        color: themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     if (snapshotError == null)
@@ -117,7 +120,11 @@ class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTi
                         children: <Widget>[
                           LoadingAnimatedText(
                             loadingMessage: texts.lnurl_withdraw_dialog_wait,
-                            textStyle: themeData.dialogTheme.contentTextStyle,
+                            textStyle: themeData.dialogTheme.contentTextStyle!.copyWith(
+                              color: themeData.isLightTheme
+                                  ? themeData.textTheme.labelLarge!.color
+                                  : Colors.white,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
@@ -130,6 +137,14 @@ class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTi
                     else
                       ScrollableErrorMessageWidget(
                         title: texts.lnurl_withdraw_page_unknown_error_title,
+                        titleStyle: FieldTextStyle.labelStyle.copyWith(
+                          color:
+                              themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
+                          fontSize: 14.3,
+                        ),
+                        errorTextStyle: FieldTextStyle.labelStyle.copyWith(
+                          color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
+                        ),
                         message: extractExceptionMessage(snapshotError, texts),
                         padding: EdgeInsets.zero,
                       ),

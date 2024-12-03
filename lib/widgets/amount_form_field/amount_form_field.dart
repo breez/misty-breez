@@ -1,15 +1,14 @@
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/fiat_conversion.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
-export 'currency_converter_dialog.dart';
-export 'sat_amount_form_field_formatter.dart';
+export 'currency_converter_bottom_sheet.dart';
+export 'input_formatter/sat_amount_form_field_formatter.dart';
+export 'widgets/widgets.dart';
 
 class AmountFormField extends TextFormField {
   final FiatConversion? fiatConversion;
@@ -42,15 +41,29 @@ class AmountFormField extends TextFormField {
     bool? readOnly,
     bool? autofocus,
     int? errorMaxLines,
+    TextStyle? labelStyle,
+    TextStyle? floatingLabelStyle,
+    TextStyle? errorStyle,
   }) : super(
           keyboardType: TextInputType.numberWithOptions(
             decimal: bitcoinCurrency != BitcoinCurrency.sat,
           ),
           autofocus: autofocus ?? false,
           decoration: InputDecoration(
-            labelText: texts.amount_form_denomination(
-              bitcoinCurrency.displayName,
+            border: const OutlineInputBorder(),
+            prefixIconConstraints: BoxConstraints.tight(
+              const Size(16, 56),
             ),
+            prefixIcon: const SizedBox.shrink(),
+            label: Text(
+              texts.amount_form_denomination(
+                bitcoinCurrency.displayName,
+              ),
+              style: labelStyle,
+            ),
+            contentPadding: EdgeInsets.zero,
+            floatingLabelStyle: floatingLabelStyle,
+            errorStyle: errorStyle,
             errorMaxLines: errorMaxLines,
             suffixIcon: (readOnly ?? false)
                 ? null
@@ -60,20 +73,25 @@ class AmountFormField extends TextFormField {
                           ? fiatConversion!.logoPath
                           : 'assets/icons/btc_convert.png',
                       color: iconColor ?? BreezColors.white[500],
+                      height: 24,
                     ),
-                    padding: const EdgeInsets.only(top: 21.0),
+                    padding: const EdgeInsets.only(bottom: 12.0, right: 12.0),
                     alignment: Alignment.bottomRight,
-                    onPressed: () => showDialog(
-                      useRootNavigator: false,
+                    onPressed: () => showModalBottomSheet(
                       context: context,
-                      builder: (_) => CurrencyConverterDialog(
-                        context.read<CurrencyCubit>(),
-                        returnFN ??
-                            (String value) => controller!.text = bitcoinCurrency.format(
-                                  bitcoinCurrency.parse(value),
-                                  includeDisplayName: false,
-                                ),
-                        validatorFn,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                      ),
+                      isScrollControlled: true,
+                      builder: (BuildContext context) => CurrencyConverterBottomSheet(
+                        onConvert: returnFN ??
+                            (String value) {
+                              return controller!.text = bitcoinCurrency.format(
+                                bitcoinCurrency.parse(value),
+                                includeDisplayName: false,
+                              );
+                            },
+                        validatorFn: validatorFn,
                       ),
                     ),
                   ),

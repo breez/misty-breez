@@ -33,15 +33,12 @@ class LnUrlWithdrawLimits extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     if (limitsResponse == null) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: AutoSizeText(
-          texts.payment_limits_fetch_error_message,
-          maxLines: 3,
-          textAlign: TextAlign.left,
-          style: FieldTextStyle.labelStyle.copyWith(
-            color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
-          ),
+      return AutoSizeText(
+        texts.payment_limits_fetch_error_message,
+        maxLines: 3,
+        textAlign: TextAlign.left,
+        style: FieldTextStyle.labelStyle.copyWith(
+          color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
         ),
       );
     }
@@ -65,25 +62,25 @@ class LnUrlWithdrawLimits extends StatelessWidget {
       (effectiveMinSat == effectiveMaxSat) ? maxWithdrawableSat : effectiveMaxSat,
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        RichText(
-          text: TextSpan(
-            style: FieldTextStyle.labelStyle,
-            children: <TextSpan>[
-              TextSpan(
-                text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),
-                recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMinSat),
-              ),
-              TextSpan(
-                text: texts.lnurl_fetch_invoice_and(effMaxSendableFormatted),
-                recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMaxSat),
-              ),
-            ],
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: RichText(
+        text: TextSpan(
+          style: FieldTextStyle.labelStyle.copyWith(
+            fontSize: 14.3,
           ),
+          children: <TextSpan>[
+            TextSpan(
+              text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),
+              recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMinSat),
+            ),
+            TextSpan(
+              text: texts.lnurl_fetch_invoice_and(effMaxSendableFormatted),
+              recognizer: TapGestureRecognizer()..onTap = () => onTap(effectiveMaxSat),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

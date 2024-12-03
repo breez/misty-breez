@@ -44,17 +44,20 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
         children: <Widget>[
           Text(
             widget.payeeName,
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headlineMedium!
-                .copyWith(fontSize: 16, color: Colors.white),
+            style: themeData.primaryTextTheme.headlineMedium!.copyWith(
+              fontSize: 18,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
           Text(
             widget.payeeName.isEmpty
                 ? texts.payment_request_dialog_requested
                 : texts.payment_request_dialog_requesting,
-            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(
+              fontSize: 16,
+              color: Colors.white70,
+            ),
             textAlign: TextAlign.center,
           ),
           GestureDetector(
@@ -73,42 +76,47 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
               constraints: const BoxConstraints(
                 minWidth: double.infinity,
               ),
-              child: _showFiatCurrency && fiatConversion != null
-                  ? Text(
-                      fiatConversion.format(widget.totalAmount),
-                      style: balanceAmountTextStyle.copyWith(
-                        color: themeData.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
-                  : RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: balanceAmountTextStyle.copyWith(
-                          color: themeData.colorScheme.onSurface,
-                        ),
-                        text: currencyState.bitcoinCurrency.format(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: balanceAmountTextStyle.copyWith(
+                    color: themeData.colorScheme.onSurface,
+                  ),
+                  text: _showFiatCurrency && fiatConversion != null
+                      ? fiatConversion.format(
+                          widget.totalAmount,
+                          addCurrencySymbol: false,
+                          includeDisplayName: true,
+                        )
+                      : currencyState.bitcoinCurrency.format(
                           widget.totalAmount,
                           removeTrailingZeros: true,
                           includeDisplayName: false,
                         ),
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: ' ${currencyState.bitcoinCurrency.displayName}',
-                            style: balanceCurrencyTextStyle.copyWith(
-                              color: themeData.colorScheme.onSurface,
-                            ),
-                          ),
-                        ],
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text: _showFiatCurrency && fiatConversion != null
+                          ? ''
+                          : ' ${currencyState.bitcoinCurrency.displayName}',
+                      style: balanceCurrencyTextStyle.copyWith(
+                        color: themeData.colorScheme.onSurface,
                       ),
                     ),
+                  ],
+                ),
+              ),
             ),
           ),
           /*
           if (fiatConversion != null) ...[
             AutoSizeText(
-              "≈ ${fiatConversion.format(widget.totalAmount)}",
+              fiatConversion.format(
+                widget.totalAmount,
+                addCurrencySymbol: false,
+                includeDisplayName: true,
+              ),
               style: balanceFiatConversionTextStyle.copyWith(
+                fontSize: 18.0,
                 color: themeData.colorScheme.onSurface.withOpacity(0.7),
               ),
               textAlign: TextAlign.center,
@@ -120,7 +128,7 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
               widget.errorMessage,
               textAlign: TextAlign.center,
               style: themeData.primaryTextTheme.displaySmall?.copyWith(
-                fontSize: 14.3,
+                fontSize: 18,
                 color: themeData.colorScheme.error,
               ),
             ),

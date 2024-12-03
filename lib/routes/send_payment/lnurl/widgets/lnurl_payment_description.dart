@@ -3,6 +3,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class LnPaymentDescription extends StatelessWidget {
   final String metadataText;
@@ -19,13 +20,21 @@ class LnPaymentDescription extends StatelessWidget {
       children: <Widget>[
         AutoSizeText(
           texts.ln_payment_description_label,
-          style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
+          style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+            fontSize: 18.0,
+            color: Colors.white,
+          ),
           textAlign: TextAlign.left,
           maxLines: 1,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
-          child: LNURLMetadataText(metadataText: metadataText),
+          child: WarningBox(
+            boxPadding: EdgeInsets.zero,
+            backgroundColor: themeData.primaryColorLight.withOpacity(0.1),
+            borderColor: themeData.primaryColorLight.withOpacity(0.7),
+            child: LNURLMetadataText(metadataText: metadataText),
+          ),
         ),
       ],
     );

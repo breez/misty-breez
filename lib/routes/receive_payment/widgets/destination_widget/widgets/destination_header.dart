@@ -2,16 +2,17 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
-class DestinationHeader extends StatelessWidget {
+class DestinationActions extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
   final String? paymentMethod;
 
-  const DestinationHeader({
+  const DestinationActions({
     required this.snapshot,
     required this.destination,
     super.key,
@@ -21,72 +22,32 @@ class DestinationHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String? destination = this.destination ?? snapshot?.data?.destination;
-    return SizedBox(
-      height: 64,
+    return Padding(
+      padding: const EdgeInsets.only(top: 24.0, bottom: 24.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          if (paymentMethod != null && paymentMethod!.isNotEmpty) ...<Widget>[
-            Text(paymentMethod!),
-          ],
-          if (destination != null) ...<Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                _ShareIcon(
+        children: (destination != null)
+            ? <Widget>[
+                _CopyButton(
                   destination: destination,
                   paymentMethod: paymentMethod,
                 ),
-                _CopyIcon(
+                _ShareButton(
                   destination: destination,
                   paymentMethod: paymentMethod,
                 ),
-              ],
-            ),
-          ],
-        ],
+              ]
+            : <Widget>[],
       ),
     );
   }
 }
 
-class _ShareIcon extends StatelessWidget {
+class _CopyButton extends StatelessWidget {
   final String destination;
   final String? paymentMethod;
 
-  const _ShareIcon({
-    required this.destination,
-    required this.paymentMethod,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-
-    return Tooltip(
-      // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
-      message: (paymentMethod != null && paymentMethod!.isNotEmpty)
-          ? 'Share $paymentMethod'
-          : 'Share deposit address',
-      child: IconButton(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 2.0, left: 20.0),
-        icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
-        color: themeData.colorScheme.primary,
-        onPressed: () {
-          Share.share(destination);
-        },
-      ),
-    );
-  }
-}
-
-class _CopyIcon extends StatelessWidget {
-  final String destination;
-  final String? paymentMethod;
-
-  const _CopyIcon({
+  const _CopyButton({
     required this.destination,
     this.paymentMethod,
   });
@@ -94,27 +55,87 @@ class _CopyIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
-    final ThemeData themeData = Theme.of(context);
 
-    return Tooltip(
-      message: texts.qr_code_dialog_copy,
-      child: IconButton(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 2.0),
-        icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-        color: themeData.colorScheme.primary,
-        onPressed: () {
-          ServiceInjector().deviceClient.setClipboardText(destination);
-          // TODO(erdemyerebasmaz): Create payment method specific copy messages to Breez-Translations
-          showFlushbar(
-            context,
-            message: (paymentMethod != null && paymentMethod!.isNotEmpty)
-                ? texts.payment_details_dialog_copied(paymentMethod!)
-                : texts.invoice_btc_address_deposit_address_copied,
-            duration: const Duration(seconds: 3),
-          );
-        },
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 48.0,
+        minWidth: 138.0,
+      ),
+      child: Tooltip(
+        message: texts.qr_code_dialog_copy,
+        child: OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Colors.white),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          icon: const Icon(
+            IconData(0xe90b, fontFamily: 'icomoon'),
+            size: 20.0,
+          ),
+          // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
+          label: const Text(
+            'COPY',
+            style: balanceFiatConversionTextStyle,
+          ),
+          onPressed: () {
+            ServiceInjector().deviceClient.setClipboardText(destination);
+            showFlushbar(
+              context,
+              message: (paymentMethod != null && paymentMethod!.isNotEmpty)
+                  ? texts.payment_details_dialog_copied(paymentMethod!)
+                  : texts.invoice_btc_address_deposit_address_copied,
+              duration: const Duration(seconds: 3),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _ShareButton extends StatelessWidget {
+  final String destination;
+  final String? paymentMethod;
+
+  const _ShareButton({
+    required this.destination,
+    required this.paymentMethod,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 48.0,
+        minWidth: 138.0,
+      ),
+      child: Tooltip(
+        // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
+        message: (paymentMethod != null && paymentMethod!.isNotEmpty)
+            ? 'Share $paymentMethod'
+            : 'Share deposit address',
+        child: OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Colors.white),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          icon: const Icon(
+            IconData(0xe917, fontFamily: 'icomoon'),
+            size: 20.0,
+          ),
+          // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
+          label: const Text(
+            'SHARE',
+            style: balanceFiatConversionTextStyle,
+          ),
+          onPressed: () {
+            Share.share(destination);
+          },
+        ),
       ),
     );
   }
