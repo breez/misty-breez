@@ -18,7 +18,6 @@ import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
-export 'lnurl_withdraw_dialog.dart';
 export 'widgets/widgets.dart';
 
 final Logger _logger = Logger('LnUrlWithdrawPage');
@@ -42,8 +41,10 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
 
   final TextEditingController _descriptionController = TextEditingController();
   final FocusNode _descriptionFocusNode = FocusNode();
+
   final TextEditingController _amountController = TextEditingController();
   final FocusNode _amountFocusNode = FocusNode();
+
   KeyboardDoneAction _doneAction = KeyboardDoneAction();
 
   bool _isFixedAmount = false;
@@ -189,10 +190,6 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 32),
-                          child: Center(child: LNURLMetadataImage()),
-                        ),
                         if (_isFixedAmount) ...<Widget>[
                           Padding(
                             padding: const EdgeInsets.only(bottom: 32),
@@ -238,80 +235,85 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                 style: FieldTextStyle.textStyle,
                               ),
                               if (!_isFixedAmount) ...<Widget>[
-                                const SizedBox(height: 8.0),
-                                AmountFormField(
-                                  context: context,
-                                  texts: texts,
-                                  bitcoinCurrency: currencyState.bitcoinCurrency,
-                                  focusNode: _amountFocusNode,
-                                  autofocus: _isFormEnabled && errorMessage.isEmpty,
-                                  enabled: _isFormEnabled,
-                                  enableInteractiveSelection: _isFormEnabled,
-                                  controller: _amountController,
-                                  validatorFn: (int amountSat) => validatePayment(
-                                    amountSat: amountSat,
-                                    effectiveMinSat: effectiveMinSat,
-                                    effectiveMaxSat: effectiveMaxSat,
-                                  ),
-                                  returnFN: (String amountStr) async {
-                                    if (amountStr.isNotEmpty) {
-                                      final int amountSat = currencyState.bitcoinCurrency.parse(amountStr);
-                                      setState(() {
-                                        _amountController.text = currencyState.bitcoinCurrency.format(
-                                          amountSat,
-                                          includeDisplayName: false,
-                                        );
-                                      });
-                                      _formKey.currentState?.validate();
-                                    }
-                                  },
-                                  onFieldSubmitted: (String amountStr) async {
-                                    if (amountStr.isNotEmpty) {
-                                      _formKey.currentState?.validate();
-                                    }
-                                  },
-                                  style: FieldTextStyle.textStyle,
-                                  errorMaxLines: 3,
-                                  errorStyle: FieldTextStyle.labelStyle.copyWith(
-                                    fontSize: 18.0,
-                                    color: themeData.colorScheme.error,
-                                  ),
-                                ),
-                              ],
-                              if (!_isFormEnabled && !_isFixedAmount) ...<Widget>[
-                                const SizedBox(height: 8.0),
-                                AutoSizeText(
-                                  errorMessage,
-                                  maxLines: 3,
-                                  textAlign: TextAlign.left,
-                                  style: FieldTextStyle.labelStyle.copyWith(
-                                    fontSize: 18.0,
-                                    color: themeData.colorScheme.error,
-                                  ),
-                                ),
-                              ],
-                              if (!_isFixedAmount) ...<Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 12.0),
-                                  child: LnUrlWithdrawLimits(
-                                    limitsResponse: _lightningLimits,
-                                    minWithdrawableSat: minWithdrawableSat,
-                                    maxWithdrawableSat: maxWithdrawableSat,
-                                    onTap: _isFormEnabled
-                                        ? (int amountSat) async {
-                                            _amountFocusNode.unfocus();
-                                            setState(() {
-                                              _amountController.text = currencyState.bitcoinCurrency.format(
-                                                amountSat,
-                                                includeDisplayName: false,
-                                              );
-                                            });
-                                            _formKey.currentState?.validate();
-                                          }
-                                        : (int amountSat) async {
-                                            return;
-                                          },
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    const SizedBox(height: 16.0),
+                                    AmountFormField(
+                                      context: context,
+                                      texts: texts,
+                                      bitcoinCurrency: currencyState.bitcoinCurrency,
+                                      focusNode: _amountFocusNode,
+                                      autofocus: _isFormEnabled && errorMessage.isEmpty,
+                                      enabled: _isFormEnabled,
+                                      enableInteractiveSelection: _isFormEnabled,
+                                      controller: _amountController,
+                                      validatorFn: (int amountSat) => validatePayment(
+                                        amountSat: amountSat,
+                                        effectiveMinSat: effectiveMinSat,
+                                        effectiveMaxSat: effectiveMaxSat,
+                                      ),
+                                      returnFN: (String amountStr) async {
+                                        if (amountStr.isNotEmpty) {
+                                          final int amountSat =
+                                              currencyState.bitcoinCurrency.parse(amountStr);
+                                          setState(() {
+                                            _amountController.text = currencyState.bitcoinCurrency.format(
+                                              amountSat,
+                                              includeDisplayName: false,
+                                            );
+                                          });
+                                          _formKey.currentState?.validate();
+                                        }
+                                      },
+                                      onFieldSubmitted: (String amountStr) async {
+                                        if (amountStr.isNotEmpty) {
+                                          _formKey.currentState?.validate();
+                                        }
+                                      },
+                                      style: FieldTextStyle.textStyle,
+                                      errorMaxLines: 3,
+                                      errorStyle: FieldTextStyle.labelStyle.copyWith(
+                                        fontSize: 18.0,
+                                        color: themeData.colorScheme.error,
+                                      ),
+                                    ),
+                                    if (!_isFormEnabled) ...<Widget>[
+                                      const SizedBox(height: 8.0),
+                                      AutoSizeText(
+                                        errorMessage,
+                                        maxLines: 3,
+                                        textAlign: TextAlign.left,
+                                        style: FieldTextStyle.labelStyle.copyWith(
+                                          fontSize: 18.0,
+                                          color: themeData.colorScheme.error,
+                                        ),
+                                      ),
+                                    ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 12.0),
+                                      child: LnUrlWithdrawLimits(
+                                        limitsResponse: _lightningLimits,
+                                        minWithdrawableSat: minWithdrawableSat,
+                                        maxWithdrawableSat: maxWithdrawableSat,
+                                        onTap: _isFormEnabled
+                                            ? (int amountSat) async {
+                                                _amountFocusNode.unfocus();
+                                                setState(() {
+                                                  _amountController.text =
+                                                      currencyState.bitcoinCurrency.format(
+                                                    amountSat,
+                                                    includeDisplayName: false,
+                                                  );
+                                                });
+                                                _formKey.currentState?.validate();
+                                              }
+                                            : (int amountSat) async {
+                                                return;
+                                              },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ].expand((Widget widget) sync* {
@@ -348,7 +350,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
               : SingleButtonBottomBar(
                   stickToBottom: true,
                   text: texts.invoice_action_redeem,
-                  enabled: _isFormEnabled || _isFixedAmount && errorMessage.isEmpty,
+                  enabled: (!_isFixedAmount && _isFormEnabled) || (_isFixedAmount && errorMessage.isEmpty),
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
                       _withdraw();
@@ -368,18 +370,13 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
 
     final NavigatorState navigator = Navigator.of(context);
     navigator.pop();
-    // TODO(erdemyerebasmaz): Instead of showing LNURLWithdrawDialog. Call LNURL withdraw and consequently payment success animation.
-    showDialog(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => LnurlWithdrawDialog(
-        requestData: data,
-        amountSats: currencyCubit.state.bitcoinCurrency.parse(
-          _amountController.text,
-        ),
-        onFinish: widget.onFinish,
+    showRedeemingFundsSheet(
+      context,
+      requestData: data,
+      amountSats: currencyCubit.state.bitcoinCurrency.parse(
+        _amountController.text,
       ),
+      onFinish: widget.onFinish,
     );
   }
 

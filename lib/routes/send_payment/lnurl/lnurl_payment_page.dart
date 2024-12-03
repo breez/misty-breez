@@ -108,7 +108,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     );
     final int rawMaxSat = min(maxNetworkLimit, maxSendableSat);
     final int effectiveMaxSat = max(minNetworkLimit, rawMaxSat);
-    _updateFormFields(amountSat: minSendableSat);
+    _updateFormFields(amountSat: effectiveMinSat);
     final String? errorMessage = validatePayment(
       amountSat: _isFixedAmount ? minSendableSat : effectiveMinSat,
       effectiveMinSat: effectiveMinSat,
@@ -239,13 +239,15 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 32),
-                      child: Center(child: LNURLMetadataImage(base64String: base64String)),
-                    ),
-                    if (_isFixedAmount) ...<Widget>[
+                    if (base64String?.isNotEmpty ?? false) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
+                        child: Center(child: LNURLMetadataImage(base64String: base64String!)),
+                      ),
+                    ],
+                    if (_isFixedAmount) ...<Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
                         child: LnPaymentHeader(
                           payeeName: payeeName,
                           totalAmount: maxSendableSat + (_prepareResponse?.feesSat.toInt() ?? 0),
@@ -265,7 +267,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
                       child: Column(
                         children: <Widget>[
-                          if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
+                          if (!_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
                             LnPaymentDescription(
                               metadataText: metadataText,
                             ),
@@ -273,13 +275,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           if (!_isFixedAmount) ...<Widget>[
                             Column(
                               children: <Widget>[
+                                const SizedBox(height: 8.0),
                                 AmountFormField(
                                   context: context,
                                   texts: texts,
                                   bitcoinCurrency: currencyState.bitcoinCurrency,
                                   focusNode: _amountFocusNode,
                                   autofocus: _isFormEnabled && errorMessage.isEmpty,
-                                  enabled: _isFormEnabled || !_useEntireBalance,
+                                  enabled: _isFormEnabled && !_useEntireBalance,
                                   enableInteractiveSelection: _isFormEnabled,
                                   controller: _amountController,
                                   validatorFn: (int amountSat) => validatePayment(
@@ -324,7 +327,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                   ),
                                 ],
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 12.0, bottom: 8),
+                                  padding: const EdgeInsets.only(top: 8.0),
                                   child: LnUrlPaymentLimits(
                                     limitsResponse: _lightningLimits,
                                     minSendableSat: minSendableSat,
@@ -343,73 +346,78 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                     },
                                   ),
                                 ),
-                                BlocBuilder<AccountCubit, AccountState>(
-                                  builder: (BuildContext context, AccountState accountState) {
-                                    return ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Text(
-                                        texts.withdraw_funds_use_all_funds,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0,
-                                          height: 1.208,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'IBMPlexSans',
-                                        ),
-                                      ),
-                                      subtitle: Text(
-                                        '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
-                                          accountState.walletInfo!.balanceSat.toInt(),
-                                        )}',
-                                        style: const TextStyle(
-                                          color: Color.fromRGBO(182, 188, 193, 1),
-                                          fontSize: 14 + .0,
-                                          height: 1.182,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'IBMPlexSans',
-                                        ),
-                                      ),
-                                      trailing: Padding(
-                                        padding: const EdgeInsets.only(bottom: 4.0),
-                                        child: Switch(
-                                          value: _useEntireBalance,
-                                          activeColor: Colors.white,
-                                          activeTrackColor: themeData.primaryColor,
-                                          onChanged: (bool value) async {
-                                            setState(
-                                              () {
-                                                setState(() {
-                                                  _useEntireBalance = value;
-                                                });
-                                                if (value) {
-                                                  final String formattedAmount = currencyState.bitcoinCurrency
-                                                      .format(
-                                                        accountState.walletInfo!.balanceSat.toInt(),
-                                                        includeDisplayName: false,
-                                                        userInput: true,
-                                                      )
-                                                      .formatBySatAmountFormFieldFormatter();
-                                                  setState(() {
-                                                    _amountController.text = formattedAmount;
-                                                  });
-                                                  _formKey.currentState?.validate();
-                                                } else {
-                                                  _amountController.text = '';
-                                                }
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
                               ],
+                            ),
+                            BlocBuilder<AccountCubit, AccountState>(
+                              builder: (BuildContext context, AccountState accountState) {
+                                return ListTile(
+                                  dense: true,
+                                  minTileHeight: 0,
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(
+                                    texts.withdraw_funds_use_all_funds,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      height: 1.208,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'IBMPlexSans',
+                                    ),
+                                  ),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
+                                        accountState.walletInfo!.balanceSat.toInt(),
+                                      )}',
+                                      style: const TextStyle(
+                                        color: Color.fromRGBO(182, 188, 193, 1),
+                                        fontSize: 16.0,
+                                        height: 1.182,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'IBMPlexSans',
+                                      ),
+                                    ),
+                                  ),
+                                  trailing: Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Switch(
+                                      value: _useEntireBalance,
+                                      activeColor: Colors.white,
+                                      activeTrackColor: themeData.primaryColor,
+                                      onChanged: (bool value) async {
+                                        setState(
+                                          () {
+                                            setState(() {
+                                              _useEntireBalance = value;
+                                            });
+                                            if (value) {
+                                              final String formattedAmount = currencyState.bitcoinCurrency
+                                                  .format(
+                                                    accountState.walletInfo!.balanceSat.toInt(),
+                                                    includeDisplayName: false,
+                                                    userInput: true,
+                                                  )
+                                                  .formatBySatAmountFormFieldFormatter();
+                                              setState(() {
+                                                _amountController.text = formattedAmount;
+                                              });
+                                              _formKey.currentState?.validate();
+                                            } else {
+                                              _amountController.text = '';
+                                            }
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                           if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.only(bottom: 8.0),
                               child: LnPaymentAmount(
                                 amountSat: maxSendableSat,
                                 hasError: !(_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty),
@@ -425,8 +433,18 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                               ),
                             ),
                           ],
-                          if (widget.requestData.commentAllowed > 0) ...<Widget>[
+                          if (_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: LnPaymentDescription(
+                                metadataText: metadataText,
+                              ),
+                            ),
+                          ],
+                          if (widget.isConfirmation && _descriptionController.text.isNotEmpty ||
+                              !widget.isConfirmation && widget.requestData.commentAllowed > 0) ...<Widget>[
                             LnUrlPaymentComment(
+                              isConfirmation: widget.isConfirmation,
                               enabled: _isFormEnabled,
                               descriptionController: _descriptionController,
                               descriptionFocusNode: _descriptionFocusNode,
@@ -469,6 +487,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       enabled: _isFormEnabled,
                       onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
+                          final FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus && currentFocus.hasFocus) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          }
                           await _openConfirmationPage();
                         }
                       },

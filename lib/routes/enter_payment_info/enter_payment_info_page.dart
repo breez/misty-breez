@@ -113,13 +113,12 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
           ),
         ),
       ),
-      bottomNavigationBar: _paymentInfoController.text.isNotEmpty
-          ? SingleButtonBottomBar(
-              stickToBottom: true,
-              text: texts.enter_payment_info_page_action_next,
-              onPressed: _onApprovePressed,
-            )
-          : const SizedBox.shrink(),
+      bottomNavigationBar: SingleButtonBottomBar(
+        stickToBottom: true,
+        enabled: _paymentInfoController.text.isNotEmpty,
+        text: texts.enter_payment_info_page_action_next,
+        onPressed: _onApprovePressed,
+      ),
     );
   }
 

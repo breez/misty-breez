@@ -94,6 +94,7 @@ dependencies:
   local_auth_android: <1.0.44 # Flutter 3.24+
   local_auth_darwin: ^1.4.1
   logging: ^1.3.0
+  lottie: ^3.1.3
   melos: ^6.2.0
   mockito: ^5.4.4
   # Doesn't support: Linux Windows
@@ -110,7 +111,6 @@ dependencies:
   shared_preferences: ^2.3.3
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
   shimmer: ^3.0.0
-  simple_animations: <5.1.0 # Flutter 3.24+
   synchronized: <3.2.0 # Flutter 3.24+
   theme_provider: ^0.6.0
   timeago: ^3.7.0
@@ -145,6 +145,7 @@ flutter:
     - assets/icons/vendors/
     - assets/animations/
     - assets/animations/welcome/
+    - assets/animations/lottie/
   fonts:
     - family: IBMPlexSans
       fonts:

@@ -57,10 +57,6 @@ class CompactQRImage extends StatelessWidget {
       version: _calculateVersion(),
       data: data,
       size: size,
-      embeddedImage: const AssetImage('assets/icons/app_icon.png'),
-      embeddedImageStyle: const QrEmbeddedImageStyle(
-        size: Size.square(68.0),
-      ),
     );
   }
 

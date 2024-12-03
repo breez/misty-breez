@@ -20,6 +20,7 @@ class WithdrawFundsAmountTextFormField extends AmountFormField {
     super.key,
   }) : super(
           texts: context.texts(),
+          enabled: !useEntireBalance,
           enableInteractiveSelection: !useEntireBalance,
           readOnly: policy.withdrawKind == WithdrawKind.unexpectedFunds || useEntireBalance,
           validatorFn: (int amount) {

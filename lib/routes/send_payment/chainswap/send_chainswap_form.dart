@@ -92,7 +92,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             validatorHolder: _validatorHolder,
           ),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Divider(
               height: 32.0,
               color: Color.fromRGBO(40, 59, 74, 1),
@@ -126,64 +126,75 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
               minFontSize: MinFontSize(context).minFontSize,
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: Divider(
+              height: 32.0,
+              color: Color.fromRGBO(40, 59, 74, 1),
+              indent: 0.0,
+              endIndent: 0.0,
+            ),
+          ),
           BlocBuilder<CurrencyCubit, CurrencyState>(
             builder: (BuildContext context, CurrencyState currencyState) {
               return BlocBuilder<AccountCubit, AccountState>(
                 builder: (BuildContext context, AccountState accountState) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        texts.withdraw_funds_use_all_funds,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          height: 1.208,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'IBMPlexSans',
-                        ),
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    minTileHeight: 0,
+                    title: Text(
+                      texts.withdraw_funds_use_all_funds,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        height: 1.208,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'IBMPlexSans',
                       ),
-                      subtitle: Text(
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
                         '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
                           accountState.walletInfo!.balanceSat.toInt(),
                         )}',
                         style: const TextStyle(
                           color: Color.fromRGBO(182, 188, 193, 1),
-                          fontSize: 14 + .0,
+                          fontSize: 16,
                           height: 1.182,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'IBMPlexSans',
                         ),
                       ),
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
-                        child: Switch(
-                          value: widget.useEntireBalance,
-                          activeColor: Colors.white,
-                          activeTrackColor: themeData.primaryColor,
-                          onChanged: (bool value) async {
-                            setState(
-                              () {
-                                widget.onChanged(value);
-                                if (value) {
-                                  final String formattedAmount = currencyState.bitcoinCurrency
-                                      .format(
-                                        accountState.walletInfo!.balanceSat.toInt(),
-                                        includeDisplayName: false,
-                                        userInput: true,
-                                      )
-                                      .formatBySatAmountFormFieldFormatter();
-                                  setState(() {
-                                    widget.amountController.text = formattedAmount;
-                                  });
-                                } else {
-                                  widget.amountController.text = '';
-                                }
-                              },
-                            );
-                          },
-                        ),
+                    ),
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Switch(
+                        value: widget.useEntireBalance,
+                        activeColor: Colors.white,
+                        activeTrackColor: themeData.primaryColor,
+                        onChanged: (bool value) async {
+                          setState(
+                            () {
+                              widget.onChanged(value);
+                              if (value) {
+                                final String formattedAmount = currencyState.bitcoinCurrency
+                                    .format(
+                                      accountState.walletInfo!.balanceSat.toInt(),
+                                      includeDisplayName: false,
+                                      userInput: true,
+                                    )
+                                    .formatBySatAmountFormFieldFormatter();
+                                setState(() {
+                                  widget.amountController.text = formattedAmount;
+                                });
+                              } else {
+                                widget.amountController.text = '';
+                              }
+                            },
+                          );
+                        },
                       ),
                     ),
                   );

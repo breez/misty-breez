@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -13,27 +12,46 @@ import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
-final Logger _logger = Logger('LNURLWithdrawDialog');
+Future<dynamic> showRedeemingFundsSheet(
+  BuildContext context, {
+  required int amountSats,
+  required LnUrlWithdrawRequestData requestData,
+  required Function(LNURLPageResult? result) onFinish,
+}) async {
+  return await showModalBottomSheet(
+    context: context,
+    enableDrag: false,
+    isDismissible: false,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) => RedeemFundsSheet(
+      amountSats: amountSats,
+      requestData: requestData,
+      onFinish: onFinish,
+    ),
+  );
+}
 
-class LnurlWithdrawDialog extends StatefulWidget {
-  final Function(LNURLPageResult? result) onFinish;
-  final LnUrlWithdrawRequestData requestData;
+final Logger _logger = Logger('RedeemFundsSheet');
+
+class RedeemFundsSheet extends StatefulWidget {
   final int amountSats;
+  final LnUrlWithdrawRequestData requestData;
+  final Function(LNURLPageResult? result) onFinish;
 
-  const LnurlWithdrawDialog({
-    required this.requestData,
+  const RedeemFundsSheet({
     required this.amountSats,
+    required this.requestData,
     required this.onFinish,
     super.key,
   });
 
   @override
-  State<LnurlWithdrawDialog> createState() => _LnurlWithdrawDialogState();
+  RedeemFundsSheetState createState() => RedeemFundsSheetState();
 }
 
-class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTickerProviderStateMixin {
+class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final Animation<double> _opacityAnimation;
   Future<LNURLPageResult>? _lnurlWithdrawFuture;
   bool finishCalled = false;
 
@@ -46,12 +64,6 @@ class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTi
 
   void _setupAnimation() {
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1))..value = 1.0;
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.ease,
-      ),
-    );
   }
 
   void _startWithdrawProcess() {
@@ -89,79 +101,74 @@ class _LnurlWithdrawDialogState extends State<LnurlWithdrawDialog> with SingleTi
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: themeData.appBarTheme.systemOverlayStyle!.copyWith(
-        systemNavigationBarColor: themeData.colorScheme.surface,
-      ),
-      child: FadeTransition(
-        opacity: _opacityAnimation,
-        child: Dialog.fullscreen(
-          backgroundColor: themeData.colorScheme.surface,
-          child: FutureBuilder<LNURLPageResult>(
-            future: _lnurlWithdrawFuture,
-            builder: (BuildContext context, AsyncSnapshot<LNURLPageResult> snapshot) {
-              final Object? snapshotError = snapshot.error ?? snapshot.data?.error;
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      color: themeData.colorScheme.surface,
+      child: FutureBuilder<LNURLPageResult>(
+        future: _lnurlWithdrawFuture,
+        builder: (BuildContext context, AsyncSnapshot<LNURLPageResult> snapshot) {
+          final Object? snapshotError = snapshot.error ?? snapshot.data?.error;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Expanded(child: SizedBox.expand()),
-                    Text(
-                      texts.lnurl_withdraw_dialog_title,
-                      style: themeData.dialogTheme.titleTextStyle!.copyWith(
-                        color: themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
-                      ),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Expanded(child: SizedBox.expand()),
+                if (snapshotError == null) ...<Widget>[
+                  Text(
+                    texts.lnurl_withdraw_dialog_title,
+                    style: themeData.dialogTheme.titleTextStyle!.copyWith(
+                      color: themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
                     ),
-                    const SizedBox(height: 24),
-                    if (snapshotError == null)
-                      Column(
-                        children: <Widget>[
-                          LoadingAnimatedText(
-                            loadingMessage: texts.lnurl_withdraw_dialog_wait,
-                            textStyle: themeData.dialogTheme.contentTextStyle!.copyWith(
-                              color: themeData.isLightTheme
-                                  ? themeData.textTheme.labelLarge!.color
-                                  : Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Image.asset(
-                            themeData.customData.loaderAssetPath,
-                            gaplessPlayback: true,
-                          ),
-                        ],
-                      )
-                    else
-                      ScrollableErrorMessageWidget(
-                        title: texts.lnurl_withdraw_page_unknown_error_title,
-                        titleStyle: FieldTextStyle.labelStyle.copyWith(
+                  ),
+                  const SizedBox(height: 24),
+                  Column(
+                    children: <Widget>[
+                      LoadingAnimatedText(
+                        loadingMessage: texts.lnurl_withdraw_dialog_wait,
+                        textStyle: themeData.dialogTheme.contentTextStyle!.copyWith(
                           color:
                               themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
-                          fontSize: 14.3,
                         ),
-                        errorTextStyle: FieldTextStyle.labelStyle.copyWith(
-                          color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
-                        ),
-                        message: extractExceptionMessage(snapshotError, texts),
-                        padding: EdgeInsets.zero,
+                        textAlign: TextAlign.center,
                       ),
-                    const Expanded(child: SizedBox.expand()),
-                    Theme(
-                      data: breezDarkTheme,
-                      child: SingleButtonBottomBar(
-                        text: texts.lnurl_withdraw_dialog_action_close,
-                        onPressed: () => _onFinish(null),
+                      const SizedBox(height: 8),
+                      Image.asset(
+                        themeData.customData.loaderAssetPath,
+                        gaplessPlayback: true,
                       ),
+                    ],
+                  ),
+                ],
+                if (snapshotError != null)
+                  ScrollableErrorMessageWidget(
+                    showIcon: true,
+                    title: texts.lnurl_withdraw_page_unknown_error_title,
+                    titleStyle: FieldTextStyle.labelStyle.copyWith(
+                      color: themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
+                      fontSize: 14.3,
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+                    errorTextStyle: FieldTextStyle.labelStyle.copyWith(
+                      color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
+                    ),
+                    message: extractExceptionMessage(snapshotError, texts),
+                    padding: EdgeInsets.zero,
+                  ),
+                const Expanded(child: SizedBox.expand()),
+                if (snapshotError != null)
+                  Theme(
+                    data: breezDarkTheme,
+                    child: SingleButtonBottomBar(
+                      text: texts.lnurl_withdraw_dialog_action_close,
+                      onPressed: () => _onFinish(null),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

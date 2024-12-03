@@ -11,6 +11,7 @@ import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/utils/payment_validator.dart';
 import 'package:l_breez/widgets/widgets.dart';
@@ -190,7 +191,13 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                   ),
                   style: FieldTextStyle.textStyle,
                 ),
-                const SizedBox(height: 8.0),
+                const Divider(
+                  height: 32.0,
+                  color: Color.fromRGBO(40, 59, 74, 1),
+                  indent: 0.0,
+                  endIndent: 0.0,
+                ),
+                const SizedBox(height: 16.0),
                 AmountFormField(
                   context: context,
                   texts: texts,
@@ -219,16 +226,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                     minFontSize: MinFontSize(context).minFontSize,
                   ),
                 ),
-              ].expand((Widget widget) sync* {
-                yield widget;
-                yield const Divider(
-                  height: 32.0,
-                  color: Color.fromRGBO(40, 59, 74, 1),
-                  indent: 0.0,
-                  endIndent: 0.0,
-                );
-              }).toList()
-                ..removeLast(),
+              ],
             ),
           ),
         );
@@ -237,31 +235,58 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   }
 
   Widget _buildQRCode() {
+    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
     return FutureBuilder<PrepareReceiveResponse>(
       future: prepareResponseFuture,
       builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
+        if (prepareSnapshot.hasError) {
+          return ScrollableErrorMessageWidget(
+            showIcon: true,
+            title: '${texts.qr_code_dialog_warning_message_error}:',
+            message: extractExceptionMessage(prepareSnapshot.error!, texts),
+            padding: EdgeInsets.zero,
+          );
+        }
+
         if (prepareSnapshot.hasData) {
           return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
             builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
-              return Container(
-                decoration: const ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12),
+              if (receiveSnapshot.hasError) {
+                return ScrollableErrorMessageWidget(
+                  showIcon: true,
+                  title: '${texts.qr_code_dialog_warning_message_error}:',
+                  message: extractExceptionMessage(receiveSnapshot.error!, texts),
+                  padding: EdgeInsets.zero,
+                );
+              }
+
+              if (receiveSnapshot.hasData) {
+                return Container(
+                  decoration: const ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(12),
+                      ),
+                    ),
+                    color: Color.fromRGBO(40, 59, 74, 0.5),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+                  child: DestinationWidget(
+                    snapshot: receiveSnapshot,
+                    paymentMethod: context.texts().receive_payment_method_lightning_invoice,
+                    infoWidget: PaymentFeesMessageBox(
+                      feesSat: prepareSnapshot.data!.feesSat.toInt(),
                     ),
                   ),
-                  color: Color.fromRGBO(40, 59, 74, 0.5),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-                child: DestinationWidget(
-                  snapshot: receiveSnapshot,
-                  paymentMethod: context.texts().receive_payment_method_lightning_invoice,
-                  infoWidget: PaymentFeesMessageBox(
-                    feesSat: prepareSnapshot.data!.feesSat.toInt(),
-                  ),
+                );
+              }
+
+              return Center(
+                child: Loader(
+                  color: themeData.primaryColor.withOpacity(0.5),
                 ),
               );
             },
