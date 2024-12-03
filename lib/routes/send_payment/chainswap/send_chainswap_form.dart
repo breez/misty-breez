@@ -92,7 +92,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             validatorHolder: _validatorHolder,
           ),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Divider(
               height: 32.0,
               color: Color.fromRGBO(40, 59, 74, 1),

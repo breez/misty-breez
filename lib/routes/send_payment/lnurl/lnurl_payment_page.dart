@@ -246,6 +246,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       ),
                     ],
                     if (_isFixedAmount) ...<Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
                         child: LnPaymentHeader(
                           payeeName: payeeName,
                           totalAmount: maxSendableSat + (_prepareResponse?.feesSat.toInt() ?? 0),
@@ -266,17 +268,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       child: Column(
                         children: <Widget>[
                           if (!_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
-                              child: LnPaymentDescription(
-                                metadataText: metadataText,
-                              ),
+                            LnPaymentDescription(
+                              metadataText: metadataText,
                             ),
                           ],
                           if (!_isFixedAmount) ...<Widget>[
                             Column(
                               children: <Widget>[
-                                const SizedBox(height: 16.0),
+                                const SizedBox(height: 8.0),
                                 AmountFormField(
                                   context: context,
                                   texts: texts,
@@ -328,7 +327,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                   ),
                                 ],
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 12.0, bottom: 8),
+                                  padding: const EdgeInsets.only(top: 8.0),
                                   child: LnUrlPaymentLimits(
                                     limitsResponse: _lightningLimits,
                                     minSendableSat: minSendableSat,
@@ -436,7 +435,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                           ],
                           if (_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.only(top: 8),
                               child: LnPaymentDescription(
                                 metadataText: metadataText,
                               ),

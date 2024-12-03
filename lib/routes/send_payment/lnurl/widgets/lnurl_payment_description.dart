@@ -28,7 +28,7 @@ class LnPaymentDescription extends StatelessWidget {
           maxLines: 1,
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
           child: WarningBox(
             boxPadding: EdgeInsets.zero,
             backgroundColor: themeData.primaryColorLight.withOpacity(0.1),
