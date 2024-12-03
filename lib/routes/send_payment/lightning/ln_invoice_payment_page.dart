@@ -162,29 +162,20 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                     child: Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: LnPaymentAmount(
-                            amountSat: amountSat!,
-                            hasError: errorMessage.isNotEmpty,
-                          ),
+                        LnPaymentAmount(
+                          amountSat: amountSat!,
+                          hasError: errorMessage.isNotEmpty,
                         ),
                         if (_prepareResponse != null && _prepareResponse!.feesSat.toInt() != 0) ...<Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: LnPaymentFee(
-                              isCalculatingFees: _isCalculatingFees,
-                              feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
-                            ),
+                          LnPaymentFee(
+                            isCalculatingFees: _isCalculatingFees,
+                            feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
                           ),
                         ],
                         if (widget.lnInvoice.description != null &&
                             widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: LnPaymentDescription(
-                              metadataText: widget.lnInvoice.description!,
-                            ),
+                          LnPaymentDescription(
+                            metadataText: widget.lnInvoice.description!,
                           ),
                         ],
                       ].expand((Widget widget) sync* {
