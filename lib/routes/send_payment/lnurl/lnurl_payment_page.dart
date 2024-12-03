@@ -283,7 +283,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                   bitcoinCurrency: currencyState.bitcoinCurrency,
                                   focusNode: _amountFocusNode,
                                   autofocus: _isFormEnabled && errorMessage.isEmpty,
-                                  enabled: _isFormEnabled || !_useEntireBalance,
+                                  enabled: _isFormEnabled && !_useEntireBalance,
                                   enableInteractiveSelection: _isFormEnabled,
                                   controller: _amountController,
                                   validatorFn: (int amountSat) => validatePayment(
