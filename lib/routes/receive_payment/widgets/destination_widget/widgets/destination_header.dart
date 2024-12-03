@@ -28,13 +28,18 @@ class DestinationActions extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: (destination != null)
             ? <Widget>[
-                _CopyButton(
-                  destination: destination,
-                  paymentMethod: paymentMethod,
+                Expanded(
+                  child: _CopyButton(
+                    destination: destination,
+                    paymentMethod: paymentMethod,
+                  ),
                 ),
-                _ShareButton(
-                  destination: destination,
-                  paymentMethod: paymentMethod,
+                const SizedBox(width: 32.0),
+                Expanded(
+                  child: _ShareButton(
+                    destination: destination,
+                    paymentMethod: paymentMethod,
+                  ),
                 ),
               ]
             : <Widget>[],
