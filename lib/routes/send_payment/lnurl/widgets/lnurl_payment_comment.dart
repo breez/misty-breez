@@ -1,16 +1,21 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/src/theme.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class LnUrlPaymentComment extends StatelessWidget {
+  final bool isConfirmation;
   final bool enabled;
   final int maxCommentLength;
   final TextEditingController descriptionController;
   final FocusNode descriptionFocusNode;
 
   const LnUrlPaymentComment({
+    required this.isConfirmation,
     required this.enabled,
     required this.descriptionController,
     required this.descriptionFocusNode,
@@ -21,9 +26,42 @@ class LnUrlPaymentComment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
+    if (isConfirmation) {
+      if (descriptionController.text.isEmpty) {
+        return const SizedBox.shrink();
+      }
+      return Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            AutoSizeText(
+              // TODO(erdemyerebasmaz): Add message to Breez-Translation instead of reusing another value
+              texts.payment_details_dialog_share_comment,
+              style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                fontSize: 18.0,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.left,
+              maxLines: 1,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+              child: WarningBox(
+                boxPadding: EdgeInsets.zero,
+                backgroundColor: themeData.primaryColorLight.withOpacity(0.1),
+                borderColor: themeData.primaryColorLight.withOpacity(0.7),
+                child: LNURLMetadataText(metadataText: descriptionController.text),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: TextFormField(
         enabled: enabled,
         readOnly: !enabled,

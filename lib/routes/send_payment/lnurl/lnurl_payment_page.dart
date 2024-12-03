@@ -442,8 +442,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                               ),
                             ),
                           ],
-                          if (widget.requestData.commentAllowed > 0) ...<Widget>[
+                          if (widget.isConfirmation && _descriptionController.text.isNotEmpty ||
+                              !widget.isConfirmation && widget.requestData.commentAllowed > 0) ...<Widget>[
                             LnUrlPaymentComment(
+                              isConfirmation: widget.isConfirmation,
                               enabled: _isFormEnabled,
                               descriptionController: _descriptionController,
                               descriptionFocusNode: _descriptionFocusNode,
