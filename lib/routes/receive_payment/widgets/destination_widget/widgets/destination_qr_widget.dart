@@ -1,6 +1,10 @@
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 class DestinationQRWidget extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
@@ -20,35 +24,39 @@ class DestinationQRWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BreezTranslations texts = context.texts();
     final String? destination = this.destination ?? snapshot?.data?.destination;
 
-    return AnimatedCrossFade(
-      firstChild: LoadingOrError(error: snapshot?.error),
-      secondChild: destination == null
-          ? const SizedBox.shrink()
-          : Column(
-              children: <Widget>[
-                GestureDetector(
-                  onLongPress: onLongPress,
-                  child: DestinationQRImage(
-                    destination: destination,
-                  ),
-                ),
-                DestinationActions(
-                  snapshot: snapshot,
-                  destination: destination,
-                  paymentMethod: paymentMethod,
-                ),
-                if (infoWidget != null) ...<Widget>[
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: infoWidget,
-                  ),
-                ],
-              ],
-            ),
-      duration: const Duration(seconds: 1),
-      crossFadeState: destination == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+    if (snapshot?.hasError ?? false) {
+      return ScrollableErrorMessageWidget(
+        showIcon: true,
+        title: '${texts.qr_code_dialog_warning_message_error}:',
+        message: extractExceptionMessage(snapshot!.error!, texts),
+        padding: EdgeInsets.zero,
+      );
+    } else if (destination == null) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          onLongPress: onLongPress,
+          child: DestinationQRImage(
+            destination: destination,
+          ),
+        ),
+        DestinationActions(
+          snapshot: snapshot,
+          destination: destination,
+          paymentMethod: paymentMethod,
+        ),
+        if (infoWidget != null) ...<Widget>[
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: infoWidget,
+          ),
+        ],
+      ],
     );
   }
 }
