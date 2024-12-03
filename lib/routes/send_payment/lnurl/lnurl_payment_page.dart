@@ -415,16 +415,14 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                               },
                             ),
                           ],
-                          if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
+                          if (_isFixedAmount) ...<Widget>[
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: LnPaymentAmount(
                                 amountSat: maxSendableSat,
-                                hasError: !(_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty),
+                                hasError: !_isFormEnabled || errorMessage.isNotEmpty,
                               ),
                             ),
-                          ],
-                          if (_prepareResponse != null && _prepareResponse!.feesSat.toInt() != 0) ...<Widget>[
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: LnPaymentFee(
@@ -432,16 +430,16 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                 feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
                               ),
                             ),
-                          ],
-                          if (_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
+                            if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
                               Padding(
                                 padding: _prepareResponse == null
                                     ? EdgeInsets.zero
                                     : const EdgeInsets.only(top: 8.0),
                                 child: LnPaymentDescription(
                                   metadataText: metadataText,
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                           if (widget.isConfirmation && _descriptionController.text.isNotEmpty ||
                               !widget.isConfirmation && widget.requestData.commentAllowed > 0) ...<Widget>[
