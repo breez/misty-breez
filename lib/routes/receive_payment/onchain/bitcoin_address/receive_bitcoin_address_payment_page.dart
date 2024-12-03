@@ -185,11 +185,13 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                     color: Color.fromRGBO(40, 59, 74, 0.5),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
-                  child: DestinationWidget(
-                    snapshot: receiveSnapshot,
-                    paymentMethod: context.texts().receive_payment_method_lightning_invoice,
-                    infoWidget: PaymentFeesMessageBox(
-                      feesSat: prepareSnapshot.data!.feesSat.toInt(),
+                  child: SingleChildScrollView(
+                    child: DestinationWidget(
+                      snapshot: receiveSnapshot,
+                      paymentMethod: context.texts().receive_payment_method_lightning_invoice,
+                      infoWidget: PaymentFeesMessageBox(
+                        feesSat: prepareSnapshot.data!.feesSat.toInt(),
+                      ),
                     ),
                   ),
                 );

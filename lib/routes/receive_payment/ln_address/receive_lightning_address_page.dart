@@ -60,11 +60,13 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                                 color: Color.fromRGBO(40, 59, 74, 0.5),
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
-                              child: DestinationWidget(
-                                isLnAddress: true,
-                                destination: webhookState.lnurlPayUrl,
-                                paymentMethod: texts.receive_payment_method_lightning_address,
-                                infoWidget: const PaymentLimitsMessageBox(),
+                              child: SingleChildScrollView(
+                                child: DestinationWidget(
+                                  isLnAddress: true,
+                                  destination: webhookState.lnurlPayUrl,
+                                  paymentMethod: texts.receive_payment_method_lightning_address,
+                                  infoWidget: const PaymentLimitsMessageBox(),
+                                ),
                               ),
                             ),
                           ),
