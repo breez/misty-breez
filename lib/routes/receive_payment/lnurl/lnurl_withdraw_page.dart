@@ -190,10 +190,6 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 32),
-                          child: Center(child: LNURLMetadataImage()),
-                        ),
                         if (_isFixedAmount) ...<Widget>[
                           Padding(
                             padding: const EdgeInsets.only(bottom: 32),

@@ -142,10 +142,6 @@ class LnPaymentPageState extends State<LnPaymentPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 16),
-                    child: Center(child: LNURLMetadataImage()),
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 32),
                     child: LnPaymentHeader(

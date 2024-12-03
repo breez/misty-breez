@@ -239,13 +239,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 32),
-                      child: Center(child: LNURLMetadataImage(base64String: base64String)),
-                    ),
-                    if (_isFixedAmount) ...<Widget>[
+                    if (base64String?.isNotEmpty ?? false) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
+                        child: Center(child: LNURLMetadataImage(base64String: base64String!)),
+                      ),
+                    ],
+                    if (_isFixedAmount) ...<Widget>[
                         child: LnPaymentHeader(
                           payeeName: payeeName,
                           totalAmount: maxSendableSat + (_prepareResponse?.feesSat.toInt() ?? 0),
