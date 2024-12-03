@@ -486,6 +486,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                       enabled: _isFormEnabled,
                       onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
+                          final FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus && currentFocus.hasFocus) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          }
                           await _openConfirmationPage();
                         }
                       },
