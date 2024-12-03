@@ -40,7 +40,7 @@ class WarningBox extends StatelessWidget {
             shape: Shape.box,
             dash: const <int>[3, 2],
             color: borderColor ?? Theme.of(context).warningBoxBorderColor,
-            borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(6.0)),
           ),
           child: child,
         ),
