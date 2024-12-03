@@ -84,6 +84,8 @@ class InputHandler extends Handler {
 
     if (inputState is LnInvoiceInputState) {
       return handleLnInvoice(context, inputState.lnInvoice);
+    } else if (inputState is LnOfferInputState) {
+      return handleLnOffer(context, inputState.lnOffer);
     } else if (inputState is LnUrlPayInputState) {
       return handlePayRequest(context, firstPaymentItemKey, inputState.data);
     } else if (inputState is LnUrlWithdrawInputState) {
@@ -107,6 +109,41 @@ class InputHandler extends Handler {
     final PrepareSendResponse? prepareResponse = await navigator.pushNamed<PrepareSendResponse?>(
       LnPaymentPage.routeName,
       arguments: lnInvoice,
+    );
+    if (prepareResponse == null || !context.mounted) {
+      return Future<dynamic>.value();
+    }
+
+    // Show Processing Payment Dialog
+    return await showDialog(
+      useRootNavigator: false,
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => ProcessingPaymentDialog(
+        isLnUrlPayment: true,
+        firstPaymentItemKey: firstPaymentItemKey,
+        paymentFunc: () async {
+          final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+          return await paymentsCubit.sendPayment(prepareResponse);
+        },
+      ),
+    ).then((dynamic result) {
+      if (result is String && context.mounted) {
+        showFlushbar(context, message: result);
+      }
+      // TODO(erdemyerebasmaz): Handle SendPaymentResponse results, return a SendPaymentResult to be handled by handleResult()
+      if (result is SendPaymentResponse) {
+        _logger.info('SendPaymentResponse result - payment status: ${result.payment.status}');
+      }
+    });
+  }
+
+  Future<dynamic> handleLnOffer(BuildContext context, LNOffer lnOffer) async {
+    _logger.info('handle LNOffer $lnOffer');
+    final NavigatorState navigator = Navigator.of(context);
+    final PrepareSendResponse? prepareResponse = await navigator.pushNamed<PrepareSendResponse?>(
+      LnOfferPaymentPage.routeName,
+      arguments: lnOffer,
     );
     if (prepareResponse == null || !context.mounted) {
       return Future<dynamic>.value();
