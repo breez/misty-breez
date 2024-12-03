@@ -434,10 +434,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                             ),
                           ],
                           if (_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: LnPaymentDescription(
-                                metadataText: metadataText,
+                              Padding(
+                                padding: _prepareResponse == null
+                                    ? EdgeInsets.zero
+                                    : const EdgeInsets.only(top: 8.0),
+                                child: LnPaymentDescription(
+                                  metadataText: metadataText,
                               ),
                             ),
                           ],
