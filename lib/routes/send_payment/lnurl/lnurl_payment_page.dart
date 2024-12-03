@@ -347,68 +347,73 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                     },
                                   ),
                                 ),
-                                BlocBuilder<AccountCubit, AccountState>(
-                                  builder: (BuildContext context, AccountState accountState) {
-                                    return ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Text(
-                                        texts.withdraw_funds_use_all_funds,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0,
-                                          height: 1.208,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'IBMPlexSans',
-                                        ),
-                                      ),
-                                      subtitle: Text(
-                                        '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
-                                          accountState.walletInfo!.balanceSat.toInt(),
-                                        )}',
-                                        style: const TextStyle(
-                                          color: Color.fromRGBO(182, 188, 193, 1),
-                                          fontSize: 14 + .0,
-                                          height: 1.182,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'IBMPlexSans',
-                                        ),
-                                      ),
-                                      trailing: Padding(
-                                        padding: const EdgeInsets.only(bottom: 4.0),
-                                        child: Switch(
-                                          value: _useEntireBalance,
-                                          activeColor: Colors.white,
-                                          activeTrackColor: themeData.primaryColor,
-                                          onChanged: (bool value) async {
-                                            setState(
-                                              () {
-                                                setState(() {
-                                                  _useEntireBalance = value;
-                                                });
-                                                if (value) {
-                                                  final String formattedAmount = currencyState.bitcoinCurrency
-                                                      .format(
-                                                        accountState.walletInfo!.balanceSat.toInt(),
-                                                        includeDisplayName: false,
-                                                        userInput: true,
-                                                      )
-                                                      .formatBySatAmountFormFieldFormatter();
-                                                  setState(() {
-                                                    _amountController.text = formattedAmount;
-                                                  });
-                                                  _formKey.currentState?.validate();
-                                                } else {
-                                                  _amountController.text = '';
-                                                }
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
                               ],
+                            ),
+                            BlocBuilder<AccountCubit, AccountState>(
+                              builder: (BuildContext context, AccountState accountState) {
+                                return ListTile(
+                                  dense: true,
+                                  minTileHeight: 0,
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(
+                                    texts.withdraw_funds_use_all_funds,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      height: 1.208,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'IBMPlexSans',
+                                    ),
+                                  ),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
+                                        accountState.walletInfo!.balanceSat.toInt(),
+                                      )}',
+                                      style: const TextStyle(
+                                        color: Color.fromRGBO(182, 188, 193, 1),
+                                        fontSize: 16.0,
+                                        height: 1.182,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'IBMPlexSans',
+                                      ),
+                                    ),
+                                  ),
+                                  trailing: Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Switch(
+                                      value: _useEntireBalance,
+                                      activeColor: Colors.white,
+                                      activeTrackColor: themeData.primaryColor,
+                                      onChanged: (bool value) async {
+                                        setState(
+                                          () {
+                                            setState(() {
+                                              _useEntireBalance = value;
+                                            });
+                                            if (value) {
+                                              final String formattedAmount = currencyState.bitcoinCurrency
+                                                  .format(
+                                                    accountState.walletInfo!.balanceSat.toInt(),
+                                                    includeDisplayName: false,
+                                                    userInput: true,
+                                                  )
+                                                  .formatBySatAmountFormFieldFormatter();
+                                              setState(() {
+                                                _amountController.text = formattedAmount;
+                                              });
+                                              _formKey.currentState?.validate();
+                                            } else {
+                                              _amountController.text = '';
+                                            }
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                           if (_prepareResponse != null && _isFixedAmount) ...<Widget>[
