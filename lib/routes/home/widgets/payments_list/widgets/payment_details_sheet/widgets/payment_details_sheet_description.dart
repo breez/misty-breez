@@ -6,10 +6,10 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
 import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 
-class PaymentDetailsDialogDescription extends StatelessWidget {
+class PaymentDetailsSheetDescription extends StatelessWidget {
   final PaymentData paymentData;
 
-  const PaymentDetailsDialogDescription({required this.paymentData, super.key});
+  const PaymentDetailsSheetDescription({required this.paymentData, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Container(
         constraints: const BoxConstraints(
           maxHeight: 54,
@@ -42,7 +42,11 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
           child: SingleChildScrollView(
             child: AutoSizeText(
               description,
-              style: themeData.primaryTextTheme.headlineMedium,
+              style: themeData.primaryTextTheme.displaySmall!.copyWith(
+                fontSize: 20,
+                color: Colors.white70,
+                height: 1.208,
+              ),
               textAlign:
                   description.length > 40 && !description.contains('\n') ? TextAlign.start : TextAlign.center,
             ),

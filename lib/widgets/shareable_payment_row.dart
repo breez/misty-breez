@@ -19,6 +19,7 @@ class ShareablePaymentRow extends StatelessWidget {
   final EdgeInsets? iconPadding;
   final EdgeInsets? tilePadding;
   final EdgeInsets? childrenPadding;
+  final Color? dividerColor;
   final AutoSizeGroup? labelAutoSizeGroup;
   final AutoSizeGroup? valueAutoSizeGroup;
 
@@ -35,6 +36,7 @@ class ShareablePaymentRow extends StatelessWidget {
     this.iconPadding,
     this.tilePadding,
     this.childrenPadding,
+    this.dividerColor,
     this.labelAutoSizeGroup,
     this.valueAutoSizeGroup,
   });
@@ -43,15 +45,15 @@ class ShareablePaymentRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
-    final Color color = themeData.primaryTextTheme.labelLarge!.color!;
 
     return Theme(
       data: themeData.copyWith(
-        dividerColor: themeData.colorScheme.surface,
+        dividerColor: dividerColor ?? themeData.colorScheme.surface,
       ),
       child: ExpansionTile(
-        iconColor: isExpanded ? Colors.transparent : color,
-        collapsedIconColor: color,
+        dense: true,
+        iconColor: isExpanded ? Colors.transparent : Colors.white,
+        collapsedIconColor: Colors.white,
         initiallyExpanded: isExpanded,
         tilePadding: tilePadding,
         title: titleWidget ??
@@ -62,67 +64,79 @@ class ShareablePaymentRow extends StatelessWidget {
               group: labelAutoSizeGroup,
             ),
         children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: childrenPadding ?? const EdgeInsets.only(left: 16.0),
-                  child: GestureDetector(
-                    onTap: isURL
-                        ? () => launchLinkOnExternalBrowser(context, linkAddress: urlValue ?? sharedValue)
-                        : null,
-                    child: Text(
-                      sharedValue,
-                      textAlign: TextAlign.left,
-                      overflow: TextOverflow.clip,
-                      maxLines: 4,
-                      style: childrenTextStyle ??
-                          themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 10),
+          WarningBox(
+            boxPadding: EdgeInsets.zero,
+            contentPadding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+            backgroundColor: themeData.primaryColorLight.withOpacity(0.1),
+            borderColor: themeData.primaryColorLight.withOpacity(0.7),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: childrenPadding ?? EdgeInsets.zero,
+                    child: GestureDetector(
+                      onTap: isURL
+                          ? () => launchLinkOnExternalBrowser(context, linkAddress: urlValue ?? sharedValue)
+                          : null,
+                      child: Text(
+                        sharedValue,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.clip,
+                        maxLines: 4,
+                        style: childrenTextStyle ??
+                            themeData.primaryTextTheme.displaySmall!.copyWith(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              height: 1.156,
+                            ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 0,
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      IconButton(
-                        alignment: Alignment.centerRight,
-                        padding: iconPadding ?? const EdgeInsets.only(right: 8.0),
-                        tooltip: texts.payment_details_dialog_copy_action(title),
-                        iconSize: 16.0,
-                        color: color,
-                        icon: const Icon(
-                          IconData(0xe90b, fontFamily: 'icomoon'),
+                Expanded(
+                  flex: 0,
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                          alignment: Alignment.centerRight,
+                          padding: iconPadding ?? const EdgeInsets.only(right: 8.0),
+                          tooltip: texts.payment_details_dialog_copy_action(title),
+                          iconSize: 20.0,
+                          color: Colors.white,
+                          icon: const Icon(
+                            IconData(0xe90b, fontFamily: 'icomoon'),
+                          ),
+                          onPressed: () {
+                            ServiceInjector().deviceClient.setClipboardText(sharedValue);
+                            Navigator.pop(context);
+                            showFlushbar(
+                              context,
+                              message: texts.payment_details_dialog_copied(
+                                title.substring(0, title.length - 1),
+                              ),
+                              duration: const Duration(seconds: 4),
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          ServiceInjector().deviceClient.setClipboardText(sharedValue);
-                          Navigator.pop(context);
-                          showFlushbar(
-                            context,
-                            message: texts.payment_details_dialog_copied(title),
-                            duration: const Duration(seconds: 4),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        padding: iconPadding ?? const EdgeInsets.only(right: 8.0),
-                        tooltip: texts.payment_details_dialog_share_transaction,
-                        iconSize: 16.0,
-                        color: color,
-                        icon: const Icon(Icons.share),
-                        onPressed: () => Share.share(sharedValue),
-                      ),
-                    ],
+                        IconButton(
+                          padding: iconPadding ?? const EdgeInsets.only(right: 8.0),
+                          tooltip: texts.payment_details_dialog_share_transaction,
+                          iconSize: 20.0,
+                          color: Colors.white,
+                          icon: const Icon(Icons.share),
+                          onPressed: () => Share.share(sharedValue),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
