@@ -85,13 +85,7 @@ class _PaymentItemState extends State<PaymentItem> {
                 ),
                 trailing: PaymentItemAmount(widget.paymentData),
                 onTap: () {
-                  showDialog<void>(
-                    useRootNavigator: false,
-                    context: context,
-                    builder: (_) => PaymentDetailsDialog(
-                      paymentData: widget.paymentData,
-                    ),
-                  );
+                  showPaymentDetailsSheet(context, paymentData: widget.paymentData);
                 },
               ),
             ],

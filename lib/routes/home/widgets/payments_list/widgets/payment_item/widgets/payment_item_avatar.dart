@@ -26,6 +26,7 @@ class PaymentItemAvatar extends StatelessWidget {
         backgroundColor: Colors.white,
         child: Icon(
           paymentData.paymentType == PaymentType.receive ? Icons.add_rounded : Icons.remove_rounded,
+          size: radius,
           color: const Color(0xb3303234),
         ),
       );
