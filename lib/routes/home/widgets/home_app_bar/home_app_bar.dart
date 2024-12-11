@@ -30,21 +30,6 @@ class HomeAppBar extends AppBar {
             ),
             onPressed: () => scaffoldKey.currentState?.openDrawer(),
           ),
-          title: IconButton(
-            padding: EdgeInsets.zero,
-            icon: SvgPicture.asset(
-              'assets/images/liquid-logo-color.svg',
-              colorFilter: ColorFilter.mode(
-                themeData.appBarTheme.actionsIconTheme!.color!,
-                BlendMode.srcATop,
-              ),
-            ),
-            iconSize: 64,
-            onPressed: () => scaffoldKey.currentState?.openDrawer(),
-          ),
-          iconTheme: const IconThemeData(
-            color: Color.fromARGB(255, 0, 133, 251),
-          ),
           backgroundColor: themeData.customData.dashboardBgColor,
           systemOverlayStyle: themeData.isLightTheme
               ? themeData.appBarTheme.systemOverlayStyle!.copyWith(

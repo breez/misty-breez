@@ -12,7 +12,6 @@ import 'package:l_breez/models/user_profile.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/widgets.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 const double _kBreezBottomSheetHeight = 60.0;
 
@@ -177,8 +176,10 @@ class BreezNavigationDrawer extends StatelessWidget {
     final BreezTranslations texts = context.texts();
 
     final List<Widget> drawerHeaderContent = <Widget>[];
-    drawerHeaderContent.add(_buildThemeSwitch(context, user));
     drawerHeaderContent
+      ..add(
+        const SizedBox(height: 42.0),
+      )
       ..add(
         Row(
           children: <Widget>[
@@ -255,57 +256,6 @@ class _ListDivider extends StatelessWidget {
       child: Divider(),
     );
   }
-}
-
-GestureDetector _buildThemeSwitch(
-  BuildContext context,
-  UserProfileSettings user,
-) {
-  final ThemeData themeData = Theme.of(context);
-  return GestureDetector(
-    onTap: () => ThemeProvider.controllerOf(context).nextTheme(),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(
-            top: 10,
-            right: 16.0,
-          ),
-          child: Container(
-            width: 64,
-            padding: const EdgeInsets.all(4),
-            decoration: const ShapeDecoration(
-              shape: StadiumBorder(),
-              color: themeSwitchBgColor,
-            ),
-            child: Row(
-              children: <Widget>[
-                Image.asset(
-                  'assets/icons/ic_lightmode.png',
-                  height: 24,
-                  width: 24,
-                  color: themeData.lightThemeSwitchIconColor,
-                ),
-                const SizedBox(
-                  height: 20,
-                  width: 8,
-                  child: VerticalDivider(
-                    color: Colors.white30,
-                  ),
-                ),
-                ImageIcon(
-                  const AssetImage('assets/icons/ic_darkmode.png'),
-                  color: themeData.darkThemeSwitchIconColor,
-                  size: 24.0,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }
 
 Widget _actionTile(
