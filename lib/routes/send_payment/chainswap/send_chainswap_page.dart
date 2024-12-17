@@ -27,6 +27,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +76,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
           return SendChainSwapFormPage(
             formKey: _formKey,
             amountController: _amountController,
+            addressController: _addressController,
             bitcoinCurrency: currencyState.bitcoinCurrency,
             paymentLimits: snapshot.onchainPaymentLimits!,
             btcAddressData: widget.btcAddressData,
@@ -118,7 +120,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
           FadeInRoute<void>(
             builder: (_) => SendChainSwapConfirmationPage(
               amountSat: amount,
-              onchainRecipientAddress: _amountController.text,
+              onchainRecipientAddress: getAddress(),
               isMaxValue: false,
             ),
           ),
@@ -155,5 +157,9 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
       _logger.warning('Failed to parse the input amount', e);
     }
     return amount;
+  }
+
+  String getAddress() {
+    return _addressController.text;
   }
 }
