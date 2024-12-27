@@ -26,6 +26,7 @@ extension ConfigCopyWith on Config {
       breezApiKey: breezApiKey ?? this.breezApiKey,
       externalInputParsers: externalInputParsers ?? this.externalInputParsers,
       syncServiceUrl: syncServiceUrl ?? this.syncServiceUrl,
+      useDefaultExternalInputParsers: true,
     );
   }
 }
