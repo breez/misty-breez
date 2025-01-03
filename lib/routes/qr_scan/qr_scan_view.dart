@@ -152,7 +152,9 @@ class ImagePickerButton extends StatelessWidget {
 
         if (barcodes == null) {
           _logger.info('No QR code found in image');
-          scaffoldMessenger.showSnackBar(SnackBar(content: Text(texts.qr_scan_gallery_failed)));
+          scaffoldMessenger.showSnackBar(
+            SnackBar(content: Text(texts.qr_scan_gallery_failed)),
+          );
         }
       },
     );
@@ -170,7 +172,7 @@ class QRScanCancelButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-          border: Border.all(color: Colors.white.withOpacity(0.8)),
+          border: Border.all(color: Colors.white.withValues(alpha: .8)),
         ),
         child: TextButton(
           style: TextButton.styleFrom(

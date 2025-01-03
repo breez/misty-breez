@@ -73,7 +73,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }
@@ -151,7 +151,10 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
     return FutureBuilder<PrepareReceiveResponse>(
       future: prepareResponseFuture,
-      builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
+      ) {
         if (prepareSnapshot.hasError) {
           return ScrollableErrorMessageWidget(
             showIcon: true,
@@ -164,7 +167,10 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
         if (prepareSnapshot.hasData) {
           return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
-            builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot,
+            ) {
               if (receiveSnapshot.hasError) {
                 return ScrollableErrorMessageWidget(
                   showIcon: true,
@@ -199,7 +205,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
               return Center(
                 child: Loader(
-                  color: themeData.primaryColor.withOpacity(0.5),
+                  color: themeData.primaryColor.withValues(alpha: .5),
                 ),
               );
             },
@@ -208,14 +214,16 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
         return Center(
           child: Loader(
-            color: themeData.primaryColor.withOpacity(0.5),
+            color: themeData.primaryColor.withValues(alpha: .5),
           ),
         );
       },
     );
   }
 
-  BlocBuilder<CurrencyCubit, CurrencyState> _buildForm(OnchainPaymentLimitsResponse onchainPaymentLimits) {
+  BlocBuilder<CurrencyCubit, CurrencyState> _buildForm(
+    OnchainPaymentLimitsResponse onchainPaymentLimits,
+  ) {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
@@ -325,7 +333,10 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     return;
   }
 
-  String? validatePayment(int amount, OnchainPaymentLimitsResponse onchainPaymentLimits) {
+  String? validatePayment(
+    int amount,
+    OnchainPaymentLimitsResponse onchainPaymentLimits,
+  ) {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: (int amount, bool outgoing) => _validateSwap(amount, outgoing, onchainPaymentLimits),
@@ -334,10 +345,19 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     ).validateIncoming(amount);
   }
 
-  void _validateSwap(int amount, bool outgoing, OnchainPaymentLimitsResponse onchainPaymentLimits) {
+  void _validateSwap(
+    int amount,
+    bool outgoing,
+    OnchainPaymentLimitsResponse onchainPaymentLimits,
+  ) {
     final AccountState accountState = context.read<AccountCubit>().state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
-    return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, onchainPaymentLimits, balance);
+    return chainSwapCubit.validateSwap(
+      BigInt.from(amount),
+      outgoing,
+      onchainPaymentLimits,
+      balance,
+    );
   }
 }

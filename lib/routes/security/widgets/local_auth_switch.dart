@@ -76,7 +76,6 @@ class LocalAuthSwitch extends StatelessWidget {
       case LocalAuthenticationOption.other:
         return texts.security_and_backup_enable_biometric_option_other;
       case LocalAuthenticationOption.none:
-      default:
         return texts.security_and_backup_enable_biometric_option_none;
     }
   }

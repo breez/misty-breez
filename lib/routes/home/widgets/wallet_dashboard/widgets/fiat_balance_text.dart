@@ -44,7 +44,7 @@ class FiatBalanceText extends StatelessWidget {
       child: Text(
         currencyState.fiatConversion()?.format(accountState.walletInfo!.balanceSat.toInt()) ?? '',
         style: balanceFiatConversionTextStyle.copyWith(
-          color: themeData.colorScheme.onSecondary.withOpacity(pow(1.00 - offsetFactor, 2).toDouble()),
+          color: themeData.colorScheme.onSecondary.withValues(alpha: pow(1.00 - offsetFactor, 2).toDouble()),
         ),
       ),
     );

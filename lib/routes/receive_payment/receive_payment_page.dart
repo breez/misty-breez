@@ -74,12 +74,16 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
 
   void _scanBarcode() {
     final BreezTranslations texts = context.texts();
+    final BuildContext currentContext = context;
 
-    Focus.maybeOf(context)?.unfocus();
-    Navigator.pushNamed<String>(context, QRScanView.routeName).then((String? barcode) async {
+    Focus.maybeOf(currentContext)?.unfocus();
+    Navigator.pushNamed<String>(currentContext, QRScanView.routeName).then((String? barcode) async {
       if (barcode == null || barcode.isEmpty) {
-        if (context.mounted) {
-          showFlushbar(context, message: texts.payment_info_dialog_error_qrcode);
+        if (currentContext.mounted) {
+          showFlushbar(
+            currentContext,
+            message: texts.payment_info_dialog_error_qrcode,
+          );
         }
         return;
       }
@@ -98,7 +102,10 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
         if (inputType is InputType_LnUrlWithdraw) {
           handleWithdrawRequest(context, inputType.data);
         } else {
-          showFlushbar(context, message: texts.payment_info_dialog_error_unsupported_input);
+          showFlushbar(
+            context,
+            message: texts.payment_info_dialog_error_unsupported_input,
+          );
         }
       }
     } catch (error) {

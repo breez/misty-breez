@@ -50,6 +50,9 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
 
   void _payAndClose() {
     widget.paymentFunc().then((dynamic payResult) async {
+      if (!mounted) {
+        return;
+      }
       if (widget.isLnUrlPayment) {
         if (payResult is LnUrlPayResult) {
           if (payResult is LnUrlPayResult_EndpointSuccess) {
@@ -64,19 +67,28 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
             }
           });
         } else {
-          Navigator.of(context).pop();
-          final BreezTranslations texts = getSystemAppLocalizations();
-          showFlushbar(context, message: texts.payment_error_to_send_unknown_reason);
+          if (mounted) {
+            Navigator.of(context).pop();
+            final BreezTranslations texts = getSystemAppLocalizations();
+            showFlushbar(
+              context,
+              message: texts.payment_error_to_send_unknown_reason,
+            );
+          }
         }
       } else {
-        Navigator.of(context).pop();
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
     }).catchError((Object err) {
-      Navigator.of(context).pop(err);
-      if (err is FrbException || err is PaymentError_PaymentTimeout) {
-        final BreezTranslations texts = getSystemAppLocalizations();
-        final String message = extractExceptionMessage(err, texts);
-        showFlushbar(context, message: texts.payment_error_to_send(message));
+      if (mounted) {
+        Navigator.of(context).pop(err);
+        if (err is FrbException || err is PaymentError_PaymentTimeout) {
+          final BreezTranslations texts = getSystemAppLocalizations();
+          final String message = extractExceptionMessage(err, texts);
+          showFlushbar(context, message: texts.payment_error_to_send(message));
+        }
       }
     });
   }
