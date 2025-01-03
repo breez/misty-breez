@@ -11,6 +11,7 @@ extension ConfigCopyWith on Config {
     int? zeroConfMinFeeRateMsat,
     BigInt? zeroConfMaxAmountSat,
     String? breezApiKey,
+    List<ExternalInputParser>? externalInputParsers,
   }) {
     return Config(
       liquidElectrumUrl: liquidElectrumUrl ?? this.liquidElectrumUrl,
@@ -22,6 +23,7 @@ extension ConfigCopyWith on Config {
       zeroConfMinFeeRateMsat: zeroConfMinFeeRateMsat ?? this.zeroConfMinFeeRateMsat,
       zeroConfMaxAmountSat: zeroConfMaxAmountSat ?? this.zeroConfMaxAmountSat,
       breezApiKey: breezApiKey ?? this.breezApiKey,
+      externalInputParsers: externalInputParsers ?? this.externalInputParsers,
     );
   }
 }

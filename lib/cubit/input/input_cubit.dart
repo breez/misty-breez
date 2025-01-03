@@ -10,19 +10,20 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:lightning_links/lightning_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:service_injector/service_injector.dart';
 
 export 'input_state.dart';
 
 final Logger _logger = Logger('InputCubit');
 
 class InputCubit extends Cubit<InputState> {
+  final BreezSDKLiquid _breezSdkLiquid;
   final LightningLinksService _lightningLinks;
   final DeviceClient _deviceClient;
 
   final StreamController<InputData> _decodeInvoiceController = StreamController<InputData>();
 
   InputCubit(
+    this._breezSdkLiquid,
     this._lightningLinks,
     this._deviceClient,
   ) : super(const InputState.empty()) {
@@ -42,7 +43,7 @@ class InputCubit extends Cubit<InputState> {
   Future<void> trackPaymentEvents(String? paymentDestination) async {
     _logger.info('Tracking incoming payment events for: $paymentDestination');
     final bool paymentDestinationIsEmpty = paymentDestination == null || paymentDestination.isEmpty;
-    await ServiceInjector().breezSdkLiquid.paymentEventStream.firstWhere((PaymentEvent paymentEvent) {
+    await _breezSdkLiquid.paymentEventStream.firstWhere((PaymentEvent paymentEvent) {
       final Payment payment = paymentEvent.payment;
       final String receivedPaymentDestination = payment.destination ?? '';
       final bool doesDestinationMatch =
@@ -76,7 +77,7 @@ class InputCubit extends Cubit<InputState> {
       // Emit an empty InputState with isLoading to display a loader on UI layer
       emit(const InputState.loading());
       try {
-        final InputType parsedInput = await parse(input: input.data);
+        final InputType parsedInput = await _breezSdkLiquid.instance!.parse(input: input.data);
         return await _handleParsedInput(parsedInput, input.source);
       } catch (e) {
         _logger.severe('Failed to parse input', e);
@@ -120,6 +121,6 @@ class InputCubit extends Cubit<InputState> {
 
   Future<InputType> parseInput({required String input}) async {
     _logger.info('parseInput: $input');
-    return await parse(input: input);
+    return await _breezSdkLiquid.instance!.parse(input: input);
   }
 }
