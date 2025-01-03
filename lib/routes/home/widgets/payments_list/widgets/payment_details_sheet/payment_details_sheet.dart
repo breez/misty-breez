@@ -108,12 +108,10 @@ class PaymentDetailsSheet extends StatelessWidget {
                         paymentData: paymentData,
                         labelAutoSizeGroup: _labelGroup,
                       ),
-                      if (paymentData.paymentType == PaymentType.send) ...<Widget>[
-                        PaymentDetailsSheetFee(
-                          paymentData: paymentData,
-                          labelAutoSizeGroup: _labelGroup,
-                        ),
-                      ],
+                      PaymentDetailsSheetFee(
+                        paymentData: paymentData,
+                        labelAutoSizeGroup: _labelGroup,
+                      ),
                       if (refundTxAmountSat > 0) ...<Widget>[
                         PaymentDetailsSheetRefundTxAmount(
                           paymentData: paymentData,
