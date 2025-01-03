@@ -42,7 +42,7 @@ Route<dynamic>? onGenerateRoute({
     case Home.routeName:
       return FadeInRoute<void>(
         builder: (BuildContext _) => NavigatorPopHandler(
-          onPop: () => homeNavigatorKey.currentState!.maybePop(),
+          onPopWithResult: (Object? result) => homeNavigatorKey.currentState!.maybePop(),
           child: Navigator(
             initialRoute: Home.routeName,
             key: homeNavigatorKey,

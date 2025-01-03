@@ -60,7 +60,7 @@ class HomeState extends State<Home> with AutoLockMixin<Home>, HandlerContextProv
       ),
       child: PopScope(
         canPop: false,
-        onPopInvoked: (bool didPop) async {
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
           if (didPop) {
             return;
           }

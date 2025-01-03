@@ -29,7 +29,11 @@ class LnUrlWithdrawPage extends StatefulWidget {
   static const String routeName = '/lnurl_withdraw';
   static const PaymentMethod paymentMethod = PaymentMethod.lightning;
 
-  const LnUrlWithdrawPage({required this.onFinish, required this.requestData, super.key});
+  const LnUrlWithdrawPage({
+    required this.onFinish,
+    required this.requestData,
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() => LnUrlWithdrawPageState();
@@ -148,7 +152,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
           if (_isLoading) {
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }
@@ -157,7 +161,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
             if (errorMessage.isEmpty) {
               return Center(
                 child: Loader(
-                  color: themeData.primaryColor.withOpacity(0.5),
+                  color: themeData.primaryColor.withValues(alpha: .5),
                 ),
               );
             }
@@ -209,7 +213,10 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                             ),
                             color: Color.fromRGBO(40, 59, 74, 0.5),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 32,
+                            horizontal: 24,
+                          ),
                           child: Column(
                             children: <Widget>[
                               TextFormField(
@@ -225,7 +232,11 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                     const Size(16, 56),
                                   ),
                                   prefixIcon: const SizedBox.shrink(),
-                                  contentPadding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                                  contentPadding: const EdgeInsets.only(
+                                    left: 16,
+                                    top: 16,
+                                    bottom: 16,
+                                  ),
                                   border: const OutlineInputBorder(),
                                   labelText: texts.invoice_description_label,
                                   counterStyle: _descriptionFocusNode.hasFocus
@@ -412,7 +423,9 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       final String networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,
       );
-      message = texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit);
+      message = texts.invoice_payment_validator_error_payment_below_invoice_limit(
+        networkLimit,
+      );
       setState(() {
         _isFormEnabled = false;
       });
@@ -450,6 +463,11 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
     final AccountState accountState = context.read<AccountCubit>().state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+    return lnUrlCubit.validateLnUrlPayment(
+      BigInt.from(amount),
+      outgoing,
+      _lightningLimits!,
+      balance,
+    );
   }
 }

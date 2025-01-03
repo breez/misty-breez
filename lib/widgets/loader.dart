@@ -8,7 +8,13 @@ class Loader extends StatelessWidget {
   final Color? color;
   final double strokeWidth;
 
-  const Loader({super.key, this.value, this.label, this.color, this.strokeWidth = 4.0});
+  const Loader({
+    super.key,
+    this.value,
+    this.label,
+    this.color,
+    this.strokeWidth = 4.0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +84,7 @@ class FullScreenLoader extends StatelessWidget {
             left: 0.0,
             right: 0.0,
             child: Container(
-              color: bgColor.withOpacity(opacity),
+              color: bgColor.withValues(alpha: opacity),
               height: mediaQuerySize.height,
               width: mediaQuerySize.width,
               child: Column(
@@ -106,7 +112,10 @@ class FullScreenLoader extends StatelessWidget {
                 child: IconButton(
                   color: Colors.white,
                   onPressed: () => onClose!(),
-                  icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
+                  icon: Icon(
+                    Icons.close,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
                 ),
               ),
             ),
@@ -150,6 +159,10 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return FullScreenLoader(message: widget.message, opacity: widget.opacity, onClose: widget.onClose);
+    return FullScreenLoader(
+      message: widget.message,
+      opacity: widget.opacity,
+      onClose: widget.onClose,
+    );
   }
 }

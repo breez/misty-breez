@@ -1,5 +1,3 @@
-library security_cubit;
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';

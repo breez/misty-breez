@@ -52,7 +52,7 @@ class _PaymentItemState extends State<PaymentItem> {
                           shape: BoxShape.circle,
                           boxShadow: <BoxShadow>[
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: .1),
                               offset: const Offset(0.5, 0.5),
                               blurRadius: 5.0,
                             ),
@@ -85,7 +85,10 @@ class _PaymentItemState extends State<PaymentItem> {
                 ),
                 trailing: PaymentItemAmount(widget.paymentData),
                 onTap: () {
-                  showPaymentDetailsSheet(context, paymentData: widget.paymentData);
+                  showPaymentDetailsSheet(
+                    context,
+                    paymentData: widget.paymentData,
+                  );
                 },
               ),
             ],

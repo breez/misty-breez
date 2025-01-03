@@ -15,13 +15,15 @@ class FeeBreakdown extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(5.0)),
         border: Border.all(
-          color: themeData.colorScheme.onSurface.withOpacity(0.4),
+          color: themeData.colorScheme.onSurface.withValues(alpha: .4),
         ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          SenderAmount(amountSat: (feeOption.receiverAmountSat + feeOption.totalFeesSat).toInt()),
+          SenderAmount(
+            amountSat: (feeOption.receiverAmountSat + feeOption.totalFeesSat).toInt(),
+          ),
           BoltzServiceFee(
             boltzServiceFee: (feeOption.totalFeesSat - feeOption.claimFeesSat).toInt(),
           ),

@@ -41,7 +41,10 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       if ((amountMsat == null || amountMsat == BigInt.zero) && context.mounted) {
         final BreezTranslations texts = context.texts();
         Navigator.pop(context);
-        showFlushbar(context, message: texts.payment_request_zero_amount_not_supported);
+        showFlushbar(
+          context,
+          message: texts.payment_request_zero_amount_not_supported,
+        );
       }
 
       setState(() {
@@ -131,7 +134,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
           if (_isLoading) {
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }
@@ -159,7 +162,10 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                       ),
                       color: Color.fromRGBO(40, 59, 74, 0.5),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 24,
+                    ),
                     child: Column(
                       children: <Widget>[
                         LnPaymentAmount(
@@ -266,6 +272,11 @@ class LnPaymentPageState extends State<LnPaymentPage> {
     final AccountState accountState = accountCubit.state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+    return lnUrlCubit.validateLnUrlPayment(
+      BigInt.from(amount),
+      outgoing,
+      _lightningLimits!,
+      balance,
+    );
   }
 }

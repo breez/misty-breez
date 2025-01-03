@@ -1,5 +1,3 @@
-library chain_swap_cubit;
-
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

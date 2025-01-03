@@ -13,10 +13,18 @@ class FieldTextStyle {
   static TextStyle labelStyle = TextStyle(color: BreezColors.white[200], letterSpacing: 0.4);
 }
 
-const TextStyle balanceAmountTextStyle =
-    TextStyle(fontSize: 28, fontWeight: FontWeight.w600, height: 1.56, fontFamily: 'IBMPlexSans');
-const TextStyle balanceCurrencyTextStyle =
-    TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.52, fontFamily: 'IBMPlexSans');
+const TextStyle balanceAmountTextStyle = TextStyle(
+  fontSize: 28,
+  fontWeight: FontWeight.w600,
+  height: 1.56,
+  fontFamily: 'IBMPlexSans',
+);
+const TextStyle balanceCurrencyTextStyle = TextStyle(
+  fontSize: 22,
+  fontWeight: FontWeight.w600,
+  height: 1.52,
+  fontFamily: 'IBMPlexSans',
+);
 const TextStyle balanceFiatConversionTextStyle = TextStyle(
   fontSize: 16,
   letterSpacing: 0.2,
@@ -46,8 +54,11 @@ const TextStyle bottomSheetTextStyle = TextStyle(
   fontWeight: FontWeight.w400,
   height: 1.30,
 );
-final TextStyle bottomSheetMenuItemStyle =
-    TextStyle(color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
+final TextStyle bottomSheetMenuItemStyle = TextStyle(
+  color: BreezColors.white[400],
+  fontSize: 14.3,
+  letterSpacing: 0.55,
+);
 final TextStyle blueLinkStyle = TextStyle(color: BreezColors.blue[500], fontSize: 16.0, height: 1.5);
 final TextStyle textStyle = TextStyle(color: BreezColors.white[300], fontSize: 16.0);
 
@@ -64,9 +75,16 @@ const TextStyle navigationDrawerHandleStyle = TextStyle(
 );
 const TextStyle validatorStyle = TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
 final TextStyle welcomeTextStyle = TextStyle(color: BreezColors.white[500], fontSize: 16.0, height: 1.1);
-final TextStyle buttonStyle = TextStyle(color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25);
-final TextStyle whiteButtonStyle =
-    TextStyle(color: BreezColors.white[500], fontSize: 14.3, letterSpacing: 1.25);
+final TextStyle buttonStyle = TextStyle(
+  color: BreezColors.blue[500],
+  fontSize: 14.3,
+  letterSpacing: 1.25,
+);
+final TextStyle whiteButtonStyle = TextStyle(
+  color: BreezColors.white[500],
+  fontSize: 14.3,
+  letterSpacing: 1.25,
+);
 final TextStyle cancelButtonStyle = TextStyle(
   color: BreezColors.red[600],
   letterSpacing: 1.25,
@@ -82,15 +100,23 @@ final TextStyle restoreLinkStyle = TextStyle(
   height: 1.2,
   decoration: TextDecoration.underline,
 );
-final TextStyle snackBarStyle =
-    TextStyle(color: BreezColors.white[500], fontSize: 14.0, letterSpacing: 0.25, height: 1.2);
-final TextStyle fiatConversionTitleStyle =
-    TextStyle(color: BreezColors.white[500], fontSize: 16.3, letterSpacing: 0.25, height: 1.2);
+final TextStyle snackBarStyle = TextStyle(
+  color: BreezColors.white[500],
+  fontSize: 14.0,
+  letterSpacing: 0.25,
+  height: 1.2,
+);
+final TextStyle fiatConversionTitleStyle = TextStyle(
+  color: BreezColors.white[500],
+  fontSize: 16.3,
+  letterSpacing: 0.25,
+  height: 1.2,
+);
 final TextStyle fiatConversionDescriptionStyle = TextStyle(color: BreezColors.white[200], fontSize: 14.3);
 final Color snackBarBackgroundColor = BreezColors.blue[300]!;
 final Color sessionAvatarBackgroundColor = BreezColors.white[500]!;
 const Color themeSwitchBgColor = Color.fromRGBO(229, 238, 251, 0.09);
-final Color circularLoaderColor = BreezColors.blue[200]!.withOpacity(0.7);
+final Color circularLoaderColor = BreezColors.blue[200]!.withValues(alpha: .7);
 const Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
 final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]!);
 final TextStyle mnemonicSeedTextStyle = TextStyle(
@@ -152,8 +178,9 @@ extension ThemeExtensions on ThemeData {
   Color get warningBoxBorderColor =>
       isLightTheme ? const Color.fromRGBO(250, 239, 188, 0.6) : const Color.fromRGBO(227, 180, 47, 0.6);
 
-  Color get bubblePaintColor =>
-      isLightTheme ? const Color(0xFF0085fb).withOpacity(0.1) : const Color(0xff4D88EC).withOpacity(0.1);
+  Color get bubblePaintColor => isLightTheme
+      ? const Color(0xFF0085fb).withValues(alpha: .1)
+      : const Color(0xff4D88EC).withValues(alpha: .1);
 
   Color get lightThemeSwitchIconColor => isLightTheme ? Colors.white : Colors.white30;
 
@@ -200,7 +227,7 @@ extension ThemeExtensions on ThemeData {
           letterSpacing: 0.39,
         )
       : TextStyle(
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha: .7),
           fontSize: 10.5,
           fontWeight: FontWeight.w400,
           height: 1.16,
@@ -216,7 +243,7 @@ extension ThemeExtensions on ThemeData {
           letterSpacing: 0.39,
         )
       : TextStyle(
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha: .7),
           fontSize: 10.5,
           fontWeight: FontWeight.w400,
           height: 1.16,

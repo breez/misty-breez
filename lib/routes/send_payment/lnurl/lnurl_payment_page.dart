@@ -26,7 +26,12 @@ class LnUrlPaymentPage extends StatefulWidget {
   static const String routeName = '/lnurl_payment';
   static const PaymentMethod paymentMethod = PaymentMethod.lightning;
 
-  const LnUrlPaymentPage({required this.requestData, super.key, this.isConfirmation = false, this.comment});
+  const LnUrlPaymentPage({
+    required this.requestData,
+    super.key,
+    this.isConfirmation = false,
+    this.comment,
+  });
 
   @override
   State<StatefulWidget> createState() => LnUrlPaymentPageState();
@@ -185,14 +190,16 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        title: Text(texts.lnurl_fetch_invoice_pay_to_payee(widget.requestData.domain)),
+        title: Text(
+          texts.lnurl_fetch_invoice_pay_to_payee(widget.requestData.domain),
+        ),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (BuildContext context, CurrencyState currencyState) {
           if (_isLoading) {
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }
@@ -208,7 +215,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
             if (errorMessage.isEmpty) {
               return Center(
                 child: Loader(
-                  color: themeData.primaryColor.withOpacity(0.5),
+                  color: themeData.primaryColor.withValues(alpha: .5),
                 ),
               );
             }
@@ -242,7 +249,11 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     if (base64String?.isNotEmpty ?? false) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
-                        child: Center(child: LNURLMetadataImage(base64String: base64String!)),
+                        child: Center(
+                          child: LNURLMetadataImage(
+                            base64String: base64String!,
+                          ),
+                        ),
                       ),
                     ],
                     if (_isFixedAmount) ...<Widget>[
@@ -264,7 +275,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                         ),
                         color: Color.fromRGBO(40, 59, 74, 0.5),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 32,
+                        horizontal: 24,
+                      ),
                       child: Column(
                         children: <Widget>[
                           if (!_isFixedAmount && metadataText != null && metadataText.isNotEmpty) ...<Widget>[
@@ -349,7 +363,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                               ],
                             ),
                             BlocBuilder<AccountCubit, AccountState>(
-                              builder: (BuildContext context, AccountState accountState) {
+                              builder: (
+                                BuildContext context,
+                                AccountState accountState,
+                              ) {
                                 return ListTile(
                                   dense: true,
                                   minTileHeight: 0,
@@ -538,7 +555,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       final String networkLimit = currencyState.bitcoinCurrency.format(
         effectiveMinSat,
       );
-      message = texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit);
+      message = texts.invoice_payment_validator_error_payment_below_invoice_limit(
+        networkLimit,
+      );
       setState(() {
         _isFormEnabled = false;
       });
@@ -577,7 +596,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final AccountState accountState = accountCubit.state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+    return lnUrlCubit.validateLnUrlPayment(
+      BigInt.from(amount),
+      outgoing,
+      _lightningLimits!,
+      balance,
+    );
   }
 
   Future<void> _openConfirmationPage() async {

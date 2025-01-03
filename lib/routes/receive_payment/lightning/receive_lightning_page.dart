@@ -78,7 +78,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           if (lightningPaymentLimits == null) {
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }
@@ -240,7 +240,10 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
     return FutureBuilder<PrepareReceiveResponse>(
       future: prepareResponseFuture,
-      builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
+      ) {
         if (prepareSnapshot.hasError) {
           return ScrollableErrorMessageWidget(
             showIcon: true,
@@ -253,7 +256,10 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
         if (prepareSnapshot.hasData) {
           return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
-            builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot,
+            ) {
               if (receiveSnapshot.hasError) {
                 return ScrollableErrorMessageWidget(
                   showIcon: true,
@@ -288,7 +294,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
               return Center(
                 child: Loader(
-                  color: themeData.primaryColor.withOpacity(0.5),
+                  color: themeData.primaryColor.withValues(alpha: .5),
                 ),
               );
             },
@@ -297,7 +303,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
         return Center(
           child: Loader(
-            color: themeData.primaryColor.withOpacity(0.5),
+            color: themeData.primaryColor.withValues(alpha: .5),
           ),
         );
       },
@@ -306,13 +312,15 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
   void _createInvoice() {
     _doneAction.dispose();
-    _logger
-        .info('Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}');
+    _logger.info(
+      'Create invoice: description=${_descriptionController.text}, amount=${_amountController.text}',
+    );
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
 
-    final BigInt payerAmountSat =
-        BigInt.from(currencyCubit.state.bitcoinCurrency.parse(_amountController.text));
+    final BigInt payerAmountSat = BigInt.from(
+      currencyCubit.state.bitcoinCurrency.parse(_amountController.text),
+    );
     final Future<PrepareReceiveResponse> prepareReceiveResponse = paymentsCubit.prepareReceivePayment(
       paymentMethod: PaymentMethod.lightning,
       payerAmountSat: payerAmountSat,
@@ -331,7 +339,10 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     });
   }
 
-  String? validatePayment(int amount, LightningPaymentLimitsResponse lightningPaymentLimits) {
+  String? validatePayment(
+    int amount,
+    LightningPaymentLimitsResponse lightningPaymentLimits,
+  ) {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: (int amount, bool outgoing) =>
@@ -341,10 +352,19 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     ).validateIncoming(amount);
   }
 
-  void _validatePayment(int amount, bool outgoing, LightningPaymentLimitsResponse lightningPaymentLimits) {
+  void _validatePayment(
+    int amount,
+    bool outgoing,
+    LightningPaymentLimitsResponse lightningPaymentLimits,
+  ) {
     final AccountState accountState = context.read<AccountCubit>().state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, lightningPaymentLimits, balance);
+    return lnUrlCubit.validateLnUrlPayment(
+      BigInt.from(amount),
+      outgoing,
+      lightningPaymentLimits,
+      balance,
+    );
   }
 }

@@ -67,8 +67,8 @@ class ShareablePaymentRow extends StatelessWidget {
           WarningBox(
             boxPadding: EdgeInsets.zero,
             contentPadding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-            backgroundColor: themeData.primaryColorLight.withOpacity(0.1),
-            borderColor: themeData.primaryColorLight.withOpacity(0.7),
+            backgroundColor: themeData.primaryColorLight.withValues(alpha: .1),
+            borderColor: themeData.primaryColorLight.withValues(alpha: .7),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -76,7 +76,10 @@ class ShareablePaymentRow extends StatelessWidget {
                     padding: childrenPadding ?? EdgeInsets.zero,
                     child: GestureDetector(
                       onTap: isURL
-                          ? () => launchLinkOnExternalBrowser(context, linkAddress: urlValue ?? sharedValue)
+                          ? () => launchLinkOnExternalBrowser(
+                                context,
+                                linkAddress: urlValue ?? sharedValue,
+                              )
                           : null,
                       child: Text(
                         sharedValue,

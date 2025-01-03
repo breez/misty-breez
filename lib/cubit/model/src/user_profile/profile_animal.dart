@@ -119,8 +119,6 @@ extension ProfileAnimalExtension on ProfileAnimal {
         return texts.app_animal_sheep;
       case ProfileAnimal.snake:
         return texts.app_animal_snake;
-      default:
-        return '';
     }
   }
 
@@ -178,8 +176,6 @@ extension ProfileAnimalExtension on ProfileAnimal {
         return const IconData(0xe918, fontFamily: 'animals');
       case ProfileAnimal.snake:
         return const IconData(0xe919, fontFamily: 'animals');
-      default:
-        return Icons.bug_report;
     }
   }
 }

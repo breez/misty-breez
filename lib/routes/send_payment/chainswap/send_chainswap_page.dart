@@ -56,7 +56,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
           if (onchainPaymentLimits == null) {
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }
@@ -66,7 +66,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
 
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }

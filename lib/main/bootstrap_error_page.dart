@@ -11,7 +11,11 @@ class BootstrapErrorPage extends StatefulWidget {
   final Object error;
   final StackTrace stackTrace;
 
-  const BootstrapErrorPage({required this.error, required this.stackTrace, super.key});
+  const BootstrapErrorPage({
+    required this.error,
+    required this.stackTrace,
+    super.key,
+  });
 
   @override
   State<BootstrapErrorPage> createState() => _BootstrapErrorPageState();
@@ -27,7 +31,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (didPop) {
           return;
         }
@@ -63,7 +67,11 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.error_outline, color: breezLightTheme.iconTheme.color, size: 64),
+                    Icon(
+                      Icons.error_outline,
+                      color: breezLightTheme.iconTheme.color,
+                      size: 64,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(

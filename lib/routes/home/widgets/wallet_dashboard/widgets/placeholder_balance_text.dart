@@ -23,7 +23,7 @@ class PlaceholderBalanceTextState extends State<PlaceholderBalanceText> {
 
     return Shimmer.fromColors(
       baseColor: themeData.colorScheme.onSecondary,
-      highlightColor: themeData.customData.paymentListBgColor.withOpacity(0.5),
+      highlightColor: themeData.customData.paymentListBgColor.withValues(alpha: .5),
       child: TextButton(
         style: ButtonStyle(
           overlayColor: WidgetStateProperty.resolveWith<Color?>(

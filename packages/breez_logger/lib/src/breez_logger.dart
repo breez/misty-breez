@@ -1,5 +1,3 @@
-library breez.logger;
-
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';

@@ -1,5 +1,3 @@
-library currency_cubit;
-
 import 'dart:async';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';

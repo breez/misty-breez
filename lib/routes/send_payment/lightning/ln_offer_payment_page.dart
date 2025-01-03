@@ -23,7 +23,12 @@ class LnOfferPaymentPage extends StatefulWidget {
   static const String routeName = '/ln_offer_payment';
   static const PaymentMethod paymentMethod = PaymentMethod.lightning;
 
-  const LnOfferPaymentPage({required this.lnOffer, this.amountSat, this.comment, super.key});
+  const LnOfferPaymentPage({
+    required this.lnOffer,
+    this.amountSat,
+    this.comment,
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() => LnOfferPaymentPageState();
@@ -164,7 +169,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
           if (_isLoading) {
             return Center(
               child: Loader(
-                color: themeData.primaryColor.withOpacity(0.5),
+                color: themeData.primaryColor.withValues(alpha: .5),
               ),
             );
           }
@@ -173,7 +178,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
             if (errorMessage.isEmpty) {
               return Center(
                 child: Loader(
-                  color: themeData.primaryColor.withOpacity(0.5),
+                  color: themeData.primaryColor.withValues(alpha: .5),
                 ),
               );
             }
@@ -210,7 +215,10 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                         ),
                         color: Color.fromRGBO(40, 59, 74, 0.5),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
+                      ),
                       child: Column(
                         children: <Widget>[
                           if (!_isFixedAmount) ...<Widget>[
@@ -285,7 +293,10 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                               ],
                             ),
                             BlocBuilder<AccountCubit, AccountState>(
-                              builder: (BuildContext context, AccountState accountState) {
+                              builder: (
+                                BuildContext context,
+                                AccountState accountState,
+                              ) {
                                 return ListTile(
                                   dense: true,
                                   minTileHeight: 0,
@@ -506,7 +517,12 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
     final AccountState accountState = accountCubit.state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(BigInt.from(amount), outgoing, _lightningLimits!, balance);
+    return lnUrlCubit.validateLnUrlPayment(
+      BigInt.from(amount),
+      outgoing,
+      _lightningLimits!,
+      balance,
+    );
   }
 
   Future<void> _openConfirmationPage() async {
