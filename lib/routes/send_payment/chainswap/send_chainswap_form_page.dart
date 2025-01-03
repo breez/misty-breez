@@ -25,8 +25,7 @@ class SendChainSwapFormPage extends StatefulWidget {
   State<SendChainSwapFormPage> createState() => _SendChainSwapFormPageState();
 }
 
-class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {  
-
+class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
   bool _useEntireBalance = false;
 
   @override
