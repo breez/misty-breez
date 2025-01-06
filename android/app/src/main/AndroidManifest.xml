@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    paxkage="com.breez.liquid.l_breez">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.USE_BIOMETRIC" /> <!-- Android 9+ -->
     <uses-permission android:name="android.permission.NFC"/>  <!-- Deep links -->
