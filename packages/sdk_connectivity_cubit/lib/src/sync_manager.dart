@@ -20,7 +20,7 @@ class SyncManager {
 
   void startSyncing() {
     _logger.info('Starting Sync Manager.');
-    _lifecycleSubscription = FGBGEvents.stream.skip(1).listen((FGBGType event) async {
+    _lifecycleSubscription = FGBGEvents.instance.stream.skip(1).listen((FGBGType event) async {
       if (event == FGBGType.foreground && _shouldSync()) {
         await _sync();
       }

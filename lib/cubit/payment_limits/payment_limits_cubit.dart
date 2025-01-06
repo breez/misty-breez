@@ -25,7 +25,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   StreamSubscription<FGBGType>? fgBgEventsStreamSubscription;
 
   void _refreshPaymentLimitsOnResume() {
-    fgBgEventsStreamSubscription = FGBGEvents.stream.listen((FGBGType event) {
+    fgBgEventsStreamSubscription = FGBGEvents.instance.stream.listen((FGBGType event) {
       if (event == FGBGType.foreground) {
         _fetchPaymentLimits();
       }

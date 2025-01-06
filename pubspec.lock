@@ -671,12 +671,11 @@ packages:
   flutter_fgbg:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "976b28ff3c299836f215b6deb2003838c49a8001"
-      resolved-ref: "976b28ff3c299836f215b6deb2003838c49a8001"
-      url: "https://github.com/breez/flutter_fgbg.git"
-    source: git
-    version: "0.2.0"
+      name: flutter_fgbg
+      sha256: e02ad0738ba5fc7f331b62acb0d74aa540626a6441ae18fad685faa5ac4ad7a5
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   flutter_inappwebview:
     dependency: "direct main"
     description:

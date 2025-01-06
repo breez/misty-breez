@@ -67,10 +67,7 @@ dependencies:
   firebase_messaging: ^15.1.6
   flutter_bloc: ^8.1.6
   flutter_cache_manager: ^3.4.1
-  flutter_fgbg:
-    git:
-      url: https://github.com/breez/flutter_fgbg.git
-      ref: 976b28ff3c299836f215b6deb2003838c49a8001
+  flutter_fgbg: ^0.6.0
   flutter_inappwebview: ^6.1.5
   flutter_secure_storage: ^9.2.3
   flutter_svg: ^2.0.16
