@@ -124,12 +124,16 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
 
   void _scanBarcode() {
     final BreezTranslations texts = context.texts();
+    final BuildContext currentContext = context;
 
-    Focus.maybeOf(context)?.unfocus();
-    Navigator.pushNamed<String>(context, QRScanView.routeName).then((String? barcode) async {
+    Focus.maybeOf(currentContext)?.unfocus();
+    Navigator.pushNamed<String>(currentContext, QRScanView.routeName).then((String? barcode) async {
       if (barcode == null || barcode.isEmpty) {
-        if (context.mounted) {
-          showFlushbar(context, message: texts.qr_code_not_detected_error);
+        if (currentContext.mounted) {
+          showFlushbar(
+            currentContext,
+            message: texts.qr_code_not_detected_error,
+          );
         }
         return;
       }
@@ -183,7 +187,10 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
         if (mounted) {
           Navigator.pop(context);
         }
-        inputCubit.addIncomingInput(_paymentInfoController.text.trim(), InputSource.inputField);
+        inputCubit.addIncomingInput(
+          _paymentInfoController.text.trim(),
+          InputSource.inputField,
+        );
       }
     } catch (error) {
       _setLoading(false);

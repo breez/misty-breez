@@ -12,7 +12,7 @@ class PaymentInfoMessageBox extends StatelessWidget {
 
     return WarningBox(
       boxPadding: EdgeInsets.zero,
-      backgroundColor: themeData.colorScheme.error.withOpacity(0.1),
+      backgroundColor: themeData.colorScheme.error.withValues(alpha: .1),
       contentPadding: const EdgeInsets.all(16.0),
       child: Text(
         message,

@@ -65,7 +65,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
     });
 
     _colorAnimation = ColorTween(
-      begin: themeData.primaryTextTheme.titleSmall!.color!.withOpacity(0.7),
+      begin: themeData.primaryTextTheme.titleSmall!.color!.withValues(alpha: .7),
       end: themeData.textTheme.headlineMedium!.color,
     ).animate(_animationController!)
       ..addListener(() {
@@ -140,7 +140,10 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                     margin: const EdgeInsets.only(top: 8.0),
                     width: 40.0,
                     height: 6.5,
-                    decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(50)),
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                   ),
                 ),
                 Padding(
@@ -189,7 +192,10 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                 const SizedBox(height: 8.0),
                 Align(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 16.0,
+                    ),
                     child: SingleButtonBottomBar(
                       text: texts.currency_converter_dialog_action_done,
                       expand: true,

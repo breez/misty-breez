@@ -7,7 +7,10 @@ import 'package:l_breez/theme/theme.dart';
 class ReceiveOptionsBottomSheet extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
 
-  const ReceiveOptionsBottomSheet({required this.firstPaymentItemKey, super.key});
+  const ReceiveOptionsBottomSheet({
+    required this.firstPaymentItemKey,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         ),
         Divider(
           height: 0.0,
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: .2),
           indent: 72.0,
         ),
         ListTile(
@@ -58,7 +61,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         ),
         Divider(
           height: 0.0,
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: .2),
           indent: 72.0,
         ),
         ListTile(

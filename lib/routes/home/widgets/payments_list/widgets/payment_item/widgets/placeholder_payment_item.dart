@@ -13,7 +13,7 @@ class PlaceholderPaymentItem extends StatelessWidget {
     final Color paymentListBgColor = customData.paymentListBgColor;
     return Shimmer.fromColors(
       baseColor: paymentListBgColor,
-      highlightColor: customData.paymentListBgColor.withOpacity(0.5),
+      highlightColor: customData.paymentListBgColor.withValues(alpha: .5),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
         child: ClipRRect(
@@ -30,7 +30,7 @@ class PlaceholderPaymentItem extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: <BoxShadow>[
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: .1),
                           offset: const Offset(0.5, 0.5),
                           blurRadius: 5.0,
                         ),

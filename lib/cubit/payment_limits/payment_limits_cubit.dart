@@ -1,5 +1,3 @@
-library payment_limits_cubit;
-
 import 'dart:async';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
@@ -27,7 +25,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
   StreamSubscription<FGBGType>? fgBgEventsStreamSubscription;
 
   void _refreshPaymentLimitsOnResume() {
-    fgBgEventsStreamSubscription = FGBGEvents.stream.listen((FGBGType event) {
+    fgBgEventsStreamSubscription = FGBGEvents.instance.stream.listen((FGBGType event) {
       if (event == FGBGType.foreground) {
         _fetchPaymentLimits();
       }

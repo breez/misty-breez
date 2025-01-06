@@ -48,7 +48,7 @@ class LnPaymentFee extends StatelessWidget {
                       width: 16,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.0,
-                        color: themeData.primaryColor.withOpacity(0.5),
+                        color: themeData.primaryColor.withValues(alpha: .5),
                       ),
                     ),
                   )
@@ -62,10 +62,12 @@ class LnPaymentFee extends StatelessWidget {
                         maxLines: 1,
                       )
                     : AutoSizeText(
-                        texts.ln_payment_fee_amount_unknown(currencyState.bitcoinCurrency.displayName),
+                        texts.ln_payment_fee_amount_unknown(
+                          currencyState.bitcoinCurrency.displayName,
+                        ),
                         style: TextStyle(
                           fontSize: 18.0,
-                          color: themeData.colorScheme.error.withOpacity(0.8),
+                          color: themeData.colorScheme.error.withValues(alpha: .8),
                         ),
                         textAlign: TextAlign.right,
                         maxLines: 1,

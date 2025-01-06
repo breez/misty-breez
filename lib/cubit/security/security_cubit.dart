@@ -1,5 +1,3 @@
-library security_cubit;
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -27,7 +25,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
 
   SecurityCubit(this.keyChain) : super(const SecurityState.initial()) {
     hydrate();
-    FGBGEvents.stream.listen((FGBGType event) {
+    FGBGEvents.instance.stream.listen((FGBGType event) {
       final Duration lockInterval = state.lockInterval;
       if (event == FGBGType.foreground) {
         _autoLock?.cancel();
