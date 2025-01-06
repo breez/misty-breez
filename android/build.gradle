@@ -15,19 +15,27 @@ subprojects {
                 }
             }
         }
-        if (project.plugins.hasPlugin("com.android.application") ||
-                project.plugins.hasPlugin("com.android.library")) {
+
+        Integer pluginCompileSdk = project.android.compileSdk
+        if ((project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library")) && pluginCompileSdk != null && pluginCompileSdk < 31) {
+            project.logger.error(
+                    "Warning: Overriding compileSdkVersion version in Flutter plugin: "
+                            + project.name
+                            + " from "
+                            + pluginCompileSdk
+                            + " to 35 (to work around https://issuetracker.google.com/issues/199180389)."
+                            + "\nIf there is not a new version of " + project.name + ", consider filing an issue against "
+                            + project.name
+                            + " to increase their compileSdkVersion to the latest (otherwise try updating to the latest version)."
+            )
             project.android {
                 compileSdkVersion 35
                 buildToolsVersion "35.0.0"
             }
         }
     }
-}
-subprojects {
+
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(":app")
 }
 
