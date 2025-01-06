@@ -36,7 +36,6 @@ dependencies:
     path: packages/service_injector
 
   another_flushbar: ^1.12.30
-  app_group_directory: ^2.0.0
   archive: ^3.6.1
   auto_size_text: ^3.0.0
   breez_liquid:
@@ -114,8 +113,6 @@ dependencies:
   synchronized: ^3.3.0+3
   theme_provider: ^0.6.0
   timeago: ^3.7.0
-  # Doesn't support: Linux Mac Windows
-  uni_links: ^0.5.1
   url_launcher: ^6.3.1
   vector_math: ^2.1.4
 

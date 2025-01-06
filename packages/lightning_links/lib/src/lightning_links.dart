@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:uni_links/uni_links.dart';
 
 final Logger _logger = Logger('LightningLinksService');
 
 class LightningLinksService {
+  final AppLinks appLinks = AppLinks();
+
   final BehaviorSubject<String> _linksNotificationsController = BehaviorSubject<String>();
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
@@ -17,8 +19,8 @@ class LightningLinksService {
   void _initializeLinkHandling() {
     Rx.merge(
       <Stream<String?>>[
-        getInitialLink().asStream(),
-        linkStream,
+        appLinks.getInitialLinkString().asStream(),
+        appLinks.stringLinkStream,
       ],
     )
         .where(
