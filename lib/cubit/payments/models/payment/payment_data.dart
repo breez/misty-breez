@@ -12,6 +12,7 @@ class PaymentData {
   final String title;
   final String destination;
   final String txId;
+  final String unblindingData;
   final DateTime paymentTime;
   final int amountSat;
   final int feeSat;
@@ -24,6 +25,7 @@ class PaymentData {
     required this.title,
     required this.destination,
     required this.txId,
+    required this.unblindingData,
     required this.paymentTime,
     required this.amountSat,
     required this.feeSat,
@@ -40,6 +42,7 @@ class PaymentData {
       title: factory._title(),
       destination: payment.destination ?? '',
       txId: payment.txId ?? '',
+      unblindingData: payment.unblindingData ?? '',
       paymentTime: factory._paymentTime(),
       amountSat: payment.amountSat.toInt(),
       feeSat: payment.feesSat.toInt(),
@@ -55,6 +58,7 @@ class PaymentData {
       'title': title,
       'destination': destination,
       'txId': txId,
+      'unblindingData': unblindingData,
       'paymentTime': paymentTime.toIso8601String(),
       'amountSat': amountSat,
       'feeSat': feeSat,
@@ -70,6 +74,7 @@ class PaymentData {
       title: json['title'],
       destination: json['destination'],
       txId: json['txId'],
+      unblindingData: json['unblindingData'],
       paymentTime: DateTime.parse(json['paymentTime']),
       amountSat: json['amountSat'],
       feeSat: json['feeSat'],
@@ -88,6 +93,7 @@ class PaymentData {
         title,
         destination,
         txId,
+        unblindingData,
         paymentTime,
         amountSat,
         feeSat,
@@ -104,6 +110,7 @@ class PaymentData {
             title == other.title &&
             destination == other.destination &&
             txId == other.txId &&
+            unblindingData == other.unblindingData &&
             paymentTime == other.paymentTime &&
             paymentType == other.paymentType &&
             amountSat == other.amountSat &&
