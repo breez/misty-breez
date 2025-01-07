@@ -28,17 +28,17 @@ class WebhookCubit extends Cubit<WebhookState> {
     this._notifications,
   ) : super(WebhookState()) {
     _breezSdkLiquid.walletInfoStream.first.then(
-      (GetInfoResponse walletInfo) => refreshLnurlPay(walletInfo: walletInfo),
+      (GetInfoResponse getInfoResponse) => refreshLnurlPay(getInfoResponse: getInfoResponse),
     );
   }
 
-  Future<void> refreshLnurlPay({GetInfoResponse? walletInfo}) async {
+  Future<void> refreshLnurlPay({GetInfoResponse? getInfoResponse}) async {
     _logger.info('Refreshing Lightning Address');
     emit(WebhookState(isLoading: true));
     try {
-      final GetInfoResponse? getInfoResponse = walletInfo ?? await _breezSdkLiquid.instance?.getInfo();
+      getInfoResponse = getInfoResponse ?? await _breezSdkLiquid.instance?.getInfo();
       if (getInfoResponse != null) {
-        await _registerWebhooks(getInfoResponse);
+        await _registerWebhooks(getInfoResponse.walletInfo);
       } else {
         throw Exception('Unable to retrieve wallet information.');
       }
@@ -55,7 +55,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     }
   }
 
-  Future<void> _registerWebhooks(GetInfoResponse walletInfo) async {
+  Future<void> _registerWebhooks(WalletInfo walletInfo) async {
     try {
       final String webhookUrl = await _generateWebhookURL();
       await _breezSdkLiquid.instance?.registerWebhook(webhookUrl: webhookUrl);
@@ -70,7 +70,7 @@ class WebhookCubit extends Cubit<WebhookState> {
   }
 
   Future<String> _registerLnurlpay(
-    GetInfoResponse walletInfo,
+    WalletInfo walletInfo,
     String webhookUrl,
   ) async {
     final String? lastUsedLnurlPay = await _breezPreferences.getLnUrlPayKey();
@@ -107,7 +107,7 @@ class WebhookCubit extends Cubit<WebhookState> {
   }
 
   Future<void> _invalidateLnurlPay(
-    GetInfoResponse walletInfo,
+    WalletInfo walletInfo,
     String toInvalidate,
   ) async {
     final String lnurlWebhookUrl = '$lnurlServiceURL/lnurlpay/${walletInfo.pubkey}';

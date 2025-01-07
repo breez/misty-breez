@@ -56,6 +56,7 @@ extension PaymentDetailsFromJson on PaymentDetails {
         return PaymentDetails.lightning(
           swapId: json['swapId'] as String,
           description: json['description'] as String,
+          liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int,
           preimage: json['preimage'] as String?,
           bolt11: json['bolt11'] as String?,
           refundTxId: json['refundTxId'] as String?,
@@ -72,6 +73,8 @@ extension PaymentDetailsFromJson on PaymentDetails {
           swapId: json['swapId'] as String,
           description: json['description'] as String,
           refundTxId: json['refundTxId'] as String?,
+          bitcoinExpirationBlockheight: json['bitcoinExpirationBlockheight'] as int?,
+          liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int?,
           refundTxAmountSat:
               json['refundTxAmountSat'] != null ? BigInt.parse(json['refundTxAmountSat'] as String) : null,
         );
