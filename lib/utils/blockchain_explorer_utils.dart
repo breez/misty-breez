@@ -3,8 +3,10 @@ class BlockChainExplorerUtils {
   String formatTransactionUrl({
     required String txid,
     String mempoolInstance = 'https://liquid.fra.mempool.space/',
+    String unblindingData = '',
   }) {
-    return '$mempoolInstance/tx/$txid';
+    final String blinded = unblindingData.isEmpty ? '' : '#blinded=$unblindingData';
+    return '$mempoolInstance/tx/$txid$blinded';
   }
 
   String formatRecommendedFeesUrl({String mempoolInstance = 'https://liquid.fra.mempool.space/'}) {

@@ -129,7 +129,10 @@ class PaymentDetailsSheet extends StatelessWidget {
                         PaymentDetailsSheetPreimage(paymentPreimage: paymentPreimage),
                       ],
                       if (paymentData.txId.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetTxId(txId: paymentData.txId),
+                        PaymentDetailsSheetTxId(
+                          txId: paymentData.txId,
+                          unblindingData: paymentData.unblindingData,
+                        ),
                       ],
                       if (swapId.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetSwapId(swapId: swapId),

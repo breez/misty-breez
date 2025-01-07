@@ -6,8 +6,9 @@ import 'package:l_breez/widgets/widgets.dart';
 
 class PaymentDetailsSheetTxId extends StatelessWidget {
   final String txId;
+  final String unblindingData;
 
-  const PaymentDetailsSheetTxId({required this.txId, super.key});
+  const PaymentDetailsSheetTxId({required this.txId, required this.unblindingData, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class PaymentDetailsSheetTxId extends StatelessWidget {
       ),
       sharedValue: txId,
       isURL: true,
-      urlValue: BlockChainExplorerUtils().formatTransactionUrl(txid: txId),
+      urlValue: BlockChainExplorerUtils().formatTransactionUrl(txid: txId, unblindingData: unblindingData),
     );
   }
 }
