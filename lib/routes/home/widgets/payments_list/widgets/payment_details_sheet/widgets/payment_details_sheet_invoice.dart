@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
-class PaymentDetailsSheetBolt11 extends StatelessWidget {
-  final String bolt11;
+class PaymentDetailsSheetInvoice extends StatelessWidget {
+  final String invoice;
 
-  const PaymentDetailsSheetBolt11({required this.bolt11, super.key});
+  const PaymentDetailsSheetInvoice({required this.invoice, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class PaymentDetailsSheetBolt11 extends StatelessWidget {
         fontSize: 18.0,
         color: Colors.white,
       ),
-      sharedValue: bolt11,
+      sharedValue: invoice,
     );
   }
 }

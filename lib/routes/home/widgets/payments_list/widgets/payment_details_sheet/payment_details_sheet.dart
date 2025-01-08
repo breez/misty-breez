@@ -128,8 +128,8 @@ class PaymentDetailsSheet extends StatelessWidget {
                         paymentData: paymentData,
                         labelAutoSizeGroup: _labelGroup,
                       ),
-                      if (bolt11.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetBolt11(bolt11: bolt11),
+                      if (invoice != null && invoice.isNotEmpty) ...<Widget>[
+                        PaymentDetailsSheetInvoice(invoice: invoice),
                       ],
                       if (paymentPreimage.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetPreimage(
