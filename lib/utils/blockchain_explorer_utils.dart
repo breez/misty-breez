@@ -1,4 +1,3 @@
-// TODO(erdemyerebasmaz): Liquid - This file is unused - Re-add for swap tx's after input parser is implemented
 class BlockChainExplorerUtils {
   String formatTransactionUrl({
     required String txid,
