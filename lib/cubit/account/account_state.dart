@@ -8,7 +8,7 @@ final Logger _logger = Logger('AccountState');
 class AccountState {
   final bool isRestoring;
   final bool didCompleteInitialSync;
-  final GetInfoResponse? walletInfo;
+  final WalletInfo? walletInfo;
 
   const AccountState({
     required this.isRestoring,
@@ -26,7 +26,7 @@ class AccountState {
   AccountState copyWith({
     bool? isRestoring,
     bool? didCompleteInitialSync,
-    GetInfoResponse? walletInfo,
+    WalletInfo? walletInfo,
   }) {
     return AccountState(
       isRestoring: isRestoring ?? this.isRestoring,
@@ -48,7 +48,7 @@ class AccountState {
     return AccountState(
       isRestoring: json['isRestoring'] ?? false,
       didCompleteInitialSync: false,
-      walletInfo: GetInfoResponseFromJson.fromJson(json['walletInfo']),
+      walletInfo: WalletInfoFromJson.fromJson(json['walletInfo']),
     );
   }
 
@@ -56,7 +56,7 @@ class AccountState {
   String toString() => jsonEncode(toJson());
 }
 
-extension GetInfoResponseToJson on GetInfoResponse {
+extension WalletInfoToJson on WalletInfo {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'balanceSat': balanceSat.toString(),
@@ -68,8 +68,8 @@ extension GetInfoResponseToJson on GetInfoResponse {
   }
 }
 
-extension GetInfoResponseFromJson on GetInfoResponse {
-  static GetInfoResponse? fromJson(Map<String, dynamic>? json) {
+extension WalletInfoFromJson on WalletInfo {
+  static WalletInfo? fromJson(Map<String, dynamic>? json) {
     if (json == null) {
       _logger.info('walletInfo is missing from AccountState JSON.');
       return null;
@@ -84,7 +84,7 @@ extension GetInfoResponseFromJson on GetInfoResponse {
       return null;
     }
 
-    return GetInfoResponse(
+    return WalletInfo(
       balanceSat: BigInt.parse(json['balanceSat'] as String),
       pendingSendSat: BigInt.parse(json['pendingSendSat'] as String),
       pendingReceiveSat: BigInt.parse(json['pendingReceiveSat'] as String),
