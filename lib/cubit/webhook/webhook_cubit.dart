@@ -28,17 +28,17 @@ class WebhookCubit extends Cubit<WebhookState> {
     this._notifications,
   ) : super(WebhookState()) {
     _breezSdkLiquid.walletInfoStream.first.then(
-      (GetInfoResponse getInfoResponse) => refreshLnurlPay(getInfoResponse: getInfoResponse),
+      (GetInfoResponse getInfoResponse) => refreshLnurlPay(walletInfo: getInfoResponse.walletInfo),
     );
   }
 
-  Future<void> refreshLnurlPay({GetInfoResponse? getInfoResponse}) async {
+  Future<void> refreshLnurlPay({WalletInfo? walletInfo}) async {
     _logger.info('Refreshing Lightning Address');
     emit(WebhookState(isLoading: true));
     try {
-      getInfoResponse = getInfoResponse ?? await _breezSdkLiquid.instance?.getInfo();
-      if (getInfoResponse != null) {
-        await _registerWebhooks(getInfoResponse.walletInfo);
+      walletInfo = walletInfo ?? (await _breezSdkLiquid.instance?.getInfo())?.walletInfo;
+      if (walletInfo != null) {
+        await _registerWebhooks(walletInfo);
       } else {
         throw Exception('Unable to retrieve wallet information.');
       }
