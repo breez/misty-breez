@@ -47,11 +47,17 @@ class PaymentDetailsSheet extends StatelessWidget {
       orElse: () => 0,
     );
 
-    final String bolt11 = paymentData.details.map(
-          lightning: (PaymentDetails_Lightning details) => details.bolt11,
-          orElse: () => '',
-        ) ??
-        '';
+    final String? bolt11 = paymentData.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.bolt11,
+      orElse: () => null,
+    );
+
+    final String? bolt12Offer = paymentData.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.bolt12Offer,
+      orElse: () => null,
+    );
+
+    final String? invoice = bolt11 ?? bolt12Offer;
 
     final String paymentPreimage = paymentData.details.map(
           lightning: (PaymentDetails_Lightning details) => details.preimage,
@@ -126,7 +132,10 @@ class PaymentDetailsSheet extends StatelessWidget {
                         PaymentDetailsSheetBolt11(bolt11: bolt11),
                       ],
                       if (paymentPreimage.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetPreimage(paymentPreimage: paymentPreimage),
+                        PaymentDetailsSheetPreimage(
+                          invoice: bolt11 ?? bolt12Offer,
+                          paymentPreimage: paymentPreimage,
+                        ),
                       ],
                       if (paymentData.txId.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetTxId(
