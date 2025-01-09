@@ -121,7 +121,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
             builder: (_) => SendChainSwapConfirmationPage(
               amountSat: amount,
               onchainRecipientAddress: getAddress(),
-              isMaxValue: false,
+              isDrain: _isDrain(amount),
             ),
           ),
         );
@@ -157,6 +157,12 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
       _logger.warning('Failed to parse the input amount', e);
     }
     return amount;
+  }
+
+  bool _isDrain(int amount) {
+    final AccountCubit accountCubit = context.read<AccountCubit>();
+    final AccountState accountState = accountCubit.state;
+    return accountState.walletInfo!.balanceSat.toInt() == amount;
   }
 
   String getAddress() {
