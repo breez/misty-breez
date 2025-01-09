@@ -10,12 +10,12 @@ import 'package:l_breez/widgets/widgets.dart';
 class SendChainSwapConfirmationPage extends StatefulWidget {
   final int amountSat;
   final String onchainRecipientAddress;
-  final bool isMaxValue;
+  final bool isDrain;
 
   const SendChainSwapConfirmationPage({
     required this.amountSat,
     required this.onchainRecipientAddress,
-    required this.isMaxValue,
+    required this.isDrain,
     super.key,
   });
 
@@ -87,7 +87,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
     final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
     _fetchFeeOptionsFuture = chainSwapCubit.fetchSendChainSwapFeeOptions(
       amountSat: widget.amountSat,
-      isDrain: widget.isMaxValue,
+      isDrain: widget.isDrain,
     );
     _fetchFeeOptionsFuture.then(
       (List<SendChainSwapFeeOption> feeOptions) {
