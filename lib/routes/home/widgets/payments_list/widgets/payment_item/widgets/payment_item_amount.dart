@@ -39,16 +39,18 @@ class PaymentItemAmount extends StatelessWidget {
                     : MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text(
-                    hideBalance
-                        ? texts.wallet_dashboard_payment_item_balance_hide
-                        : paymentData.paymentType == PaymentType.receive
-                            ? texts.wallet_dashboard_payment_item_balance_positive(amount)
-                            : texts.wallet_dashboard_payment_item_balance_negative(amount),
-                    style: themeData.paymentItemAmountTextStyle,
-                  ),
+                  (paymentData.isRefunded)
+                      ? const SizedBox.shrink()
+                      : Text(
+                          hideBalance
+                              ? texts.wallet_dashboard_payment_item_balance_hide
+                              : paymentData.paymentType == PaymentType.receive
+                                  ? texts.wallet_dashboard_payment_item_balance_positive(amount)
+                                  : texts.wallet_dashboard_payment_item_balance_negative(amount),
+                          style: themeData.paymentItemAmountTextStyle,
+                        ),
                   (fee == 0 || paymentData.status == PaymentState.pending)
-                      ? const SizedBox()
+                      ? const SizedBox.shrink()
                       : Text(
                           hideBalance
                               ? texts.wallet_dashboard_payment_item_balance_hide
