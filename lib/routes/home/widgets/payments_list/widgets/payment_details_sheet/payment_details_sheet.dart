@@ -24,16 +24,28 @@ Future<dynamic> showPaymentDetailsSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(24.0)),
     ),
-    builder: (BuildContext context) => PaymentDetailsSheet(
-      paymentData: paymentData,
-    ),
+    builder: (BuildContext context) {
+      return DraggableScrollableSheet(
+        initialChildSize: 1.0,
+        minChildSize: 0.9,
+        snap: true,
+        snapSizes: <double>[1.0],
+        builder: (BuildContext context, ScrollController scrollController) {
+          return PaymentDetailsSheet(
+            paymentData: paymentData,
+            scrollController: scrollController,
+          );
+        },
+      );
+    },
   );
 }
 
 class PaymentDetailsSheet extends StatelessWidget {
   final PaymentData paymentData;
+  final ScrollController scrollController;
 
-  PaymentDetailsSheet({required this.paymentData, super.key}) {
+  PaymentDetailsSheet({required this.paymentData, required this.scrollController, super.key}) {
     _logger.info('PaymentDetailsSheet for payment: $paymentData');
   }
 
@@ -78,6 +90,7 @@ class PaymentDetailsSheet extends StatelessWidget {
         color: themeData.canvasColor,
       ),
       child: SingleChildScrollView(
+        controller: scrollController,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: SizedBox(
