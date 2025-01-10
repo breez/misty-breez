@@ -118,8 +118,15 @@ extension PaymentDetailsExtension on PaymentDetails {
 extension PaymentDetailsHashCode on PaymentDetails {
   int calculateHashCode() {
     return map(
-      lightning: (PaymentDetails_Lightning o) => Object.hash(o.swapId, o.description, o.destinationPubkey,
-          o.preimage, o.invoice, o.refundTxId, o.refundTxAmountSat),
+      lightning: (PaymentDetails_Lightning o) => Object.hash(
+        o.swapId,
+        o.description,
+        o.destinationPubkey,
+        o.preimage,
+        o.invoice,
+        o.refundTxId,
+        o.refundTxAmountSat,
+      ),
       liquid: (PaymentDetails_Liquid o) => Object.hash(o.destination, o.description),
       bitcoin: (PaymentDetails_Bitcoin o) =>
           Object.hash(o.swapId, o.description, o.refundTxId, o.refundTxAmountSat),
