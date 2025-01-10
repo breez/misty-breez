@@ -47,23 +47,20 @@ class PaymentDetailsSheet extends StatelessWidget {
       orElse: () => 0,
     );
 
-    final String? bolt11 = paymentData.details.map(
-      lightning: (PaymentDetails_Lightning details) => details.bolt11,
+    final String? invoice = paymentData.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.invoice,
       orElse: () => null,
     );
 
-    final String? bolt12Offer = paymentData.details.map(
-      lightning: (PaymentDetails_Lightning details) => details.bolt12Offer,
-      orElse: () => null,
+    final String destinationPubkey = paymentData.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.destinationPubkey ?? '',
+      orElse: () => '',
     );
-
-    final String? invoice = bolt11 ?? bolt12Offer;
 
     final String paymentPreimage = paymentData.details.map(
-          lightning: (PaymentDetails_Lightning details) => details.preimage,
-          orElse: () => '',
-        ) ??
-        '';
+      lightning: (PaymentDetails_Lightning details) => details.preimage ?? '',
+      orElse: () => '',
+    );
 
     final String swapId = paymentData.details.map(
       bitcoin: (PaymentDetails_Bitcoin details) => details.swapId,
@@ -133,9 +130,12 @@ class PaymentDetailsSheet extends StatelessWidget {
                       ],
                       if (paymentPreimage.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetPreimage(
-                          invoice: bolt11 ?? bolt12Offer,
+                          invoice: invoice,
                           paymentPreimage: paymentPreimage,
                         ),
+                      ],
+                      if (destinationPubkey.isNotEmpty) ...<Widget>[
+                        PaymentDetailsSheetDestinationPubkey(destinationPubkey: destinationPubkey),
                       ],
                       if (paymentData.txId.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetTxId(
