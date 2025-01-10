@@ -34,6 +34,7 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
+            // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
             'Refund Tx ${texts.ln_payment_amount_label}',
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
@@ -53,7 +54,7 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
                   state.bitcoinTicker,
                 ).format(refundTxAmountSat);
                 return Text(
-                  paymentData.paymentType == PaymentType.receive
+                  paymentData.paymentType == PaymentType.receive || paymentData.isRefunded
                       ? texts.payment_details_dialog_amount_positive(amountSats)
                       : texts.payment_details_dialog_amount_negative(amountSats),
                   style: themeData.primaryTextTheme.displaySmall!.copyWith(
