@@ -25,7 +25,11 @@ class PaymentItemAvatar extends StatelessWidget {
         radius: radius,
         backgroundColor: Colors.white,
         child: Icon(
-          paymentData.paymentType == PaymentType.receive ? Icons.add_rounded : Icons.remove_rounded,
+          paymentData.isRefunded
+              ? Icons.close_rounded
+              : paymentData.paymentType == PaymentType.receive
+                  ? Icons.add_rounded
+                  : Icons.remove_rounded,
           size: radius,
           color: const Color(0xb3303234),
         ),

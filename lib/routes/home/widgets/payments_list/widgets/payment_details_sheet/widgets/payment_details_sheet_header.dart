@@ -39,6 +39,15 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
           ),
           PaymentDetailsSheetContentTitle(paymentData: widget.paymentData),
           PaymentDetailsSheetDescription(paymentData: widget.paymentData),
+          if (widget.paymentData.isRefunded) ...<Widget>[
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Chip(
+                label: Text('FAILED'),
+                backgroundColor: Colors.red,
+              ),
+            ),
+          ],
         ],
       ),
     );
