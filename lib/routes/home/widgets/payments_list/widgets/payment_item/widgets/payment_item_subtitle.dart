@@ -35,6 +35,14 @@ class PaymentItemSubtitle extends StatelessWidget {
             ),
           ),
         ],
+        if (paymentData.isRefunded) ...<Widget>[
+          Text(
+            ' (Failed)',
+            style: subtitleTextStyle.copyWith(
+              color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
+            ),
+          ),
+        ],
       ],
     );
   }
