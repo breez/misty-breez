@@ -46,7 +46,7 @@ class App extends StatelessWidget {
           ),
         ),
         BlocProvider<UserProfileCubit>(
-          create: (BuildContext context) => UserProfileCubit(),
+          create: (BuildContext context) => UserProfileCubit(injector.breezPreferences),
         ),
         BlocProvider<WebhookCubit>(
           lazy: false,

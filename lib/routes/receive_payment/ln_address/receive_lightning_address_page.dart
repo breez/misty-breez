@@ -23,12 +23,12 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
   @override
   void initState() {
     super.initState();
-    _refreshLnurlPay();
+    _refreshWebhooks();
   }
 
-  void _refreshLnurlPay() {
+  void _refreshWebhooks() {
     final WebhookCubit webhookCubit = context.read<WebhookCubit>();
-    webhookCubit.refreshLnurlPay();
+    webhookCubit.refreshWebhooks();
   }
 
   @override
@@ -84,7 +84,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                       stickToBottom: true,
                       text: texts.invoice_ln_address_action_retry,
                       onPressed: webhookState.lnurlPayError != null
-                          ? () => _refreshLnurlPay()
+                          ? () => _refreshWebhooks()
                           : () {
                               final PaymentLimitsCubit paymentLimitsCubit =
                                   context.read<PaymentLimitsCubit>();

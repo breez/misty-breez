@@ -44,7 +44,7 @@ class _BalanceTextState extends State<BalanceText> {
           },
         ),
       ),
-      onPressed: () => _changeBtcCurrency(context),
+      onPressed: () async => await _changeBtcCurrency(context),
       child: widget.hiddenBalance
           ? Text(
               texts.wallet_dashboard_balance_hide,
@@ -78,13 +78,13 @@ class _BalanceTextState extends State<BalanceText> {
     );
   }
 
-  void _changeBtcCurrency(BuildContext context) {
+  Future<void> _changeBtcCurrency(BuildContext context) async {
     final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     final CurrencyState currencyState = currencyCubit.state;
 
     if (widget.hiddenBalance == true) {
-      userProfileCubit.updateProfile(hideBalance: false);
+      await userProfileCubit.updateProfile(hideBalance: false);
       return;
     }
     final List<BitcoinCurrency> list = BitcoinCurrency.currencies;
@@ -93,7 +93,7 @@ class _BalanceTextState extends State<BalanceText> {
     );
     final int nextCurrencyIndex = (index + 1) % list.length;
     if (nextCurrencyIndex == 1) {
-      userProfileCubit.updateProfile(hideBalance: true);
+      await userProfileCubit.updateProfile(hideBalance: true);
     }
     currencyCubit.setBitcoinTicker(list[nextCurrencyIndex].tickerSymbol);
   }

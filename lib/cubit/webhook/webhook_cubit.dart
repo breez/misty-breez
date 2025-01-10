@@ -28,12 +28,12 @@ class WebhookCubit extends Cubit<WebhookState> {
     this._notifications,
   ) : super(WebhookState()) {
     _breezSdkLiquid.walletInfoStream.first.then(
-      (GetInfoResponse getInfoResponse) => refreshLnurlPay(walletInfo: getInfoResponse.walletInfo),
+      (GetInfoResponse getInfoResponse) => refreshWebhooks(walletInfo: getInfoResponse.walletInfo),
     );
   }
 
-  Future<void> refreshLnurlPay({WalletInfo? walletInfo}) async {
-    _logger.info('Refreshing Lightning Address');
+  Future<void> refreshWebhooks({WalletInfo? walletInfo}) async {
+    _logger.info('Refreshing webhooks');
     emit(WebhookState(isLoading: true));
     try {
       walletInfo = walletInfo ?? (await _breezSdkLiquid.instance?.getInfo())?.walletInfo;
@@ -77,8 +77,12 @@ class WebhookCubit extends Cubit<WebhookState> {
     if (lastUsedLnurlPay != null && lastUsedLnurlPay != webhookUrl) {
       await _invalidateLnurlPay(walletInfo, lastUsedLnurlPay);
     }
+    String? username = await _breezPreferences.getProfileName();
+    username = username?.replaceAll(' ', '');
     final int currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final SignMessageRequest req = SignMessageRequest(message: '$currentTime-$webhookUrl');
+    final String optionalUsernameKey = username != null ? '-$username' : '';
+    final SignMessageRequest req =
+        SignMessageRequest(message: '$currentTime-$webhookUrl$optionalUsernameKey');
     final SignMessageResponse? signMessageRes = _breezSdkLiquid.instance?.signMessage(req: req);
     if (signMessageRes == null) {
       throw Exception('Missing signature');
@@ -91,13 +95,14 @@ class WebhookCubit extends Cubit<WebhookState> {
         AddWebhookRequest(
           time: currentTime,
           webhookUrl: webhookUrl,
+          username: username,
           signature: signMessageRes.signature,
         ).toJson(),
       ),
     );
     if (jsonResponse.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(jsonResponse.body);
-      final String lnurl = data['lnurl'];
+      final String lnurl = data.containsKey('lightning_address') ? data['lightning_address'] : data['lnurl'];
       _logger.info('lnurlpay webhook registered: $webhookUrl, lnurl = $lnurl');
       await _breezPreferences.setLnUrlPayKey(webhookUrl);
       return lnurl;
