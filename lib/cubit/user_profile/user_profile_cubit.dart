@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -17,7 +18,11 @@ export 'user_profile_state.dart';
 final Logger _logger = Logger('UserProfileCubit');
 
 class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserProfileState> {
-  UserProfileCubit() : super(UserProfileState.initial()) {
+  final BreezPreferences _breezPreferences;
+
+  UserProfileCubit(
+    this._breezPreferences,
+  ) : super(UserProfileState.initial()) {
     hydrate();
     UserProfileState profile = state;
     _logger.info('State: ${profile.profileSettings.toJson()}');
@@ -36,7 +41,15 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
         ),
       );
     }
+    _setProfileName(profile.profileSettings.name!);
     emit(profile);
+  }
+
+  Future<void> _setProfileName(String name) async {
+    final String? profileName = await _breezPreferences.getProfileName();
+    if (profileName == null) {
+      await _breezPreferences.setProfileName(name);
+    }
   }
 
   Future<String> saveProfileImage(Uint8List bytes) async {
@@ -60,7 +73,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     return path.join(profileImagesDir.path, fileName);
   }
 
-  void updateProfile({
+  Future<void> updateProfile({
     String? name,
     String? color,
     String? animal,
@@ -68,7 +81,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     bool? hideBalance,
     AppMode? appMode,
     bool? expandPreferences,
-  }) {
+  }) async {
     _logger.info('updateProfile');
     UserProfileSettings profile = state.profileSettings;
     profile = profile.copyWith(
@@ -80,6 +93,9 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
       appMode: appMode ?? profile.appMode,
       expandPreferences: expandPreferences ?? profile.expandPreferences,
     );
+    if (name != null && state.profileSettings.name != name) {
+      await _breezPreferences.setProfileName(profile.name!);
+    }
     emit(state.copyWith(profileSettings: profile));
   }
 

@@ -29,17 +29,20 @@ class WebhookState {
 class AddWebhookRequest {
   final int time;
   final String webhookUrl;
+  final String? username;
   final String signature;
 
   AddWebhookRequest({
     required this.time,
     required this.webhookUrl,
+    required this.username,
     required this.signature,
   });
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'time': time,
         'webhook_url': webhookUrl,
+        'username': username,
         'signature': signature,
       };
 }

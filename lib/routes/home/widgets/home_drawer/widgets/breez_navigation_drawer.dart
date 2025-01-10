@@ -380,9 +380,9 @@ class _ExpansionTile extends StatelessWidget {
               ),
             )
             .toList(),
-        onExpansionChanged: (bool isExpanded) {
+        onExpansionChanged: (bool isExpanded) async {
           final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
-          userProfileCubit.updateProfile(expandPreferences: isExpanded);
+          await userProfileCubit.updateProfile(expandPreferences: isExpanded);
           if (isExpanded) {
             Timer(
               const Duration(milliseconds: 200),
