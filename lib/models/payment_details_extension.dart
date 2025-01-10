@@ -28,7 +28,8 @@ extension PaymentDetailsToJson on PaymentDetails {
         'swapId': details.swapId,
         'description': details.description,
         'preimage': details.preimage,
-        'bolt11': details.bolt11,
+        'invoice': details.invoice,
+        'destinationPubkey': details.destinationPubkey,
         'refundTxId': details.refundTxId,
         'refundTxAmountSat': details.refundTxAmountSat?.toString(),
       },
@@ -58,7 +59,8 @@ extension PaymentDetailsFromJson on PaymentDetails {
           description: json['description'] as String,
           liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int,
           preimage: json['preimage'] as String?,
-          bolt11: json['bolt11'] as String?,
+          invoice: json['invoice'] as String?,
+          destinationPubkey: json['destinationPubkey'] as String?,
           refundTxId: json['refundTxId'] as String?,
           refundTxAmountSat:
               json['refundTxAmountSat'] != null ? BigInt.parse(json['refundTxAmountSat'] as String) : null,
@@ -95,8 +97,9 @@ extension PaymentDetailsExtension on PaymentDetails {
               lightning: (PaymentDetails_Lightning o) =>
                   o.swapId == (this as PaymentDetails_Lightning).swapId &&
                   o.description == (this as PaymentDetails_Lightning).description &&
+                  o.destinationPubkey == (this as PaymentDetails_Lightning).destinationPubkey &&
                   o.preimage == (this as PaymentDetails_Lightning).preimage &&
-                  o.bolt11 == (this as PaymentDetails_Lightning).bolt11 &&
+                  o.invoice == (this as PaymentDetails_Lightning).invoice &&
                   o.refundTxId == (this as PaymentDetails_Lightning).refundTxId &&
                   o.refundTxAmountSat == (this as PaymentDetails_Lightning).refundTxAmountSat,
               liquid: (PaymentDetails_Liquid o) =>
@@ -115,8 +118,15 @@ extension PaymentDetailsExtension on PaymentDetails {
 extension PaymentDetailsHashCode on PaymentDetails {
   int calculateHashCode() {
     return map(
-      lightning: (PaymentDetails_Lightning o) =>
-          Object.hash(o.swapId, o.description, o.preimage, o.bolt11, o.refundTxId, o.refundTxAmountSat),
+      lightning: (PaymentDetails_Lightning o) => Object.hash(
+        o.swapId,
+        o.description,
+        o.destinationPubkey,
+        o.preimage,
+        o.invoice,
+        o.refundTxId,
+        o.refundTxAmountSat,
+      ),
       liquid: (PaymentDetails_Liquid o) => Object.hash(o.destination, o.description),
       bitcoin: (PaymentDetails_Bitcoin o) =>
           Object.hash(o.swapId, o.description, o.refundTxId, o.refundTxAmountSat),
