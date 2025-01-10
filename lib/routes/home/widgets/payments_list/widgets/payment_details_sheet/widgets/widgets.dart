@@ -2,6 +2,7 @@ export 'payment_details_sheet_amount.dart';
 export 'payment_details_sheet_content_title.dart';
 export 'payment_details_sheet_date.dart';
 export 'payment_details_sheet_description.dart';
+export 'payment_details_sheet_destination_pubkey.dart';
 export 'payment_details_sheet_fee.dart';
 export 'payment_details_sheet_invoice.dart';
 export 'payment_details_sheet_preimage.dart';
