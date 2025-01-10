@@ -144,13 +144,18 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
       final String? userName = nameInputController.text.isNotEmpty
           ? nameInputController.text
           : userProfileCubit.state.profileSettings.name;
-      userProfileCubit.updateProfile(name: userName);
+      await userProfileCubit.updateProfile(name: userName);
+      if (mounted) {
+        final WebhookCubit webhookCubit = context.read<WebhookCubit>();
+        await webhookCubit.refreshWebhooks();
+      }
       await saveProfileImage();
       setState(() {
         isUploading = false;
       });
       navigator.pop();
     } catch (e) {
+      await userProfileCubit.updateProfile(name: userProfileCubit.state.profileSettings.name);
       setState(() {
         isUploading = false;
         pickedImage = null;
@@ -223,9 +228,9 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
     _logger.info('saveProfileImage ${pickedImage?.path} $randomAvatarPath');
     if (pickedImage != null) {
       final String profileImageFilePath = await userProfileCubit.saveProfileImage(await scaleAndFormatPNG());
-      userProfileCubit.updateProfile(image: profileImageFilePath);
+      await userProfileCubit.updateProfile(image: profileImageFilePath);
     } else if (randomAvatarPath != null) {
-      userProfileCubit.updateProfile(image: randomAvatarPath);
+      await userProfileCubit.updateProfile(image: randomAvatarPath);
     }
   }
 
