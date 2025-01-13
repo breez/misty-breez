@@ -13,16 +13,16 @@ class WithdrawFundsAmountTextFormField extends AmountFormField {
     required super.bitcoinCurrency,
     required super.context,
     required TextEditingController super.controller,
-    required FocusNode super.focusNode,
-    required bool useEntireBalance,
+    required FocusNode focusNode,
+    required bool isDrain,
     required WithdrawFundsPolicy policy,
     required BigInt balance,
     super.key,
   }) : super(
           texts: context.texts(),
-          enabled: !useEntireBalance,
-          enableInteractiveSelection: !useEntireBalance,
-          readOnly: policy.withdrawKind == WithdrawKind.unexpectedFunds || useEntireBalance,
+          enableInteractiveSelection: !isDrain,
+          readOnly: policy.withdrawKind == WithdrawKind.unexpectedFunds || isDrain,
+          focusNode: isDrain ? null : focusNode,
           validatorFn: (int amount) {
             _logger.info('Validator called for $amount');
             return PaymentValidator(

@@ -29,6 +29,8 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
+  bool isDrain = false;
+
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
@@ -80,6 +82,12 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
             bitcoinCurrency: currencyState.bitcoinCurrency,
             paymentLimits: snapshot.onchainPaymentLimits!,
             btcAddressData: widget.btcAddressData,
+            isDrain: isDrain,
+            onChanged: (bool value) {
+              setState(() {
+                isDrain = value;
+              });
+            },
           );
         },
       ),
@@ -121,7 +129,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
             builder: (_) => SendChainSwapConfirmationPage(
               amountSat: amount,
               onchainRecipientAddress: getAddress(),
-              isDrain: _isDrain(amount),
+              isDrain: isDrain ? isDrain : _isDrain(amount),
             ),
           ),
         );

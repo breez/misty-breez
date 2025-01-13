@@ -10,6 +10,8 @@ class SendChainSwapFormPage extends StatefulWidget {
   final BitcoinAddressData? btcAddressData;
   final TextEditingController amountController;
   final TextEditingController addressController;
+  final bool isDrain;
+  final ValueChanged<bool> onChanged;
 
   const SendChainSwapFormPage({
     required this.formKey,
@@ -17,6 +19,8 @@ class SendChainSwapFormPage extends StatefulWidget {
     required this.paymentLimits,
     required this.amountController,
     required this.addressController,
+    required this.isDrain,
+    required this.onChanged,
     super.key,
     this.btcAddressData,
   });
@@ -26,8 +30,6 @@ class SendChainSwapFormPage extends StatefulWidget {
 }
 
 class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
-  bool _useEntireBalance = false;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -49,14 +51,12 @@ class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
                 formKey: widget.formKey,
                 amountController: widget.amountController,
                 addressController: widget.addressController,
-                useEntireBalance: _useEntireBalance,
+                isDrain: widget.isDrain,
                 btcAddressData: widget.btcAddressData,
                 bitcoinCurrency: widget.bitcoinCurrency,
                 paymentLimits: widget.paymentLimits,
                 onChanged: (bool value) {
-                  setState(() {
-                    _useEntireBalance = value;
-                  });
+                  widget.onChanged(value);
                 },
               ),
             ),
