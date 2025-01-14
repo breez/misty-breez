@@ -283,7 +283,6 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                         }
                                       },
                                       style: FieldTextStyle.textStyle,
-                                      errorMaxLines: 3,
                                       errorStyle: FieldTextStyle.labelStyle.copyWith(
                                         fontSize: 18.0,
                                         color: themeData.colorScheme.error,

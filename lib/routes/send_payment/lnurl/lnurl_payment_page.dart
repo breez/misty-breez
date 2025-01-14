@@ -326,7 +326,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                     }
                                   },
                                   style: FieldTextStyle.textStyle,
-                                  errorMaxLines: 3,
                                 ),
                                 if (!_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty) ...<Widget>[
                                   const SizedBox(height: 8.0),

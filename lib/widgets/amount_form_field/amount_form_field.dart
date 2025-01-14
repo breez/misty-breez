@@ -64,7 +64,7 @@ class AmountFormField extends TextFormField {
             contentPadding: EdgeInsets.zero,
             floatingLabelStyle: floatingLabelStyle,
             errorStyle: errorStyle,
-            errorMaxLines: errorMaxLines,
+            errorMaxLines: errorMaxLines ?? 3,
             suffixIcon: (readOnly ?? false)
                 ? null
                 : IconButton(
