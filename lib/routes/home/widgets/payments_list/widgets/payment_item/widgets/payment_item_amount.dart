@@ -23,13 +23,14 @@ class PaymentItemAmount extends StatelessWidget {
           final bool hideBalance = userModel.profileSettings.hideBalance;
           return BlocBuilder<CurrencyCubit, CurrencyState>(
             builder: (BuildContext context, CurrencyState currencyState) {
-              final int fee = paymentData.feeSat;
               final String amount = currencyState.bitcoinCurrency.format(
                 paymentData.amountSat,
                 includeDisplayName: false,
               );
-              final String feeFormatted = currencyState.bitcoinCurrency.format(
-                fee,
+
+              final int actualFeeSat = paymentData.actualFeeSat;
+              final String actualFeeFormatted = currencyState.bitcoinCurrency.format(
+                actualFeeSat,
                 includeDisplayName: false,
               );
 
@@ -39,20 +40,22 @@ class PaymentItemAmount extends StatelessWidget {
                     : MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text(
-                    hideBalance
-                        ? texts.wallet_dashboard_payment_item_balance_hide
-                        : paymentData.paymentType == PaymentType.receive
-                            ? texts.wallet_dashboard_payment_item_balance_positive(amount)
-                            : texts.wallet_dashboard_payment_item_balance_negative(amount),
-                    style: themeData.paymentItemAmountTextStyle,
-                  ),
-                  (fee == 0 || paymentData.status == PaymentState.pending)
-                      ? const SizedBox()
+                  (paymentData.isRefunded)
+                      ? const SizedBox.shrink()
                       : Text(
                           hideBalance
                               ? texts.wallet_dashboard_payment_item_balance_hide
-                              : texts.wallet_dashboard_payment_item_balance_fee(feeFormatted),
+                              : paymentData.paymentType == PaymentType.receive
+                                  ? texts.wallet_dashboard_payment_item_balance_positive(amount)
+                                  : texts.wallet_dashboard_payment_item_balance_negative(amount),
+                          style: themeData.paymentItemAmountTextStyle,
+                        ),
+                  (actualFeeSat == 0 || paymentData.status == PaymentState.pending)
+                      ? const SizedBox.shrink()
+                      : Text(
+                          hideBalance
+                              ? texts.wallet_dashboard_payment_item_balance_hide
+                              : texts.wallet_dashboard_payment_item_balance_fee(actualFeeFormatted),
                           style: themeData.paymentItemFeeTextStyle,
                         ),
                 ],

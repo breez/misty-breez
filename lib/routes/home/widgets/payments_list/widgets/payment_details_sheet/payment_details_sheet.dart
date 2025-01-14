@@ -53,12 +53,6 @@ class PaymentDetailsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
 
-    final int refundTxAmountSat = paymentData.details.map(
-      bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxAmountSat?.toInt() ?? 0,
-      lightning: (PaymentDetails_Lightning details) => details.refundTxAmountSat?.toInt() ?? 0,
-      orElse: () => 0,
-    );
-
     final String? invoice = paymentData.details.map(
       lightning: (PaymentDetails_Lightning details) => details.invoice,
       orElse: () => null,
@@ -128,7 +122,7 @@ class PaymentDetailsSheet extends StatelessWidget {
                         paymentData: paymentData,
                         labelAutoSizeGroup: _labelGroup,
                       ),
-                      if (refundTxAmountSat > 0) ...<Widget>[
+                      if (paymentData.isRefunded) ...<Widget>[
                         PaymentDetailsSheetRefundTxAmount(
                           paymentData: paymentData,
                           labelAutoSizeGroup: _labelGroup,

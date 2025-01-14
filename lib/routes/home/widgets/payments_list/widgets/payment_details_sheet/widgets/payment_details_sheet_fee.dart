@@ -42,11 +42,11 @@ class PaymentDetailsSheetFee extends StatelessWidget {
             reverse: true,
             child: BlocBuilder<CurrencyCubit, CurrencyState>(
               builder: (BuildContext context, CurrencyState state) {
-                final String feeSat = BitcoinCurrency.fromTickerSymbol(
+                final String actualFeeFormatted = BitcoinCurrency.fromTickerSymbol(
                   state.bitcoinTicker,
-                ).format(paymentData.feeSat);
+                ).format(paymentData.actualFeeSat);
                 return Text(
-                  feeSat,
+                  actualFeeFormatted,
                   style: themeData.primaryTextTheme.displaySmall!.copyWith(
                     fontSize: 18.0,
                     color: Colors.white,
