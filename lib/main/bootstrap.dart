@@ -60,7 +60,7 @@ Future<void> bootstrap(AppBuilder builder) async {
 
     final Directory appDir = await getApplicationDocumentsDirectory();
     HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: Directory(p.join(appDir.path, 'bloc_storage')),
+      storageDirectory: HydratedStorageDirectory(p.join(appDir.path, 'bloc_storage')),
     );
     final SdkConnectivityCubit sdkConnectivityCubit = SdkConnectivityCubit(
       breezSdkLiquid: injector.breezSdkLiquid,
