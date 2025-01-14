@@ -43,7 +43,6 @@ class App extends StatelessWidget {
           create: (BuildContext context) => InputCubit(
             injector.breezSdkLiquid,
             injector.lightningLinks,
-            injector.deviceClient,
           ),
         ),
         BlocProvider<UserProfileCubit>(
