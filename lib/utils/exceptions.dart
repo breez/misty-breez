@@ -72,7 +72,7 @@ String _getPaymentErrorMessage(PaymentError error, BreezTranslations texts) {
   } else if (error is PaymentError_PersistError) {
     message = 'Could not store the swap details locally';
   } else if (error is PaymentError_SelfTransferNotSupported) {
-    message = 'The payment is a self-transfer, which is not supported';
+    message = 'Sending payments to your own wallet is not supported';
   } else if (error is PaymentError_SendError) {
     message = error.err;
   } else if (error is PaymentError_SignerError) {
