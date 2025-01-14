@@ -156,8 +156,8 @@ class _DevelopersViewState extends State<DevelopersView> {
     final String walletStoragePath = '$sdkDirPath/$networkName/$fingerprint';
     final String storageFilePath = '$walletStoragePath/storage.sql';
     final File storageFile = File(storageFilePath);
-    encoder.addFile(storageFile);
-    encoder.close();
+    await encoder.addFile(storageFile);
+    await encoder.close();
     final XFile zipFile = XFile(zipFilePath);
     Share.shareXFiles(<XFile>[zipFile]);
   }

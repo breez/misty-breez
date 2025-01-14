@@ -129,8 +129,8 @@ void shareLog() async {
   final ZipFileEncoder encoder = ZipFileEncoder();
   final String zipFilePath = '$appDir/l-breez.logs.zip';
   encoder.create(zipFilePath);
-  encoder.addDirectory(Directory('$appDir/logs/'));
-  encoder.close();
+  await encoder.addDirectory(Directory('$appDir/logs/'));
+  await encoder.close();
   final XFile zipFile = XFile(zipFilePath);
   Share.shareXFiles(<XFile>[zipFile]);
 }
