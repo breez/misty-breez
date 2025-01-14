@@ -18,7 +18,7 @@ class SendChainSwapForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController amountController;
   final TextEditingController addressController;
-  final bool useEntireBalance;
+  final bool isDrain;
   final ValueChanged<bool> onChanged;
   final BitcoinAddressData? btcAddressData;
   final BitcoinCurrency bitcoinCurrency;
@@ -29,7 +29,7 @@ class SendChainSwapForm extends StatefulWidget {
     required this.amountController,
     required this.addressController,
     required this.onChanged,
-    required this.useEntireBalance,
+    required this.isDrain,
     required this.bitcoinCurrency,
     required this.paymentLimits,
     super.key,
@@ -105,7 +105,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             bitcoinCurrency: widget.bitcoinCurrency,
             controller: widget.amountController,
             focusNode: _amountFocusNode,
-            useEntireBalance: widget.useEntireBalance,
+            isDrain: widget.isDrain,
             balance: widget.paymentLimits.send.maxSat,
             policy: WithdrawFundsPolicy(
               WithdrawKind.withdrawFunds,
@@ -171,7 +171,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
                     trailing: Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Switch(
-                        value: widget.useEntireBalance,
+                        value: widget.isDrain,
                         activeColor: Colors.white,
                         activeTrackColor: themeData.primaryColor,
                         onChanged: (bool value) async {
