@@ -119,14 +119,15 @@ class PaymentData {
             details.equals(other.details);
   }
 
-  bool get isRefunded {
-    final int refundTxAmountSat = details.map(
-      bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxAmountSat?.toInt() ?? 0,
-      lightning: (PaymentDetails_Lightning details) => details.refundTxAmountSat?.toInt() ?? 0,
-      orElse: () => 0,
-    );
-    return refundTxAmountSat > 0 && status == PaymentState.failed;
-  }
+  int get refundTxAmountSat => details.map(
+        bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxAmountSat?.toInt() ?? 0,
+        lightning: (PaymentDetails_Lightning details) => details.refundTxAmountSat?.toInt() ?? 0,
+        orElse: () => 0,
+      );
+
+  bool get isRefunded => refundTxAmountSat > 0 && status == PaymentState.failed;
+
+  int get actualFeeSat => isRefunded ? amountSat - refundTxAmountSat : feeSat;
 }
 
 class _PaymentDataFactory {

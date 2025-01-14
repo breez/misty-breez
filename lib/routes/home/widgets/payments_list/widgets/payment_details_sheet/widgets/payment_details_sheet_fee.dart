@@ -3,10 +3,8 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/models/payment_details_extension.dart';
 
 class PaymentDetailsSheetFee extends StatelessWidget {
   final PaymentData paymentData;
@@ -44,20 +42,11 @@ class PaymentDetailsSheetFee extends StatelessWidget {
             reverse: true,
             child: BlocBuilder<CurrencyCubit, CurrencyState>(
               builder: (BuildContext context, CurrencyState state) {
-                int feeSat = paymentData.feeSat;
-                if (paymentData.isRefunded) {
-                  final int refundTxAmountSat = paymentData.details.map(
-                    bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxAmountSat?.toInt() ?? 0,
-                    lightning: (PaymentDetails_Lightning details) => details.refundTxAmountSat?.toInt() ?? 0,
-                    orElse: () => 0,
-                  );
-                  feeSat = paymentData.amountSat - refundTxAmountSat;
-                }
-                final String feeFormatted = BitcoinCurrency.fromTickerSymbol(
+                final String actualFeeFormatted = BitcoinCurrency.fromTickerSymbol(
                   state.bitcoinTicker,
-                ).format(feeSat);
+                ).format(paymentData.actualFeeSat);
                 return Text(
-                  feeFormatted,
+                  actualFeeFormatted,
                   style: themeData.primaryTextTheme.displaySmall!.copyWith(
                     fontSize: 18.0,
                     color: Colors.white,
