@@ -3,8 +3,6 @@ PODS:
     - Flutter
   - app_links (0.0.2):
     - Flutter
-  - clipboard_watcher (0.0.1):
-    - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -170,7 +168,6 @@ PODS:
 DEPENDENCIES:
   - app_group_directory (from `.symlinks/plugins/app_group_directory/ios`)
   - app_links (from `.symlinks/plugins/app_links/ios`)
-  - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -226,8 +223,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/app_group_directory/ios"
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
-  clipboard_watcher:
-    :path: ".symlinks/plugins/clipboard_watcher/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/darwin"
   device_info_plus:
@@ -276,7 +271,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_group_directory: 7bf9f8f9819ead554de29da7c25fb7a680d6a9a0
   app_links: e7a6750a915a9e161c58d91bc610e8cd1d4d0ad0
-  clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
   connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
   Firebase: 374a441a91ead896215703a674d58cdb3e9d772b

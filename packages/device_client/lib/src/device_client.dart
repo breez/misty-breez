@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -10,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final Logger _logger = Logger('DeviceClient');
 
-class DeviceClient extends ClipboardListener {
+class DeviceClient {
   final BehaviorSubject<String> _clipboardController = BehaviorSubject<String>();
 
   DeviceClient() {
