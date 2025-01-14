@@ -34,12 +34,17 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return BlocBuilder<WebhookCubit, WebhookState>(
       builder: (BuildContext context, WebhookState webhookState) {
         return Scaffold(
           body: webhookState.isLoading
-              ? const DestinationWidgetPlaceholder()
+              ? Center(
+                  child: Loader(
+                    color: themeData.primaryColor.withValues(alpha: .5),
+                  ),
+                )
               : webhookState.lnurlPayError != null
                   ? ScrollableErrorMessageWidget(
                       showIcon: true,
