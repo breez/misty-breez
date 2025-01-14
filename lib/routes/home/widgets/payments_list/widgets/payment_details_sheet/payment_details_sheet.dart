@@ -74,6 +74,32 @@ class PaymentDetailsSheet extends StatelessWidget {
       orElse: () => '',
     );
 
+    final LnUrlInfo? lnurlInfo = paymentData.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
+      orElse: () => null,
+    );
+
+    final String lnAddress = lnurlInfo?.lnAddress ?? '';
+    final String lnurlPayComment = lnurlInfo?.lnurlPayComment ?? '';
+    final String lnurlPayDomain = lnurlInfo?.lnurlPayDomain ?? '';
+    final (
+      String lnurlPaySuccessActionDescription,
+      String lnurlPaySuccessActionMessage,
+      String lnurlPaySuccessActionUrl
+    ) = switch (lnurlInfo?.lnurlPaySuccessAction) {
+      SuccessActionProcessed_Aes(result: final AesSuccessActionDataResult result) => switch (result) {
+          AesSuccessActionDataResult_Decrypted(data: final AesSuccessActionDataDecrypted data) => (
+              data.description,
+              data.plaintext,
+              ''
+            ),
+          AesSuccessActionDataResult_ErrorStatus() => ('', '', ''),
+        },
+      SuccessActionProcessed_Message(data: final MessageSuccessActionData data) => ('', data.message, ''),
+      SuccessActionProcessed_Url(data: final UrlSuccessActionData data) => (data.description, '', data.url),
+      null => ('', '', ''),
+    };
+
     return Container(
       height: MediaQuery.of(context).size.height - kToolbarHeight,
       width: MediaQuery.of(context).size.width,
@@ -132,6 +158,30 @@ class PaymentDetailsSheet extends StatelessWidget {
                         paymentData: paymentData,
                         labelAutoSizeGroup: _labelGroup,
                       ),
+                      if (lnAddress.isNotEmpty) ...<Widget>[
+                        PaymentDetailsSheetLnUrlLnAddress(lnAddress: lnAddress),
+                      ],
+                      if (lnurlPayComment.isNotEmpty) ...<Widget>[
+                        PaymentDetailsSheetLnUrlPayComment(payComment: lnurlPayComment),
+                      ],
+                      if (paymentData.status == PaymentState.complete) ...<Widget>[
+                        if (lnurlPaySuccessActionDescription.isNotEmpty) ...<Widget>[
+                          PaymentDetailsSheetLnUrlPaySuccessDescription(
+                            paySuccessDescription: lnurlPaySuccessActionDescription,
+                          ),
+                        ],
+                        if (lnurlPaySuccessActionMessage.isNotEmpty) ...<Widget>[
+                          PaymentDetailsSheetLnUrlPaySuccessMessage(
+                            paySuccessMessage: lnurlPaySuccessActionMessage,
+                          ),
+                        ],
+                        if (lnurlPaySuccessActionUrl.isNotEmpty) ...<Widget>[
+                          PaymentDetailsSheetLnUrlPaySuccessUrl(paySuccessUrl: lnurlPaySuccessActionUrl),
+                        ],
+                      ],
+                      if (lnurlPayDomain.isNotEmpty) ...<Widget>[
+                        PaymentDetailsSheetLnUrlPayDomain(payDomain: lnurlPayDomain),
+                      ],
                       if (invoice != null && invoice.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetInvoice(invoice: invoice),
                       ],
