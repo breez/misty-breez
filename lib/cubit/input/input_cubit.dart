@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
-import 'package:device_client/device_client.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
@@ -16,14 +15,12 @@ final Logger _logger = Logger('InputCubit');
 class InputCubit extends Cubit<InputState> {
   final BreezSDKLiquid _breezSdkLiquid;
   final LightningLinksService _lightningLinks;
-  final DeviceClient _deviceClient;
 
   final StreamController<InputData> _decodeInvoiceController = StreamController<InputData>();
 
   InputCubit(
     this._breezSdkLiquid,
     this._lightningLinks,
-    this._deviceClient,
   ) : super(const InputState.empty()) {
     _initializeInputCubit();
   }
@@ -65,11 +62,6 @@ class InputCubit extends Cubit<InputState> {
       _lightningLinks.linksNotifications
           .map((String data) => InputData(data: data, source: InputSource.hyperlink))
           .doOnData((InputData event) => _logger.info('lightningLinks: $event')),
-      _deviceClient.clipboardStream
-          .distinct()
-          .skip(1)
-          .map((String data) => InputData(data: data, source: InputSource.clipboard))
-          .doOnData((InputData event) => _logger.info('clipboardStream: $event')),
     ]).asyncMap((InputData input) async {
       _logger.info("Incoming input: '$input'");
       // Emit an empty InputState with isLoading to display a loader on UI layer
