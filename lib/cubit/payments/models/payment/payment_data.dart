@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
+import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 
 // TODO(erdemyerebasmaz): Liquid - Remove if having PaymentData is not necessary with Liquid SDK
 /// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
@@ -137,17 +138,27 @@ class _PaymentDataFactory {
   _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
-    final String title = _texts.payment_info_title_unknown;
+    final LnUrlInfo? lnurlInfo = _payment.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
+      orElse: () => null,
+    );
+
+    final String lnAddress = lnurlInfo?.lnAddress ?? '';
+
+    if (lnAddress.isNotEmpty) {
+      return lnAddress;
+    }
     final String description = _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.description,
       bitcoin: (PaymentDetails_Bitcoin details) => details.description,
       liquid: (PaymentDetails_Liquid details) => details.description,
       orElse: () => '',
     );
-    if (description.isNotEmpty) {
+    if (description.isNotEmpty && !description.containsLiquidNaming) {
       return description;
     }
-    return title;
+
+    return _texts.payment_info_title_unknown;
   }
 
   DateTime _paymentTime() {

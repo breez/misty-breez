@@ -1,9 +1,10 @@
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 
 class PaymentItemTitle extends StatelessWidget {
   final PaymentData paymentData;
@@ -15,8 +16,9 @@ class PaymentItemTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BreezTranslations texts = context.texts();
     String title = paymentData.title;
-    if (paymentData.paymentType == PaymentType.receive && title.isDefaultTitleWithLiquidNaming) {
+    if (title == texts.payment_info_title_unknown && paymentData.paymentType == PaymentType.receive) {
       final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
       final UserProfileState userProfileState = userProfileCubit.state;
       title = 'Payment to ${userProfileState.profileSettings.name}';
