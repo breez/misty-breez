@@ -128,8 +128,8 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
           FadeInRoute<void>(
             builder: (_) => SendChainSwapConfirmationPage(
               amountSat: amount,
-              onchainRecipientAddress: getAddress(),
-              isDrain: isDrain ? isDrain : _isDrain(amount),
+              onchainRecipientAddress: _addressController.text,
+              isDrain: isDrain,
             ),
           ),
         );
@@ -165,15 +165,5 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
       _logger.warning('Failed to parse the input amount', e);
     }
     return amount;
-  }
-
-  bool _isDrain(int amount) {
-    final AccountCubit accountCubit = context.read<AccountCubit>();
-    final AccountState accountState = accountCubit.state;
-    return accountState.walletInfo!.balanceSat.toInt() == amount;
-  }
-
-  String getAddress() {
-    return _addressController.text;
   }
 }
