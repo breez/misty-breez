@@ -9,11 +9,13 @@ class AccountState {
   final bool isRestoring;
   final bool didCompleteInitialSync;
   final WalletInfo? walletInfo;
+  final BlockchainInfo? blockchainInfo;
 
   const AccountState({
     required this.isRestoring,
     required this.didCompleteInitialSync,
     required this.walletInfo,
+    required this.blockchainInfo,
   });
 
   AccountState.initial()
@@ -21,17 +23,20 @@ class AccountState {
           isRestoring: false,
           didCompleteInitialSync: false,
           walletInfo: null,
+          blockchainInfo: null,
         );
 
   AccountState copyWith({
     bool? isRestoring,
     bool? didCompleteInitialSync,
     WalletInfo? walletInfo,
+    BlockchainInfo? blockchainInfo,
   }) {
     return AccountState(
       isRestoring: isRestoring ?? this.isRestoring,
       didCompleteInitialSync: didCompleteInitialSync ?? this.didCompleteInitialSync,
       walletInfo: walletInfo ?? this.walletInfo,
+      blockchainInfo: blockchainInfo ?? this.blockchainInfo,
     );
   }
 
@@ -41,6 +46,7 @@ class AccountState {
     return <String, dynamic>{
       'isRestoring': isRestoring,
       'walletInfo': walletInfo?.toJson(),
+      'blockchainInfo': blockchainInfo?.toJson(),
     };
   }
 
@@ -49,6 +55,7 @@ class AccountState {
       isRestoring: json['isRestoring'] ?? false,
       didCompleteInitialSync: false,
       walletInfo: WalletInfoFromJson.fromJson(json['walletInfo']),
+      blockchainInfo: BlockchainInfoFromJson.fromJson(json['blockchainInfo']),
     );
   }
 
@@ -71,7 +78,7 @@ extension WalletInfoToJson on WalletInfo {
 extension WalletInfoFromJson on WalletInfo {
   static WalletInfo? fromJson(Map<String, dynamic>? json) {
     if (json == null) {
-      _logger.info('walletInfo is missing from AccountState JSON.');
+      _logger.info('walletInfo is missing from WalletInfo JSON.');
       return null;
     }
 
@@ -80,7 +87,7 @@ extension WalletInfoFromJson on WalletInfo {
         json['pendingReceiveSat'] == null ||
         json['fingerprint'] == null ||
         json['pubkey'] == null) {
-      _logger.warning('GetInfoResponse has missing fields on AccountState JSON.');
+      _logger.warning('GetInfoResponse has missing fields on WalletInfo JSON.');
       return null;
     }
 
@@ -90,6 +97,34 @@ extension WalletInfoFromJson on WalletInfo {
       pendingReceiveSat: BigInt.parse(json['pendingReceiveSat'] as String),
       fingerprint: json['fingerprint'] as String,
       pubkey: json['pubkey'] as String,
+    );
+  }
+}
+
+extension BlockchainInfoToJson on BlockchainInfo {
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'liquidTip': liquidTip.toString(),
+      'bitcoinTip': bitcoinTip.toString(),
+    };
+  }
+}
+
+extension BlockchainInfoFromJson on BlockchainInfo {
+  static BlockchainInfo? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      _logger.info('walletInfo is missing from BlockchainInfo JSON.');
+      return null;
+    }
+
+    if (json['liquidTip'] == null || json['bitcoinTip'] == null) {
+      _logger.warning('GetInfoResponse has missing fields on BlockchainInfo JSON.');
+      return null;
+    }
+
+    return BlockchainInfo(
+      liquidTip: int.parse(json['liquidTip'] as String),
+      bitcoinTip: int.parse(json['bitcoinTip'] as String),
     );
   }
 }

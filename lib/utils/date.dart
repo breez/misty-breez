@@ -39,10 +39,36 @@ class BreezDateUtils {
     return isAfter && isBefore;
   }
 
-  static DateTime blockDiffToDate({required int blockHeight, required int expiryBlock}) {
-    final int diffInSecs = (expiryBlock - blockHeight) * 600;
+  static DateTime? _blockDiffToDate({
+    required int? blockHeight,
+    required int? expiryBlock,
+    required int secondsPerBlock,
+  }) {
+    if (blockHeight == null || expiryBlock == null || blockHeight > expiryBlock) {
+      return null;
+    }
+    if (blockHeight > expiryBlock) {
+      return null;
+    }
+    final int diffInSecs = (expiryBlock - blockHeight) * secondsPerBlock;
     final DateTime time = DateTime.now();
     return time.add(Duration(seconds: diffInSecs));
+  }
+
+  static DateTime? bitcoinBlockDiffToDate({required int? blockHeight, required int? expiryBlock}) {
+    return _blockDiffToDate(
+      blockHeight: blockHeight,
+      expiryBlock: expiryBlock,
+      secondsPerBlock: 600,
+    );
+  }
+
+  static DateTime? liquidBlockDiffToDate({required int? blockHeight, required int? expiryBlock}) {
+    return _blockDiffToDate(
+      blockHeight: blockHeight,
+      expiryBlock: expiryBlock,
+      secondsPerBlock: 60,
+    );
   }
 
   static String formatHourMinute(DateTime d) => _hourMinuteDayFormat.format(d);
