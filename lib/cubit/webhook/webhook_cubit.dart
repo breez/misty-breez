@@ -68,6 +68,8 @@ class WebhookCubit extends Cubit<WebhookState> {
     }
   }
 
+  // TODO(erdemyerebasmaz): Make this a public method so that it can be used to customize LN Addresses
+  // TODO(erdemyerebasmaz): Currently the only endpoint generates a webhook URL & registers to it beforehand, which is not necessary for customizing username
   Future<void> _registerLnurlpay(
     WalletInfo walletInfo,
     String webhookUrl, {
@@ -77,6 +79,8 @@ class WebhookCubit extends Cubit<WebhookState> {
     if (lastUsedLnurlPay != null && lastUsedLnurlPay != webhookUrl) {
       await _invalidateLnurlPay(walletInfo, lastUsedLnurlPay);
     }
+    // TODO(erdemyerebasmaz): Utilize user's username(only when user has created a new wallet)
+    // TODO(erdemyerebasmaz): Handle multiple device setup cases
     String? lnAddressUsername = username ?? await _breezPreferences.getProfileName();
     lnAddressUsername = lnAddressUsername?.replaceAll(' ', '');
     final int currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -108,6 +112,10 @@ class WebhookCubit extends Cubit<WebhookState> {
       await _breezPreferences.setLnUrlPayKey(webhookUrl);
       emit(WebhookState(lnurlPayUrl: lnurl, lnAddress: lnAddress));
     } else {
+      // TODO(erdemyerebasmaz): Handle username conflicts(only when user has created a new wallet)
+      // Add a random four-digit identifier, a discriminator, as a suffix if user's username is taken(~1/600 probability of conflict)
+      // Add a retry & randomizer logic until first registration succeeds
+      // TODO(erdemyerebasmaz): Handle custom username conflicts
       throw jsonResponse.body;
     }
   }
