@@ -67,8 +67,8 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
                               child: SingleChildScrollView(
                                 child: DestinationWidget(
-                                  isLnAddress: true,
                                   destination: webhookState.lnurlPayUrl,
+                                  lnAddress: webhookState.lnAddress,
                                   paymentMethod: texts.receive_payment_method_lightning_address,
                                   infoWidget: const PaymentLimitsMessageBox(),
                                 ),

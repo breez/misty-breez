@@ -9,6 +9,7 @@ import 'package:l_breez/widgets/widgets.dart';
 class DestinationQRWidget extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
+  final String? lnAddress;
   final String? paymentMethod;
   final void Function()? onLongPress;
   final Widget? infoWidget;
@@ -16,10 +17,11 @@ class DestinationQRWidget extends StatelessWidget {
   const DestinationQRWidget({
     required this.snapshot,
     required this.destination,
+    this.lnAddress,
     this.paymentMethod,
-    super.key,
     this.onLongPress,
     this.infoWidget,
+    super.key,
   });
 
   @override
@@ -49,7 +51,11 @@ class DestinationQRWidget extends StatelessWidget {
           snapshot: snapshot,
           destination: destination,
           paymentMethod: paymentMethod,
+          lnAddress: lnAddress,
         ),
+        if (lnAddress != null && lnAddress!.isNotEmpty) ...<Widget>[
+          DestinationInformation(lnAddress: lnAddress!),
+        ],
         if (infoWidget != null) ...<Widget>[
           SizedBox(
             width: MediaQuery.of(context).size.width,
