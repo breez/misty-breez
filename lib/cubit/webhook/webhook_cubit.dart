@@ -60,8 +60,7 @@ class WebhookCubit extends Cubit<WebhookState> {
       final String webhookUrl = await _generateWebhookURL();
       await _breezSdkLiquid.instance?.registerWebhook(webhookUrl: webhookUrl);
       _logger.info('SDK webhook registered: $webhookUrl');
-      final String lnurl = await _registerLnurlpay(walletInfo, webhookUrl, username: username);
-      emit(WebhookState(lnurlPayUrl: lnurl));
+      await _registerLnurlpay(walletInfo, webhookUrl, username: username);
     } catch (err) {
       _logger.warning('Failed to register webhooks: $err');
       emit(state.copyWith(lnurlPayErrorTitle: 'Failed to register webhooks:', lnurlPayError: err.toString()));
@@ -69,7 +68,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     }
   }
 
-  Future<String> _registerLnurlpay(
+  Future<void> _registerLnurlpay(
     WalletInfo walletInfo,
     String webhookUrl, {
     String? username,
@@ -103,10 +102,11 @@ class WebhookCubit extends Cubit<WebhookState> {
     );
     if (jsonResponse.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(jsonResponse.body);
-      final String lnurl = data.containsKey('lightning_address') ? data['lightning_address'] : data['lnurl'];
-      _logger.info('lnurlpay webhook registered: $webhookUrl, lnurl = $lnurl');
+      final String lnurl = data['lnurl'];
+      final String lnAddress = data.containsKey('lightning_address') ? data['lightning_address'] : '';
+      _logger.info('lnurlpay webhook registered: $webhookUrl, lnurl = $lnurl, lnAddress = $lnAddress');
       await _breezPreferences.setLnUrlPayKey(webhookUrl);
-      return lnurl;
+      emit(WebhookState(lnurlPayUrl: lnurl, lnAddress: lnAddress));
     } else {
       throw jsonResponse.body;
     }
