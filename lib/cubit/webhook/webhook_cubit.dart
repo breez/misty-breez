@@ -32,13 +32,13 @@ class WebhookCubit extends Cubit<WebhookState> {
     );
   }
 
-  Future<void> refreshWebhooks({WalletInfo? walletInfo}) async {
+  Future<void> refreshWebhooks({WalletInfo? walletInfo, String? username}) async {
     _logger.info('Refreshing webhooks');
     emit(WebhookState(isLoading: true));
     try {
       walletInfo = walletInfo ?? (await _breezSdkLiquid.instance?.getInfo())?.walletInfo;
       if (walletInfo != null) {
-        await _registerWebhooks(walletInfo);
+        await _registerWebhooks(walletInfo, username: username);
       } else {
         throw Exception('Unable to retrieve wallet information.');
       }
@@ -55,12 +55,12 @@ class WebhookCubit extends Cubit<WebhookState> {
     }
   }
 
-  Future<void> _registerWebhooks(WalletInfo walletInfo) async {
+  Future<void> _registerWebhooks(WalletInfo walletInfo, {String? username}) async {
     try {
       final String webhookUrl = await _generateWebhookURL();
       await _breezSdkLiquid.instance?.registerWebhook(webhookUrl: webhookUrl);
       _logger.info('SDK webhook registered: $webhookUrl');
-      final String lnurl = await _registerLnurlpay(walletInfo, webhookUrl);
+      final String lnurl = await _registerLnurlpay(walletInfo, webhookUrl, username: username);
       emit(WebhookState(lnurlPayUrl: lnurl));
     } catch (err) {
       _logger.warning('Failed to register webhooks: $err');
@@ -71,16 +71,17 @@ class WebhookCubit extends Cubit<WebhookState> {
 
   Future<String> _registerLnurlpay(
     WalletInfo walletInfo,
-    String webhookUrl,
-  ) async {
+    String webhookUrl, {
+    String? username,
+  }) async {
     final String? lastUsedLnurlPay = await _breezPreferences.getLnUrlPayKey();
     if (lastUsedLnurlPay != null && lastUsedLnurlPay != webhookUrl) {
       await _invalidateLnurlPay(walletInfo, lastUsedLnurlPay);
     }
-    String? username = await _breezPreferences.getProfileName();
-    username = username?.replaceAll(' ', '');
+    String? lnAddressUsername = username ?? await _breezPreferences.getProfileName();
+    lnAddressUsername = lnAddressUsername?.replaceAll(' ', '');
     final int currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final String optionalUsernameKey = username != null ? '-$username' : '';
+    final String optionalUsernameKey = lnAddressUsername != null ? '-$lnAddressUsername' : '';
     final SignMessageRequest req =
         SignMessageRequest(message: '$currentTime-$webhookUrl$optionalUsernameKey');
     final SignMessageResponse? signMessageRes = _breezSdkLiquid.instance?.signMessage(req: req);
@@ -95,7 +96,7 @@ class WebhookCubit extends Cubit<WebhookState> {
         AddWebhookRequest(
           time: currentTime,
           webhookUrl: webhookUrl,
-          username: username,
+          username: lnAddressUsername,
           signature: signMessageRes.signature,
         ).toJson(),
       ),
