@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
@@ -55,6 +56,8 @@ class PaymentDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AccountCubit accountCubit = context.read<AccountCubit>();
+    final AccountState accountState = accountCubit.state;
     final ThemeData themeData = Theme.of(context);
 
     final String? invoice = paymentData.details.map(
@@ -104,15 +107,8 @@ class PaymentDetailsSheet extends StatelessWidget {
       null => ('', '', ''),
     };
 
-    final int? liquidExpiryBlockheight = paymentData.details.map(
-      lightning: (PaymentDetails_Lightning details) => details.liquidExpirationBlockheight,
-      bitcoin: (PaymentDetails_Bitcoin details) => details.liquidExpirationBlockheight,
-      orElse: () => null,
-    );
-
-    final int? bitcoinExpiryBlockheight = paymentData.details.map(
-      bitcoin: (PaymentDetails_Bitcoin details) => details.bitcoinExpirationBlockheight,
-      orElse: () => null,
+    final DateTime? expiryDate = paymentData.details.getExpiryDate(
+      blockchainInfo: accountState.blockchainInfo,
     );
 
     return Container(
@@ -173,18 +169,10 @@ class PaymentDetailsSheet extends StatelessWidget {
                         paymentData: paymentData,
                         labelAutoSizeGroup: _labelGroup,
                       ),
-                      if (liquidExpiryBlockheight != null &&
-                          paymentData.status == PaymentState.pending) ...<Widget>[
+                      if (paymentData.status == PaymentState.pending && expiryDate != null) ...<Widget>[
                         PaymentDetailsSheetExpiry(
-                          expiryBlockheight: liquidExpiryBlockheight,
-                          chain: BlockchainType.liquid,
-                        ),
-                      ],
-                      if (bitcoinExpiryBlockheight != null &&
-                          paymentData.status == PaymentState.pending) ...<Widget>[
-                        PaymentDetailsSheetExpiry(
-                          expiryBlockheight: bitcoinExpiryBlockheight,
-                          chain: BlockchainType.bitcoin,
+                          expiryDate: expiryDate,
+                          labelAutoSizeGroup: _labelGroup,
                         ),
                       ],
                       if (lnAddress.isNotEmpty) ...<Widget>[
