@@ -78,7 +78,7 @@ extension WalletInfoToJson on WalletInfo {
 extension WalletInfoFromJson on WalletInfo {
   static WalletInfo? fromJson(Map<String, dynamic>? json) {
     if (json == null) {
-      _logger.info('walletInfo is missing from WalletInfo JSON.');
+      _logger.info('walletInfo is missing from AccountState JSON.');
       return null;
     }
 
@@ -87,7 +87,7 @@ extension WalletInfoFromJson on WalletInfo {
         json['pendingReceiveSat'] == null ||
         json['fingerprint'] == null ||
         json['pubkey'] == null) {
-      _logger.warning('GetInfoResponse has missing fields on WalletInfo JSON.');
+      _logger.warning('WalletInfo has missing fields on AccountState JSON.');
       return null;
     }
 
@@ -113,12 +113,12 @@ extension BlockchainInfoToJson on BlockchainInfo {
 extension BlockchainInfoFromJson on BlockchainInfo {
   static BlockchainInfo? fromJson(Map<String, dynamic>? json) {
     if (json == null) {
-      _logger.info('walletInfo is missing from BlockchainInfo JSON.');
+      _logger.info('blockchainInfo is missing from AccountState JSON.');
       return null;
     }
 
     if (json['liquidTip'] == null || json['bitcoinTip'] == null) {
-      _logger.warning('GetInfoResponse has missing fields on BlockchainInfo JSON.');
+      _logger.warning('BlockchainInfo has missing fields on AccountState JSON.');
       return null;
     }
 
