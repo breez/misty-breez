@@ -1,4 +1,5 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/utils/date.dart';
 
 // TODO(erdemyerebasmaz): Ensure that any changes to [PaymentDetails] are reflected here on each extension.
 extension PaymentDetailsMapExtension on PaymentDetails {
@@ -131,6 +132,46 @@ extension PaymentDetailsHashCode on PaymentDetails {
       bitcoin: (PaymentDetails_Bitcoin o) =>
           Object.hash(o.swapId, o.description, o.refundTxId, o.refundTxAmountSat),
       orElse: () => 0,
+    );
+  }
+}
+
+extension PaymentDetailsExpiryDate on PaymentDetails {
+  DateTime? getExpiryDate({required BlockchainInfo? blockchainInfo}) {
+    if (blockchainInfo == null) {
+      return null;
+    }
+
+    final int? expiryBlockheight = map(
+      bitcoin: (PaymentDetails_Bitcoin details) => details.bitcoinExpirationBlockheight,
+      lightning: (PaymentDetails_Lightning details) => details.liquidExpirationBlockheight,
+      orElse: () => null,
+    );
+
+    if (expiryBlockheight == null) {
+      return null;
+    }
+
+    final int? currentTip = map(
+      bitcoin: (_) => blockchainInfo.bitcoinTip,
+      lightning: (_) => blockchainInfo.liquidTip,
+      orElse: () => null,
+    );
+
+    if (currentTip == null) {
+      return null;
+    }
+
+    return map(
+      bitcoin: (_) => BreezDateUtils.bitcoinBlockDiffToDate(
+        blockHeight: currentTip,
+        expiryBlock: expiryBlockheight,
+      ),
+      lightning: (_) => BreezDateUtils.liquidBlockDiffToDate(
+        blockHeight: currentTip,
+        expiryBlock: expiryBlockheight,
+      ),
+      orElse: () => null,
     );
   }
 }

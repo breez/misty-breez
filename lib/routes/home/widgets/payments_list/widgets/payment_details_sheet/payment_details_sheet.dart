@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
@@ -45,12 +46,18 @@ class PaymentDetailsSheet extends StatelessWidget {
   final PaymentData paymentData;
   final ScrollController scrollController;
 
-  PaymentDetailsSheet({required this.paymentData, required this.scrollController, super.key}) {
+  PaymentDetailsSheet({
+    required this.paymentData,
+    required this.scrollController,
+    super.key,
+  }) {
     _logger.info('PaymentDetailsSheet for payment: $paymentData');
   }
 
   @override
   Widget build(BuildContext context) {
+    final AccountCubit accountCubit = context.read<AccountCubit>();
+    final AccountState accountState = accountCubit.state;
     final ThemeData themeData = Theme.of(context);
 
     final String? invoice = paymentData.details.map(
@@ -99,6 +106,10 @@ class PaymentDetailsSheet extends StatelessWidget {
       SuccessActionProcessed_Url(data: final UrlSuccessActionData data) => (data.description, '', data.url),
       null => ('', '', ''),
     };
+
+    final DateTime? expiryDate = paymentData.details.getExpiryDate(
+      blockchainInfo: accountState.blockchainInfo,
+    );
 
     return Container(
       height: MediaQuery.of(context).size.height - kToolbarHeight,
@@ -158,6 +169,12 @@ class PaymentDetailsSheet extends StatelessWidget {
                         paymentData: paymentData,
                         labelAutoSizeGroup: _labelGroup,
                       ),
+                      if (paymentData.status == PaymentState.pending && expiryDate != null) ...<Widget>[
+                        PaymentDetailsSheetExpiry(
+                          expiryDate: expiryDate,
+                          labelAutoSizeGroup: _labelGroup,
+                        ),
+                      ],
                       if (lnAddress.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetLnUrlLnAddress(lnAddress: lnAddress),
                       ],
