@@ -156,7 +156,8 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
       if (!(inputType is InputType_Bolt11 ||
           inputType is InputType_Bolt12Offer ||
           inputType is InputType_LnUrlPay ||
-          inputType is InputType_LnUrlWithdraw)) {
+          inputType is InputType_LnUrlWithdraw ||
+          inputType is InputType_Bolt12Offer)) {
         errMsg = texts.payment_info_dialog_error_unsupported_input;
       }
       if (inputType is InputType_Bolt11 && inputType.invoice.amountMsat == BigInt.zero) {
