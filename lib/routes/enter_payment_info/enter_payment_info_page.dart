@@ -154,6 +154,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     try {
       final InputType inputType = await inputCubit.parseInput(input: _paymentInfoController.text);
       if (!(inputType is InputType_Bolt11 ||
+          inputType is InputType_Bolt12Offer ||
           inputType is InputType_LnUrlPay ||
           inputType is InputType_LnUrlWithdraw)) {
         errMsg = texts.payment_info_dialog_error_unsupported_input;
