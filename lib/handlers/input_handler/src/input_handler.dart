@@ -162,13 +162,11 @@ class InputHandler extends Handler {
   }
 
   Future<dynamic> handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
-    _logger.fine('handle bitcoin address $inputState');
-    if (inputState.source == InputSource.qrcodeReader) {
-      return await Navigator.of(context).pushNamed(
-        SendChainSwapPage.routeName,
-        arguments: inputState.data,
-      );
-    }
+    _logger.fine('Handle Bitcoin Address $inputState');
+    return await Navigator.of(context).pushNamed(
+      SendChainSwapPage.routeName,
+      arguments: inputState.data,
+    );
   }
 
   void handleResult(dynamic result) {
