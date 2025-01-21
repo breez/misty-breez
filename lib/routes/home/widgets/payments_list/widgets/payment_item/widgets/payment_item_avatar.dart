@@ -31,7 +31,7 @@ class PaymentItemAvatar extends StatelessWidget {
         radius: radius,
         backgroundColor: Colors.white,
         child: Icon(
-          paymentData.isRefunded
+          paymentData.isRefunded || paymentData.status == PaymentState.refundable
               ? Icons.close_rounded
               : paymentData.paymentType == PaymentType.receive
                   ? Icons.add_rounded
