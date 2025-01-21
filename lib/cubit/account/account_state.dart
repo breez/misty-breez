@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:breez_liquid/breez_liquid.dart';
 import 'package:logging/logging.dart';
+import 'package:l_breez/models/asset_extension.dart';
 
 final Logger _logger = Logger('AccountState');
 
@@ -71,6 +72,7 @@ extension WalletInfoToJson on WalletInfo {
       'pendingReceiveSat': pendingReceiveSat.toString(),
       'fingerprint': fingerprint,
       'pubkey': pubkey,
+      'assetBalances': assetBalances.map((AssetBalance assetBalance) => assetBalance.toJson()).toList(),
     };
   }
 }
@@ -97,6 +99,11 @@ extension WalletInfoFromJson on WalletInfo {
       pendingReceiveSat: BigInt.parse(json['pendingReceiveSat'] as String),
       fingerprint: json['fingerprint'] as String,
       pubkey: json['pubkey'] as String,
+      assetBalances: json['assetBalances'] != null
+          ? (json['assetBalances'] as List<dynamic>)
+              .map((dynamic json) => AssetBalanceFromJson.fromJson(json))
+              .toList()
+          : <AssetBalance>[],
     );
   }
 }

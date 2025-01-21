@@ -7,11 +7,13 @@ class PaymentFilters implements Exception {
   final List<PaymentType>? filters;
   final int? fromTimestamp;
   final int? toTimestamp;
+  final String? assetTicker;
 
   PaymentFilters({
     this.filters = PaymentType.values,
     this.fromTimestamp,
     this.toTimestamp,
+    this.assetTicker,
   });
 
   PaymentFilters.initial() : this();
@@ -20,15 +22,19 @@ class PaymentFilters implements Exception {
 
   bool get hasDateFilters => fromTimestamp != null || toTimestamp != null;
 
+  bool get hasAssetFilters => assetTicker != null;
+
   PaymentFilters copyWith({
     List<PaymentType>? filters,
     int? fromTimestamp,
     int? toTimestamp,
+    String? assetTicker,
   }) {
     return PaymentFilters(
       filters: filters ?? this.filters,
       fromTimestamp: fromTimestamp,
       toTimestamp: toTimestamp,
+      assetTicker: assetTicker,
     );
   }
 
@@ -36,6 +42,7 @@ class PaymentFilters implements Exception {
     return PaymentFilters(
       fromTimestamp: json['fromTimestamp'],
       toTimestamp: json['toTimestamp'],
+      assetTicker: json['assetTicker'],
     );
   }
 
@@ -44,6 +51,7 @@ class PaymentFilters implements Exception {
       'filters': filters.toString(),
       'fromTimestamp': fromTimestamp,
       'toTimestamp': toTimestamp,
+      'assetTicker': assetTicker,
     };
   }
 
@@ -55,6 +63,7 @@ class PaymentFilters implements Exception {
         filters?.map((PaymentType type) => type.hashCode).toList() ?? <dynamic>[],
         fromTimestamp,
         toTimestamp,
+        assetTicker,
       );
 
   @override
@@ -63,6 +72,7 @@ class PaymentFilters implements Exception {
         other is PaymentFilters &&
             listEquals(filters, other.filters) &&
             fromTimestamp == other.fromTimestamp &&
-            toTimestamp == other.toTimestamp;
+            toTimestamp == other.toTimestamp &&
+            assetTicker == other.assetTicker;
   }
 }

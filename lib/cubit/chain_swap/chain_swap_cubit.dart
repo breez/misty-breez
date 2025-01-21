@@ -78,8 +78,8 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
       List<Future<SendChainSwapFeeOption>>.generate(3, (int index) async {
         final PayAmount payAmount = isDrain
             ? const PayAmount_Drain()
-            : PayAmount_Receiver(
-                amountSat: BigInt.from(amountSat),
+            : PayAmount_Bitcoin(
+                receiverAmountSat: BigInt.from(amountSat),
               );
         final PreparePayOnchainRequest preparePayOnchainRequest = PreparePayOnchainRequest(
           amount: payAmount,

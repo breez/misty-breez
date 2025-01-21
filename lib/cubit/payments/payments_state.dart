@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/models/payment_details_extension.dart';
 
 class PaymentsState {
   final List<PaymentData> payments;
@@ -16,8 +17,18 @@ class PaymentsState {
     List<PaymentData>? payments,
     PaymentFilters? paymentFilters,
   }) {
+    // This is a workaround to only include BTC assets in the unfiltered payments.
+    // If Misty is to support multi-assets then this prefilter should be removed.
+    final List<PaymentData>? prefilteredPayments = payments?.where((PaymentData paymentData) {
+      final String? paymentAssetTicker = paymentData.details.map(
+        liquid: (PaymentDetails_Liquid details) => details.assetInfo?.ticker ?? '',
+        orElse: () => null,
+      );
+      return paymentAssetTicker == null || paymentAssetTicker == 'BTC';
+    }).toList();
+
     return PaymentsState(
-      payments: payments ?? this.payments,
+      payments: prefilteredPayments ?? this.payments,
       paymentFilters: paymentFilters ?? this.paymentFilters,
     );
   }
@@ -41,7 +52,16 @@ class PaymentsState {
         final bool passTypeFilter =
             typeFilterSet == null || typeFilterSet.contains(paymentData.paymentType.name);
 
-        return passDateFilter && passTypeFilter;
+        final String? paymentAssetTicker = paymentData.details.map(
+          liquid: (PaymentDetails_Liquid details) => details.assetInfo?.ticker ?? '',
+          orElse: () => null,
+        );
+
+        final bool passAssetFilter = !paymentFilters.hasAssetFilters ||
+            paymentAssetTicker == null ||
+            paymentAssetTicker == paymentFilters.assetTicker;
+
+        return passDateFilter && passTypeFilter && passAssetFilter;
       },
     ).toList();
   }
