@@ -2,7 +2,6 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/widgets/widgets.dart';
@@ -116,21 +115,14 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                         ),
                         border: const OutlineInputBorder(),
                       ),
-                      inputFormatters: <TextInputFormatter>[
-                        TextInputFormatter.withFunction(
-                          (_, TextEditingValue newValue) => newValue.copyWith(
-                            text: newValue.text.replaceAll(',', '.'),
-                          ),
-                        ),
-                      ],
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: TextInputType.emailAddress,
                       autofocus: true,
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
                           return 'Please enter a username';
                         }
-                        final String email = '$value@${widget.lnAddress.split('@').last}';
+                        final String email = '${value.trim()}@${widget.lnAddress.split('@').last}';
                         // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
                         return EmailValidator.validate(email) ? null : 'Invalid username.';
                       },
@@ -158,7 +150,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                         // TODO(erdemyerebasmaz): Handle registration errors
                         if (_formKey.currentState?.validate() ?? false) {
                           final WebhookCubit webhookCubit = context.read<WebhookCubit>();
-                          webhookCubit.refreshWebhooks(username: _usernameController.text);
+                          webhookCubit.updateLnAddressUsername(username: _usernameController.text);
                           Navigator.pop(context);
                         }
                       },
