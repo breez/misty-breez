@@ -1,7 +1,7 @@
-class PaymentExceededLimitError implements Exception {
+class PaymentExceedsLimitError implements Exception {
   final int limitSat;
 
-  const PaymentExceededLimitError(this.limitSat);
+  const PaymentExceedsLimitError(this.limitSat);
 
   @override
   String toString() => 'Payment amount exceeds the limit of $limitSat satoshis.';

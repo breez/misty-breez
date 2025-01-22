@@ -38,7 +38,7 @@ class PaymentValidator {
 
   String _handleException(Exception e) {
     _logger.warning('Failed to validate payment.', e);
-    if (e is PaymentExceededLimitError) {
+    if (e is PaymentExceedsLimitError) {
       return texts.invoice_payment_validator_error_payment_exceeded_limit(
         currency.format(e.limitSat.toInt()),
       );
