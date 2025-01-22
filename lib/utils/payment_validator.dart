@@ -46,20 +46,8 @@ class PaymentValidator {
       return texts.invoice_payment_validator_error_payment_below_invoice_limit(
         currency.format(e.limitSat.toInt()),
       );
-    } else if (e is PaymentBelowReserveError) {
-      return texts.invoice_payment_validator_error_payment_below_limit(currency.format(e.reserveAmount));
-    } else if (e is PaymentExceededLiquidityError) {
-      return 'Insufficient inbound liquidity (${currency.format(e.limitSat.toInt())})';
     } else if (e is InsufficientLocalBalanceError) {
       return texts.invoice_payment_validator_error_insufficient_local_balance;
-    } else if (e is PaymentBelowSetupFeesError) {
-      return texts.invoice_payment_validator_error_payment_below_setup_fees_error(
-        currency.format(e.setupFees),
-      );
-    } else if (e is PaymentExceededLiquidityChannelCreationNotPossibleError) {
-      return texts.lnurl_fetch_invoice_error_max(currency.format(e.limitSat.toInt()));
-    } else if (e is NoChannelCreationZeroLiquidityError) {
-      return texts.lsp_error_cannot_open_channel;
     } else {
       return texts.invoice_payment_validator_error_unknown(extractExceptionMessage(e, texts));
     }
