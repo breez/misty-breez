@@ -1,6 +1,8 @@
 class WebhookState {
   final String? lnurlPayUrl;
   final String? lnAddress;
+  final String? webhookError;
+  final String? webhookErrorTitle;
   final String? lnurlPayError;
   final String? lnurlPayErrorTitle;
   final bool isLoading;
@@ -8,6 +10,8 @@ class WebhookState {
   WebhookState({
     this.lnurlPayUrl,
     this.lnAddress,
+    this.webhookError,
+    this.webhookErrorTitle,
     this.lnurlPayError,
     this.lnurlPayErrorTitle,
     this.isLoading = false,
@@ -16,6 +20,8 @@ class WebhookState {
   WebhookState copyWith({
     String? lnurlPayUrl,
     String? lnAddress,
+    String? webhookError,
+    String? webhookErrorTitle,
     String? lnurlPayError,
     String? lnurlPayErrorTitle,
     bool? isLoading,
@@ -23,10 +29,24 @@ class WebhookState {
     return WebhookState(
       lnurlPayUrl: lnurlPayUrl ?? this.lnurlPayUrl,
       lnAddress: lnAddress ?? this.lnAddress,
+      webhookError: webhookError ?? this.webhookError,
+      webhookErrorTitle: webhookErrorTitle ?? this.webhookErrorTitle,
       lnurlPayError: lnurlPayError ?? this.lnurlPayError,
       lnurlPayErrorTitle: lnurlPayErrorTitle ?? this.lnurlPayErrorTitle,
       isLoading: isLoading ?? this.isLoading,
     );
+  }
+
+  @override
+  String toString() {
+    return 'WebhookState('
+        'lnurlPayUrl: $lnurlPayUrl, '
+        'lnAddress: $lnAddress, '
+        'webhookError: $webhookError, '
+        'webhookErrorTitle: $webhookErrorTitle, '
+        'lnurlPayError: $lnurlPayError, '
+        'lnurlPayErrorTitle: $lnurlPayErrorTitle, '
+        'isLoading: $isLoading)';
   }
 }
 

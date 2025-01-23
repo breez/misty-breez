@@ -45,11 +45,11 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                     color: themeData.primaryColor.withValues(alpha: .5),
                   ),
                 )
-              : webhookState.lnurlPayError != null
+              : webhookState.webhookError != null
                   ? ScrollableErrorMessageWidget(
                       showIcon: true,
-                      title: webhookState.lnurlPayErrorTitle ?? texts.lightning_address_service_error_title,
-                      message: extractExceptionMessage(webhookState.lnurlPayError!, texts),
+                      title: webhookState.webhookErrorTitle ?? texts.lightning_address_service_error_title,
+                      message: extractExceptionMessage(webhookState.webhookError!, texts),
                     )
                   : webhookState.lnurlPayUrl != null
                       ? Padding(
@@ -79,11 +79,11 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                       : const SizedBox.shrink(),
           bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
             builder: (BuildContext context, PaymentLimitsState snapshot) {
-              return webhookState.lnurlPayError != null || snapshot.hasError
+              return webhookState.webhookError != null || snapshot.hasError
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
                       text: texts.invoice_ln_address_action_retry,
-                      onPressed: webhookState.lnurlPayError != null
+                      onPressed: webhookState.webhookError != null
                           ? () => _refreshWebhooks()
                           : () {
                               final PaymentLimitsCubit paymentLimitsCubit =

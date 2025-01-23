@@ -47,15 +47,21 @@ class WebhookCubit extends Cubit<WebhookState> {
       _logger.warning('Failed to refresh webhooks: $err');
       emit(
         WebhookState(
-          lnurlPayErrorTitle: 'Failed to refresh Lightning Address:',
-          lnurlPayError: err.toString(),
+          webhookError: 'Failed to refresh Lightning Address:',
+          webhookErrorTitle: err.toString(),
         ),
       );
     }
   }
 
   Future<void> updateLnAddressUsername({required String username}) async {
-    emit(WebhookState(isLoading: true));
+    emit(
+      WebhookState(
+        isLoading: true,
+        lnAddress: state.lnAddress,
+        lnurlPayUrl: state.lnurlPayUrl,
+      ),
+    );
     try {
       final GetInfoResponse? walletInfo = await _breezSdkLiquid.instance?.getInfo();
       if (walletInfo != null) {
@@ -74,11 +80,13 @@ class WebhookCubit extends Cubit<WebhookState> {
       }
     } catch (err) {
       emit(
-        WebhookState(
+        state.copyWith(
           lnurlPayErrorTitle: 'Failed to update Lightning Address username:',
           lnurlPayError: err.toString(),
         ),
       );
+    } finally {
+      emit(state.copyWith(isLoading: false));
     }
   }
 }
