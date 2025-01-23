@@ -96,7 +96,7 @@ class InputHandler extends Handler {
       throw inputState.data.reason;
     } else if (inputState is BitcoinAddressInputState) {
       return handleBitcoinAddress(context, inputState);
-    } else if (inputState is UrlInputState) {
+    } else if (unsupportedInputStates.contains(inputState.runtimeType)) {
       throw context.texts().payment_info_dialog_error_unsupported_input;
     } else if (inputState is EmptyInputState) {
       throw 'Failed to parse input.';
@@ -162,13 +162,11 @@ class InputHandler extends Handler {
   }
 
   Future<dynamic> handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
-    _logger.fine('handle bitcoin address $inputState');
-    if (inputState.source == InputSource.qrcodeReader) {
-      return await Navigator.of(context).pushNamed(
-        SendChainSwapPage.routeName,
-        arguments: inputState.data,
-      );
-    }
+    _logger.fine('Handle Bitcoin Address $inputState');
+    return await Navigator.of(context).pushNamed(
+      SendChainSwapPage.routeName,
+      arguments: inputState.data,
+    );
   }
 
   void handleResult(dynamic result) {

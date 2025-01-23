@@ -1,6 +1,18 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 
+typedef TypeCheck = bool Function(InputType);
+
+final List<TypeCheck> unsupportedInputTypeChecks = <TypeCheck>[
+  (InputType input) => input is InputType_NodeId,
+  (InputType input) => input is InputType_Url,
+];
+
+const Set<Type> unsupportedInputStates = <Type>{
+  NodeIdInputState,
+  UrlInputState,
+};
+
 class InputState {
   const InputState._();
 

@@ -153,17 +153,11 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     });
     try {
       final InputType inputType = await inputCubit.parseInput(input: _paymentInfoController.text);
-      if (!(inputType is InputType_Bolt11 ||
-          inputType is InputType_Bolt12Offer ||
-          inputType is InputType_LnUrlPay ||
-          inputType is InputType_LnUrlWithdraw)) {
+      if (unsupportedInputTypeChecks.any((TypeCheck check) => check(inputType))) {
         errMsg = texts.payment_info_dialog_error_unsupported_input;
       }
       if (inputType is InputType_Bolt11 && inputType.invoice.amountMsat == BigInt.zero) {
         errMsg = texts.payment_request_zero_amount_not_supported;
-      }
-      if (inputType is InputType_BitcoinAddress) {
-        errMsg = 'Please use "Send to BTC Address" option from main menu.';
       }
     } catch (error) {
       final String errStr = error.toString();
