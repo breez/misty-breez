@@ -50,12 +50,6 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
       child: SingleChildScrollView(
         child: BlocBuilder<WebhookCubit, WebhookState>(
           builder: (BuildContext context, WebhookState state) {
-            if (state.isLoading ||
-                (state.lnurlPayError != null && state.lnurlPayError!.isNotEmpty) ||
-                (state.lnurlPayUrl != null && state.lnurlPayUrl!.isEmpty)) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
             final ThemeData themeData = Theme.of(context);
             final Color errorBorderColor = themeData.colorScheme.error;
 
@@ -140,7 +134,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                     child: SingleButtonBottomBar(
                       text: texts.currency_converter_dialog_action_done,
                       expand: true,
-                      onPressed: () {
+                      onPressed: () async {
                         if (_usernameController.text.isEmpty) {
                           Navigator.pop(context);
                           return;
@@ -150,8 +144,22 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                         // TODO(erdemyerebasmaz): Handle registration errors
                         if (_formKey.currentState?.validate() ?? false) {
                           final WebhookCubit webhookCubit = context.read<WebhookCubit>();
-                          webhookCubit.updateLnAddressUsername(username: _usernameController.text);
-                          Navigator.pop(context);
+                          await webhookCubit.updateLnAddressUsername(username: _usernameController.text);
+                          if (context.mounted) {
+                            if (state.lnurlPayError == null) {
+                              Navigator.pop(context);
+                              showFlushbar(
+                                context,
+                                message: 'Successfully updated Lightning Address username.',
+                              );
+                            } else {
+                              Navigator.pop(context);
+                              showFlushbar(
+                                context,
+                                message: 'Failed to update Lightning Address username.',
+                              );
+                            }
+                          }
                         }
                       },
                     ),
