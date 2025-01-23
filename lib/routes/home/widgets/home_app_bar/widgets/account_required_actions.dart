@@ -13,115 +13,147 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
+    return Builder(
+      builder: (BuildContext context) {
+        final List<Widget> warnings = <Widget>[];
 
-    return BlocBuilder<AccountCubit, AccountState>(
-      builder: (BuildContext context, AccountState accountState) {
-        return _buildContentWithAccountState(themeData, accountState);
+        final RefundState refundState = context.watch<RefundCubit>().state;
+        if (refundState.hasRefundables) {
+          _logger.info('Adding refundables warning.');
+          warnings.add(const RefundablesWarningAction());
+        }
+
+        // final AccountState accountState = context.watch<AccountCubit>().state;
+        // if (!accountState.didCompleteInitialSync) {
+        //   _logger.info('Adding sync warning.');
+        //   warnings.add(const InitialSyncWarningAction());
+        // }
+
+        final SecurityState securityState = context.watch<SecurityCubit>().state;
+        if (securityState.verificationStatus == VerificationStatus.unverified) {
+          _logger.info('Adding mnemonic verification warning.');
+          warnings.add(const VerifyMnemonicWarningAction());
+        }
+
+        final BackupState? backupState = context.watch<BackupCubit>().state;
+        if (backupState != null && backupState.status == BackupStatus.inProgress) {
+          _logger.info('Adding backup in progress warning.');
+          warnings.add(const BackupInProgressWarningAction());
+        }
+
+        if (backupState?.status == BackupStatus.failed) {
+          _logger.info('Adding backup error warning.');
+          warnings.add(const BackupFailedWarningAction());
+        }
+
+        if (warnings.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        _logger.info('Total # of warnings: ${warnings.length}');
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: warnings,
+        );
       },
     );
   }
+}
 
-  Widget _buildContentWithAccountState(
-    ThemeData themeData,
-    AccountState accountState,
-  ) {
-    return BlocBuilder<SecurityCubit, SecurityState>(
-      builder: (BuildContext context, SecurityState securityState) {
-        return BlocBuilder<BackupCubit, BackupState?>(
-          builder: (BuildContext context, BackupState? backupState) {
-            _logger.fine(
-              'Building with: securityState: $securityState backupState: $backupState accountState: $accountState',
-            );
+class RefundablesWarningAction extends StatelessWidget {
+  const RefundablesWarningAction({super.key});
 
-            final List<Widget> warnings = <Widget>[];
+  @override
+  Widget build(BuildContext context) {
+    return WarningAction(
+      onTap: () {
+        if (context.mounted) {
+          Navigator.of(context).pushNamed(
+            GetRefundPage.routeName,
+          );
+        }
+      },
+    );
+  }
+}
 
-            /*if (!accountState.didCompleteInitialSync) {
-              _logger.info('Adding sync warning.');
-              warnings.add(
-                WarningAction(
-                  onTap: () async {},
-                  iconWidget: Rotator(
-                    child: Image(
-                      image: const AssetImage('assets/icons/sync.png'),
-                      color: themeData.appBarTheme.actionsIconTheme?.color,
-                    ),
-                  ),
-                ),
-              );
-            }*/
+class InitialSyncWarningAction extends StatelessWidget {
+  const InitialSyncWarningAction({super.key});
 
-            if (securityState.verificationStatus == VerificationStatus.unverified) {
-              _logger.info('Adding mnemonic verification warning.');
-              warnings.add(
-                WarningAction(
-                  onTap: () async {
-                    // TODO(erdemyerebasmaz): Handle the case accountMnemonic is null as restoreMnemonic is now nullable
-                    await ServiceInjector().credentialsManager.restoreMnemonic().then(
-                      (String? accountMnemonic) {
-                        if (context.mounted) {
-                          return Navigator.pushNamed(
-                            context,
-                            MnemonicsConfirmationPage.routeName,
-                            arguments: accountMnemonic,
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-              );
-            }
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    return WarningAction(
+      onTap: () async {},
+      iconWidget: Rotator(
+        child: Image(
+          image: const AssetImage('assets/icons/sync.png'),
+          color: themeData.appBarTheme.actionsIconTheme?.color,
+        ),
+      ),
+    );
+  }
+}
 
-            if (backupState != null && backupState.status == BackupStatus.inProgress) {
-              _logger.info('Adding backup in progress warning.');
-              warnings.add(
-                WarningAction(
-                  onTap: () {
-                    showDialog(
-                      useRootNavigator: false,
-                      useSafeArea: false,
-                      context: context,
-                      builder: (_) => const BackupInProgressDialog(),
-                    );
-                  },
-                  iconWidget: Rotator(
-                    child: Image(
-                      image: const AssetImage('assets/icons/sync.png'),
-                      color: themeData.appBarTheme.actionsIconTheme!.color!,
-                    ),
-                  ),
-                ),
-              );
-            }
+class VerifyMnemonicWarningAction extends StatelessWidget {
+  const VerifyMnemonicWarningAction({super.key});
 
-            if (backupState?.status == BackupStatus.failed) {
-              _logger.info('Adding backup error warning.');
-              warnings.add(
-                WarningAction(
-                  onTap: () {
-                    showDialog(
-                      useRootNavigator: false,
-                      useSafeArea: false,
-                      context: context,
-                      builder: (_) => const EnableBackupDialog(),
-                    );
-                  },
-                ),
-              );
-            }
+  @override
+  Widget build(BuildContext context) {
+    return WarningAction(
+      onTap: () async {
+        final String? accountMnemonic = await ServiceInjector().credentialsManager.restoreMnemonic();
+        if (context.mounted && accountMnemonic != null) {
+          Navigator.pushNamed(
+            context,
+            MnemonicsConfirmationPage.routeName,
+            arguments: accountMnemonic,
+          );
+        }
+      },
+    );
+  }
+}
 
-            _logger.info('Total # of warnings: ${warnings.length}');
-            if (warnings.isEmpty) {
-              return const SizedBox.shrink();
-            }
+class BackupInProgressWarningAction extends StatelessWidget {
+  const BackupInProgressWarningAction({super.key});
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: warnings,
-            );
-          },
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    return WarningAction(
+      onTap: () {
+        showDialog(
+          useRootNavigator: false,
+          useSafeArea: false,
+          context: context,
+          builder: (_) => const BackupInProgressDialog(),
+        );
+      },
+      iconWidget: Rotator(
+        child: Image(
+          image: const AssetImage('assets/icons/sync.png'),
+          color: themeData.appBarTheme.actionsIconTheme!.color!,
+        ),
+      ),
+    );
+  }
+}
+
+class BackupFailedWarningAction extends StatelessWidget {
+  const BackupFailedWarningAction({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return WarningAction(
+      onTap: () {
+        showDialog(
+          useRootNavigator: false,
+          useSafeArea: false,
+          context: context,
+          builder: (_) => const EnableBackupDialog(),
         );
       },
     );
