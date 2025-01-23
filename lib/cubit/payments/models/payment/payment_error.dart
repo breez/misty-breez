@@ -1,41 +1,24 @@
-class PaymentExceededLimitError implements Exception {
+class PaymentExceedsLimitError implements Exception {
   final int limitSat;
 
-  const PaymentExceededLimitError(this.limitSat);
+  const PaymentExceedsLimitError(this.limitSat);
+
+  @override
+  String toString() => 'Payment amount exceeds the limit of $limitSat satoshis.';
 }
 
 class PaymentBelowLimitError implements Exception {
   final int limitSat;
 
   const PaymentBelowLimitError(this.limitSat);
-}
 
-class PaymentBelowReserveError implements Exception {
-  final int reserveAmount;
-
-  const PaymentBelowReserveError(this.reserveAmount);
+  @override
+  String toString() => 'Payment amount is below the minimum limit of $limitSat satoshis.';
 }
 
 class InsufficientLocalBalanceError implements Exception {
   const InsufficientLocalBalanceError();
+
+  @override
+  String toString() => 'Insufficient local balance to process the payment.';
 }
-
-class PaymentBelowSetupFeesError implements Exception {
-  final int setupFees;
-
-  const PaymentBelowSetupFeesError(this.setupFees);
-}
-
-class PaymentExceedededLiquidityError implements Exception {
-  final int limitSat;
-
-  const PaymentExceedededLiquidityError(this.limitSat);
-}
-
-class PaymentExceededLiquidityChannelCreationNotPossibleError implements Exception {
-  final int limitSat;
-
-  const PaymentExceededLiquidityChannelCreationNotPossibleError(this.limitSat);
-}
-
-class NoChannelCreationZeroLiquidityError implements Exception {}

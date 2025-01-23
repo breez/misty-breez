@@ -70,7 +70,7 @@ class LnUrlCubit extends Cubit<LnUrlState> {
     }
     final Limits limits = outgoing ? lightningLimits.send : lightningLimits.receive;
     if (amount > limits.maxSat) {
-      throw PaymentExceededLimitError(limits.maxSat.toInt());
+      throw PaymentExceedsLimitError(limits.maxSat.toInt());
     }
     if (amount < limits.minSat) {
       throw PaymentBelowLimitError(limits.minSat.toInt());

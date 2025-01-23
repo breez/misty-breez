@@ -29,41 +29,27 @@ class PaymentValidator {
     _logger.info('Validating for $amount and $outgoing');
     try {
       validatePayment(amount, outgoing);
-    } on PaymentExceededLimitError catch (e) {
-      _logger.info('Got PaymentExceededLimitError', e);
-      return texts.invoice_payment_validator_error_payment_exceeded_limit(
-        currency.format(e.limitSat.toInt()),
-      );
-    } on PaymentBelowLimitError catch (e) {
-      _logger.info('Got PaymentBelowLimitError', e);
-      return texts.invoice_payment_validator_error_payment_below_invoice_limit(
-        currency.format(e.limitSat.toInt()),
-      );
-    } on PaymentBelowReserveError catch (e) {
-      _logger.info('Got PaymentBelowReserveError', e);
-      return texts.invoice_payment_validator_error_payment_below_limit(
-        currency.format(e.reserveAmount),
-      );
-    } on PaymentExceedededLiquidityError catch (e) {
-      return 'Insufficient inbound liquidity (${currency.format(e.limitSat.toInt())})';
-    } on InsufficientLocalBalanceError {
-      return texts.invoice_payment_validator_error_insufficient_local_balance;
-    } on PaymentBelowSetupFeesError catch (e) {
-      _logger.info('Got PaymentBelowSetupFeesError', e);
-      return texts.invoice_payment_validator_error_payment_below_setup_fees_error(
-        currency.format(e.setupFees),
-      );
-    } on PaymentExceededLiquidityChannelCreationNotPossibleError catch (e) {
-      return texts.lnurl_fetch_invoice_error_max(currency.format(e.limitSat.toInt()));
-    } on NoChannelCreationZeroLiquidityError {
-      return texts.lsp_error_cannot_open_channel;
-    } catch (e) {
-      _logger.info('Got Generic error', e);
-      return texts.invoice_payment_validator_error_unknown(
-        extractExceptionMessage(e, texts),
-      );
+    } on Exception catch (e) {
+      return _handleException(e);
     }
 
     return null;
+  }
+
+  String _handleException(Exception e) {
+    _logger.warning('Failed to validate payment.', e);
+    if (e is PaymentExceedsLimitError) {
+      return texts.invoice_payment_validator_error_payment_exceeded_limit(
+        currency.format(e.limitSat.toInt()),
+      );
+    } else if (e is PaymentBelowLimitError) {
+      return texts.invoice_payment_validator_error_payment_below_invoice_limit(
+        currency.format(e.limitSat.toInt()),
+      );
+    } else if (e is InsufficientLocalBalanceError) {
+      return texts.invoice_payment_validator_error_insufficient_local_balance;
+    } else {
+      return texts.invoice_payment_validator_error_unknown(extractExceptionMessage(e, texts));
+    }
   }
 }

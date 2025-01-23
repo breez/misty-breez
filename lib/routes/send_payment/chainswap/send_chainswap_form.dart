@@ -79,6 +79,9 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
 
   @override
   Widget build(BuildContext context) {
+    final AccountState accountState = context.watch<AccountCubit>().state;
+    final CurrencyState currencyState = context.watch<CurrencyCubit>().state;
+
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
@@ -106,7 +109,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             controller: widget.amountController,
             focusNode: _amountFocusNode,
             isDrain: widget.isDrain,
-            balance: widget.paymentLimits.send.maxSat,
+            balance: accountState.walletInfo!.balanceSat,
             policy: WithdrawFundsPolicy(
               WithdrawKind.withdrawFunds,
               widget.paymentLimits.send.minSat,
@@ -135,72 +138,64 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
               endIndent: 0.0,
             ),
           ),
-          BlocBuilder<CurrencyCubit, CurrencyState>(
-            builder: (BuildContext context, CurrencyState currencyState) {
-              return BlocBuilder<AccountCubit, AccountState>(
-                builder: (BuildContext context, AccountState accountState) {
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    minTileHeight: 0,
-                    title: Text(
-                      texts.withdraw_funds_use_all_funds,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        height: 1.208,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'IBMPlexSans',
-                      ),
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
-                          accountState.walletInfo!.balanceSat.toInt(),
-                        )}',
-                        style: const TextStyle(
-                          color: Color.fromRGBO(182, 188, 193, 1),
-                          fontSize: 16,
-                          height: 1.182,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'IBMPlexSans',
-                        ),
-                      ),
-                    ),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Switch(
-                        value: widget.isDrain,
-                        activeColor: Colors.white,
-                        activeTrackColor: themeData.primaryColor,
-                        onChanged: (bool value) async {
-                          setState(
-                            () {
-                              widget.onChanged(value);
-                              if (value) {
-                                final String formattedAmount = currencyState.bitcoinCurrency
-                                    .format(
-                                      accountState.walletInfo!.balanceSat.toInt(),
-                                      includeDisplayName: false,
-                                      userInput: true,
-                                    )
-                                    .formatBySatAmountFormFieldFormatter();
-                                setState(() {
-                                  widget.amountController.text = formattedAmount;
-                                });
-                              } else {
-                                widget.amountController.text = '';
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            minTileHeight: 0,
+            title: Text(
+              texts.withdraw_funds_use_all_funds,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                height: 1.208,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'IBMPlexSans',
+              ),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
+                  accountState.walletInfo!.balanceSat.toInt(),
+                )}',
+                style: const TextStyle(
+                  color: Color.fromRGBO(182, 188, 193, 1),
+                  fontSize: 16,
+                  height: 1.182,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'IBMPlexSans',
+                ),
+              ),
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Switch(
+                value: widget.isDrain,
+                activeColor: Colors.white,
+                activeTrackColor: themeData.primaryColor,
+                onChanged: (bool value) async {
+                  setState(
+                    () {
+                      widget.onChanged(value);
+                      if (value) {
+                        final String formattedAmount = currencyState.bitcoinCurrency
+                            .format(
+                              accountState.walletInfo!.balanceSat.toInt(),
+                              includeDisplayName: false,
+                              userInput: true,
+                            )
+                            .formatBySatAmountFormFieldFormatter();
+                        setState(() {
+                          widget.amountController.text = formattedAmount;
+                        });
+                      } else {
+                        widget.amountController.text = '';
+                      }
+                    },
                   );
                 },
-              );
-            },
+              ),
+            ),
           ),
         ],
       ),

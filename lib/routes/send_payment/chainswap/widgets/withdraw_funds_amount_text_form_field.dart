@@ -37,7 +37,7 @@ class WithdrawFundsAmountTextFormField extends AmountFormField {
                   throw PaymentBelowLimitError(policy.minValue.toInt());
                 }
                 if (amount > policy.maxValue.toInt()) {
-                  throw PaymentExceededLimitError(policy.maxValue.toInt());
+                  throw PaymentExceedsLimitError(policy.maxValue.toInt());
                 }
               },
             ).validateOutgoing(amount);
