@@ -22,11 +22,9 @@ class HomeDrawer extends StatelessWidget {
 
         return BlocBuilder<RefundCubit, RefundState>(
           builder: (BuildContext context, RefundState refundState) {
-            final bool hasRefundables = refundState.refundables?.isNotEmpty ?? false;
-
             return BreezNavigationDrawer(
               <DrawerItemConfigGroup>[
-                if (hasRefundables) ...<DrawerItemConfigGroup>[
+                if (refundState.hasRefundables) ...<DrawerItemConfigGroup>[
                   DrawerItemConfigGroup(
                     <DrawerItemConfig>[
                       DrawerItemConfig(

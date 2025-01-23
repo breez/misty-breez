@@ -29,7 +29,7 @@ class _RefundItemActionState extends State<RefundItemAction> {
             height: 36.0,
             width: 145.0,
             child: SubmitButton(
-              texts.get_refund_action_broadcasted,
+              texts.get_refund_action_continue,
               () {
                 Navigator.of(context).pushNamed(
                   RefundPage.routeName,

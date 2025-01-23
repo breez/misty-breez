@@ -24,4 +24,6 @@ class RefundState {
       error: error ?? this.error,
     );
   }
+
+  bool get hasRefundables => refundables?.isNotEmpty ?? false;
 }
