@@ -144,7 +144,9 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                         // TODO(erdemyerebasmaz): Handle registration errors
                         if (_formKey.currentState?.validate() ?? false) {
                           final WebhookCubit webhookCubit = context.read<WebhookCubit>();
-                          await webhookCubit.updateLnAddressUsername(username: _usernameController.text);
+                          await webhookCubit.updateLnAddressUsername(
+                            username: _usernameController.text.toLowerCase().trim(),
+                          );
                           if (context.mounted) {
                             if (state.lnurlPayError == null) {
                               Navigator.pop(context);
