@@ -43,6 +43,7 @@ extension PaymentDetailsToJson on PaymentDetails {
         'type': 'bitcoin',
         'swapId': details.swapId,
         'description': details.description,
+        'autoAcceptedFees': details.autoAcceptedFees,
         'refundTxId': details.refundTxId,
         'refundTxAmountSat': details.refundTxAmountSat?.toString(),
       },
@@ -75,6 +76,7 @@ extension PaymentDetailsFromJson on PaymentDetails {
         return PaymentDetails.bitcoin(
           swapId: json['swapId'] as String,
           description: json['description'] as String,
+          autoAcceptedFees: json['autoAcceptedFees'] as bool,
           refundTxId: json['refundTxId'] as String?,
           bitcoinExpirationBlockheight: json['bitcoinExpirationBlockheight'] as int?,
           liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int?,
@@ -109,6 +111,7 @@ extension PaymentDetailsExtension on PaymentDetails {
               bitcoin: (PaymentDetails_Bitcoin o) =>
                   o.swapId == (this as PaymentDetails_Bitcoin).swapId &&
                   o.description == (this as PaymentDetails_Bitcoin).description &&
+                  o.autoAcceptedFees == (this as PaymentDetails_Bitcoin).autoAcceptedFees &&
                   o.refundTxId == (this as PaymentDetails_Bitcoin).refundTxId &&
                   o.refundTxAmountSat == (this as PaymentDetails_Bitcoin).refundTxAmountSat,
               orElse: () => this == other,
@@ -130,7 +133,7 @@ extension PaymentDetailsHashCode on PaymentDetails {
       ),
       liquid: (PaymentDetails_Liquid o) => Object.hash(o.destination, o.description),
       bitcoin: (PaymentDetails_Bitcoin o) =>
-          Object.hash(o.swapId, o.description, o.refundTxId, o.refundTxAmountSat),
+          Object.hash(o.swapId, o.description, o.autoAcceptedFees, o.refundTxId, o.refundTxAmountSat),
       orElse: () => 0,
     );
   }
