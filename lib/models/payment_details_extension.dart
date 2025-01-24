@@ -1,4 +1,5 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/models/asset_extension.dart';
 import 'package:l_breez/utils/date.dart';
 
 // TODO(erdemyerebasmaz): Ensure that any changes to [PaymentDetails] are reflected here on each extension.
@@ -38,6 +39,8 @@ extension PaymentDetailsToJson on PaymentDetails {
         'type': 'liquid',
         'destination': details.destination,
         'description': details.description,
+        'assetId': details.assetId,
+        'assetInfo': details.assetInfo?.toJson(),
       },
       bitcoin: (PaymentDetails_Bitcoin details) => <String, dynamic>{
         'type': 'bitcoin',
@@ -71,6 +74,8 @@ extension PaymentDetailsFromJson on PaymentDetails {
         return PaymentDetails.liquid(
           destination: json['destination'] as String,
           description: json['description'] as String,
+          assetId: json['assetId'] as String,
+          assetInfo: AssetInfoFromJson.fromJson(json['assetInfo']),
         );
       case 'bitcoin':
         return PaymentDetails.bitcoin(
@@ -87,6 +92,8 @@ extension PaymentDetailsFromJson on PaymentDetails {
         return PaymentDetails.liquid(
           destination: json['destination'] as String,
           description: json['description'] as String,
+          assetId: json['assetId'] as String,
+          assetInfo: AssetInfoFromJson.fromJson(json['assetInfo']),
         );
     }
   }
@@ -107,7 +114,9 @@ extension PaymentDetailsExtension on PaymentDetails {
                   o.refundTxAmountSat == (this as PaymentDetails_Lightning).refundTxAmountSat,
               liquid: (PaymentDetails_Liquid o) =>
                   o.destination == (this as PaymentDetails_Liquid).destination &&
-                  o.description == (this as PaymentDetails_Liquid).description,
+                  o.description == (this as PaymentDetails_Liquid).description &&
+                  o.assetId == (this as PaymentDetails_Liquid).assetId &&
+                  o.assetInfo == (this as PaymentDetails_Liquid).assetInfo,
               bitcoin: (PaymentDetails_Bitcoin o) =>
                   o.swapId == (this as PaymentDetails_Bitcoin).swapId &&
                   o.description == (this as PaymentDetails_Bitcoin).description &&
@@ -131,7 +140,7 @@ extension PaymentDetailsHashCode on PaymentDetails {
         o.refundTxId,
         o.refundTxAmountSat,
       ),
-      liquid: (PaymentDetails_Liquid o) => Object.hash(o.destination, o.description),
+      liquid: (PaymentDetails_Liquid o) => Object.hash(o.destination, o.description, o.assetId, o.assetInfo),
       bitcoin: (PaymentDetails_Bitcoin o) =>
           Object.hash(o.swapId, o.description, o.autoAcceptedFees, o.refundTxId, o.refundTxAmountSat),
       orElse: () => 0,

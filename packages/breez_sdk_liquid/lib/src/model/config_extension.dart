@@ -13,6 +13,7 @@ extension ConfigCopyWith on Config {
     String? breezApiKey,
     List<ExternalInputParser>? externalInputParsers,
     String? syncServiceUrl,
+    List<AssetMetadata>? assetMetadata,
   }) {
     return Config(
       liquidElectrumUrl: liquidElectrumUrl ?? this.liquidElectrumUrl,
@@ -27,6 +28,7 @@ extension ConfigCopyWith on Config {
       externalInputParsers: externalInputParsers ?? this.externalInputParsers,
       syncServiceUrl: syncServiceUrl ?? this.syncServiceUrl,
       useDefaultExternalInputParsers: true,
+      assetMetadata: assetMetadata ?? this.assetMetadata,
     );
   }
 }

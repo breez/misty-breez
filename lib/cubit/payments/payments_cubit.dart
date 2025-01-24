@@ -56,8 +56,8 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
     _logger.info('prepareSendPayment\nPreparing send payment for destination: $destination');
     try {
       // TODO(erdemyerebasmaz): Handle the drain option for PrepareSendRequest
-      final PayAmount_Receiver? payAmount =
-          amountSat != null ? PayAmount_Receiver(amountSat: amountSat) : null;
+      final PayAmount_Bitcoin? payAmount =
+          amountSat != null ? PayAmount_Bitcoin(receiverAmountSat: amountSat) : null;
       final PrepareSendRequest req = PrepareSendRequest(destination: destination, amount: payAmount);
       return await _breezSdkLiquid.instance!.prepareSendPayment(req: req);
     } catch (e) {
@@ -83,9 +83,11 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }) async {
     _logger.info('prepareReceivePayment\nPreparing receive payment for $payerAmountSat sats');
     try {
+      final ReceiveAmount_Bitcoin? receiveAmount =
+          payerAmountSat != null ? ReceiveAmount_Bitcoin(payerAmountSat: payerAmountSat) : null;
       final PrepareReceiveRequest req = PrepareReceiveRequest(
         paymentMethod: paymentMethod,
-        payerAmountSat: payerAmountSat,
+        amount: receiveAmount,
       );
       return _breezSdkLiquid.instance!.prepareReceivePayment(req: req);
     } catch (e) {
@@ -100,7 +102,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }) async {
     _logger.info(
       'receivePayment\nReceive ${prepareResponse.paymentMethod.name} payment for amount: '
-      '${prepareResponse.payerAmountSat} (sats), fees: ${prepareResponse.feesSat} (sats), description: $description',
+      '${prepareResponse.amount} (sats), fees: ${prepareResponse.feesSat} (sats), description: $description',
     );
     try {
       final ReceivePaymentRequest req =
