@@ -607,11 +607,6 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     final CurrencyState currencyState = currencyCubit.state;
     final int amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
-    final BigInt amountMsat = BigInt.from(amountSat * 1000);
-    final LnUrlPayRequestData requestData = widget.requestData.copyWith(
-      minSendable: amountMsat,
-      maxSendable: amountMsat,
-    );
     final PrepareLnUrlPayResponse? prepareResponse =
         await Navigator.of(context).push<PrepareLnUrlPayResponse?>(
       FadeInRoute<PrepareLnUrlPayResponse?>(
@@ -631,24 +626,5 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     if (mounted) {
       Navigator.pop(context, prepareResponse);
     }
-  }
-}
-
-extension LnUrlPayRequestDataCopyWith on LnUrlPayRequestData {
-  LnUrlPayRequestData copyWith({
-    BigInt? minSendable,
-    BigInt? maxSendable,
-  }) {
-    return LnUrlPayRequestData(
-      callback: callback,
-      minSendable: minSendable ?? this.minSendable,
-      maxSendable: maxSendable ?? this.maxSendable,
-      metadataStr: metadataStr,
-      commentAllowed: commentAllowed,
-      domain: domain,
-      allowsNostr: allowsNostr,
-      nostrPubkey: nostrPubkey,
-      lnAddress: lnAddress,
-    );
   }
 }
