@@ -1,7 +1,6 @@
 class WebhookState {
   final String? lnurlPayUrl;
   final String? lnAddress;
-  final String? lnAddressUsername;
   final String? webhookError;
   final String? webhookErrorTitle;
   final String? lnurlPayError;
@@ -11,7 +10,6 @@ class WebhookState {
   WebhookState({
     this.lnurlPayUrl,
     this.lnAddress,
-    this.lnAddressUsername,
     this.webhookError,
     this.webhookErrorTitle,
     this.lnurlPayError,

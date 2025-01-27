@@ -14,6 +14,7 @@ const String _kPaymentOptionExemptFee = 'payment_options_exempt_fee';
 const String _kPaymentOptionChannelSetupFeeLimit = 'payment_options_channel_setup_fee_limit';
 const String _kReportPrefKey = 'report_preference_key';
 const String _kLnUrlPayKey = 'lnurlpay_key';
+const String _kLnAddressUsername = 'ln_address_name';
 const String _kProfileName = 'profile_name';
 
 final Logger _logger = Logger('BreezPreferences');
@@ -123,5 +124,21 @@ class BreezPreferences {
     _logger.info('set profile name: $profileName');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kProfileName, profileName);
+  }
+
+  Future<String?> getLnAddressUsername() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_kLnAddressUsername);
+  }
+
+  Future<void> setLnAddressUsername(String lnAddressUsername) async {
+    _logger.info('Set LN Address Name: $lnAddressUsername');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kLnAddressUsername, lnAddressUsername);
+  }
+
+  Future<void> resetLnAddressUsername() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kLnAddressUsername);
   }
 }

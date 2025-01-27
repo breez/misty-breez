@@ -34,7 +34,7 @@ class WebhookCubit extends Cubit<WebhookState> {
       final Map<String, String> lnUrlData = await _lnUrlPayService.registerLnurlpay(
         walletInfo,
         webhookUrl,
-        username: username ?? state.lnAddressUsername,
+        username: username ?? await _lnUrlPayService.getLnAddressUsername(),
       );
       emit(
         WebhookState(
@@ -70,11 +70,11 @@ class WebhookCubit extends Cubit<WebhookState> {
         walletInfo.walletInfo,
         lnAddressUsername,
       );
+      await _lnUrlPayService.setLnAddressUsername(lnAddressUsername: lnAddressUsername);
       emit(
         WebhookState(
           lnurlPayUrl: lnUrlData['lnurl'],
           lnAddress: lnUrlData['lnAddress'],
-          lnAddressUsername: lnAddressUsername,
         ),
       );
     } catch (err) {

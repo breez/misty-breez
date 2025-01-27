@@ -143,6 +143,7 @@ class LnUrlPayService {
     );
     _logger.info('invalidate lnurl pay response: ${response.statusCode}');
     await resetLnUrlPayKey();
+    await resetLnAddressUsername();
   }
 
   Future<void> setLnUrlPayKey({required String webhookUrl}) async {
@@ -155,5 +156,17 @@ class LnUrlPayService {
 
   Future<void> resetLnUrlPayKey() async {
     return await _breezPreferences.resetLnUrlPayKey();
+  }
+
+  Future<void> setLnAddressUsername({required String lnAddressUsername}) async {
+    return await _breezPreferences.setLnAddressUsername(lnAddressUsername);
+  }
+
+  Future<String?> getLnAddressUsername() async {
+    return await _breezPreferences.getLnAddressUsername();
+  }
+
+  Future<void> resetLnAddressUsername() async {
+    return await _breezPreferences.resetLnAddressUsername();
   }
 }
