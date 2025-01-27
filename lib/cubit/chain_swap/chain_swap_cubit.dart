@@ -18,7 +18,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
   }
 
   void _initializeChainSwapCubit() {
-    _breezSdkLiquid.walletInfoStream.first.then((_) => rescanOnchainSwaps());
+    _breezSdkLiquid.getInfoResponseStream.first.then((_) => rescanOnchainSwaps());
   }
 
   Future<void> rescanOnchainSwaps() async {

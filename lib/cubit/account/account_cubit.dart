@@ -22,11 +22,11 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
 
   void _listenAccountChanges() {
     _logger.info('Listening to account changes');
-    breezSdkLiquid.walletInfoStream.distinct().listen(
-      (GetInfoResponse infoResponse) {
+    breezSdkLiquid.getInfoResponseStream.distinct().listen(
+      (GetInfoResponse getInfoResponse) {
         final AccountState newState = state.copyWith(
-          walletInfo: infoResponse.walletInfo,
-          blockchainInfo: infoResponse.blockchainInfo,
+          walletInfo: getInfoResponse.walletInfo,
+          blockchainInfo: getInfoResponse.blockchainInfo,
         );
         _logger.info('AccountState changed: $newState');
         emit(newState);
