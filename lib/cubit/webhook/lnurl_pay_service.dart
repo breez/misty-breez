@@ -105,11 +105,15 @@ class LnUrlPayService {
         'lnurl': lnurl,
         'lnAddress': lnAddress,
       };
-    } else {
+    } else if (jsonResponse.statusCode == 409) {
+      /// ErrorUsernameConflict: https://github.com/breez/breez-lnurl/pull/11
+
       // TODO(erdemyerebasmaz): Handle username conflicts(only when user has created a new wallet)
       // Add a random four-digit identifier, a discriminator, as a suffix if user's username is taken(~1/600 probability of conflict)
       // Add a retry & randomizer logic until first registration succeeds
       // TODO(erdemyerebasmaz): Handle custom username conflicts
+      throw Exception('Username is already taken. Please try a different one.');
+    } else {
       throw Exception('Failed to register LnUrl Webhook: ${jsonResponse.body}');
     }
   }
