@@ -64,20 +64,19 @@ class WebhookCubit extends Cubit<WebhookState> {
     );
     try {
       final GetInfoResponse? walletInfo = await _breezSdkLiquid.instance?.getInfo();
-      if (walletInfo != null) {
-        await _lnUrlPayService.updateLnAddressUsername(walletInfo.walletInfo, username);
-        final Map<String, String> lnUrlData = await _lnUrlPayService.registerLnurlpay(
-          walletInfo.walletInfo,
-          await _lnUrlPayService.getLnUrlPayKey() ?? '',
-          username: username,
-        );
-        emit(
-          WebhookState(
-            lnurlPayUrl: lnUrlData['lnurl'],
-            lnAddress: lnUrlData['lnAddress'],
-          ),
-        );
+      if (walletInfo == null) {
+        throw Exception('Failed to retrieve wallet info.');
       }
+      final Map<String, String> lnUrlData = await _lnUrlPayService.updateLnAddressUsername(
+        walletInfo.walletInfo,
+        username,
+      );
+      emit(
+        WebhookState(
+          lnurlPayUrl: lnUrlData['lnurl'],
+          lnAddress: lnUrlData['lnAddress'],
+        ),
+      );
     } catch (err) {
       emit(
         state.copyWith(

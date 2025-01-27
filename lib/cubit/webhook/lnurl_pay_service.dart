@@ -114,11 +114,12 @@ class LnUrlPayService {
     }
   }
 
-  Future<void> updateLnAddressUsername(WalletInfo walletInfo, String username) async {
+  Future<Map<String, String>> updateLnAddressUsername(WalletInfo walletInfo, String username) async {
     final String? webhookUrl = await getLnUrlPayKey();
-    if (webhookUrl != null) {
-      await registerLnurlpay(walletInfo, webhookUrl, username: username);
+    if (webhookUrl == null) {
+      throw Exception('Failed to retrieve registered webhook.');
     }
+    return await registerLnurlpay(walletInfo, webhookUrl, username: username);
   }
 
   Future<void> _invalidateLnurlPay(String pubKey, String toInvalidate) async {
