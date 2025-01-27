@@ -47,8 +47,8 @@ class WebhookCubit extends Cubit<WebhookState> {
       _logger.warning('Failed to refresh webhooks: $err');
       emit(
         WebhookState(
-          webhookError: 'Failed to refresh Lightning Address:',
-          webhookErrorTitle: err.toString(),
+          webhookError: err.toString(),
+          webhookErrorTitle: 'Failed to refresh Lightning Address:',
         ),
       );
     }
@@ -58,8 +58,8 @@ class WebhookCubit extends Cubit<WebhookState> {
     emit(
       WebhookState(
         isLoading: true,
-        lnAddress: state.lnAddress,
         lnurlPayUrl: state.lnurlPayUrl,
+        lnAddress: state.lnAddress,
       ),
     );
     try {
@@ -80,8 +80,8 @@ class WebhookCubit extends Cubit<WebhookState> {
     } catch (err) {
       emit(
         state.copyWith(
-          lnurlPayErrorTitle: 'Failed to update Lightning Address username:',
           lnurlPayError: err.toString(),
+          lnurlPayErrorTitle: 'Failed to update Lightning Address username:',
         ),
       );
     } finally {
