@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
@@ -43,16 +44,36 @@ class LnUrlPayService {
       throw Exception('Missing signature');
     }
 
-    final Map<String, String> response = await _postWebhookRegistrationRequest(
-      pubKey: pubKey,
-      webhookUrl: webhookUrl,
-      currentTime: currentTime,
-      lnAddressUsername: lnAddressUsername,
-      signature: signMessageRes.signature,
-    );
-
-    await setLnUrlPayKey(webhookUrl: webhookUrl);
-    return response;
+    // TODO(erdemyerebasmaz): Handle username conflicts(only when user has created a new wallet)
+    // Add a random four-digit identifier, a discriminator, as a suffix if user's username is taken(~1/600 probability of conflict)
+    // Add a retry & randomizer logic until first registration succeeds
+    int retryCount = 0;
+    final int maxRetries = 3;
+    try {
+      final Map<String, String> response = await _postWebhookRegistrationRequest(
+        pubKey: pubKey,
+        webhookUrl: webhookUrl,
+        currentTime: currentTime,
+        lnAddressUsername: lnAddressUsername,
+        signature: signMessageRes.signature,
+      );
+      await setLnUrlPayKey(webhookUrl: webhookUrl);
+      return response;
+    } on ErrorUsernameConflict {
+      retryCount++;
+      if (retryCount < maxRetries) {
+        return _postWebhookRegistrationRequest(
+          pubKey: pubKey,
+          webhookUrl: webhookUrl,
+          currentTime: currentTime,
+          signature: signMessageRes.signature,
+          lnAddressUsername: lnAddressUsername,
+          retryCount: retryCount,
+        );
+      } else {
+        throw Exception('Max retries reached. Unable to register LnUrl Webhook.');
+      }
+    }
   }
 
   Future<void> _invalidatePreviousWebhookIfNeeded(String pubKey, String webhookUrl) async {
@@ -80,9 +101,14 @@ class LnUrlPayService {
     required int currentTime,
     required String signature,
     String? lnAddressUsername,
+    int retryCount = 0,
   }) async {
     final String lnurlWebhookUrl = '$lnurlServiceURL/lnurlpay/$pubKey';
     final Uri uri = Uri.parse(lnurlWebhookUrl);
+
+    final String? usernameWithDiscriminator = lnAddressUsername != null && retryCount > 0
+        ? '$lnAddressUsername${Random().nextInt(9000) + 1000}'
+        : lnAddressUsername;
 
     final http.Response jsonResponse = await http.post(
       uri,
@@ -90,7 +116,7 @@ class LnUrlPayService {
         AddWebhookRequest(
           time: currentTime,
           webhookUrl: webhookUrl,
-          username: lnAddressUsername,
+          username: usernameWithDiscriminator,
           signature: signature,
         ).toJson(),
       ),
@@ -107,12 +133,7 @@ class LnUrlPayService {
       };
     } else if (jsonResponse.statusCode == 409) {
       /// ErrorUsernameConflict: https://github.com/breez/breez-lnurl/pull/11
-
-      // TODO(erdemyerebasmaz): Handle username conflicts(only when user has created a new wallet)
-      // Add a random four-digit identifier, a discriminator, as a suffix if user's username is taken(~1/600 probability of conflict)
-      // Add a retry & randomizer logic until first registration succeeds
-      // TODO(erdemyerebasmaz): Handle custom username conflicts
-      throw Exception('Username is already taken. Please try a different one.');
+      throw ErrorUsernameConflict('Username is already taken. Please try a different one.');
     } else {
       throw Exception('Failed to register LnUrl Webhook: ${jsonResponse.body}');
     }
@@ -160,4 +181,10 @@ class LnUrlPayService {
   Future<void> resetLnUrlPayKey() async {
     return await _breezPreferences.resetLnUrlPayKey();
   }
+}
+
+class ErrorUsernameConflict implements Exception {
+  String errorMessage;
+
+  ErrorUsernameConflict(this.errorMessage);
 }
