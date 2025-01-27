@@ -26,23 +26,22 @@ class WebhookCubit extends Cubit<WebhookState> {
     emit(WebhookState(isLoading: true));
     try {
       walletInfo = walletInfo ?? (await _breezSdkLiquid.instance?.getInfo())?.walletInfo;
-      if (walletInfo != null) {
-        final String webhookUrl = await _webhookService.generateWebhookURL();
-        await _webhookService.registerWebhook(webhookUrl);
-        final Map<String, String> lnUrlData = await _lnUrlPayService.registerLnurlpay(
-          walletInfo,
-          webhookUrl,
-          username: username,
-        );
-        emit(
-          WebhookState(
-            lnurlPayUrl: lnUrlData['lnurl'],
-            lnAddress: lnUrlData['lnAddress'],
-          ),
-        );
-      } else {
-        throw Exception('Unable to retrieve wallet information.');
+      if (walletInfo == null) {
+        throw Exception('Failed to retrieve wallet info.');
       }
+      final String webhookUrl = await _webhookService.generateWebhookURL();
+      await _webhookService.registerWebhook(webhookUrl);
+      final Map<String, String> lnUrlData = await _lnUrlPayService.registerLnurlpay(
+        walletInfo,
+        webhookUrl,
+        username: username ?? state.lnAddressUsername,
+      );
+      emit(
+        WebhookState(
+          lnurlPayUrl: lnUrlData['lnurl'],
+          lnAddress: lnUrlData['lnAddress'],
+        ),
+      );
     } catch (err) {
       _logger.warning('Failed to refresh webhooks: $err');
       emit(
@@ -54,7 +53,7 @@ class WebhookCubit extends Cubit<WebhookState> {
     }
   }
 
-  Future<void> updateLnAddressUsername({required String username}) async {
+  Future<void> updateLnAddressUsername({required String lnAddressUsername}) async {
     emit(
       WebhookState(
         isLoading: true,
@@ -69,12 +68,13 @@ class WebhookCubit extends Cubit<WebhookState> {
       }
       final Map<String, String> lnUrlData = await _lnUrlPayService.updateLnAddressUsername(
         walletInfo.walletInfo,
-        username,
+        lnAddressUsername,
       );
       emit(
         WebhookState(
           lnurlPayUrl: lnUrlData['lnurl'],
           lnAddress: lnUrlData['lnAddress'],
+          lnAddressUsername: lnAddressUsername,
         ),
       );
     } catch (err) {

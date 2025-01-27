@@ -145,7 +145,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                         if (_formKey.currentState?.validate() ?? false) {
                           final WebhookCubit webhookCubit = context.read<WebhookCubit>();
                           await webhookCubit.updateLnAddressUsername(
-                            username: _usernameController.text.toLowerCase().trim(),
+                            lnAddressUsername: _usernameController.text.toLowerCase().trim(),
                           );
                           if (context.mounted) {
                             if (state.lnurlPayError == null) {
