@@ -48,19 +48,8 @@ class App extends StatelessWidget {
         BlocProvider<UserProfileCubit>(
           create: (BuildContext context) => UserProfileCubit(injector.breezPreferences),
         ),
-        BlocProvider<WebhookCubit>(
-          lazy: false,
-          create: (BuildContext context) => WebhookCubit(
-            injector.breezSdkLiquid,
-            WebhookService(
-              injector.breezSdkLiquid,
-              injector.notifications,
-            ),
-            LnUrlPayService(
-              injector.breezSdkLiquid,
-              injector.breezPreferences,
-            ),
-          ),
+        BlocProvider<LnAddressCubit>(
+          create: (BuildContext context) => LnAddressCubitFactory.create(injector),
         ),
         BlocProvider<CurrencyCubit>(
           create: (BuildContext context) => CurrencyCubit(injector.breezSdkLiquid),

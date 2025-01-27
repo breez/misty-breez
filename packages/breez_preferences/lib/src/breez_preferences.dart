@@ -16,6 +16,7 @@ const String _kReportPrefKey = 'report_preference_key';
 const String _kLnUrlPayKey = 'lnurlpay_key';
 const String _kLnAddressUsername = 'ln_address_name';
 const String _kProfileName = 'profile_name';
+const String _kCompletedLnAddressSetup = 'completed_ln_address_setup';
 
 final Logger _logger = Logger('BreezPreferences');
 
@@ -99,18 +100,18 @@ class BreezPreferences {
     await prefs.setInt(_kReportPrefKey, behavior.index);
   }
 
-  Future<String?> getLnUrlPayKey() async {
+  Future<String?> getWebhookUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_kLnUrlPayKey);
   }
 
-  Future<void> setLnUrlPayKey(String webhookUrl) async {
+  Future<void> setWebhookUrl(String webhookUrl) async {
     _logger.info('set lnurl pay key: $webhookUrl');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kLnUrlPayKey, webhookUrl);
   }
 
-  Future<void> resetLnUrlPayKey() async {
+  Future<void> clearWebhookUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(_kLnUrlPayKey);
   }
@@ -132,13 +133,23 @@ class BreezPreferences {
   }
 
   Future<void> setLnAddressUsername(String lnAddressUsername) async {
-    _logger.info('Set LN Address Name: $lnAddressUsername');
+    _logger.info('Set LN Address username: $lnAddressUsername');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kLnAddressUsername, lnAddressUsername);
   }
 
-  Future<void> resetLnAddressUsername() async {
+  Future<void> clearLnAddressUsername() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(_kLnAddressUsername);
+  }
+
+  Future<bool> isLnAddressSetup() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return !(prefs.getBool(_kCompletedLnAddressSetup) ?? false);
+  }
+
+  Future<void> completeLnAddressSetup() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kCompletedLnAddressSetup, true);
   }
 }
