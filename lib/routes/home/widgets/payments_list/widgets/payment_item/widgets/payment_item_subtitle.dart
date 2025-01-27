@@ -35,7 +35,7 @@ class PaymentItemSubtitle extends StatelessWidget {
             ),
           ),
         ],
-        if (paymentData.isRefunded) ...<Widget>[
+        if (paymentData.isRefunded || paymentData.status == PaymentState.refundable) ...<Widget>[
           Text(
             ' (Failed)',
             style: subtitleTextStyle.copyWith(
