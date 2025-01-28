@@ -41,7 +41,7 @@ class UsernameFormatter {
       sanitized = sanitized.substring(0, sanitized.length - 1);
     }
 
-    return sanitized;
+    return sanitized.toLowerCase().replaceAll(' ', '');
   }
 
   // Example: "Tomato Elephant" -> "tomatoelephant"
