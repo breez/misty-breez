@@ -132,6 +132,10 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                           border: const OutlineInputBorder(),
                           errorText: isConflict ? 'Username is already taken' : null,
                         ),
+                        // 64 is the maximum allowed length for a username
+                        // but a %12.5 margin of error is added for good measure,
+                        // which is likely to get sanitized by the UsernameFormatter
+                        maxLength: 64 + 8,
                         keyboardType: TextInputType.emailAddress,
                         autofocus: true,
                         validator: _validateUsername,
@@ -176,6 +180,10 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
     final String sanitized = UsernameFormatter.sanitize(value ?? '');
     if (sanitized.isEmpty) {
       return 'Please enter a username';
+    }
+
+    if (sanitized.length > 64) {
+      return 'Username must not be longer than 64 characters.';
     }
 
     final LnAddressState state = context.read<LnAddressCubit>().state;
