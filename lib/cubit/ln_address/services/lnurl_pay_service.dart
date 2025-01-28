@@ -16,7 +16,7 @@ class LnUrlPayService {
     required String pubKey,
     required RegisterLnurlPayRequest request,
   }) async {
-    _logger.info('Registering lightning address for pubkey: $pubKey');
+    _logger.info('Registering lightning address for pubkey: $pubKey with request: $request');
 
     // Register without retries if this is an update to existing LNURL Webhook
     if (request.username?.isNotEmpty ?? false) {
