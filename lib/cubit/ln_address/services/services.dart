@@ -1,2 +1,2 @@
-export 'ln_address_service.dart';
+export 'lnurl_pay_service.dart';
 export 'webhook_service.dart';

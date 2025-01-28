@@ -19,7 +19,7 @@ class WebhookService {
     final String? token = await _notificationsClient.getToken();
     if (token == null) {
       _logger.severe('Failed to get notification token');
-      throw GenerateWebhookException('Failed to get notification token');
+      throw GenerateWebhookUrlException('Failed to get notification token');
     }
 
     final String platform = _getPlatform();
@@ -38,7 +38,7 @@ class WebhookService {
       return 'android';
     }
     _logger.severe('Unsupported platform: $defaultTargetPlatform');
-    throw GenerateWebhookException('Platform not supported');
+    throw GenerateWebhookUrlException('Platform not supported');
   }
 
   Future<void> register(String webhookUrl) async {
@@ -48,7 +48,7 @@ class WebhookService {
       _logger.info('Successfully registered webhook');
     } catch (e, stackTrace) {
       _logger.severe('Failed to register webhook', e, stackTrace);
-      throw WebhookRegistrationException('Failed to register webhook: $e');
+      throw RegisterWebhookException('Failed to register webhook: $e');
     }
   }
 }

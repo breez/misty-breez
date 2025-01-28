@@ -1,41 +1,22 @@
-class GenerateWebhookException implements Exception {
-  final String message;
-  GenerateWebhookException(this.message);
-  @override
-  String toString() => message;
-}
-
-class WebhookRegistrationException implements Exception {
-  final String message;
-  WebhookRegistrationException(this.message);
-  @override
-  String toString() => message;
-}
-
-class WebhookInvalidationException implements Exception {
-  final String message;
-  WebhookInvalidationException(this.message);
-  @override
-  String toString() => message;
-}
-
-class InvalidateWebhookException implements Exception {
-  final String message;
-  InvalidateWebhookException(this.message);
-  @override
-  String toString() => message;
-}
-
-class LnAddressRegistrationException implements Exception {
+class RegisterLnurlPayException implements Exception {
   final String message;
   final int? statusCode;
   final String? responseBody;
 
-  LnAddressRegistrationException(this.message, {this.statusCode, this.responseBody});
+  RegisterLnurlPayException(this.message, {this.statusCode, this.responseBody});
 
   @override
   String toString() =>
-      'LnAddressRegistrationException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
+      'RegisterLnurlPayException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
+}
+
+class UnregisterLnurlPayException implements Exception {
+  final String message;
+
+  UnregisterLnurlPayException(this.message);
+
+  @override
+  String toString() => message;
 }
 
 class UsernameConflictException implements Exception {
@@ -46,4 +27,22 @@ class UsernameConflictException implements Exception {
 class MaxRetriesExceededException implements Exception {
   @override
   String toString() => 'Maximum retry attempts exceeded';
+}
+
+class GenerateWebhookUrlException implements Exception {
+  final String message;
+
+  GenerateWebhookUrlException(this.message);
+
+  @override
+  String toString() => message;
+}
+
+class RegisterWebhookException implements Exception {
+  final String message;
+
+  RegisterWebhookException(this.message);
+
+  @override
+  String toString() => message;
 }

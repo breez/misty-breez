@@ -6,20 +6,20 @@ import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('LnAddressService');
 
-class LnAddressService {
+class LnUrlPayService {
   static const int _maxRetries = 3;
   final String baseUrl;
   final http.Client _client;
 
-  LnAddressService({
+  LnUrlPayService({
     this.baseUrl = 'https://breez.fun',
     http.Client? client,
   }) : _client = client ?? http.Client();
 
   // TODO(erdemyerebasmaz): Handle multiple device setup case
-  Future<LnAddressRegistrationResponse> register({
+  Future<RegisterLnurlPayResponse> register({
     required String pubKey,
-    required LnAddressRegistrationRequest request,
+    required RegisterLnurlPayRequest request,
   }) async {
     _logger.info('Attempting to register lightning address for pubkey: $pubKey');
     final String baseUsername = request.username ?? '';
@@ -39,11 +39,11 @@ class LnAddressService {
 
       try {
         _logger.info('Attempt ${retryCount + 1}/$_maxRetries with username: $currentUsername');
-        final LnAddressRegistrationResponse registrationResponse = await _attemptRegistration(
+        final RegisterLnurlPayResponse registrationResponse = await _attemptRegistration(
           pubKey: pubKey,
           request: request.copyWith(username: currentUsername),
         );
-        _logger.info('Successfully registered lightning address: ${registrationResponse.lnAddress}');
+        _logger.info('Successfully registered lightning address: ${registrationResponse.lightningAddress}');
         return registrationResponse;
       } on UsernameConflictException {
         _logger.warning('Username conflict for: $currentUsername');
@@ -57,9 +57,9 @@ class LnAddressService {
     throw MaxRetriesExceededException();
   }
 
-  Future<LnAddressRegistrationResponse> _attemptRegistration({
+  Future<RegisterLnurlPayResponse> _attemptRegistration({
     required String pubKey,
-    required LnAddressRegistrationRequest request,
+    required RegisterLnurlPayRequest request,
   }) async {
     final Uri uri = Uri.parse('$baseUrl/lnurlpay/$pubKey');
     _logger.fine('Attempting registration at: $uri');
@@ -74,7 +74,7 @@ class LnAddressService {
       _logger.fine('Registration response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        return LnAddressRegistrationResponse.fromJson(
+        return RegisterLnurlPayResponse.fromJson(
           jsonDecode(response.body) as Map<String, dynamic>,
         );
       }
@@ -83,24 +83,22 @@ class LnAddressService {
         throw UsernameConflictException();
       }
 
-      throw LnAddressRegistrationException(
+      throw RegisterLnurlPayException(
         'Server returned error response',
         statusCode: response.statusCode,
         responseBody: response.body,
       );
     } catch (e, stackTrace) {
-      if (e is UsernameConflictException || e is LnAddressRegistrationException) {
+      if (e is UsernameConflictException || e is RegisterLnurlPayException) {
         rethrow;
       }
 
       _logger.severe('Registration attempt failed', e, stackTrace);
-      throw LnAddressRegistrationException(
-        e.toString(),
-      );
+      throw RegisterLnurlPayException(e.toString());
     }
   }
 
-  Future<void> invalidateWebhook(String pubKey, InvalidateWebhookRequest request) async {
+  Future<void> unregister(String pubKey, UnregisterLnurlPayRequest request) async {
     _logger.info('Invalidating webhook: ${request.webhookUrl}');
     final Uri uri = Uri.parse('$baseUrl/lnurlpay/$pubKey');
 
@@ -111,12 +109,12 @@ class LnAddressService {
       );
 
       if (response.statusCode != 200) {
-        throw InvalidateWebhookException(response.body);
+        throw UnregisterLnurlPayException(response.body);
       }
       _logger.info('Successfully invalidated webhook');
     } catch (e, stackTrace) {
       _logger.severe('Failed to invalidate webhook', e, stackTrace);
-      throw InvalidateWebhookException(e.toString());
+      throw UnregisterLnurlPayException(e.toString());
     }
   }
 }

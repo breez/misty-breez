@@ -16,7 +16,7 @@ final Logger _logger = Logger('LnAddressCubit');
 class LnAddressCubit extends Cubit<LnAddressState> {
   final BreezSDKLiquid breezSdkLiquid;
   final BreezPreferences breezPreferences;
-  final LnAddressService lnAddressService;
+  final LnUrlPayService lnAddressService;
   final WebhookService webhookService;
 
   LnAddressCubit({
@@ -38,7 +38,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     );
 
     try {
-      final LnAddressRegistrationResponse registrationResponse = await _setupAndRegisterLnAddress(
+      final RegisterLnurlPayResponse registrationResponse = await _setupAndRegisterLnAddress(
         username: username,
       );
 
@@ -46,7 +46,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         state.copyWith(
           status: LnAddressStatus.success,
           lnurl: registrationResponse.lnurl,
-          lnAddress: registrationResponse.lnAddress,
+          lnAddress: registrationResponse.lightningAddress,
           updateStatus: isUpdate ? const LnAddressUpdateStatus(status: UpdateStatus.success) : null,
         ),
       );
@@ -58,7 +58,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       );
 
       if (isUpdate) {
-        final String errorMessage = e is LnAddressRegistrationException
+        final String errorMessage = e is RegisterLnurlPayException
             ? (e.responseBody?.isNotEmpty == true ? e.responseBody! : e.message)
             : 'Failed to update username';
 
@@ -82,7 +82,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     }
   }
 
-  Future<LnAddressRegistrationResponse> _setupAndRegisterLnAddress({String? username}) async {
+  Future<RegisterLnurlPayResponse> _setupAndRegisterLnAddress({String? username}) async {
     final WalletInfo? walletInfo = (await breezSdkLiquid.instance?.getInfo())?.walletInfo;
     if (walletInfo == null) {
       throw Exception('Failed to retrieve wallet info');
@@ -93,7 +93,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     await webhookService.register(webhookUrl);
     await breezPreferences.setWebhookUrl(webhookUrl);
 
-    final LnAddressRegistrationResponse registrationResponse = await _registerLnAddressWebhook(
+    final RegisterLnurlPayResponse registrationResponse = await _registerLnurlWebhook(
       pubKey: walletInfo.pubkey,
       webhookUrl: webhookUrl,
       username: username,
@@ -112,12 +112,12 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       final String message = '$timestamp-$existingWebhook';
       final String signature = await _signMessage(message);
 
-      final InvalidateWebhookRequest invalidateWebhookRequest = InvalidateWebhookRequest(
+      final UnregisterLnurlPayRequest invalidateWebhookRequest = UnregisterLnurlPayRequest(
         webhookUrl: existingWebhook,
         signature: signature,
-        timestamp: timestamp,
+        time: timestamp,
       );
-      await lnAddressService.invalidateWebhook(pubKey, invalidateWebhookRequest);
+      await lnAddressService.unregister(pubKey, invalidateWebhookRequest);
       breezPreferences.clearWebhookUrl();
     }
   }
@@ -137,12 +137,12 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return signMessageRes.signature;
   }
 
-  Future<LnAddressRegistrationResponse> _registerLnAddressWebhook({
+  Future<RegisterLnurlPayResponse> _registerLnurlWebhook({
     required String pubKey,
     required String webhookUrl,
     String? username,
   }) async {
-    _logger.info('Preparing LnAddressRegistrationRequest');
+    _logger.info('Preparing RegisterLnurlPayRequest');
     _logger.info('Initial parameters: pubKey=$pubKey, webhookUrl=$webhookUrl, username=$username');
 
     try {
@@ -159,15 +159,15 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
       final String signature = await _generateWebhookSignature(webhookUrl, username);
 
-      final LnAddressRegistrationRequest request = LnAddressRegistrationRequest(
-        timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      final RegisterLnurlPayRequest request = RegisterLnurlPayRequest(
+        time: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         webhookUrl: webhookUrl,
         signature: signature,
         username: username,
       );
-      _logger.fine('Created LnAddressRegistrationRequest with timestamp: ${request.timestamp}');
+      _logger.fine('Created RegisterLnurlPayRequest: $request');
 
-      final LnAddressRegistrationResponse registrationResponse = await lnAddressService.register(
+      final RegisterLnurlPayResponse registrationResponse = await lnAddressService.register(
         pubKey: pubKey,
         request: request,
       );
@@ -221,7 +221,7 @@ class LnAddressCubitFactory {
     return LnAddressCubit(
       breezSdkLiquid: breezSdkLiquid,
       breezPreferences: breezPreferences,
-      lnAddressService: LnAddressService(),
+      lnAddressService: LnUrlPayService(),
       webhookService: webhookService,
     );
   }
