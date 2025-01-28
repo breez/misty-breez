@@ -53,10 +53,10 @@ class _DevelopersViewState extends State<DevelopersView> {
   @override
   void initState() {
     super.initState();
-    _preferences.getBugReportBehavior().then(
-          (BugReportBehavior value) => bugReportBehavior = value,
-          onError: (Object e) => _logger.warning(e),
-        );
+    _preferences.bugReportBehavior.then(
+      (BugReportBehavior value) => bugReportBehavior = value,
+      onError: (Object e) => _logger.warning(e),
+    );
   }
 
   @override
@@ -100,15 +100,15 @@ class _DevelopersViewState extends State<DevelopersView> {
                 Choice(
                   title: texts.developers_page_menu_prompt_bug_report_title,
                   icon: Icons.bug_report,
-                  function: (_) {
-                    _preferences.setBugReportBehavior(BugReportBehavior.prompt).then(
-                          (void value) => setState(
-                            () {
-                              bugReportBehavior = BugReportBehavior.prompt;
-                            },
-                          ),
-                          onError: (Object e) => _logger.warning(e),
-                        );
+                  function: (_) async {
+                    try {
+                      await _preferences.setBugReportBehavior(BugReportBehavior.prompt);
+                      setState(() {
+                        bugReportBehavior = BugReportBehavior.prompt;
+                      });
+                    } catch (e) {
+                      _logger.warning('Failed to set BugReportBehavior: $e');
+                    }
                   },
                 ),
             ]

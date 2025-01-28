@@ -137,11 +137,11 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String pubKey,
     required String webhookUrl,
   }) async {
-    final String? existingWebhook = await breezPreferences.getWebhookUrl();
+    final String? existingWebhook = await breezPreferences.webhookUrl;
     if (existingWebhook != null && existingWebhook != webhookUrl) {
       _logger.info('Unregistering existing webhook: $existingWebhook');
       await _unregisterWebhook(existingWebhook, pubKey);
-      breezPreferences.clearWebhookUrl();
+      breezPreferences.removeWebhookUrl();
     }
   }
 
@@ -176,15 +176,15 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
   Future<String?> _resolveUsername() async {
     String? username = '';
-    final bool hasRegisteredWebhook = await breezPreferences.hasRegisteredLnUrlWebhook();
+    final bool isLnUrlWebhookRegistered = await breezPreferences.isLnUrlWebhookRegistered;
 
-    if (!hasRegisteredWebhook) {
-      final String? profileName = await breezPreferences.getProfileName();
+    if (!isLnUrlWebhookRegistered) {
+      final String? profileName = await breezPreferences.profileName;
       username = UsernameFormatter.formatDefaultProfileName(profileName);
       _logger.info('Registering LNURL Webhook: Using formatted profile name: $username');
     } else {
       // TODO(erdemyerebasmaz): Add null-handling, revert back to profile name if necessary
-      username = await breezPreferences.getLnAddressUsername();
+      username = await breezPreferences.lnAddressUsername;
       _logger.info('Refreshing LNURL Webhook: Using stored username: $username');
     }
     return username;
@@ -211,14 +211,13 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     final String? username = request.username;
     if (username != null && username.isNotEmpty) {
       await breezPreferences.setLnAddressUsername(username);
-      _logger.info('Stored username in secure storage: $username');
     }
 
     _logger.info(
       'Successfully registered LNURL Webhook: $registrationResponse',
     );
 
-    await breezPreferences.setLnUrlWebhookAsRegistered();
+    await breezPreferences.setLnUrlWebhookRegistered();
     return registrationResponse;
   }
 

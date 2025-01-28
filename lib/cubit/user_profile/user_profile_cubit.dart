@@ -46,7 +46,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   }
 
   Future<void> _setProfileName(String name) async {
-    final String? profileName = await _breezPreferences.getProfileName();
+    final String? profileName = await _breezPreferences.profileName;
     if (profileName == null) {
       await _breezPreferences.setProfileName(name);
     }
