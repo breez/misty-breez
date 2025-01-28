@@ -14,23 +14,32 @@ class WebhookService {
 
   WebhookService(this._breezSdkLiquid, this._notificationsClient);
 
-  Future<String> generateWebhookUrl() async {
-    _logger.info('Generating webhook URL');
-    final String? token = await _notificationsClient.getToken();
-    if (token == null) {
-      _logger.severe('Failed to get notification token');
-      throw GenerateWebhookUrlException('Failed to get notification token');
+  Future<void> register(String webhookUrl) async {
+    try {
+      _logger.info('Registering webhook: $webhookUrl');
+      await _breezSdkLiquid.instance?.registerWebhook(webhookUrl: webhookUrl);
+      _logger.info('Successfully registered webhook');
+    } catch (e, stackTrace) {
+      _logger.severe('Failed to register webhook', e, stackTrace);
+      throw RegisterWebhookException('Failed to register webhook: $e');
     }
+  }
 
-    final String platform = _getPlatform();
-    final String webhookUrl = '$_notifierServiceURL/api/v1/notify?platform=$platform&token=$token';
-    _logger.info('Generated webhook URL: $webhookUrl');
-
-    return webhookUrl;
+  Future<String> generateWebhookUrl() async {
+    try {
+      _logger.info('Generating webhook URL');
+      final String platform = _getPlatform();
+      final String token = await _getToken();
+      final String webhookUrl = '$_notifierServiceURL/api/v1/notify?platform=$platform&token=$token';
+      _logger.info('Generated webhook URL: $webhookUrl');
+      return webhookUrl;
+    } catch (e) {
+      _logger.severe('Failed to generate webhook URL', e);
+      throw GenerateWebhookUrlException(e.toString());
+    }
   }
 
   String _getPlatform() {
-    _logger.fine('Determining platform');
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       return 'ios';
     }
@@ -41,14 +50,12 @@ class WebhookService {
     throw GenerateWebhookUrlException('Platform not supported');
   }
 
-  Future<void> register(String webhookUrl) async {
-    try {
-      _logger.info('Registering webhook: $webhookUrl');
-      await _breezSdkLiquid.instance?.registerWebhook(webhookUrl: webhookUrl);
-      _logger.info('Successfully registered webhook');
-    } catch (e, stackTrace) {
-      _logger.severe('Failed to register webhook', e, stackTrace);
-      throw RegisterWebhookException('Failed to register webhook: $e');
+  Future<String> _getToken() async {
+    final String? token = await _notificationsClient.getToken();
+    if (token != null) {
+      return token;
     }
+    _logger.severe('Failed to get notification token');
+    throw GenerateWebhookUrlException('Failed to get notification token');
   }
 }
