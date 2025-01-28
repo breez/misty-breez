@@ -102,12 +102,17 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     final WalletInfo walletInfo = await _getWalletInfo();
     final String webhookUrl = await _setupWebhook(walletInfo.pubkey);
     final String? username = baseUsername ?? await _resolveUsername();
-    final String signature = await _generateWebhookSignature(webhookUrl, username);
-    return await _registerLnurlWebhook(
-      pubKey: walletInfo.pubkey,
+    final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final String signature = await _generateWebhookSignature(time, webhookUrl, username);
+    final RegisterLnurlPayRequest request = RegisterLnurlPayRequest(
+      time: time,
       webhookUrl: webhookUrl,
       signature: signature,
       username: username,
+    );
+    return await _registerLnurlWebhook(
+      pubKey: walletInfo.pubkey,
+      request: request,
     );
   }
 
@@ -185,12 +190,10 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return username;
   }
 
-  Future<String> _generateWebhookSignature(String webhookUrl, String? username) async {
+  Future<String> _generateWebhookSignature(int time, String webhookUrl, String? username) async {
     _logger.info('Generating webhook signature');
     final String usernameComponent = username?.isNotEmpty == true ? '-$username' : '';
-    final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final String message = '$time-$webhookUrl$usernameComponent';
-
     final String signature = await _signMessage(message);
     _logger.info('Successfully generated webhook signature');
     return signature;
@@ -198,22 +201,14 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
   Future<RegisterLnurlPayResponse> _registerLnurlWebhook({
     required String pubKey,
-    required String webhookUrl,
-    required String signature,
-    String? username,
+    required RegisterLnurlPayRequest request,
   }) async {
-    final RegisterLnurlPayRequest request = RegisterLnurlPayRequest(
-      time: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      webhookUrl: webhookUrl,
-      signature: signature,
-      username: username,
-    );
-
     final RegisterLnurlPayResponse registrationResponse = await lnAddressService.register(
       pubKey: pubKey,
       request: request,
     );
 
+    final String? username = request.username;
     if (username != null && username.isNotEmpty) {
       await breezPreferences.setLnAddressUsername(username);
       _logger.info('Stored username in secure storage: $username');
