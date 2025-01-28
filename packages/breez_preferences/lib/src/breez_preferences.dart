@@ -16,7 +16,7 @@ const String _kReportPrefKey = 'report_preference_key';
 const String _kLnUrlPayKey = 'lnurlpay_key';
 const String _kLnAddressUsername = 'ln_address_name';
 const String _kProfileName = 'profile_name';
-const String _kCompletedLnAddressSetup = 'completed_ln_address_setup';
+const String _kLnUrlWebhookRegistered = 'is_lnurl_webhook_registered';
 
 final Logger _logger = Logger('BreezPreferences');
 
@@ -143,13 +143,13 @@ class BreezPreferences {
     await prefs.remove(_kLnAddressUsername);
   }
 
-  Future<bool> isLnAddressSetup() async {
+  Future<bool> hasRegisteredLnUrlWebhook() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return !(prefs.getBool(_kCompletedLnAddressSetup) ?? false);
+    return prefs.getBool(_kLnUrlWebhookRegistered) ?? false;
   }
 
-  Future<void> completeLnAddressSetup() async {
+  Future<void> setLnUrlWebhookAsRegistered() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kCompletedLnAddressSetup, true);
+    await prefs.setBool(_kLnUrlWebhookRegistered, true);
   }
 }

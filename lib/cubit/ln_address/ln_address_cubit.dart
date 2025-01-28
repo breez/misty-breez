@@ -147,13 +147,15 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
     try {
       if (username == null || username.isEmpty) {
-        if (await breezPreferences.isLnAddressSetup()) {
+        final bool hasRegisteredWebhook = await breezPreferences.hasRegisteredLnUrlWebhook();
+
+        if (!hasRegisteredWebhook) {
           final String? profileName = await breezPreferences.getProfileName();
           username = UsernameFormatter.formatDefaultProfileName(profileName);
-          _logger.info('Initial setup: using formatted profile name: $username');
+          _logger.info('Registering LNURL Webhook: Using formatted profile name: $username');
         } else {
           username = await breezPreferences.getLnAddressUsername();
-          _logger.info('Using stored username: $username');
+          _logger.info('Refreshing LNURL Webhook: Using stored username: $username');
         }
       }
 
@@ -181,7 +183,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         'Successfully registered Lightning Address: $registrationResponse',
       );
 
-      await breezPreferences.completeLnAddressSetup();
+      await breezPreferences.setLnUrlWebhookAsRegistered();
 
       return registrationResponse;
     } catch (e, stackTrace) {
