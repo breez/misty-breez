@@ -219,6 +219,48 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return signature;
   }
 
+  /// Recovers a webhook for a given public key.
+  Future<void> _recoverWebhook(String webhookUrl, String pubKey) async {
+    final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+    final String message = '$time-$webhookUrl';
+    final String signature = await _signMessage(message);
+
+    final UnregisterRecoverLnurlPayRequest recoverRequest = UnregisterRecoverLnurlPayRequest(
+      time: time,
+      webhookUrl: webhookUrl,
+      signature: signature,
+    );
+
+    await _recoverLnurlWebhook(pubKey: pubKey, request: recoverRequest);
+  }
+
+  /// Recovers an LNURL webhook with the provided public key and request.
+  ///
+  ///  - Saves the username to [BreezPreferences] if present and
+  ///  - Sets webhook as registered on [BreezPreferences] if succeeds
+  Future<RegisterRecoverLnurlPayResponse> _recoverLnurlWebhook({
+    required String pubKey,
+    required UnregisterRecoverLnurlPayRequest request,
+  }) async {
+    final RegisterRecoverLnurlPayResponse recoverResponse = await lnAddressService.recover(
+      pubKey: pubKey,
+      request: request,
+    );
+
+    final String username = recoverResponse.lightningAddress.split('@').first;
+    if (username.isNotEmpty) {
+      await breezPreferences.setLnAddressUsername(username);
+    }
+
+    _logger.info(
+      'Successfully recovered LNURL Webhook: $recoverResponse',
+    );
+
+    await breezPreferences.setLnUrlWebhookRegistered();
+    return recoverResponse;
+  }
+
   /// Registers an LNURL webhook with the provided public key and request.
   ///
   ///  - Saves the username to [BreezPreferences] if present and
