@@ -12,7 +12,7 @@ class LnUrlPayService {
   static final http.Client _client = http.Client();
 
   // TODO(erdemyerebasmaz): Handle multiple device setup case
-  Future<RegisterLnurlPayResponse> register({
+  Future<RegisterRecoverLnurlPayResponse> register({
     required String pubKey,
     required RegisterLnurlPayRequest request,
   }) async {
@@ -36,7 +36,7 @@ class LnUrlPayService {
   // - Explicit handling of [UsernameConflictException] and LNURL server connectivity issues
   // - Randomizing the default profile name itself after a set number of failures
   // - Adding additional digits to the discriminator
-  Future<RegisterLnurlPayResponse> _registerWithRetries({
+  Future<RegisterRecoverLnurlPayResponse> _registerWithRetries({
     required String pubKey,
     required String username,
     required RegisterLnurlPayRequest request,
@@ -58,7 +58,7 @@ class LnUrlPayService {
     throw MaxRetriesExceededException();
   }
 
-  Future<RegisterLnurlPayResponse> _register({
+  Future<RegisterRecoverLnurlPayResponse> _register({
     required String pubKey,
     required RegisterLnurlPayRequest request,
   }) async {
@@ -73,7 +73,7 @@ class LnUrlPayService {
       _logHttpResponse(response);
 
       if (response.statusCode == 200) {
-        return RegisterLnurlPayResponse.fromJson(
+        return RegisterRecoverLnurlPayResponse.fromJson(
           jsonDecode(response.body) as Map<String, dynamic>,
         );
       }
@@ -97,7 +97,7 @@ class LnUrlPayService {
     }
   }
 
-  Future<void> unregister(String pubKey, UnregisterLnurlPayRequest request) async {
+  Future<void> unregister(String pubKey, UnregisterRecoverLnurlPayRequest request) async {
     _logger.info('Unregistering webhook: ${request.webhookUrl}');
     final Uri uri = Uri.parse('$_baseUrl/lnurlpay/$pubKey');
 

@@ -38,17 +38,17 @@ class RegisterLnurlPayRequest {
   String toString() => 'username=$username, time=$time, webhook_url=$webhookUrl, signature=$signature';
 }
 
-class RegisterLnurlPayResponse {
+class RegisterRecoverLnurlPayResponse {
   final String lnurl;
   final String lightningAddress;
 
-  const RegisterLnurlPayResponse({
+  const RegisterRecoverLnurlPayResponse({
     required this.lnurl,
     required this.lightningAddress,
   });
 
-  factory RegisterLnurlPayResponse.fromJson(Map<String, dynamic> json) {
-    return RegisterLnurlPayResponse(
+  factory RegisterRecoverLnurlPayResponse.fromJson(Map<String, dynamic> json) {
+    return RegisterRecoverLnurlPayResponse(
       lnurl: json['lnurl'] as String,
       lightningAddress: json['lightning_address'] as String? ?? '',
     );
@@ -58,12 +58,12 @@ class RegisterLnurlPayResponse {
   String toString() => 'lnurl=$lnurl, lightning_address=$lightningAddress';
 }
 
-class UnregisterLnurlPayRequest {
+class UnregisterRecoverLnurlPayRequest {
   final int time;
   final String webhookUrl;
   final String signature;
 
-  const UnregisterLnurlPayRequest({
+  const UnregisterRecoverLnurlPayRequest({
     required this.time,
     required this.webhookUrl,
     required this.signature,

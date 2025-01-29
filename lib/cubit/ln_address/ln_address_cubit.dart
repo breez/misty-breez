@@ -60,7 +60,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     );
 
     try {
-      final RegisterLnurlPayResponse registrationResponse = await _setupAndRegisterLnAddress(
+      final RegisterRecoverLnurlPayResponse registrationResponse = await _setupAndRegisterLnAddress(
         baseUsername: baseUsername,
       );
 
@@ -106,7 +106,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   ///
   /// - If [baseUsername] is provided, it updates the existing registration.
   /// - Otherwise, it determines a suitable username and registers a new webhook.
-  Future<RegisterLnurlPayResponse> _setupAndRegisterLnAddress({String? baseUsername}) async {
+  Future<RegisterRecoverLnurlPayResponse> _setupAndRegisterLnAddress({String? baseUsername}) async {
     final WalletInfo walletInfo = await _getWalletInfo();
     final String webhookUrl = await _setupWebhook(walletInfo.pubkey);
     final String? username = baseUsername ?? await _resolveUsername();
@@ -164,7 +164,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     final String message = '$time-$webhookUrl';
     final String signature = await _signMessage(message);
 
-    final UnregisterLnurlPayRequest invalidateWebhookRequest = UnregisterLnurlPayRequest(
+    final UnregisterRecoverLnurlPayRequest invalidateWebhookRequest = UnregisterRecoverLnurlPayRequest(
       time: time,
       webhookUrl: webhookUrl,
       signature: signature,
@@ -223,11 +223,11 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   ///
   ///  - Saves the username to [BreezPreferences] if present and
   ///  - Sets webhook as registered on [BreezPreferences] if succeeds
-  Future<RegisterLnurlPayResponse> _registerLnurlWebhook({
+  Future<RegisterRecoverLnurlPayResponse> _registerLnurlWebhook({
     required String pubKey,
     required RegisterLnurlPayRequest request,
   }) async {
-    final RegisterLnurlPayResponse registrationResponse = await lnAddressService.register(
+    final RegisterRecoverLnurlPayResponse registrationResponse = await lnAddressService.register(
       pubKey: pubKey,
       request: request,
     );
