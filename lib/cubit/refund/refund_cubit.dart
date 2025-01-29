@@ -23,7 +23,7 @@ class RefundCubit extends Cubit<RefundState> {
   }
 
   void _initializeRefundCubit() {
-    _breezSdkLiquid.walletInfoStream.first.then((_) => listRefundables());
+    _breezSdkLiquid.getInfoResponseStream.first.then((_) => listRefundables());
   }
 
   void listRefundables() async {
