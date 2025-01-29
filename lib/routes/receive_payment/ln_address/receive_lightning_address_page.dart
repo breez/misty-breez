@@ -19,17 +19,6 @@ class ReceiveLightningAddressPage extends StatefulWidget {
 
 class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage> {
   @override
-  void initState() {
-    super.initState();
-    setupLightningAddress();
-  }
-
-  void setupLightningAddress() {
-    final LnAddressCubit lnAddressCubit = context.read<LnAddressCubit>();
-    lnAddressCubit.setupLightningAddress();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
@@ -95,7 +84,8 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
   VoidCallback _handleRetry(LnAddressState state, PaymentLimitsState limitsState) {
     return () {
       if (state.status == LnAddressStatus.error) {
-        setupLightningAddress();
+        final LnAddressCubit lnAddressCubit = context.read<LnAddressCubit>();
+        lnAddressCubit.setupLightningAddress(isRecover: true);
       } else if (limitsState.hasError) {
         final PaymentLimitsCubit paymentLimitsCubit = context.read<PaymentLimitsCubit>();
         paymentLimitsCubit.fetchLightningLimits();
