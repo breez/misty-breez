@@ -40,16 +40,36 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required this.breezPreferences,
     required this.lnAddressService,
     required this.webhookService,
-  }) : super(const LnAddressState());
+  }) : super(const LnAddressState()) {
+    _initializeLnAddressCubit();
+  }
+
+  /// Attempts to recover the Lightning Address once pubKey is available
+  void _initializeLnAddressCubit() {
+    _logger.info('Initializing Lightning Address Cubit.');
+
+    breezSdkLiquid.getInfoResponseStream.first.then(
+      (GetInfoResponse getInfoResponse) {
+        _logger.info('Received wallet info, setting up Lightning Address.');
+        setupLightningAddress(pubKey: getInfoResponse.walletInfo.pubkey, isRecover: true);
+      },
+    ).catchError((Object e, StackTrace stackTrace) {
+      _logger.severe('Failed to initialize Lightning Address Cubit', e, stackTrace);
+    });
+  }
 
   /// Sets up or updates the Lightning Address.
   ///
+  /// - If [isRecover] is true, it attempts to recover the LNURL Webhook. Fallbacks to registration on failure.
   /// - If [baseUsername] is provided, the function updates the Lightning Address username.
   /// - Otherwise, it initializes a new Lightning Address or refreshes an existing one.
-  Future<void> setupLightningAddress({String? baseUsername}) async {
+  Future<void> setupLightningAddress({String? pubKey, bool isRecover = false, String? baseUsername}) async {
     final bool isUpdating = baseUsername != null;
-    final String actionMessage =
-        isUpdating ? 'Update LN Address Username to: $baseUsername' : 'Setup Lightning Address';
+    final String actionMessage = isRecover
+        ? 'Recovering Lightning Address'
+        : isUpdating
+            ? 'Update LN Address Username to: $baseUsername'
+            : 'Setup Lightning Address';
     _logger.info(actionMessage);
 
     emit(
@@ -61,6 +81,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
     try {
       final RegisterRecoverLnurlPayResponse registrationResponse = await _setupAndRegisterLnAddress(
+        pubKey: pubKey,
+        isRecover: isRecover,
         baseUsername: baseUsername,
       );
 
@@ -102,45 +124,60 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     );
   }
 
-  /// Registers or updates an LNURL webhook for a Lightning Address.
+  /// Registers or updates an LNURL Webhook for a Lightning Address.
   ///
+  /// - If [isRecover] is true, it attempts to recover the LNURL Webhook. Fallbacks to registration on failure.
   /// - If [baseUsername] is provided, it updates the existing registration.
   /// - Otherwise, it determines a suitable username and registers a new webhook.
-  Future<RegisterRecoverLnurlPayResponse> _setupAndRegisterLnAddress({String? baseUsername}) async {
-    final WalletInfo walletInfo = await _getWalletInfo();
-    final String webhookUrl = await _setupWebhook(walletInfo.pubkey);
-    final String? username = baseUsername ?? await _resolveUsername();
-    final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final String signature = await _generateWebhookSignature(time, webhookUrl, username);
-    final RegisterLnurlPayRequest request = RegisterLnurlPayRequest(
-      time: time,
-      webhookUrl: webhookUrl,
-      signature: signature,
-      username: username,
-    );
-    return await _registerLnurlWebhook(
-      pubKey: walletInfo.pubkey,
-      request: request,
-    );
+  Future<RegisterRecoverLnurlPayResponse> _setupAndRegisterLnAddress({
+    String? pubKey,
+    bool isRecover = false,
+    String? baseUsername,
+  }) async {
+    pubKey = pubKey ?? await _pubKey;
+    final String webhookUrl = await _setupWebhook(pubKey);
+    if (isRecover) {
+      // Recover webhook
+      try {
+        return await _prepareAndRecoverLnurlWebhook(
+          pubKey: pubKey,
+          webhookUrl: webhookUrl,
+        );
+      } on RecoverLnurlPayException {
+        // Fallback to register a new webhook if recovery fails
+        _logger.info('Failed to recover LNURL Webhook. Falling back to registration.');
+        return await _prepareAndRegisterLnurlWebhook(
+          pubKey: pubKey,
+          webhookUrl: webhookUrl,
+          baseUsername: baseUsername,
+        );
+      }
+    } else {
+      // Registers a new webhook
+      return await _prepareAndRegisterLnurlWebhook(
+        pubKey: pubKey,
+        webhookUrl: webhookUrl,
+        baseUsername: baseUsername,
+      );
+    }
   }
 
-  Future<WalletInfo> _getWalletInfo() async {
-    final WalletInfo? walletInfo = (await breezSdkLiquid.instance?.getInfo())?.walletInfo;
-    if (walletInfo == null) {
-      throw Exception('Failed to retrieve wallet info');
-    }
-    return walletInfo;
-  }
+  Future<String> get _pubKey async => (await _walletInfo).pubkey;
+
+  Future<WalletInfo> get _walletInfo async =>
+      (await breezSdkLiquid.instance?.getInfo())?.walletInfo ??
+      (throw Exception('Failed to retrieve wallet info'));
 
   /// Sets up a webhook for the given public key.
   /// - Generates a new webhook URL, unregisters any existing webhook if needed,
   /// - Registers the new webhook, and stores the webhook URL in preferences.
   Future<String> _setupWebhook(String pubKey) async {
-    _logger.info('Setting up webhook');
+    _logger.info('Setting up webhook for pubKey: $pubKey');
     final String webhookUrl = await webhookService.generateWebhookUrl();
     await _unregisterExistingWebhookIfNeeded(pubKey: pubKey, webhookUrl: webhookUrl);
     await webhookService.register(webhookUrl);
     await breezPreferences.setWebhookUrl(webhookUrl);
+    _logger.info('Successfully setup webhook setup.');
     return webhookUrl;
   }
 
@@ -154,6 +191,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       _logger.info('Unregistering existing webhook: $existingWebhook');
       await _unregisterWebhook(existingWebhook, pubKey);
       breezPreferences.removeWebhookUrl();
+      _logger.info('Successfully registered existing webhook.');
     }
   }
 
@@ -183,6 +221,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     );
 
     if (signMessageRes == null) {
+      _logger.severe('Failed to sign message.');
       throw Exception('Failed to sign message');
     }
 
@@ -220,8 +259,12 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return signature;
   }
 
-  /// Recovers a webhook for a given public key.
-  Future<void> _recoverWebhook(String webhookUrl, String pubKey) async {
+  /// Prepares recover request & recovers a webhook for a given public key.
+  Future<RegisterRecoverLnurlPayResponse> _prepareAndRecoverLnurlWebhook({
+    required String pubKey,
+    required String webhookUrl,
+  }) async {
+    _logger.info('Preparing recover LNURL Webhook request.');
     final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
     final String message = '$time-$webhookUrl';
@@ -233,10 +276,11 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       signature: signature,
     );
 
-    await _recoverLnurlWebhook(pubKey: pubKey, request: recoverRequest);
+    _logger.info('Prepared recover LNURL Webhook request.');
+    return await _recoverLnurlWebhook(pubKey: pubKey, request: recoverRequest);
   }
 
-  /// Recovers an LNURL webhook with the provided public key and request.
+  /// Recovers an LNURL Webhook with the provided public key and request.
   ///
   ///  - Saves the username to [BreezPreferences] if present and
   ///  - Sets webhook as registered on [BreezPreferences] if succeeds
@@ -244,25 +288,52 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String pubKey,
     required UnregisterRecoverLnurlPayRequest request,
   }) async {
-    final RegisterRecoverLnurlPayResponse recoverResponse = await lnAddressService.recover(
-      pubKey: pubKey,
-      request: request,
-    );
+    _logger.info('Attempting to recover LNURL Webhook for pubKey: $pubKey');
+    try {
+      final RegisterRecoverLnurlPayResponse recoverResponse = await lnAddressService.recover(
+        pubKey: pubKey,
+        request: request,
+      );
 
-    final String username = recoverResponse.lightningAddress.split('@').first;
-    if (username.isNotEmpty) {
-      await breezPreferences.setLnAddressUsername(username);
+      final String username = recoverResponse.lightningAddress.split('@').first;
+      if (username.isNotEmpty) {
+        await breezPreferences.setLnAddressUsername(username);
+      }
+
+      _logger.info('Successfully recovered LNURL Webhook: $recoverResponse');
+
+      await breezPreferences.setLnUrlWebhookRegistered();
+      return recoverResponse;
+    } catch (e, stackTrace) {
+      _logger.severe('Failed to recover LNURL Webhook.', e, stackTrace);
+      rethrow;
     }
-
-    _logger.info(
-      'Successfully recovered LNURL Webhook: $recoverResponse',
-    );
-
-    await breezPreferences.setLnUrlWebhookRegistered();
-    return recoverResponse;
   }
 
-  /// Registers an LNURL webhook with the provided public key and request.
+  /// Prepares register request & registers a webhook for a given public key.
+  Future<RegisterRecoverLnurlPayResponse> _prepareAndRegisterLnurlWebhook({
+    required String pubKey,
+    required String webhookUrl,
+    required String? baseUsername,
+  }) async {
+    _logger.info('Preparing register LNURL Webhook request.');
+    final String? username = baseUsername ?? await _resolveUsername();
+
+    final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final String signature = await _generateWebhookSignature(time, webhookUrl, username);
+
+    final RegisterLnurlPayRequest registerRequest = RegisterLnurlPayRequest(
+      time: time,
+      webhookUrl: webhookUrl,
+      signature: signature,
+      username: username,
+    );
+
+    _logger.info('Prepared register LNURL Webhook request.');
+    return await _registerLnurlWebhook(pubKey: pubKey, request: registerRequest);
+  }
+
+  /// Registers an LNURL Webhook with the provided public key and request.
   ///
   ///  - Saves the username to [BreezPreferences] if present and
   ///  - Sets webhook as registered on [BreezPreferences] if succeeds
@@ -270,22 +341,26 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String pubKey,
     required RegisterLnurlPayRequest request,
   }) async {
-    final RegisterRecoverLnurlPayResponse registrationResponse = await lnAddressService.register(
-      pubKey: pubKey,
-      request: request,
-    );
+    _logger.info('Attempting to register LNURL Webhook for pubKey: $pubKey');
+    try {
+      final RegisterRecoverLnurlPayResponse registrationResponse = await lnAddressService.register(
+        pubKey: pubKey,
+        request: request,
+      );
 
-    final String? username = request.username;
-    if (username != null && username.isNotEmpty) {
-      await breezPreferences.setLnAddressUsername(username);
+      final String? username = request.username;
+      if (username != null && username.isNotEmpty) {
+        await breezPreferences.setLnAddressUsername(username);
+      }
+
+      _logger.info('Successfully registered LNURL Webhook: $registrationResponse');
+
+      await breezPreferences.setLnUrlWebhookRegistered();
+      return registrationResponse;
+    } catch (e, stackTrace) {
+      _logger.severe('Failed to register LNURL Webhook.', e, stackTrace);
+      rethrow;
     }
-
-    _logger.info(
-      'Successfully registered LNURL Webhook: $registrationResponse',
-    );
-
-    await breezPreferences.setLnUrlWebhookRegistered();
-    return registrationResponse;
   }
 
   void clearUpdateStatus() {
