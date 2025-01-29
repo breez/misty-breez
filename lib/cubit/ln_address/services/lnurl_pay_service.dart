@@ -27,6 +27,15 @@ class LnUrlPayService {
     return _registerWithRetries(pubKey: pubKey, username: request.username ?? '', request: request);
   }
 
+  // TODO(erdemyerebasmaz): Optimize if current retry logic is insufficient
+  // If initial registration fails, up to [_maxRetries] registration attempts will be made on opening [ReceiveLightningAddressPage].
+  // If these attempts also fail, the user can retry manually via a button, which will trigger another registration attempt with [_maxRetries] retries.
+  //
+  // Future improvements could include:
+  // - Retrying indefinitely with intervals until registration succeeds
+  // - Explicit handling of [UsernameConflictException] and LNURL server connectivity issues
+  // - Randomizing the default profile name itself after a set number of failures
+  // - Adding additional digits to the discriminator
   Future<RegisterLnurlPayResponse> _registerWithRetries({
     required String pubKey,
     required String username,
