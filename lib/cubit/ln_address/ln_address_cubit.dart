@@ -43,13 +43,15 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   }) : super(const LnAddressState());
 
   Future<void> setupLightningAddress({String? baseUsername}) async {
-    final bool isUpdate = baseUsername != null;
-    _logger.info(isUpdate ? 'Updating username to: $baseUsername' : 'Initializing lightning address');
+    final bool isUpdating = baseUsername != null;
+    final String actionMessage =
+        isUpdating ? 'Update LN Address Username to: $baseUsername' : 'Setup Lightning Address';
+    _logger.info(actionMessage);
 
     emit(
       state.copyWith(
-        status: isUpdate ? state.status : LnAddressStatus.loading,
-        updateStatus: isUpdate ? const LnAddressUpdateStatus(status: UpdateStatus.loading) : null,
+        status: isUpdating ? state.status : LnAddressStatus.loading,
+        updateStatus: isUpdating ? const LnAddressUpdateStatus(status: UpdateStatus.loading) : null,
       ),
     );
 
@@ -63,41 +65,38 @@ class LnAddressCubit extends Cubit<LnAddressState> {
           status: LnAddressStatus.success,
           lnurl: registrationResponse.lnurl,
           lnAddress: registrationResponse.lightningAddress,
-          updateStatus: isUpdate ? const LnAddressUpdateStatus(status: UpdateStatus.success) : null,
+          updateStatus: isUpdating ? const LnAddressUpdateStatus(status: UpdateStatus.success) : null,
         ),
       );
     } catch (e, stackTrace) {
-      _logger.severe(
-        isUpdate ? 'Failed to update username' : 'Failed to initialize lightning address',
-        e,
-        stackTrace,
+      _logger.severe('Failed to $actionMessage', e, stackTrace);
+      final LnAddressStatus status = isUpdating ? state.status : LnAddressStatus.error;
+      final Object? error = isUpdating ? null : e;
+      final LnAddressUpdateStatus? updateStatus =
+          isUpdating ? _createErrorUpdateStatus(e, actionMessage) : null;
+      emit(
+        state.copyWith(
+          status: status,
+          error: error,
+          updateStatus: updateStatus,
+        ),
       );
-
-      if (isUpdate) {
-        final String errorMessage = e is RegisterLnurlPayException
-            ? (e.responseBody?.isNotEmpty == true ? e.responseBody! : e.message)
-            : 'Failed to update username';
-
-        emit(
-          state.copyWith(
-            updateStatus: LnAddressUpdateStatus(
-              status: UpdateStatus.error,
-              error: e,
-              errorMessage: errorMessage,
-            ),
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            status: LnAddressStatus.error,
-            error: e,
-          ),
-        );
-      }
     }
   }
 
+  LnAddressUpdateStatus _createErrorUpdateStatus(Object e, String action) {
+    final String errorMessage = e is RegisterLnurlPayException
+        ? (e.responseBody?.isNotEmpty == true ? e.responseBody! : e.message)
+        : e is UsernameConflictException
+            ? e.toString()
+            : 'Failed to $action';
+
+    return LnAddressUpdateStatus(
+      status: UpdateStatus.error,
+      error: e,
+      errorMessage: errorMessage,
+    );
+  }
   Future<RegisterLnurlPayResponse> _setupAndRegisterLnAddress({String? baseUsername}) async {
     final WalletInfo walletInfo = await _getWalletInfo();
     final String webhookUrl = await _setupWebhook(walletInfo.pubkey);
