@@ -159,18 +159,19 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
   /// Unregisters a webhook for a given public key.
   Future<void> _unregisterWebhook(String webhookUrl, String pubKey) async {
+    _logger.info('Prepared unregister LNURL Webhook request.');
     final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
     final String message = '$time-$webhookUrl';
     final String signature = await _signMessage(message);
 
-    final UnregisterRecoverLnurlPayRequest invalidateWebhookRequest = UnregisterRecoverLnurlPayRequest(
+    final UnregisterRecoverLnurlPayRequest unregisterRequest = UnregisterRecoverLnurlPayRequest(
       time: time,
       webhookUrl: webhookUrl,
       signature: signature,
     );
-
-    await lnAddressService.unregister(pubKey, invalidateWebhookRequest);
+    _logger.info('Prepared unregister LNURL Webhook request.');
+    await lnAddressService.unregister(pubKey: pubKey, request: unregisterRequest);
   }
 
   /// Signs the given message with the private key.

@@ -132,7 +132,10 @@ class LnUrlPayService {
     }
   }
 
-  Future<void> unregister(String pubKey, UnregisterRecoverLnurlPayRequest request) async {
+  Future<void> unregister({
+    required String pubKey,
+    required UnregisterRecoverLnurlPayRequest request,
+  }) async {
     _logger.info('Unregistering webhook: ${request.webhookUrl}');
     final Uri uri = Uri.parse('$_baseUrl/lnurlpay/$pubKey');
 
@@ -147,9 +150,9 @@ class LnUrlPayService {
         throw UnregisterLnurlPayException(response.body);
       }
 
-      _logger.info('Successfully unregistered webhook');
+      _logger.info('Successfully unregistered webhook.');
     } catch (e, stackTrace) {
-      _logger.severe('Failed to unregister webhook', e, stackTrace);
+      _logger.severe('Failed to unregister webhook.', e, stackTrace);
       throw UnregisterLnurlPayException(e.toString());
     }
   }
