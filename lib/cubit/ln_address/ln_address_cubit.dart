@@ -63,7 +63,11 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   /// - If [isRecover] is true, it attempts to recover the LNURL Webhook. Fallbacks to registration on failure.
   /// - If [baseUsername] is provided, the function updates the Lightning Address username.
   /// - Otherwise, it initializes a new Lightning Address or refreshes an existing one.
-  Future<void> setupLightningAddress({String? pubKey, bool isRecover = false, String? baseUsername}) async {
+  Future<void> setupLightningAddress({
+    String? pubKey,
+    bool isRecover = false,
+    String? baseUsername,
+  }) async {
     final bool isUpdating = baseUsername != null;
     final String actionMessage = isRecover
         ? 'Recovering Lightning Address'
@@ -189,14 +193,17 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     final String? existingWebhook = await breezPreferences.webhookUrl;
     if (existingWebhook != null && existingWebhook != webhookUrl) {
       _logger.info('Unregistering existing webhook: $existingWebhook');
-      await _unregisterWebhook(existingWebhook, pubKey);
+      await _unregisterWebhook(pubKey: pubKey, webhookUrl: existingWebhook);
       breezPreferences.removeWebhookUrl();
       _logger.info('Successfully registered existing webhook.');
     }
   }
 
   /// Unregisters a webhook for a given public key.
-  Future<void> _unregisterWebhook(String webhookUrl, String pubKey) async {
+  Future<void> _unregisterWebhook({
+    required String pubKey,
+    required String webhookUrl,
+  }) async {
     _logger.info('Prepared unregister LNURL Webhook request.');
     final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
@@ -250,7 +257,11 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   }
 
   /// Signs a webhook request message for authentication and validation purposes.
-  Future<String> _generateWebhookSignature(int time, String webhookUrl, String? username) async {
+  Future<String> _generateWebhookSignature({
+    required int time,
+    required String webhookUrl,
+    String? username,
+  }) async {
     _logger.info('Generating webhook signature');
     final String usernameComponent = username?.isNotEmpty == true ? '-$username' : '';
     final String message = '$time-$webhookUrl$usernameComponent';
@@ -320,7 +331,11 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     final String? username = baseUsername ?? await _resolveUsername();
 
     final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final String signature = await _generateWebhookSignature(time, webhookUrl, username);
+    final String signature = await _generateWebhookSignature(
+      time: time,
+      webhookUrl: webhookUrl,
+      username: username,
+    );
 
     final RegisterLnurlPayRequest registerRequest = RegisterLnurlPayRequest(
       time: time,
