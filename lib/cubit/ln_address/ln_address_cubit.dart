@@ -42,6 +42,10 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required this.webhookService,
   }) : super(const LnAddressState());
 
+  /// Sets up or updates the Lightning Address.
+  ///
+  /// - If [baseUsername] is provided, the function updates the Lightning Address username.
+  /// - Otherwise, it initializes a new Lightning Address or refreshes an existing one.
   Future<void> setupLightningAddress({String? baseUsername}) async {
     final bool isUpdating = baseUsername != null;
     final String actionMessage =
@@ -97,6 +101,11 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       errorMessage: errorMessage,
     );
   }
+
+  /// Registers or updates an LNURL webhook for a Lightning Address.
+  ///
+  /// - If [baseUsername] is provided, it updates the existing registration.
+  /// - Otherwise, it determines a suitable username and registers a new webhook.
   Future<RegisterLnurlPayResponse> _setupAndRegisterLnAddress({String? baseUsername}) async {
     final WalletInfo walletInfo = await _getWalletInfo();
     final String webhookUrl = await _setupWebhook(walletInfo.pubkey);
@@ -123,6 +132,9 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return walletInfo;
   }
 
+  /// Sets up a webhook for the given public key.
+  /// - Generates a new webhook URL, unregisters any existing webhook if needed,
+  /// - Registers the new webhook, and stores the webhook URL in preferences.
   Future<String> _setupWebhook(String pubKey) async {
     _logger.info('Setting up webhook');
     final String webhookUrl = await webhookService.generateWebhookUrl();
@@ -132,6 +144,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return webhookUrl;
   }
 
+  /// Checks if there is an existing webhook URL and unregisters it if different from the provided one.
   Future<void> _unregisterExistingWebhookIfNeeded({
     required String pubKey,
     required String webhookUrl,
@@ -144,8 +157,10 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     }
   }
 
+  /// Unregisters a webhook for a given public key.
   Future<void> _unregisterWebhook(String webhookUrl, String pubKey) async {
     final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
     final String message = '$time-$webhookUrl';
     final String signature = await _signMessage(message);
 
@@ -158,6 +173,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     await lnAddressService.unregister(pubKey, invalidateWebhookRequest);
   }
 
+  /// Signs the given message with the private key.
   Future<String> _signMessage(String message) async {
     _logger.info('Signing message: $message');
 
@@ -173,6 +189,10 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return signMessageRes.signature;
   }
 
+  /// Resolves the appropriate username for LNURL registration.
+  ///
+  /// - If the webhook is not yet registered, it utilizes default profile name as username.
+  /// - If the webhook is already registered, it retrieves the stored username from [BreezPreferences].
   Future<String?> _resolveUsername() async {
     final bool isLnUrlWebhookRegistered = await breezPreferences.isLnUrlWebhookRegistered;
 
@@ -189,6 +209,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return storedUsername;
   }
 
+  /// Signs a webhook request message for authentication and validation purposes.
   Future<String> _generateWebhookSignature(int time, String webhookUrl, String? username) async {
     _logger.info('Generating webhook signature');
     final String usernameComponent = username?.isNotEmpty == true ? '-$username' : '';
@@ -198,6 +219,10 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     return signature;
   }
 
+  /// Registers an LNURL webhook with the provided public key and request.
+  ///
+  ///  - Saves the username to [BreezPreferences] if present and
+  ///  - Sets webhook as registered on [BreezPreferences] if succeeds
   Future<RegisterLnurlPayResponse> _registerLnurlWebhook({
     required String pubKey,
     required RegisterLnurlPayRequest request,
