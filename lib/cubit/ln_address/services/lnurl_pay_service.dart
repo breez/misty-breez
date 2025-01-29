@@ -58,41 +58,6 @@ class LnUrlPayService {
     throw MaxRetriesExceededException();
   }
 
-  Future<RegisterRecoverLnurlPayResponse> recover({
-    required String pubKey,
-    required UnregisterRecoverLnurlPayRequest request,
-  }) async {
-    final Uri uri = Uri.parse('$_baseUrl/lnurlpay/$pubKey/recover');
-    _logger.fine('Sending recover request to: $uri');
-
-    try {
-      final http.Response response = await _client.post(
-        uri,
-        body: jsonEncode(request.toJson()),
-      );
-      _logHttpResponse(response);
-
-      if (response.statusCode == 200) {
-        return RegisterRecoverLnurlPayResponse.fromJson(
-          jsonDecode(response.body) as Map<String, dynamic>,
-        );
-      }
-
-      throw RecoverLnurlPayException(
-        'Server returned error response',
-        statusCode: response.statusCode,
-        responseBody: response.body,
-      );
-    } catch (e, stackTrace) {
-      if (e is RecoverLnurlPayException) {
-        rethrow;
-      }
-
-      _logger.severe('Recovery failed', e, stackTrace);
-      throw RecoverLnurlPayException(e.toString());
-    }
-  }
-
   Future<RegisterRecoverLnurlPayResponse> _register({
     required String pubKey,
     required RegisterLnurlPayRequest request,
@@ -127,8 +92,43 @@ class LnUrlPayService {
         rethrow;
       }
 
-      _logger.severe('Registration failed', e, stackTrace);
+      _logger.severe('Failed to register webhook.', e, stackTrace);
       throw RegisterLnurlPayException(e.toString());
+    }
+  }
+
+  Future<RegisterRecoverLnurlPayResponse> recover({
+    required String pubKey,
+    required UnregisterRecoverLnurlPayRequest request,
+  }) async {
+    final Uri uri = Uri.parse('$_baseUrl/lnurlpay/$pubKey/recover');
+    _logger.fine('Sending recover request to: $uri');
+
+    try {
+      final http.Response response = await _client.post(
+        uri,
+        body: jsonEncode(request.toJson()),
+      );
+      _logHttpResponse(response);
+
+      if (response.statusCode == 200) {
+        return RegisterRecoverLnurlPayResponse.fromJson(
+          jsonDecode(response.body) as Map<String, dynamic>,
+        );
+      }
+
+      throw RecoverLnurlPayException(
+        'Server returned error response',
+        statusCode: response.statusCode,
+        responseBody: response.body,
+      );
+    } catch (e, stackTrace) {
+      if (e is RecoverLnurlPayException) {
+        rethrow;
+      }
+
+      _logger.severe('Failed to recover webhook.', e, stackTrace);
+      throw RecoverLnurlPayException(e.toString());
     }
   }
 
