@@ -16,8 +16,8 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin<CurrencyStat
   }
 
   void _initializeCurrencyCubit() {
-    breezSdkLiquid.walletInfoStream.first.then(
-      (GetInfoResponse walletInfo) {
+    breezSdkLiquid.getInfoResponseStream.first.then(
+      (GetInfoResponse getInfoResponse) {
         listFiatCurrencies();
         fetchExchangeRates();
       },

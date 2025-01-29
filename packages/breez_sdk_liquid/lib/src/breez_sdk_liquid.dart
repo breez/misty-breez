@@ -55,9 +55,9 @@ class BreezSDKLiquid {
   }
 
   Future<liquid_sdk.GetInfoResponse> _getInfo(liquid_sdk.BindingLiquidSdk sdk) async {
-    final liquid_sdk.GetInfoResponse walletInfo = await sdk.getInfo();
-    _walletInfoController.add(walletInfo);
-    return walletInfo;
+    final liquid_sdk.GetInfoResponse getInfoResponse = await sdk.getInfo();
+    _getInfoResponseController.add(getInfoResponse);
+    return getInfoResponse;
   }
 
   Future<List<liquid_sdk.Payment>> _listPayments({
@@ -94,10 +94,10 @@ class BreezSDKLiquid {
     _breezEventsStream ??= sdk.addEventListener().asBroadcastStream();
   }
 
-  final StreamController<liquid_sdk.GetInfoResponse> _walletInfoController =
+  final StreamController<liquid_sdk.GetInfoResponse> _getInfoResponseController =
       BehaviorSubject<liquid_sdk.GetInfoResponse>();
 
-  Stream<liquid_sdk.GetInfoResponse> get walletInfoStream => _walletInfoController.stream;
+  Stream<liquid_sdk.GetInfoResponse> get getInfoResponseStream => _getInfoResponseController.stream;
 
   final StreamController<List<liquid_sdk.Payment>> _paymentsController =
       BehaviorSubject<List<liquid_sdk.Payment>>();

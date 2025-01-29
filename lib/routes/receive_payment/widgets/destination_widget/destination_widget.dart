@@ -17,19 +17,19 @@ final Logger _logger = Logger('DestinationWidget');
 class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
+  final String? lnAddress;
   final String? paymentMethod;
   final void Function()? onLongPress;
   final Widget? infoWidget;
-  final bool isLnAddress;
 
   const DestinationWidget({
     super.key,
     this.snapshot,
     this.destination,
+    this.lnAddress,
     this.paymentMethod,
     this.onLongPress,
     this.infoWidget,
-    this.isLnAddress = false,
   });
 
   @override
@@ -42,7 +42,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.isLnAddress) {
+    if (widget.lnAddress != null && widget.lnAddress!.isNotEmpty) {
       // Ignore new payments for a duration upon generating LN Address.
       // This delay is added to avoid popping the page before user gets the chance to copy,
       // share or get their LN address scanned.
@@ -56,7 +56,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     // For receive payment pages other than LN Address, user input is required before creating an invoice.
     // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
     // initial widget setup.
-    if (!widget.isLnAddress) {
+    if (!(widget.lnAddress != null && widget.lnAddress!.isNotEmpty)) {
       _trackPaymentEvents(getUpdatedDestination(oldWidget));
     }
   }
@@ -152,6 +152,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
           child: DestinationQRWidget(
             snapshot: widget.snapshot,
             destination: widget.destination,
+            lnAddress: widget.lnAddress,
             paymentMethod: widget.paymentMethod,
             onLongPress: widget.onLongPress,
             infoWidget: widget.infoWidget,

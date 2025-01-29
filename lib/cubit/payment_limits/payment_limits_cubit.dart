@@ -34,7 +34,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
 
   void _fetchPaymentLimits() {
     if (_breezSdkLiquid.instance != null) {
-      _breezSdkLiquid.walletInfoStream.first.then((GetInfoResponse walletInfo) {
+      _breezSdkLiquid.getInfoResponseStream.first.then((GetInfoResponse getInfoResponse) {
         fetchLightningLimits();
         fetchOnchainLimits();
       }).timeout(

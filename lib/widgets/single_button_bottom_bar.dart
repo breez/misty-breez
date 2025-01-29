@@ -7,6 +7,7 @@ class SingleButtonBottomBar extends StatelessWidget {
   final bool stickToBottom;
   final bool enabled;
   final bool expand;
+  final bool loading;
 
   const SingleButtonBottomBar({
     required this.text,
@@ -15,6 +16,7 @@ class SingleButtonBottomBar extends StatelessWidget {
     this.stickToBottom = false,
     this.enabled = true,
     this.expand = false,
+    this.loading = false,
   });
 
   @override
@@ -36,6 +38,7 @@ class SingleButtonBottomBar extends StatelessWidget {
               onPressed,
               enabled: enabled,
               expand: expand,
+              loading: loading,
             ),
           ),
         ],
@@ -49,6 +52,7 @@ class SubmitButton extends StatelessWidget {
   final String text;
   final bool enabled;
   final bool expand;
+  final bool loading;
 
   const SubmitButton(
     this.text,
@@ -56,6 +60,7 @@ class SubmitButton extends StatelessWidget {
     super.key,
     this.enabled = true,
     this.expand = false,
+    this.loading = false,
   });
 
   @override
@@ -78,12 +83,21 @@ class SubmitButton extends StatelessWidget {
           ),
           minimumSize: expand ? Size(screenWidth, 48) : null,
         ),
-        onPressed: enabled ? onPressed : null,
-        child: AutoSizeText(
-          text,
-          maxLines: 1,
-          style: themeData.textTheme.labelLarge,
-        ),
+        onPressed: (enabled && !loading) ? onPressed : null,
+        child: loading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : AutoSizeText(
+                text,
+                maxLines: 1,
+                style: themeData.textTheme.labelLarge,
+              ),
       ),
     );
   }
