@@ -174,19 +174,19 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   }
 
   Future<String?> _resolveUsername() async {
-    String? username = '';
     final bool isLnUrlWebhookRegistered = await breezPreferences.isLnUrlWebhookRegistered;
 
     if (!isLnUrlWebhookRegistered) {
       final String? profileName = await breezPreferences.profileName;
-      username = UsernameFormatter.formatDefaultProfileName(profileName);
-      _logger.info('Registering LNURL Webhook: Using formatted profile name: $username');
-    } else {
-      // TODO(erdemyerebasmaz): Add null-handling, revert back to profile name if necessary
-      username = await breezPreferences.lnAddressUsername;
-      _logger.info('Refreshing LNURL Webhook: Using stored username: $username');
+      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(profileName);
+      _logger.info('Registering LNURL Webhook: Using formatted profile name: $formattedUsername');
+      return formattedUsername;
     }
-    return username;
+
+    // TODO(erdemyerebasmaz): Add null-handling to revert to the profile name if the stored username is null.
+    final String? storedUsername = await breezPreferences.lnAddressUsername;
+    _logger.info('Refreshing LNURL Webhook: Using stored username: $storedUsername');
+    return storedUsername;
   }
 
   Future<String> _generateWebhookSignature(int time, String webhookUrl, String? username) async {
