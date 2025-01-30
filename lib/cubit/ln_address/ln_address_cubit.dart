@@ -55,8 +55,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         _logger.info('Received wallet info, setting up Lightning Address.');
         setupLightningAddress(pubKey: getInfoResponse.walletInfo.pubkey, isRecover: true);
       },
-    ).catchError((Object e, StackTrace stackTrace) {
-      _logger.severe('Failed to initialize Lightning Address Cubit', e, stackTrace);
+    ).catchError((Object e) {
+      _logger.severe('Failed to initialize Lightning Address Cubit', e);
     });
   }
 
@@ -315,8 +315,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
       await breezPreferences.setLnUrlWebhookRegistered();
       return recoverResponse;
-    } catch (e, stackTrace) {
-      _logger.severe('Failed to recover LNURL Webhook.', e, stackTrace);
+    } catch (e) {
+      _logger.severe('Failed to recover LNURL Webhook.', e);
       rethrow;
     }
   }
@@ -376,8 +376,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       } on UsernameConflictException {
         _logger.warning('Username conflict for: $username.');
         username = UsernameGenerator.generateUsername(username, retryCount);
-      } catch (e, stackTrace) {
-        _logger.severe('Failed to register LNURL Webhook on attempt ${retryCount + 1}.', e, stackTrace);
+      } catch (e) {
+        _logger.severe('Failed to register LNURL Webhook on attempt ${retryCount + 1}.', e);
         if (retryCount == _maxRetries - 1) {
           _logger.severe('Max retries exceeded for username registration');
           throw MaxRetriesExceededException();
@@ -394,6 +394,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String webhookUrl,
     String? username,
   }) async {
+    _logger.info('Prepared register LNURL Webhook request.');
     final RegisterLnurlPayRequest request = await _prepareRegisterLnurlPayRequest(
       pubKey: pubKey,
       webhookUrl: webhookUrl,
@@ -451,8 +452,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
       await breezPreferences.setLnUrlWebhookRegistered();
       return registrationResponse;
-    } catch (e, stackTrace) {
-      _logger.severe('Failed to register LNURL Webhook.', e, stackTrace);
+    } catch (e) {
+      _logger.severe('Failed to register LNURL Webhook.', e);
       rethrow;
     }
   }

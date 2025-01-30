@@ -41,8 +41,8 @@ class LnUrlPayService {
         statusCode: response.statusCode,
         responseBody: response.body,
       );
-    } catch (e, stackTrace) {
-      _logger.severe('Failed to register webhook.', e, stackTrace);
+    } catch (e) {
+      _logger.severe('Failed to register webhook.', e);
       rethrow;
     }
   }
@@ -76,8 +76,8 @@ class LnUrlPayService {
         statusCode: response.statusCode,
         responseBody: response.body,
       );
-    } catch (e, stackTrace) {
-      _logger.severe('Failed to recover webhook.', e, stackTrace);
+    } catch (e) {
+      _logger.severe('Failed to recover webhook.', e);
       rethrow;
     }
   }
@@ -101,8 +101,8 @@ class LnUrlPayService {
       }
 
       _logger.info('Successfully unregistered webhook.');
-    } catch (e, stackTrace) {
-      _logger.severe('Failed to unregister webhook.', e, stackTrace);
+    } catch (e) {
+      _logger.severe('Failed to unregister webhook.', e);
       rethrow;
     }
   }
