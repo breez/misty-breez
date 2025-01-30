@@ -132,15 +132,15 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                           border: const OutlineInputBorder(),
                           errorText: isConflict ? 'Username is already taken' : null,
                         ),
-                        // 64 is the maximum allowed length for a username
-                        // but a %12.5 margin of error is added for good measure,
-                        // which is likely to get sanitized by the UsernameFormatter
-                        maxLength: 64 + 8,
                         keyboardType: TextInputType.emailAddress,
                         autofocus: true,
                         validator: _validateUsername,
                         inputFormatters: <TextInputFormatter>[
                           UsernameInputFormatter(),
+                          // 64 is the maximum allowed length for a username
+                          // but a %12.5 margin of error is added for good measure,
+                          // which is likely to get sanitized by the UsernameFormatter
+                          LengthLimitingTextInputFormatter(72),
                         ],
                         onEditingComplete: () => _usernameFocusNode.unfocus(),
                       );
