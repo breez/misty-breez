@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -38,16 +37,9 @@ class DefaultProfile {
 
 DefaultProfile generateDefaultProfile() {
   final BreezTranslations texts = getSystemAppLocalizations();
-  final Random random = Random();
-
-  const List<ProfileColor> colors = ProfileColor.values;
-  const List<ProfileAnimal> animals = ProfileAnimal.values;
-
-  final ProfileColor randomColor = colors.elementAt(random.nextInt(colors.length));
-  final ProfileAnimal randomAnimal = animals.elementAt(random.nextInt(animals.length));
 
   return DefaultProfile(
-    randomColor.name(texts),
-    randomAnimal.name(texts),
+    ProfileColor.pink.name(texts),
+    ProfileAnimal.chick.name(texts),
   );
 }
