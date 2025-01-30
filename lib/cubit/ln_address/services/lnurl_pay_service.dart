@@ -88,12 +88,8 @@ class LnUrlPayService {
         responseBody: response.body,
       );
     } catch (e, stackTrace) {
-      if (e is UsernameConflictException || e is RegisterLnurlPayException) {
-        rethrow;
-      }
-
       _logger.severe('Failed to register webhook.', e, stackTrace);
-      throw RegisterLnurlPayException(e.toString());
+      rethrow;
     }
   }
 
@@ -127,12 +123,8 @@ class LnUrlPayService {
         responseBody: response.body,
       );
     } catch (e, stackTrace) {
-      if (e is RecoverLnurlPayException) {
-        rethrow;
-      }
-
       _logger.severe('Failed to recover webhook.', e, stackTrace);
-      throw RecoverLnurlPayException(e.toString());
+      rethrow;
     }
   }
 
@@ -157,7 +149,7 @@ class LnUrlPayService {
       _logger.info('Successfully unregistered webhook.');
     } catch (e, stackTrace) {
       _logger.severe('Failed to unregister webhook.', e, stackTrace);
-      throw UnregisterLnurlPayException(e.toString());
+      rethrow;
     }
   }
 
