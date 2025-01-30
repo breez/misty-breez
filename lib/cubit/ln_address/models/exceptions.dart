@@ -10,6 +10,11 @@ class RecoverLnurlPayException implements Exception {
       'RecoverLnurlPayException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
 }
 
+class WebhookNotFoundException implements Exception {
+  @override
+  String toString() => 'No associated webhook found for given public key.';
+}
+
 class RegisterLnurlPayException implements Exception {
   final String message;
   final int? statusCode;

@@ -117,6 +117,10 @@ class LnUrlPayService {
         );
       }
 
+      if (response.statusCode == 404) {
+        throw WebhookNotFoundException();
+      }
+
       throw RecoverLnurlPayException(
         'Server returned error response',
         statusCode: response.statusCode,
