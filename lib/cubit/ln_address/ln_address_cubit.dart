@@ -365,6 +365,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String webhookUrl,
     required String username,
   }) async {
+    final String baseUsername = username;
     for (int retryCount = 1; retryCount <= _maxRetries; retryCount++) {
       try {
         _logger.info('Attempt $retryCount/$_maxRetries with username: $username');
@@ -375,7 +376,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         );
       } on UsernameConflictException {
         _logger.warning('Username conflict for: $username.');
-        username = UsernameGenerator.generateUsername(username, retryCount);
+        username = UsernameGenerator.generateUsername(baseUsername, retryCount);
       } catch (e) {
         _logger.severe('Failed to register LNURL Webhook on attempt ${retryCount + 1}.', e);
         if (retryCount == _maxRetries - 1) {
