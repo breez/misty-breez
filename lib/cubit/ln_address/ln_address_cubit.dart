@@ -379,15 +379,12 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         username = UsernameGenerator.generateUsername(baseUsername, retryCount);
       } catch (e) {
         _logger.severe('Failed to register LNURL Webhook on attempt ${retryCount + 1}.', e);
-        if (retryCount == _maxRetries - 1) {
-          _logger.severe('Max retries exceeded for username registration');
-          throw MaxRetriesExceededException();
-        }
         rethrow;
       }
     }
 
-    throw RegisterLnurlPayException('Failed to register LNURL Webhook.');
+    _logger.severe('Max retries exceeded for username registration');
+    throw MaxRetriesExceededException();
   }
 
   Future<RegisterRecoverLnurlPayResponse> _attemptRegisterLnurlWebhook({
