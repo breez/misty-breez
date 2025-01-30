@@ -30,6 +30,8 @@ class LnAddressCubitFactory {
 }
 
 class LnAddressCubit extends Cubit<LnAddressState> {
+  static const int _maxRetries = 3;
+
   final BreezSDKLiquid breezSdkLiquid;
   final BreezPreferences breezPreferences;
   final LnUrlPayService lnAddressService;
@@ -240,10 +242,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   ///
   /// - If the webhook is not yet registered, it utilizes default profile name as username.
   /// - If the webhook is already registered, it retrieves the stored username from [BreezPreferences].
-  Future<String?> _resolveUsername() async {
-    final bool isLnUrlWebhookRegistered = await breezPreferences.isLnUrlWebhookRegistered;
-
-    if (!isLnUrlWebhookRegistered) {
+  Future<String?> _resolveUsername({required bool isNewRegistration}) async {
+    if (isNewRegistration) {
       final String? profileName = await breezPreferences.profileName;
       final String formattedUsername = UsernameFormatter.formatDefaultProfileName(profileName);
       _logger.info('Registering LNURL Webhook: Using formatted profile name: $formattedUsername');
@@ -328,8 +328,90 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String? baseUsername,
   }) async {
     _logger.info('Preparing register LNURL Webhook request.');
-    final String? username = baseUsername ?? await _resolveUsername();
+    final bool isUpdating = baseUsername != null;
+    final bool isLnUrlWebhookRegistered = await breezPreferences.isLnUrlWebhookRegistered;
+    final bool isNewRegistration = !(isUpdating && isLnUrlWebhookRegistered);
 
+    final String? username = baseUsername ?? await _resolveUsername(isNewRegistration: isNewRegistration);
+
+    // Register without retries if this is an update to existing LNURL Webhook
+    if (!isNewRegistration) {
+      return await _attemptRegisterLnurlWebhook(
+        pubKey: pubKey,
+        webhookUrl: webhookUrl,
+        username: username,
+      );
+    }
+
+    // Register with retries if LNURL Webhook hasn't been registered yet
+    return await _registerWithRetries(
+      pubKey: pubKey,
+      webhookUrl: webhookUrl,
+      username: username!,
+    );
+  }
+
+  // TODO(erdemyerebasmaz): Optimize if current retry logic is insufficient
+  // If initial registration fails, up to [_maxRetries] registration attempts will be made on opening [ReceiveLightningAddressPage].
+  // If these attempts also fail, the user can retry manually via a button, which will trigger another registration attempt with [_maxRetries] retries.
+  //
+  // Future improvements could include:
+  // - Retrying indefinitely with intervals until registration succeeds
+  // - Explicit handling of [UsernameConflictException] and LNURL server connectivity issues
+  // - Randomizing the default profile name itself after a set number of failures
+  // - Adding additional digits to the discriminator
+  Future<RegisterRecoverLnurlPayResponse> _registerWithRetries({
+    required String pubKey,
+    required String webhookUrl,
+    required String username,
+  }) async {
+    for (int retryCount = 1; retryCount <= _maxRetries; retryCount++) {
+      try {
+        _logger.info('Attempt $retryCount/$_maxRetries with username: $username');
+        return await _attemptRegisterLnurlWebhook(
+          pubKey: pubKey,
+          webhookUrl: webhookUrl,
+          username: username,
+        );
+      } on UsernameConflictException {
+        _logger.warning('Username conflict for: $username.');
+        username = UsernameGenerator.generateUsername(username, retryCount);
+      } catch (e, stackTrace) {
+        _logger.severe('Failed to register LNURL Webhook on attempt ${retryCount + 1}.', e, stackTrace);
+        if (retryCount == _maxRetries - 1) {
+          _logger.severe('Max retries exceeded for username registration');
+          throw MaxRetriesExceededException();
+        }
+        rethrow;
+      }
+    }
+
+    throw RegisterLnurlPayException('Failed to register LNURL Webhook.');
+  }
+
+  Future<RegisterRecoverLnurlPayResponse> _attemptRegisterLnurlWebhook({
+    required String pubKey,
+    required String webhookUrl,
+    String? username,
+  }) async {
+    final RegisterLnurlPayRequest request = await _prepareRegisterLnurlPayRequest(
+      pubKey: pubKey,
+      webhookUrl: webhookUrl,
+      username: username,
+    );
+    _logger.info('Prepared register LNURL Webhook request.');
+    return await _registerLnurlWebhook(
+      pubKey: pubKey,
+      request: request,
+    );
+  }
+
+  /// Attempts to register LNURL Webhook once with the given parameters.
+  Future<RegisterLnurlPayRequest> _prepareRegisterLnurlPayRequest({
+    required String pubKey,
+    required String webhookUrl,
+    required String? username,
+  }) async {
     final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final String signature = await _generateWebhookSignature(
       time: time,
@@ -337,15 +419,12 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       username: username,
     );
 
-    final RegisterLnurlPayRequest registerRequest = RegisterLnurlPayRequest(
+    return RegisterLnurlPayRequest(
       time: time,
       webhookUrl: webhookUrl,
       signature: signature,
       username: username,
     );
-
-    _logger.info('Prepared register LNURL Webhook request.');
-    return await _registerLnurlWebhook(pubKey: pubKey, request: registerRequest);
   }
 
   /// Registers an LNURL Webhook with the provided public key and request.
