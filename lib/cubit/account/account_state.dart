@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:breez_liquid/breez_liquid.dart';
-import 'package:logging/logging.dart';
 import 'package:l_breez/models/asset_extension.dart';
+import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('AccountState');
 
