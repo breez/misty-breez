@@ -127,7 +127,7 @@ Route<dynamic>? onGenerateRoute({
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: LnOfferPaymentPage(
-                        lnOffer: settings.arguments as LNOffer,
+                        lnOfferPaymentArguments: settings.arguments as LnOfferPaymentArguments,
                       ),
                     ),
                     settings: settings,
@@ -137,7 +137,7 @@ Route<dynamic>? onGenerateRoute({
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: LnUrlPaymentPage(
-                        requestData: settings.arguments as LnUrlPayRequestData,
+                        lnUrlPaymentArguments: settings.arguments as LnUrlPaymentArguments,
                       ),
                     ),
                     settings: settings,

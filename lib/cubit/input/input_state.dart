@@ -27,11 +27,13 @@ class InputState {
 
   const factory InputState.bolt12Offer(
     LNOffer lnOffer,
+    String? bip353Address,
     InputSource source,
   ) = LnOfferInputState;
 
   const factory InputState.lnUrlPay(
     LnUrlPayRequestData data,
+    String? bip353Address,
     InputSource source,
   ) = LnUrlPayInputState;
 
@@ -127,10 +129,12 @@ class LnInvoiceInputState extends InputState {
 class LnOfferInputState extends InputState {
   const LnOfferInputState(
     this.lnOffer,
+    this.bip353Address,
     this.source,
   ) : super._();
 
   final LNOffer lnOffer;
+  final String? bip353Address;
   final InputSource source;
 
   @override
@@ -153,10 +157,12 @@ class LnOfferInputState extends InputState {
 class LnUrlPayInputState extends InputState {
   const LnUrlPayInputState(
     this.data,
+    this.bip353Address,
     this.source,
   ) : super._();
 
   final LnUrlPayRequestData data;
+  final String? bip353Address;
   final InputSource source;
 
   @override
