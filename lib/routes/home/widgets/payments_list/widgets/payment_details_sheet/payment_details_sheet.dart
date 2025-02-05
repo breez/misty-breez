@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
+import 'package:l_breez/routes/home/widgets/payments_list/widgets/payment_details_sheet/widgets/payment_details_sheet_bip_353_address.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/widgets/payment_details_sheet/widgets/payment_details_sheet_header.dart';
 import 'package:l_breez/routes/home/widgets/widgets.dart';
 import 'package:logging/logging.dart';
@@ -80,6 +81,12 @@ class PaymentDetailsSheet extends StatelessWidget {
       lightning: (PaymentDetails_Lightning details) => details.swapId,
       orElse: () => '',
     );
+
+    final String bip353Address = paymentData.details.map(
+          lightning: (PaymentDetails_Lightning details) => details.bip353Address,
+          orElse: () => null,
+        ) ??
+        '';
 
     final LnUrlInfo? lnurlInfo = paymentData.details.map(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
@@ -174,6 +181,9 @@ class PaymentDetailsSheet extends StatelessWidget {
                           expiryDate: expiryDate,
                           labelAutoSizeGroup: _labelGroup,
                         ),
+                      ],
+                      if (bip353Address.isNotEmpty) ...<Widget>[
+                        PaymentDetailsSheetBip353Address(bip353Address: bip353Address),
                       ],
                       if (lnAddress.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetLnUrlLnAddress(lnAddress: lnAddress),
