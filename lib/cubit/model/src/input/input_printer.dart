@@ -3,6 +3,8 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 String inputTypeToString(InputType inputType) {
   if (inputType is InputType_BitcoinAddress) {
     return _bitcoinAddressToString(inputType);
+  } else if (inputType is InputType_Bolt12Offer) {
+    return _bolt12OfferToString(inputType);
   } else if (inputType is InputType_Bolt11) {
     return _bolt11ToString(inputType);
   } else if (inputType is InputType_NodeId) {
@@ -23,7 +25,9 @@ String inputTypeToString(InputType inputType) {
 }
 
 String inputDataToString(dynamic data) {
-  if (data is BitcoinAddressData) {
+  if (data is LNOffer) {
+    return _lnOfferToString(data);
+  } else if (data is BitcoinAddressData) {
     return _bitcoinAddressDataToString(data);
   } else if (data is LNInvoice) {
     return _lnInvoiceToString(data);
@@ -69,6 +73,22 @@ String _nodeIdToString(InputType_NodeId inputType) {
 
 String _urlToString(InputType_Url inputType) {
   return 'Url(url: ${inputType.url})';
+}
+
+String _bolt12OfferToString(InputType_Bolt12Offer inputType) {
+  final LNOffer lnOffer = inputType.offer;
+  return _lnOfferToString(lnOffer);
+}
+
+String _lnOfferToString(LNOffer offer) {
+  return 'LNOffer(offer: ${offer.offer}, description: ${offer.description}, '
+      'absoluteExpiry: ${offer.absoluteExpiry}, chains: ${offer.chains}, '
+      'issuer: ${offer.issuer}, minAmount: ${offer.minAmount}, '
+      'paths: ${_blindedHopsToString(offer.paths)}, signingPubkey: ${offer.signingPubkey})';
+}
+
+String _blindedHopsToString(List<LnOfferBlindedPath> paths) {
+  return paths.map((LnOfferBlindedPath path) => path.blindedHops.toString()).join(', ');
 }
 
 String _lnUrlPayToString(InputType_LnUrlPay inputType) {
