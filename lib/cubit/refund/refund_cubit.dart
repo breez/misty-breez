@@ -44,7 +44,8 @@ class RefundCubit extends Cubit<RefundState> {
       (PaymentEvent paymentEvent) {
         if (paymentEvent.sdkEvent is SdkEvent_PaymentRefundable ||
             paymentEvent.sdkEvent is SdkEvent_PaymentRefundPending ||
-            paymentEvent.sdkEvent is SdkEvent_PaymentRefunded) {
+            paymentEvent.sdkEvent is SdkEvent_PaymentRefunded ||
+            (paymentEvent.sdkEvent is SdkEvent_PaymentFailed && state.hasRefundables)) {
           listRefundables();
         }
       },
