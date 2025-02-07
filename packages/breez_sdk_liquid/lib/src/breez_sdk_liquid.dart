@@ -153,6 +153,7 @@ extension PaymentEventExtension on liquid_sdk.SdkEvent {
   bool get isPaymentEvent {
     return this is liquid_sdk.SdkEvent_PaymentFailed ||
         this is liquid_sdk.SdkEvent_PaymentPending ||
+        this is liquid_sdk.SdkEvent_PaymentRefundable ||
         this is liquid_sdk.SdkEvent_PaymentRefunded ||
         this is liquid_sdk.SdkEvent_PaymentRefundPending ||
         this is liquid_sdk.SdkEvent_PaymentSucceeded ||
