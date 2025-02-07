@@ -146,7 +146,7 @@ class InputHandler extends Handler {
     LNOffer lnOffer, {
     String? bip353Address,
   }) async {
-    _logger.info('handle LNOffer ${inputDataToString(lnOffer)}');
+    _logger.info('handle LNOffer ${lnOffer.toFormattedString()}');
     final NavigatorState navigator = Navigator.of(context);
     final LnOfferPaymentArguments arguments = LnOfferPaymentArguments(
       lnOffer: lnOffer,

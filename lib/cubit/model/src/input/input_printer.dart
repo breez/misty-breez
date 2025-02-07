@@ -1,131 +1,69 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
-String inputTypeToString(InputType inputType) {
-  if (inputType is InputType_BitcoinAddress) {
-    return _bitcoinAddressToString(inputType);
-  } else if (inputType is InputType_Bolt12Offer) {
-    return _bolt12OfferToString(inputType);
-  } else if (inputType is InputType_Bolt11) {
-    return _bolt11ToString(inputType);
-  } else if (inputType is InputType_NodeId) {
-    return _nodeIdToString(inputType);
-  } else if (inputType is InputType_Url) {
-    return _urlToString(inputType);
-  } else if (inputType is InputType_LnUrlPay) {
-    return _lnUrlPayToString(inputType);
-  } else if (inputType is InputType_LnUrlWithdraw) {
-    return _lnUrlWithdrawToString(inputType);
-  } else if (inputType is InputType_LnUrlAuth) {
-    return _lnUrlAuthToString(inputType);
-  } else if (inputType is InputType_LnUrlError) {
-    return _lnUrlErrorToString(inputType);
-  } else {
-    return 'Unknown InputType';
+extension InputTypeExtension on InputType {
+  String toFormattedString() {
+    return switch (this) {
+      InputType_BitcoinAddress() => (this as InputType_BitcoinAddress).address.toFormattedString(),
+      InputType_Bolt12Offer() => (this as InputType_Bolt12Offer).offer.toFormattedString() +
+          ((this as InputType_Bolt12Offer).bip353Address == null
+              ? ''
+              : ', Bip 353 Address: ${(this as InputType_Bolt12Offer).bip353Address!}'),
+      InputType_Bolt11() => (this as InputType_Bolt11).invoice.toFormattedString(),
+      InputType_NodeId() => 'NodeId(nodeId: ${(this as InputType_NodeId).nodeId})',
+      InputType_Url() => 'Url(url: ${(this as InputType_Url).url})',
+      InputType_LnUrlPay() => (this as InputType_LnUrlPay).data.toFormattedString() +
+          ((this as InputType_LnUrlPay).bip353Address == null
+              ? ''
+              : ', Bip 353 Address: ${(this as InputType_LnUrlPay).bip353Address!}'),
+      InputType_LnUrlWithdraw() => (this as InputType_LnUrlWithdraw).data.toFormattedString(),
+      InputType_LnUrlAuth() => (this as InputType_LnUrlAuth).data.toFormattedString(),
+      InputType_LnUrlError() => (this as InputType_LnUrlError).data.toFormattedString(),
+      _ => 'Unknown InputType',
+    };
   }
 }
 
-String inputDataToString(dynamic data) {
-  if (data is LNOffer) {
-    return _lnOfferToString(data);
-  } else if (data is BitcoinAddressData) {
-    return _bitcoinAddressDataToString(data);
-  } else if (data is LNInvoice) {
-    return _lnInvoiceToString(data);
-  } else if (data is LnUrlPayRequestData) {
-    return _lnUrlPayRequestDataToString(data);
-  } else if (data is LnUrlWithdrawRequestData) {
-    return _lnUrlWithdrawRequestDataToString(data);
-  } else if (data is LnUrlAuthRequestData) {
-    return _lnUrlAuthRequestDataToString(data);
-  } else if (data is LnUrlErrorData) {
-    return _lnUrlErrorDataToString(data);
-  } else {
-    return 'Unknown InputType';
-  }
+extension BitcoinAddressDataExtension on BitcoinAddressData {
+  String toFormattedString() =>
+      'BitcoinAddressData(address: $address, network: $network, amountSat: $amountSat, '
+      'label: $label, message: $message)';
 }
 
-String _bitcoinAddressToString(InputType_BitcoinAddress inputType) {
-  final BitcoinAddressData data = inputType.address;
-  return _bitcoinAddressDataToString(data);
+extension LNInvoiceExtension on LNInvoice {
+  String toFormattedString() =>
+      'LNInvoice(invoice: $bolt11, paymentHash: $paymentHash, description: $description, '
+      'amountMsat: $amountMsat, expiry: $expiry, payeePubkey: $payeePubkey, '
+      'descriptionHash: $descriptionHash, timestamp: $timestamp, routingHints: $routingHints, '
+      'paymentSecret: $paymentSecret)';
 }
 
-String _bitcoinAddressDataToString(BitcoinAddressData data) {
-  return 'BitcoinAddressData(address: ${data.address}, network: ${data.network}, amountSat: ${data.amountSat}, '
-      'label: ${data.label}, message: ${data.message})';
+extension LNOfferExtension on LNOffer {
+  String toFormattedString() =>
+      'LNOffer(offer: $offer, description: $description, absoluteExpiry: $absoluteExpiry, '
+      'chains: $chains, issuer: $issuer, minAmount: $minAmount, '
+      'paths: ${paths.toFormattedString()}, signingPubkey: $signingPubkey)';
 }
 
-String _bolt11ToString(InputType_Bolt11 inputType) {
-  final LNInvoice data = inputType.invoice;
-  return _lnInvoiceToString(data);
+extension LnOfferBlindedPathExtension on List<LnOfferBlindedPath> {
+  String toFormattedString() => map((LnOfferBlindedPath path) => path.blindedHops.toString()).join(', ');
 }
 
-String _lnInvoiceToString(LNInvoice data) {
-  return 'LNInvoice(invoice: ${data.bolt11}, paymentHash: ${data.paymentHash}, '
-      'description: ${data.description}, amountMsat: ${data.amountMsat}, expiry: ${data.expiry}, '
-      'payeePubkey: ${data.payeePubkey}, descriptionHash: ${data.descriptionHash}, '
-      'timestamp: ${data.timestamp}, routingHints: ${data.routingHints}, '
-      'paymentSecret: ${data.paymentSecret})';
+extension LnUrlPayRequestDataExtension on LnUrlPayRequestData {
+  String toFormattedString() => 'LnUrlPayRequestData(callback: $callback, minSendable: $minSendable, '
+      'maxSendable: $maxSendable, metadata: $metadataStr, '
+      'commentAllowed: $commentAllowed, domain: $domain, lnAddr: $lnAddress)';
 }
 
-String _nodeIdToString(InputType_NodeId inputType) {
-  return 'NodeId(nodeId: ${inputType.nodeId})';
+extension LnUrlWithdrawRequestDataExtension on LnUrlWithdrawRequestData {
+  String toFormattedString() =>
+      'LnUrlWithdrawRequestData(callback: $callback, minWithdrawable: $minWithdrawable, '
+      'maxWithdrawable: $maxWithdrawable, defaultDescription: $defaultDescription, k1: $k1)';
 }
 
-String _urlToString(InputType_Url inputType) {
-  return 'Url(url: ${inputType.url})';
+extension LnUrlAuthRequestDataExtension on LnUrlAuthRequestData {
+  String toFormattedString() => 'LnUrlAuthRequestData(k1: $k1, action: $action, domain: $domain, url: $url)';
 }
 
-String _bolt12OfferToString(InputType_Bolt12Offer inputType) {
-  final LNOffer lnOffer = inputType.offer;
-  return _lnOfferToString(lnOffer);
+extension LnUrlErrorDataExtension on LnUrlErrorData {
+  String toFormattedString() => 'LnUrlErrorData(reason: $reason)';
 }
-
-String _lnOfferToString(LNOffer offer) {
-  return 'LNOffer(offer: ${offer.offer}, description: ${offer.description}, '
-      'absoluteExpiry: ${offer.absoluteExpiry}, chains: ${offer.chains}, '
-      'issuer: ${offer.issuer}, minAmount: ${offer.minAmount}, '
-      'paths: ${_blindedHopsToString(offer.paths)}, signingPubkey: ${offer.signingPubkey})';
-}
-
-String _blindedHopsToString(List<LnOfferBlindedPath> paths) {
-  return paths.map((LnOfferBlindedPath path) => path.blindedHops.toString()).join(', ');
-}
-
-String _lnUrlPayToString(InputType_LnUrlPay inputType) {
-  final LnUrlPayRequestData data = inputType.data;
-  return _lnUrlPayRequestDataToString(data);
-}
-
-String _lnUrlPayRequestDataToString(LnUrlPayRequestData data) {
-  return 'LnUrlPayRequestData(callback: ${data.callback}, minSendable: ${data.minSendable}, '
-      'maxSendable: ${data.maxSendable}, metadata: ${data.metadataStr}, '
-      'commentAllowed: ${data.commentAllowed}, domain: ${data.domain}, lnAddr: ${data.lnAddress})';
-}
-
-String _lnUrlWithdrawToString(InputType_LnUrlWithdraw inputType) {
-  final LnUrlWithdrawRequestData data = inputType.data;
-  return _lnUrlWithdrawRequestDataToString(data);
-}
-
-String _lnUrlWithdrawRequestDataToString(LnUrlWithdrawRequestData data) {
-  return 'LnUrlWithdrawRequestData(callback: ${data.callback}, minWithdrawable: ${data.minWithdrawable}, '
-      'maxWithdrawable: ${data.maxWithdrawable}, defaultDescription: ${data.defaultDescription}, '
-      'k1: ${data.k1})';
-}
-
-String _lnUrlAuthToString(InputType_LnUrlAuth inputType) {
-  final LnUrlAuthRequestData data = inputType.data;
-  return _lnUrlAuthRequestDataToString(data);
-}
-
-String _lnUrlAuthRequestDataToString(LnUrlAuthRequestData data) {
-  return 'LnUrlAuthRequestData(k1: ${data.k1}, action: ${data.action}, domain: ${data.domain}, '
-      'url: ${data.url})';
-}
-
-String _lnUrlErrorToString(InputType_LnUrlError inputType) {
-  final LnUrlErrorData data = inputType.data;
-  return _lnUrlErrorDataToString(data);
-}
-
-String _lnUrlErrorDataToString(LnUrlErrorData data) => 'LnUrlErrorData(reason: ${data.reason})';

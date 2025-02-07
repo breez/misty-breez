@@ -82,7 +82,7 @@ class InputCubit extends Cubit<InputState> {
   }
 
   Future<InputState> _handleParsedInput(InputType parsedInput, InputSource source) async {
-    _logger.info('handleParsedInput: $source => ${inputTypeToString(parsedInput)}');
+    _logger.info('handleParsedInput: $source => ${parsedInput.toFormattedString()}');
     InputState result;
     if (parsedInput is InputType_Bolt11) {
       result = await handlePaymentRequest(parsedInput, source);
