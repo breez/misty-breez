@@ -148,6 +148,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         return await _prepareAndRecoverLnurlWebhook(
           pubKey: pubKey,
           webhookUrl: webhookUrl,
+          baseUsername: baseUsername,
         );
       } on WebhookNotFoundException {
         // Fallback to register a new webhook if recovery fails
@@ -274,6 +275,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   Future<RegisterRecoverLnurlPayResponse> _prepareAndRecoverLnurlWebhook({
     required String pubKey,
     required String webhookUrl,
+    required String? baseUsername,
   }) async {
     _logger.info('Preparing recover LNURL Webhook request.');
     final int time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -288,7 +290,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     );
 
     _logger.info('Prepared recover LNURL Webhook request.');
-    return await _recoverLnurlWebhook(pubKey: pubKey, request: recoverRequest);
+    return await _recoverLnurlWebhook(pubKey: pubKey, request: recoverRequest, baseUsername: baseUsername);
   }
 
   /// Recovers an LNURL Webhook with the provided public key and request.
@@ -298,6 +300,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   Future<RegisterRecoverLnurlPayResponse> _recoverLnurlWebhook({
     required String pubKey,
     required UnregisterRecoverLnurlPayRequest request,
+    required String? baseUsername,
   }) async {
     _logger.info('Attempting to recover LNURL Webhook for pubKey: $pubKey');
     try {
@@ -305,6 +308,17 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         pubKey: pubKey,
         request: request,
       );
+
+      final String lightningAddress = recoverResponse.lightningAddress;
+      if (lightningAddress.isEmpty) {
+        _logger.warning('Recover response has no Lightning Address. Falling back to registration.');
+        return await _prepareAndRegisterLnurlWebhook(
+          pubKey: pubKey,
+          webhookUrl: request.webhookUrl,
+          baseUsername: baseUsername,
+          registerWithRetries: true,
+        );
+      }
 
       final String username = recoverResponse.lightningAddress.split('@').first;
       if (username.isNotEmpty) {
@@ -326,11 +340,12 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String pubKey,
     required String webhookUrl,
     required String? baseUsername,
+    bool? registerWithRetries,
   }) async {
     _logger.info('Preparing register LNURL Webhook request.');
     final bool isUpdating = baseUsername != null;
     final bool isLnUrlWebhookRegistered = await breezPreferences.isLnUrlWebhookRegistered;
-    final bool isNewRegistration = !(isUpdating && isLnUrlWebhookRegistered);
+    final bool isNewRegistration = registerWithRetries ?? !(isUpdating && isLnUrlWebhookRegistered);
 
     final String? username = baseUsername ?? await _resolveUsername(isNewRegistration: isNewRegistration);
 
