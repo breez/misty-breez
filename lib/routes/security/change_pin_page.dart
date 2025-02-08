@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +73,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final ServiceInjector injector = ServiceInjector();
   HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: Directory(
+    storageDirectory: HydratedStorageDirectory(
       join((await getApplicationDocumentsDirectory()).path, 'preview_storage'),
     ),
   );
