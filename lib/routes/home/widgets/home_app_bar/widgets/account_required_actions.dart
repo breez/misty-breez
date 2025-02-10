@@ -23,12 +23,6 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
           warnings.add(const RefundablesWarningAction());
         }
 
-        // final AccountState accountState = context.watch<AccountCubit>().state;
-        // if (!accountState.didCompleteInitialSync) {
-        //   _logger.info('Adding sync warning.');
-        //   warnings.add(const InitialSyncWarningAction());
-        // }
-
         final SecurityState securityState = context.watch<SecurityCubit>().state;
         if (securityState.verificationStatus == VerificationStatus.unverified) {
           _logger.info('Adding mnemonic verification warning.');
@@ -78,24 +72,6 @@ class RefundablesWarningAction extends StatelessWidget {
           );
         }
       },
-    );
-  }
-}
-
-class InitialSyncWarningAction extends StatelessWidget {
-  const InitialSyncWarningAction({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-    return WarningAction(
-      onTap: () async {},
-      iconWidget: Rotator(
-        child: Image(
-          image: const AssetImage('assets/icons/sync.png'),
-          color: themeData.appBarTheme.actionsIconTheme?.color,
-        ),
-      ),
     );
   }
 }
