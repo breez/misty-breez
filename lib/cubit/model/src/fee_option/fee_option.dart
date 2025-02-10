@@ -44,7 +44,7 @@ class SendChainSwapFeeOption extends FeeOption {
 
   @override
   bool isAffordable({required int amountSat, int? balanceSat, int? walletBalanceSat}) {
-    assert(balanceSat != null);
+    assert(balanceSat != null, 'Balance amount must be provided.');
 
     return preparePayOnchainResponse.isAffordable(balance: balanceSat!);
   }
@@ -67,7 +67,7 @@ class RefundFeeOption extends FeeOption {
 
   @override
   bool isAffordable({required int amountSat, int? balanceSat, int? walletBalanceSat}) {
-    assert(balanceSat != null);
+    assert(balanceSat != null, 'Balance amount must be provided.');
 
     return prepareRefundResponse.isAffordable(balance: balanceSat!);
   }
