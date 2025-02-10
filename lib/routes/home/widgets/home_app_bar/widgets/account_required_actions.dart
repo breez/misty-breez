@@ -6,9 +6,9 @@ import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
-final Logger _logger = Logger('AccountRequiredActionsIndicator');
-
 class AccountRequiredActionsIndicator extends StatelessWidget {
+  static final Logger _logger = Logger('AccountRequiredActionsIndicator');
+
   const AccountRequiredActionsIndicator({super.key});
 
   @override
@@ -63,12 +63,15 @@ class AccountRequiredActionsIndicator extends StatelessWidget {
 }
 
 class RefundablesWarningAction extends StatelessWidget {
+  static final Logger _logger = Logger('RefundablesWarningAction');
+
   const RefundablesWarningAction({super.key});
 
   @override
   Widget build(BuildContext context) {
     return WarningAction(
       onTap: () {
+        _logger.info('Redirecting user to refund page.');
         if (context.mounted) {
           Navigator.of(context).pushNamed(
             GetRefundPage.routeName,
@@ -98,12 +101,15 @@ class InitialSyncWarningAction extends StatelessWidget {
 }
 
 class VerifyMnemonicWarningAction extends StatelessWidget {
+  static final Logger _logger = Logger('VerifyMnemonicWarningAction');
+
   const VerifyMnemonicWarningAction({super.key});
 
   @override
   Widget build(BuildContext context) {
     return WarningAction(
       onTap: () async {
+        _logger.info('Redirecting user to mnemonics confirmation page.');
         final String? accountMnemonic = await ServiceInjector().credentialsManager.restoreMnemonic();
         if (context.mounted && accountMnemonic != null) {
           Navigator.pushNamed(
@@ -118,6 +124,8 @@ class VerifyMnemonicWarningAction extends StatelessWidget {
 }
 
 class BackupInProgressWarningAction extends StatelessWidget {
+  static final Logger _logger = Logger('BackupInProgressWarningAction');
+
   const BackupInProgressWarningAction({super.key});
 
   @override
@@ -125,6 +133,7 @@ class BackupInProgressWarningAction extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
     return WarningAction(
       onTap: () {
+        _logger.info('Display backup in progress dialog.');
         showDialog(
           useRootNavigator: false,
           useSafeArea: false,
@@ -143,12 +152,15 @@ class BackupInProgressWarningAction extends StatelessWidget {
 }
 
 class BackupFailedWarningAction extends StatelessWidget {
+  static final Logger _logger = Logger('BackupFailedWarningAction');
+
   const BackupFailedWarningAction({super.key});
 
   @override
   Widget build(BuildContext context) {
     return WarningAction(
       onTap: () {
+        _logger.info('Display enable backup dialog.');
         showDialog(
           useRootNavigator: false,
           useSafeArea: false,
