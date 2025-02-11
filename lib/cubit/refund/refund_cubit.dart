@@ -27,11 +27,13 @@ class RefundCubit extends Cubit<RefundState> {
   /// fetching the current list of refundables.
   Future<void> _initializeRefundCubit() async {
     _logger.info('Initializing Refund Cubit');
-    _breezSdkLiquid.getInfoResponseStream.first.then((_) => listRefundables()).catchError(
-      (Object e) {
-        _logger.severe('Failed to initialize Refund Cubit', e);
-      },
-    );
+    try {
+      await _breezSdkLiquid.getInfoResponseStream.first;
+      // Fire-and-forget the list refresh.
+      listRefundables();
+    } catch (e) {
+      _logger.severe('Failed to initialize Refund Cubit', e);
+    }
   }
 
   /// Retrieves refundables from the SDK and emits the updated state.
