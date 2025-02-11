@@ -78,20 +78,6 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
-  Future<PrepareRefundResponse> prepareRefund({
-    required PrepareRefundRequest req,
-  }) async {
-    try {
-      _logger.info('Preparing refund for ${req.swapAddress} with fee ${req.feeRateSatPerVbyte}');
-      final PrepareRefundResponse response = await _breezSdkLiquid.instance!.prepareRefund(req: req);
-      _logger.info('Prepared refund response: $response');
-      return response;
-    } catch (e) {
-      _logger.severe('Failed to prepare refund', e);
-      rethrow;
-    }
-  }
-
   /// Fetches the current recommended fees for a refund transaction.
   Future<List<RefundFeeOption>> fetchRefundFeeOptions({
     required String toAddress,
@@ -135,7 +121,7 @@ class RefundCubit extends Cubit<RefundState> {
             feeRateSatPerVbyte: recommendedFeeList[index].toInt(),
             refundAddress: toAddress,
           );
-          final PrepareRefundResponse prepareRefundResponse = await _prepareRefund(prepareRefundRequest);
+          final PrepareRefundResponse prepareRefundResponse = await prepareRefund(prepareRefundRequest);
 
           return RefundFeeOption(
             processingSpeed: ProcessingSpeed.values[index],
@@ -153,12 +139,12 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
-  Future<PrepareRefundResponse> _prepareRefund(PrepareRefundRequest req) async {
+  Future<PrepareRefundResponse> prepareRefund(PrepareRefundRequest req) async {
     try {
       _logger.info(
         'Preparing refund for swap ${req.swapAddress} to ${req.refundAddress} with fee ${req.feeRateSatPerVbyte}',
       );
-      final PrepareRefundResponse response = await prepareRefund(req: req);
+      final PrepareRefundResponse response = await _breezSdkLiquid.instance!.prepareRefund(req: req);
       _logger.info('Prepared refund response: $response');
       return response;
     } catch (e) {
