@@ -11,6 +11,7 @@ import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/types/auth_messages_ios.dart';
 import 'package:logging/logging.dart';
 
+export 'mnemonic_verification_status_preferences.dart';
 export 'security_state.dart';
 
 final Logger _logger = Logger('SecurityCubit');
@@ -144,10 +145,6 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   @override
   Map<String, dynamic>? toJson(SecurityState state) {
     return state.toJson();
-  }
-
-  void mnemonicsValidated() {
-    emit(state.copyWith(verificationStatus: VerificationStatus.verified));
   }
 }
 

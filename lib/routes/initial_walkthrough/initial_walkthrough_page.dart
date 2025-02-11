@@ -175,7 +175,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void connect({String? mnemonic}) async {
     final SdkConnectivityCubit connectionService = context.read<SdkConnectivityCubit>();
-    final SecurityCubit securityCubit = context.read<SecurityCubit>();
     final AccountCubit accountCubit = context.read<AccountCubit>();
 
     final bool isRestore = mnemonic != null;
@@ -189,7 +188,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     try {
       if (isRestore) {
         await connectionService.restore(mnemonic: mnemonic);
-        securityCubit.mnemonicsValidated();
+        await MnemonicVerificationStatusPreferences.setVerificationComplete(true);
         accountCubit.setIsRestoring(true);
       } else {
         await connectionService.register();

@@ -6,50 +6,73 @@ import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
-class AccountRequiredActionsIndicator extends StatelessWidget {
-  static final Logger _logger = Logger('AccountRequiredActionsIndicator');
+final Logger _logger = Logger('AccountRequiredActionsIndicator');
 
+class AccountRequiredActionsIndicator extends StatefulWidget {
   const AccountRequiredActionsIndicator({super.key});
 
   @override
+  State<AccountRequiredActionsIndicator> createState() => _AccountRequiredActionsIndicatorState();
+}
+
+class _AccountRequiredActionsIndicatorState extends State<AccountRequiredActionsIndicator> {
+  late Future<bool> _isVerificationCompleteFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _isVerificationCompleteFuture = MnemonicVerificationStatusPreferences.isVerificationComplete();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (BuildContext context) {
-        final List<Widget> warnings = <Widget>[];
-
-        final RefundState refundState = context.watch<RefundCubit>().state;
-        if (refundState.hasRefundables) {
-          _logger.info('Adding refundables warning.');
-          warnings.add(const RefundablesWarningAction());
-        }
-
-        final SecurityState securityState = context.watch<SecurityCubit>().state;
-        if (securityState.verificationStatus == VerificationStatus.unverified) {
-          _logger.info('Adding mnemonic verification warning.');
-          warnings.add(const VerifyMnemonicWarningAction());
-        }
-
-        final BackupState? backupState = context.watch<BackupCubit>().state;
-        if (backupState != null && backupState.status == BackupStatus.inProgress) {
-          _logger.info('Adding backup in progress warning.');
-          warnings.add(const BackupInProgressWarningAction());
-        }
-
-        if (backupState?.status == BackupStatus.failed) {
-          _logger.info('Adding backup error warning.');
-          warnings.add(const BackupFailedWarningAction());
-        }
-
-        if (warnings.isEmpty) {
+    return FutureBuilder<bool>(
+      future: _isVerificationCompleteFuture,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (!snapshot.hasData) {
           return const SizedBox.shrink();
         }
 
-        _logger.info('Total # of warnings: ${warnings.length}');
+        final bool isVerified = snapshot.data ?? false;
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: warnings,
+        return Builder(
+          builder: (BuildContext context) {
+            final List<Widget> warnings = <Widget>[];
+
+            final RefundState refundState = context.watch<RefundCubit>().state;
+            if (refundState.hasRefundables) {
+              _logger.info('Adding refundables warning.');
+              warnings.add(const RefundablesWarningAction());
+            }
+
+            if (!isVerified) {
+              _logger.info('Adding mnemonic verification warning.');
+              warnings.add(const VerifyMnemonicWarningAction());
+            }
+
+            final BackupState? backupState = context.watch<BackupCubit>().state;
+            if (backupState != null && backupState.status == BackupStatus.inProgress) {
+              _logger.info('Adding backup in progress warning.');
+              warnings.add(const BackupInProgressWarningAction());
+            }
+
+            if (backupState?.status == BackupStatus.failed) {
+              _logger.info('Adding backup error warning.');
+              warnings.add(const BackupFailedWarningAction());
+            }
+
+            if (warnings.isEmpty) {
+              return const SizedBox.shrink();
+            }
+
+            _logger.info('Total # of warnings: ${warnings.length}');
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: warnings,
+            );
+          },
         );
       },
     );

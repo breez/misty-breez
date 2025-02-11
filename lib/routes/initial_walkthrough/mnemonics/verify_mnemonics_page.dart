@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -99,24 +98,25 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
               ),
               SingleButtonBottomBar(
                 text: texts.mnemonics_confirmation_action_verify,
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     _hasError = false;
                   });
                   if (_formKey.currentState!.validate() && !_hasError) {
-                    final SecurityCubit securityCubit = context.read<SecurityCubit>();
-                    securityCubit.mnemonicsValidated();
-                    Navigator.of(context).popUntil((Route<dynamic> route) {
-                      bool shouldPop = false;
-                      // Pop to where the verification flow has started from,
-                      // which is either from "Verify Backup Phrase" option on Security page
-                      // or through WarningAction on Home page.
-                      if (route.settings.name == SecurityPage.routeName ||
-                          route.settings.name == Home.routeName) {
-                        shouldPop = true;
-                      }
-                      return shouldPop;
-                    });
+                    await MnemonicVerificationStatusPreferences.setVerificationComplete(true);
+                    if (context.mounted) {
+                      Navigator.of(context).popUntil((Route<dynamic> route) {
+                        bool shouldPop = false;
+                        // Pop to where the verification flow has started from,
+                        // which is either from "Verify Backup Phrase" option on Security page
+                        // or through WarningAction on Home page.
+                        if (route.settings.name == SecurityPage.routeName ||
+                            route.settings.name == Home.routeName) {
+                          shouldPop = true;
+                        }
+                        return shouldPop;
+                      });
+                    }
                   }
                 },
               ),
