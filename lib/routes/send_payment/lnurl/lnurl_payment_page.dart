@@ -18,9 +18,19 @@ import 'package:service_injector/service_injector.dart';
 
 export 'widgets/widgets.dart';
 
+class LnUrlPaymentArguments {
+  final LnUrlPayRequestData requestData;
+  final String? bip353Address;
+
+  LnUrlPaymentArguments({
+    required this.requestData,
+    required this.bip353Address,
+  });
+}
+
 class LnUrlPaymentPage extends StatefulWidget {
   final bool isConfirmation;
-  final LnUrlPayRequestData requestData;
+  final LnUrlPaymentArguments lnUrlPaymentArguments;
   final bool isDrain;
   final int? amountSat;
   final String? comment;
@@ -29,7 +39,7 @@ class LnUrlPaymentPage extends StatefulWidget {
   static const PaymentMethod paymentMethod = PaymentMethod.lightning;
 
   const LnUrlPaymentPage({
-    required this.requestData,
+    required this.lnUrlPaymentArguments,
     super.key,
     this.isConfirmation = false,
     this.isDrain = false,
@@ -69,8 +79,9 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     super.initState();
     _doneAction = KeyboardDoneAction(focusNodes: <FocusNode>[_amountFocusNode]);
 
-    _isFixedAmount =
-        widget.requestData.minSendable == widget.requestData.maxSendable || widget.amountSat != null;
+    _isFixedAmount = widget.lnUrlPaymentArguments.requestData.minSendable ==
+            widget.lnUrlPaymentArguments.requestData.maxSendable ||
+        widget.amountSat != null;
     _isDrain = widget.isDrain;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _fetchLightningLimits();
@@ -94,7 +105,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       String message = extractExceptionMessage(error, texts);
       if (error is LnUrlPayError_ServiceConnectivity) {
         message = texts.lnurl_fetch_invoice_error_message(
-          widget.requestData.domain,
+          widget.lnUrlPaymentArguments.requestData.domain,
           message,
         );
       }
@@ -111,8 +122,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
   Future<void> _handleLightningPaymentLimitsResponse() async {
     final int minNetworkLimit = _lightningLimits!.send.minSat.toInt();
     final int maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
-    final int minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
-    final int maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
+    final int minSendableSat = widget.lnUrlPaymentArguments.requestData.minSendable.toInt() ~/ 1000;
+    final int maxSendableSat = widget.lnUrlPaymentArguments.requestData.maxSendable.toInt() ~/ 1000;
     final int effectiveMinSat = min(
       max(minNetworkLimit, minSendableSat),
       maxNetworkLimit,
@@ -169,7 +180,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
               receiverAmountSat: BigInt.from(amountSat),
             );
       final PrepareLnUrlPayRequest req = PrepareLnUrlPayRequest(
-        data: widget.requestData,
+        data: widget.lnUrlPaymentArguments.requestData,
+        bip353Address: widget.lnUrlPaymentArguments.bip353Address,
         amount: payAmount,
         validateSuccessActionUrl: false,
       );
@@ -208,7 +220,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       appBar: AppBar(
         leading: const back_button.BackButton(),
         title: Text(
-          texts.lnurl_fetch_invoice_pay_to_payee(widget.requestData.domain),
+          texts.lnurl_fetch_invoice_pay_to_payee(widget.lnUrlPaymentArguments.requestData.domain),
         ),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
@@ -222,10 +234,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
           }
 
           final Map<String, dynamic> metadataMap = <String, dynamic>{
-            for (dynamic v in json.decode(widget.requestData.metadataStr)) v[0] as String: v[1],
+            for (dynamic v in json.decode(widget.lnUrlPaymentArguments.requestData.metadataStr))
+              v[0] as String: v[1],
           };
           final String? base64String = metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
-          final String payeeName = metadataMap['text/identifier'] ?? widget.requestData.domain;
+          final String payeeName =
+              metadataMap['text/identifier'] ?? widget.lnUrlPaymentArguments.requestData.domain;
           final String? metadataText = metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
 
           if (_lightningLimits == null) {
@@ -244,8 +258,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
           final int minNetworkLimit = _lightningLimits!.send.minSat.toInt();
           final int maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
-          final int minSendableSat = widget.requestData.minSendable.toInt() ~/ 1000;
-          final int maxSendableSat = widget.requestData.maxSendable.toInt() ~/ 1000;
+          final int minSendableSat = widget.lnUrlPaymentArguments.requestData.minSendable.toInt() ~/ 1000;
+          final int maxSendableSat = widget.lnUrlPaymentArguments.requestData.maxSendable.toInt() ~/ 1000;
           final int effectiveMinSat = min(
             max(minNetworkLimit, minSendableSat),
             maxNetworkLimit,
@@ -474,13 +488,15 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                             ],
                           ],
                           if (widget.isConfirmation && _descriptionController.text.isNotEmpty ||
-                              !widget.isConfirmation && widget.requestData.commentAllowed > 0) ...<Widget>[
+                              !widget.isConfirmation &&
+                                  widget.lnUrlPaymentArguments.requestData.commentAllowed > 0) ...<Widget>[
                             LnUrlPaymentComment(
                               isConfirmation: widget.isConfirmation,
                               enabled: _isFormEnabled,
                               descriptionController: _descriptionController,
                               descriptionFocusNode: _descriptionFocusNode,
-                              maxCommentLength: widget.requestData.commentAllowed.toInt(),
+                              maxCommentLength:
+                                  widget.lnUrlPaymentArguments.requestData.commentAllowed.toInt(),
                             ),
                           ],
                         ].expand((Widget widget) sync* {
@@ -632,7 +648,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
             isConfirmation: true,
             isDrain: _isDrain,
             amountSat: amountSat,
-            requestData: widget.requestData,
+            lnUrlPaymentArguments: widget.lnUrlPaymentArguments,
             comment: _descriptionController.text,
           ),
         ),

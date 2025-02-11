@@ -15,8 +15,18 @@ import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 
-class LnOfferPaymentPage extends StatefulWidget {
+class LnOfferPaymentArguments {
   final LNOffer lnOffer;
+  final String? bip353Address;
+
+  LnOfferPaymentArguments({
+    required this.lnOffer,
+    required this.bip353Address,
+  });
+}
+
+class LnOfferPaymentPage extends StatefulWidget {
+  final LnOfferPaymentArguments lnOfferPaymentArguments;
   final int? amountSat;
   final String? comment;
 
@@ -24,7 +34,7 @@ class LnOfferPaymentPage extends StatefulWidget {
   static const PaymentMethod paymentMethod = PaymentMethod.lightning;
 
   const LnOfferPaymentPage({
-    required this.lnOffer,
+    required this.lnOfferPaymentArguments,
     this.amountSat,
     this.comment,
     super.key,
@@ -86,7 +96,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
       String message = extractExceptionMessage(error, texts);
       if (error is LnUrlPayError_ServiceConnectivity) {
         message = texts.lnurl_fetch_invoice_error_message(
-          widget.lnOffer.issuer ?? 'unknown issuer',
+          widget.lnOfferPaymentArguments.lnOffer.issuer ?? 'unknown issuer',
           message,
         );
       }
@@ -126,8 +136,10 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
         errorMessage = '';
       });
 
+      final String destination =
+          widget.lnOfferPaymentArguments.bip353Address ?? widget.lnOfferPaymentArguments.lnOffer.offer;
       final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(
-        destination: widget.lnOffer.offer,
+        destination: destination,
         amountSat: BigInt.from(amountSat),
       );
       setState(() {
@@ -200,7 +212,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
                         child: LnPaymentHeader(
-                          payeeName: widget.lnOffer.issuer ?? '',
+                          payeeName: widget.lnOfferPaymentArguments.lnOffer.issuer ?? '',
                           totalAmount: widget.amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
                           errorMessage: errorMessage,
                         ),
@@ -379,12 +391,12 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                               ),
                             ),
                           ],
-                          if (widget.lnOffer.description != null &&
-                              widget.lnOffer.description!.isNotEmpty) ...<Widget>[
+                          if (widget.lnOfferPaymentArguments.lnOffer.description != null &&
+                              widget.lnOfferPaymentArguments.lnOffer.description!.isNotEmpty) ...<Widget>[
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: LnPaymentDescription(
-                                metadataText: widget.lnOffer.description!,
+                                metadataText: widget.lnOfferPaymentArguments.lnOffer.description!,
                               ),
                             ),
                           ],
@@ -535,7 +547,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
           create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
           child: LnOfferPaymentPage(
             amountSat: amountSat,
-            lnOffer: widget.lnOffer,
+            lnOfferPaymentArguments: widget.lnOfferPaymentArguments,
             comment: _descriptionController.text,
           ),
         ),
@@ -552,7 +564,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
   int get effectiveMinSat {
     final int minNetworkLimitSat = _lightningLimits!.send.minSat.toInt();
     int minOfferAmountSat = 0;
-    final Amount? lnOfferMinAmount = widget.lnOffer.minAmount;
+    final Amount? lnOfferMinAmount = widget.lnOfferPaymentArguments.lnOffer.minAmount;
     if (lnOfferMinAmount != null) {
       if (lnOfferMinAmount is Amount_Currency) {
         // TODO(erdemyerebasmaz): Handle Amount_Currency later.

@@ -87,9 +87,9 @@ class InputCubit extends Cubit<InputState> {
     if (parsedInput is InputType_Bolt11) {
       result = await handlePaymentRequest(parsedInput, source);
     } else if (parsedInput is InputType_Bolt12Offer) {
-      result = InputState.bolt12Offer(parsedInput.offer, source);
+      result = InputState.bolt12Offer(parsedInput.offer, parsedInput.bip353Address, source);
     } else if (parsedInput is InputType_LnUrlPay) {
-      result = InputState.lnUrlPay(parsedInput.data, source);
+      result = InputState.lnUrlPay(parsedInput.data, parsedInput.bip353Address, source);
     } else if (parsedInput is InputType_LnUrlWithdraw) {
       result = InputState.lnUrlWithdraw(parsedInput.data, source);
     } else if (parsedInput is InputType_LnUrlAuth) {
