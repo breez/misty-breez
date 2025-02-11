@@ -28,8 +28,9 @@ class RefundState {
   bool get hasRefundables => refundables?.isNotEmpty ?? false;
 }
 
+/// Extension on [SdkEvent] to determine if the event is refund-related.
 extension RefundRelatedSdkEvent on SdkEvent {
-  /// Returns true if the event is related to a refund.
+  /// Returns true if this event is related to a refund.
   ///
   /// For [SdkEvent_PaymentFailed], the [hasRefundables] flag must be true.
   bool isRefundRelated({bool hasRefundables = false}) {

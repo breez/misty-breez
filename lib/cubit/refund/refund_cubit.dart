@@ -12,6 +12,7 @@ export 'refund_state.dart';
 
 final Logger _logger = Logger('RefundCubit');
 
+/// Cubit that handles refund operations.
 class RefundCubit extends Cubit<RefundState> {
   StreamSubscription<PaymentEvent>? _paymentEventSubscription;
 
@@ -22,7 +23,9 @@ class RefundCubit extends Cubit<RefundState> {
     _listenRefundEvents();
   }
 
-  void _initializeRefundCubit() {
+  /// Initializes the cubit by waiting for initial SDK info and then
+  /// fetching the current list of refundables.
+  Future<void> _initializeRefundCubit() async {
     _logger.info('Initializing Refund Cubit');
     _breezSdkLiquid.getInfoResponseStream.first.then((_) => listRefundables()).catchError(
       (Object e) {
@@ -31,7 +34,8 @@ class RefundCubit extends Cubit<RefundState> {
     );
   }
 
-  void listRefundables() async {
+  /// Retrieves refundables from the SDK and emits the updated state.
+  Future<void> listRefundables() async {
     try {
       _logger.info('Refreshing refundables');
       final List<RefundableSwap> refundables = await _breezSdkLiquid.instance!.listRefundables();
@@ -43,8 +47,10 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
+  /// Subscribes to payment events and refreshes refundables when a refund-
+  /// related event is detected.
   void _listenRefundEvents() {
-    _logger.info('Listening to Refund-related events');
+    _logger.info('Listening to refund-related events');
     _paymentEventSubscription = _breezSdkLiquid.paymentEventStream.listen(
       (PaymentEvent paymentEvent) {
         _logger.info('Received payment event: $paymentEvent');
@@ -63,6 +69,7 @@ class RefundCubit extends Cubit<RefundState> {
     return super.close();
   }
 
+  /// Fetches the recommended fees from the SDK.
   Future<RecommendedFees> _recommendedFees() async {
     try {
       _logger.info('Fetching recommended fees');
@@ -75,13 +82,15 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
-  /// Fetches the current recommended fees for a refund transaction.
+  /// Fetches refund fee options for a given [swapAddress] and [toAddress].
+  ///
+  /// Returns a list of [RefundFeeOption] representing different fee rates.
   Future<List<RefundFeeOption>> fetchRefundFeeOptions({
     required String toAddress,
     required String swapAddress,
   }) async {
     try {
-      _logger.info('Fetching refund fee options for swapAddress: $swapAddress toAddress: $toAddress');
+      _logger.info('Fetching refund fee options for swapAddress: $swapAddress, toAddress: $toAddress');
       final RecommendedFees recommendedFees = await _recommendedFees();
       final List<RefundFeeOption> feeOptions = await _constructFeeOptionList(
         toAddress: toAddress,
@@ -97,6 +106,9 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
+  /// Constructs a list of refund fee options using [recommendedFees].
+  ///
+  /// Each option corresponds to a different processing speed.
   Future<List<RefundFeeOption>> _constructFeeOptionList({
     required String toAddress,
     required String swapAddress,
@@ -136,6 +148,9 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
+  /// Prepares a refund transaction using the provided [req].
+  ///
+  /// Returns a [PrepareRefundResponse] on success.
   Future<PrepareRefundResponse> prepareRefund(PrepareRefundRequest req) async {
     try {
       _logger.info(
@@ -150,7 +165,9 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
-  /// Broadcast a refund transaction for a failed/expired swap.
+  /// Broadcasts a refund transaction for a failed or expired swap.
+  ///
+  /// Emits the transaction ID upon success.
   Future<RefundResponse> refund({required RefundRequest req}) async {
     try {
       _logger.info(
