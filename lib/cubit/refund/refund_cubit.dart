@@ -48,10 +48,7 @@ class RefundCubit extends Cubit<RefundState> {
     _paymentEventSubscription = _breezSdkLiquid.paymentEventStream.listen(
       (PaymentEvent paymentEvent) {
         _logger.info('Received payment event: $paymentEvent');
-        if (paymentEvent.sdkEvent is SdkEvent_PaymentRefundable ||
-            paymentEvent.sdkEvent is SdkEvent_PaymentRefundPending ||
-            paymentEvent.sdkEvent is SdkEvent_PaymentRefunded ||
-            (paymentEvent.sdkEvent is SdkEvent_PaymentFailed && state.hasRefundables)) {
+        if (paymentEvent.sdkEvent.isRefundRelated(hasRefundables: state.hasRefundables)) {
           _logger.info('Refund-related event detected. Refreshing refundables.');
           listRefundables();
         }
