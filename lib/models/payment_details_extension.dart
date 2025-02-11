@@ -187,3 +187,48 @@ extension PaymentDetailsExpiryDate on PaymentDetails {
     );
   }
 }
+
+extension PaymentDetailsFormatter on PaymentDetails {
+  String toFormattedString() {
+    if (this is PaymentDetails_Lightning) {
+      final PaymentDetails_Lightning details = this as PaymentDetails_Lightning;
+      return 'PaymentDetails_Lightning('
+          'swapId: ${details.swapId}, '
+          'description: ${details.description}, '
+          'liquidExpirationBlockheight: ${details.liquidExpirationBlockheight}, '
+          'preimage: ${details.preimage ?? "N/A"}, '
+          'invoice: ${details.invoice ?? "N/A"}, '
+          'bolt12Offer: ${details.bolt12Offer ?? "N/A"}, '
+          'paymentHash: ${details.paymentHash ?? "N/A"}, '
+          'destinationPubkey: ${details.destinationPubkey ?? "N/A"}, '
+          'lnurlInfo: ${details.lnurlInfo ?? "N/A"}, '
+          'bip353Address: ${details.bip353Address ?? "N/A"}, '
+          'claimTxId: ${details.claimTxId ?? "N/A"}, '
+          'refundTxId: ${details.refundTxId ?? "N/A"}, '
+          'refundTxAmountSat: ${details.refundTxAmountSat ?? "N/A"}'
+          ')';
+    } else if (this is PaymentDetails_Liquid) {
+      final PaymentDetails_Liquid details = this as PaymentDetails_Liquid;
+      return 'PaymentDetails_Liquid('
+          'destination: ${details.destination}, '
+          'description: ${details.description}, '
+          'assetId: ${details.assetId}, '
+          'assetInfo: ${details.assetInfo ?? "N/A"}'
+          ')';
+    } else if (this is PaymentDetails_Bitcoin) {
+      final PaymentDetails_Bitcoin details = this as PaymentDetails_Bitcoin;
+      return 'PaymentDetails_Bitcoin('
+          'swapId: ${details.swapId}, '
+          'description: ${details.description}, '
+          'autoAcceptedFees: ${details.autoAcceptedFees}, '
+          'liquidExpirationBlockheight: ${details.liquidExpirationBlockheight ?? "N/A"}, '
+          'bitcoinExpirationBlockheight: ${details.bitcoinExpirationBlockheight ?? "N/A"}, '
+          'claimTxId: ${details.claimTxId ?? "N/A"}, '
+          'refundTxId: ${details.refundTxId ?? "N/A"}, '
+          'refundTxAmountSat: ${details.refundTxAmountSat ?? "N/A"}'
+          ')';
+    } else {
+      return 'Unknown PaymentDetails';
+    }
+  }
+}
