@@ -118,34 +118,55 @@ class RefundCubit extends Cubit<RefundState> {
   }) async {
     _logger.info('Constructing refund fee options for swapAddress: $swapAddress');
 
-    final List<BigInt> recommendedFeeList = <BigInt>[
-      recommendedFees.hourFee,
-      recommendedFees.halfHourFee,
-      recommendedFees.fastestFee,
-    ];
+    // Map each processing speed to its corresponding fee.
+    final Map<ProcessingSpeed, BigInt> processingSpeedToFeeMap = <ProcessingSpeed, BigInt>{
+      ProcessingSpeed.values[0]: recommendedFees.hourFee,
+      ProcessingSpeed.values[1]: recommendedFees.halfHourFee,
+      ProcessingSpeed.values[2]: recommendedFees.fastestFee,
+    };
 
     try {
       final List<RefundFeeOption> feeOptions = await Future.wait(
-        List<Future<RefundFeeOption>>.generate(3, (int index) async {
-          final PrepareRefundRequest prepareRefundRequest = PrepareRefundRequest(
+        processingSpeedToFeeMap.entries.map(
+          (MapEntry<ProcessingSpeed, BigInt> entry) => _createRefundFeeOption(
+            processingSpeed: entry.key,
+            feeRate: entry.value,
             swapAddress: swapAddress,
-            feeRateSatPerVbyte: recommendedFeeList[index].toInt(),
-            refundAddress: toAddress,
-          );
-          final PrepareRefundResponse prepareRefundResponse = await prepareRefund(prepareRefundRequest);
-
-          return RefundFeeOption(
-            processingSpeed: ProcessingSpeed.values[index],
-            feeRateSatPerVbyte: recommendedFeeList[index],
-            prepareRefundResponse: prepareRefundResponse,
-          );
-        }),
+            toAddress: toAddress,
+          ),
+        ),
       );
-
       _logger.info('Successfully constructed refund fee options: $feeOptions');
       return feeOptions;
     } catch (e) {
       _logger.severe('Failed to construct refund fee options', e);
+      rethrow;
+    }
+  }
+
+  /// Creates a single refund fee option for the given [processingSpeed] and [feeRate].
+  Future<RefundFeeOption> _createRefundFeeOption({
+    required ProcessingSpeed processingSpeed,
+    required BigInt feeRate,
+    required String swapAddress,
+    required String toAddress,
+  }) async {
+    try {
+      _logger.info('Creating refund fee option for processingSpeed: $processingSpeed, feeRate: $feeRate');
+      final PrepareRefundRequest request = PrepareRefundRequest(
+        swapAddress: swapAddress,
+        feeRateSatPerVbyte: feeRate.toInt(),
+        refundAddress: toAddress,
+      );
+      final PrepareRefundResponse response = await prepareRefund(request);
+      _logger.info('Successfully created refund fee option for $processingSpeed');
+      return RefundFeeOption(
+        processingSpeed: processingSpeed,
+        feeRateSatPerVbyte: feeRate,
+        prepareRefundResponse: response,
+      );
+    } catch (e) {
+      _logger.severe('Error creating refund fee option for processingSpeed: $processingSpeed', e);
       rethrow;
     }
   }
