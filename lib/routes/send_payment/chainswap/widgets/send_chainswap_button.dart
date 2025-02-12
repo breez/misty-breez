@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class SendChainSwapButton extends StatelessWidget {
@@ -29,8 +27,6 @@ class SendChainSwapButton extends StatelessWidget {
   }
 
   Future<void> _payOnchain(BuildContext context) async {
-    final BreezTranslations texts = context.texts();
-    final ThemeData themeData = Theme.of(context);
     final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
 
     final NavigatorState navigator = Navigator.of(context);
@@ -43,22 +39,18 @@ class SendChainSwapButton extends StatelessWidget {
       );
       await showProcessingPaymentSheet(
         context,
+        promptError: true,
+        popToHomeOnCompletion: true,
         paymentFunc: () async => await chainSwapCubit.payOnchain(req: req),
       );
-      navigator.pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
     } catch (e) {
-      navigator.pop(loaderRoute);
       if (!context.mounted) {
         return;
       }
-      promptError(
-        context,
-        null,
-        Text(
-          extractExceptionMessage(e, texts),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
+    } finally {
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
     }
   }
 }

@@ -5,12 +5,15 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 Future<dynamic> showProcessingPaymentSheet(
   BuildContext context, {
   required Future<dynamic> Function() paymentFunc,
+  bool promptError = false,
+  bool popToHomeOnCompletion = false,
   bool isLnUrlPayment = false,
 }) async {
   return await showModalBottomSheet(
@@ -20,6 +23,8 @@ Future<dynamic> showProcessingPaymentSheet(
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) => ProcessingPaymentSheet(
       isLnUrlPayment: isLnUrlPayment,
+      promptError: promptError,
+      popToHomeOnCompletion: popToHomeOnCompletion,
       paymentFunc: paymentFunc,
     ),
   );
@@ -27,10 +32,14 @@ Future<dynamic> showProcessingPaymentSheet(
 
 class ProcessingPaymentSheet extends StatefulWidget {
   final bool isLnUrlPayment;
+  final bool promptError;
+  final bool popToHomeOnCompletion;
   final Future<dynamic> Function() paymentFunc;
 
   const ProcessingPaymentSheet({
     required this.paymentFunc,
+    this.promptError = false,
+    this.popToHomeOnCompletion = false,
     this.isLnUrlPayment = false,
     super.key,
   });
@@ -78,13 +87,29 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
         }
       } else {
         if (mounted) {
-          Navigator.of(context).pop();
+          final NavigatorState navigator = Navigator.of(context);
+          if (widget.popToHomeOnCompletion) {
+            navigator.pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
+          } else {
+            navigator.pop();
+          }
         }
       }
     }).catchError((Object err) {
       if (mounted) {
         Navigator.of(context).pop(err);
-        if (err is FrbException || err is PaymentError_PaymentTimeout) {
+        if (widget.promptError) {
+          final BreezTranslations texts = getSystemAppLocalizations();
+          final ThemeData themeData = Theme.of(context);
+          promptError(
+            context,
+            texts.payment_failed_report_dialog_title,
+            Text(
+              extractExceptionMessage(err, texts),
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
+        } else if (err is FrbException || err is PaymentError_PaymentTimeout) {
           final BreezTranslations texts = getSystemAppLocalizations();
           final String message = extractExceptionMessage(err, texts);
           showFlushbar(context, message: texts.payment_error_to_send(message));
