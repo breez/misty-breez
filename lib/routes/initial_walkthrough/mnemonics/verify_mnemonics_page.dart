@@ -85,16 +85,19 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                       )
                     : const SizedBox.shrink(),
               ),
-              Text(
-                texts.backup_phrase_generation_type_words(
-                  _randomlySelectedIndexes[0] + 1,
-                  _randomlySelectedIndexes[1] + 1,
-                  _randomlySelectedIndexes[2] + 1,
+              WarningBox(
+                boxPadding: EdgeInsets.zero,
+                child: Text(
+                  texts.backup_phrase_generation_type_words(
+                    _randomlySelectedIndexes[0] + 1,
+                    _randomlySelectedIndexes[1] + 1,
+                    _randomlySelectedIndexes[2] + 1,
+                  ),
+                  style: mnemonicSeedInformationTextStyle.copyWith(
+                    color: BreezColors.white[300],
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                style: mnemonicSeedInformationTextStyle.copyWith(
-                  color: BreezColors.white[300],
-                ),
-                textAlign: TextAlign.center,
               ),
               SingleButtonBottomBar(
                 text: texts.mnemonics_confirmation_action_verify,
