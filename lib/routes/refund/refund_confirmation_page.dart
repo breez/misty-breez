@@ -104,17 +104,27 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
       toAddress: widget.toAddress,
       swapAddress: widget.swapAddress,
     );
-    _fetchFeeOptionsFuture.then((List<RefundFeeOption> feeOptions) {
-      setState(() {
-        affordableFees = feeOptions
-            .where(
-              (RefundFeeOption f) =>
-                  f.isAffordable(amountSat: widget.amountSat, balanceSat: widget.amountSat),
-            )
-            .toList();
-        selectedFeeIndex = (affordableFees.length / 2).floor();
-      });
-    });
+    _fetchFeeOptionsFuture.then(
+      (List<RefundFeeOption> feeOptions) {
+        setState(() {
+          affordableFees = feeOptions
+              .where(
+                (RefundFeeOption f) => f.isAffordable(
+                  balanceSat: widget.amountSat,
+                  amountSat: widget.amountSat,
+                ),
+              )
+              .toList();
+          selectedFeeIndex = (affordableFees.length / 2).floor();
+        });
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        setState(() {
+          affordableFees = <RefundFeeOption>[];
+          selectedFeeIndex = -1;
+        });
+      },
+    );
   }
 }
 

@@ -110,6 +110,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
       onError: (Object error, StackTrace stackTrace) {
         setState(() {
           affordableFees = <SendChainSwapFeeOption>[];
+          selectedFeeIndex = -1;
         });
       },
     );
