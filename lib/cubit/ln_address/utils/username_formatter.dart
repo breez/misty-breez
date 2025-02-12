@@ -45,7 +45,7 @@ class UsernameFormatter {
   }
 
   // Example: "Tomato Elephant" -> "tomatoelephant"
-  static String formatDefaultProfileName(String? profileName) {
-    return sanitize(profileName ?? '');
+  static String formatDefaultProfileName(String? defaultProfileName) {
+    return sanitize(defaultProfileName ?? '');
   }
 }

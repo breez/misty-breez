@@ -245,8 +245,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   /// - If the webhook is already registered, it retrieves the stored username from [BreezPreferences].
   Future<String?> _resolveUsername({required bool isNewRegistration}) async {
     if (isNewRegistration) {
-      final String? profileName = await breezPreferences.profileName;
-      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(profileName);
+      final String? defaultProfileName = await breezPreferences.defaultProfileName;
+      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(defaultProfileName);
       _logger.info('Registering LNURL Webhook: Using formatted profile name: $formattedUsername');
       return formattedUsername;
     }

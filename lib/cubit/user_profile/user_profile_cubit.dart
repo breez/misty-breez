@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' as io;
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -41,14 +42,22 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
         ),
       );
     }
-    _setProfileName(profile.profileSettings.name!);
+
+    /// Default Profile name is used on LN Address Cubit when registering an LN Address for the first time,
+    /// It uses English locale by default not to risk l10n introducing special characters.
+    final String defaultProfileName = DefaultProfile(
+      profile.profileSettings.color!,
+      profile.profileSettings.animal!,
+    ).buildName(const Locale('en', ''));
+    _setDefaultProfileName(defaultProfileName);
+
     emit(profile);
   }
 
-  Future<void> _setProfileName(String name) async {
-    final String? profileName = await _breezPreferences.profileName;
-    if (profileName == null) {
-      await _breezPreferences.setProfileName(name);
+  Future<void> _setDefaultProfileName(String name) async {
+    final String? defaultProfileName = await _breezPreferences.defaultProfileName;
+    if (defaultProfileName == null) {
+      await _breezPreferences.setDefaultProfileName(name);
     }
   }
 
@@ -93,9 +102,6 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
       appMode: appMode ?? profile.appMode,
       expandPreferences: expandPreferences ?? profile.expandPreferences,
     );
-    if (name != null && state.profileSettings.name != name) {
-      await _breezPreferences.setProfileName(profile.name!);
-    }
     emit(state.copyWith(profileSettings: profile));
   }
 
