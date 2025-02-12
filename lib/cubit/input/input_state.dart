@@ -167,7 +167,7 @@ class LnUrlPayInputState extends InputState {
 
   @override
   String toString() {
-    return 'LnUrlPayInputState{data: ${inputDataToString(data)}, source: $source}';
+    return 'LnUrlPayInputState{data: ${data.toFormattedString()}, source: $source}';
   }
 
   @override
@@ -193,7 +193,7 @@ class LnUrlWithdrawInputState extends InputState {
 
   @override
   String toString() {
-    return 'LnUrlWithdrawInputState{data: ${inputDataToString(data)}, source: $source}';
+    return 'LnUrlWithdrawInputState{data: ${data.toFormattedString()}, source: $source}';
   }
 
   @override
@@ -219,7 +219,7 @@ class LnUrlAuthInputState extends InputState {
 
   @override
   String toString() {
-    return 'LnUrlAuthInputState{data: ${inputDataToString(data)}, source: $source}';
+    return 'LnUrlAuthInputState{data: ${data.toFormattedString()}, source: $source}';
   }
 
   @override
@@ -245,7 +245,7 @@ class LnUrlErrorInputState extends InputState {
 
   @override
   String toString() {
-    return 'LnUrlErrorInputState{data: ${inputDataToString(data)}, source: $source}';
+    return 'LnUrlErrorInputState{data: ${data.toFormattedString()}, source: $source}';
   }
 
   @override
@@ -297,7 +297,7 @@ class BitcoinAddressInputState extends InputState {
 
   @override
   String toString() {
-    return 'BitcoinAddressInputState{data: ${inputDataToString(data)}, source: $source}';
+    return 'BitcoinAddressInputState{data: ${data.toFormattedString()}, source: $source}';
   }
 
   @override
