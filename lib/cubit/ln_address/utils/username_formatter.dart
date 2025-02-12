@@ -1,27 +1,24 @@
 import 'package:flutter/services.dart';
 
 class UsernameInputFormatter extends TextInputFormatter {
-  // Loosely comply with email standards, namely RFC 5322
+  static final RegExp _usernameRegExp = RegExp(
+    r'^[a-zA-Z0-9._%+-]+$',
+  );
+
+  static final RegExp _noConsecutiveDotsRegExp = RegExp(
+    r'\.\.',
+  );
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    String formatted = newValue.text.trim();
-
-    // Remove invalid characters
-    formatted = formatted.replaceAll(
-      RegExp(r"[^a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]"),
-      '',
-    );
-
-    // Prevent consecutive dots (but allow trailing dots during typing)
-    formatted = formatted.replaceAll(RegExp(r'\.\.+'), '.');
-
-    return TextEditingValue(
-      text: formatted,
-      selection: newValue.selection,
-    );
+    // Check if the username matches the valid characters and does not contain consecutive dots
+    if (_usernameRegExp.hasMatch(newValue.text) && !_noConsecutiveDotsRegExp.hasMatch(newValue.text)) {
+      return newValue;
+    }
+    return oldValue; // Revert to old value if invalid
   }
 }
 
