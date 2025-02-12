@@ -5,6 +5,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/models/sdk_formatted_string_extensions.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:logging/logging.dart';
 
@@ -41,7 +42,9 @@ class RefundCubit extends Cubit<RefundState> {
     try {
       _logger.info('Refreshing refundables');
       final List<RefundableSwap> refundables = await _breezSdkLiquid.instance!.listRefundables();
-      _logger.info('Fetched refundables: $refundables');
+      _logger.info(
+        'Fetched refundables: ${refundables.map((RefundableSwap r) => r.toFormattedString()).toList()}',
+      );
       emit(state.copyWith(refundables: refundables));
     } catch (e) {
       _logger.severe('Failed to list refundables', e);
@@ -55,7 +58,7 @@ class RefundCubit extends Cubit<RefundState> {
     _logger.info('Listening to refund-related events');
     _paymentEventSubscription = _breezSdkLiquid.paymentEventStream.listen(
       (PaymentEvent paymentEvent) {
-        _logger.info('Received payment event: $paymentEvent');
+        _logger.info('Received payment event: ${paymentEvent.toFormattedString()}');
         if (paymentEvent.sdkEvent.isRefundRelated(hasRefundables: state.hasRefundables)) {
           _logger.info('Refund-related event detected. Refreshing refundables.');
           listRefundables();
@@ -76,7 +79,7 @@ class RefundCubit extends Cubit<RefundState> {
     try {
       _logger.info('Fetching recommended fees');
       final RecommendedFees fees = await _breezSdkLiquid.instance!.recommendedFees();
-      _logger.info('Fetched recommended fees: $fees');
+      _logger.info('Fetched recommended fees: ${fees.toFormattedString()}');
       return fees;
     } catch (e) {
       _logger.severe('Failed to fetch recommended fees', e);
