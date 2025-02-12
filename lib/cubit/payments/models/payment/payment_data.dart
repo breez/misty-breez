@@ -145,12 +145,12 @@ class _PaymentDataFactory {
 
     final String lnAddress = lnurlInfo?.lnAddress ?? '';
     if (lnAddress.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Pay to ' : 'Payment from ') + lnAddress;
+      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnAddress;
     }
 
     final String lnurlPayDomain = lnurlInfo?.lnurlPayDomain ?? '';
     if (lnurlPayDomain.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Pay to ' : 'Payment from ') + lnurlPayDomain;
+      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnurlPayDomain;
     }
 
     final String description = _payment.details.map(
@@ -159,7 +159,7 @@ class _PaymentDataFactory {
       liquid: (PaymentDetails_Liquid details) => details.description,
       orElse: () => '',
     );
-    if (description.isNotEmpty && !description.containsLiquidNaming) {
+    if (description.isNotEmpty && !description.isDefaultDescription) {
       return description;
     }
 
