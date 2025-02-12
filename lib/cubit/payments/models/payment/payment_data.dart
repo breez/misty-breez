@@ -144,17 +144,22 @@ class _PaymentDataFactory {
     );
 
     final String lnAddress = lnurlInfo?.lnAddress ?? '';
-
     if (lnAddress.isNotEmpty) {
-      return lnAddress;
+      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnAddress;
     }
+
+    final String lnurlPayDomain = lnurlInfo?.lnurlPayDomain ?? '';
+    if (lnurlPayDomain.isNotEmpty) {
+      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnurlPayDomain;
+    }
+
     final String description = _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.description,
       bitcoin: (PaymentDetails_Bitcoin details) => details.description,
       liquid: (PaymentDetails_Liquid details) => details.description,
       orElse: () => '',
     );
-    if (description.isNotEmpty && !description.containsLiquidNaming) {
+    if (description.isNotEmpty && !description.isDefaultDescription) {
       return description;
     }
 

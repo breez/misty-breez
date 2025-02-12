@@ -1,5 +1,7 @@
 import 'package:breez_preferences/src/model/bug_report_behavior.dart';
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preference_app_group/shared_preference_app_group.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Logger _logger = Logger('BreezPreferences');
@@ -30,6 +32,9 @@ class BreezPreferences {
     _logger.info('Setting BugReportBehavior: $behavior');
     final SharedPreferences prefs = await _preferences;
     await prefs.setInt(_kBugReportBehavior, behavior.index);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setInt(_kBugReportBehavior, behavior.index);
+    }
   }
 
   // Default Profile Name
@@ -45,6 +50,9 @@ class BreezPreferences {
     _logger.info('Setting Default Profile Name: $defaultProfileName');
     final SharedPreferences prefs = await _preferences;
     await prefs.setString(_kDefaultProfileName, defaultProfileName);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setString(_kDefaultProfileName, _kDefaultProfileName);
+    }
   }
 
   // Webhook URL
@@ -56,16 +64,22 @@ class BreezPreferences {
     return url;
   }
 
-  Future<void> setWebhookUrl(String url) async {
-    _logger.info('Setting Webhook URL: $url');
+  Future<void> setWebhookUrl(String webhookUrl) async {
+    _logger.info('Setting Webhook URL: $webhookUrl');
     final SharedPreferences prefs = await _preferences;
-    await prefs.setString(_kWebhookUrl, url);
+    await prefs.setString(_kWebhookUrl, webhookUrl);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setString(_kWebhookUrl, webhookUrl);
+    }
   }
 
   Future<void> removeWebhookUrl() async {
     _logger.info('Removing Webhook URL');
     final SharedPreferences prefs = await _preferences;
     await prefs.remove(_kWebhookUrl);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.remove(_kWebhookUrl);
+    }
   }
 
   // LN URL Webhook Registration
@@ -81,6 +95,9 @@ class BreezPreferences {
     _logger.info('Setting LNURL Webhook as Registered');
     final SharedPreferences prefs = await _preferences;
     await prefs.setBool(_kLnUrlWebhookRegistered, true);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setBool(_kLnUrlWebhookRegistered, true);
+    }
   }
 
   // LN Address Username
@@ -92,9 +109,12 @@ class BreezPreferences {
     return username;
   }
 
-  Future<void> setLnAddressUsername(String username) async {
-    _logger.info('Setting LN Address Username: $username');
+  Future<void> setLnAddressUsername(String lnAddressUsername) async {
+    _logger.info('Setting LN Address Username: $lnAddressUsername');
     final SharedPreferences prefs = await _preferences;
-    await prefs.setString(_kLnAddressUsername, username);
+    await prefs.setString(_kLnAddressUsername, lnAddressUsername);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setString(_kLnAddressUsername, lnAddressUsername);
+    }
   }
 }
