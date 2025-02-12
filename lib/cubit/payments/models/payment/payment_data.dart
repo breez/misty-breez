@@ -138,6 +138,16 @@ class _PaymentDataFactory {
   _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
+    final String bip353Address = _payment.details.map(
+          lightning: (PaymentDetails_Lightning details) => details.bip353Address,
+          orElse: () => null,
+        ) ??
+        '';
+
+    if (bip353Address.isNotEmpty) {
+      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + bip353Address;
+    }
+
     final LnUrlInfo? lnurlInfo = _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
       orElse: () => null,
