@@ -201,8 +201,10 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
       return;
     }
 
+    final LnAddressCubit lnAddressCubit = context.read<LnAddressCubit>();
+    lnAddressCubit.clearUpdateStatus();
+
     if (_formKey.currentState?.validate() ?? false) {
-      final LnAddressCubit lnAddressCubit = context.read<LnAddressCubit>();
       final String username = UsernameFormatter.sanitize(_usernameController.text);
       lnAddressCubit.setupLightningAddress(baseUsername: username);
     }
