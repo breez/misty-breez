@@ -7,7 +7,7 @@ final Logger _logger = Logger('BreezPreferences');
 class BreezPreferences {
   // Preference Keys
   static const String _kBugReportBehavior = 'bug_report_behavior';
-  static const String _kProfileName = 'profile_name';
+  static const String _kDefaultProfileName = 'default_profile_name';
   static const String _kWebhookUrl = 'webhook_url';
   static const String _kLnUrlWebhookRegistered = 'lnurl_webhook_registered';
   static const String _kLnAddressUsername = 'ln_address_username';
@@ -32,19 +32,19 @@ class BreezPreferences {
     await prefs.setInt(_kBugReportBehavior, behavior.index);
   }
 
-  // Profile Name
-  Future<String?> get profileName async {
+  // Default Profile Name
+  Future<String?> get defaultProfileName async {
     final SharedPreferences prefs = await _preferences;
-    final String? name = prefs.getString(_kProfileName);
+    final String? defaultProfileName = prefs.getString(_kDefaultProfileName);
 
-    _logger.info('Fetched Profile Name: $name');
-    return name;
+    _logger.info('Fetched Default Profile Name: $defaultProfileName');
+    return defaultProfileName;
   }
 
-  Future<void> setProfileName(String name) async {
-    _logger.info('Setting Profile Name: $name');
+  Future<void> setDefaultProfileName(String defaultProfileName) async {
+    _logger.info('Setting Default Profile Name: $defaultProfileName');
     final SharedPreferences prefs = await _preferences;
-    await prefs.setString(_kProfileName, name);
+    await prefs.setString(_kDefaultProfileName, defaultProfileName);
   }
 
   // Webhook URL
