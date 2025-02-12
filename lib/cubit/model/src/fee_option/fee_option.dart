@@ -1,5 +1,6 @@
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/models/sdk_formatted_string_extensions.dart';
 
 enum ProcessingSpeed {
   economy(Duration(minutes: 60)),
@@ -44,9 +45,18 @@ class SendChainSwapFeeOption extends FeeOption {
 
   @override
   bool isAffordable({required int amountSat, int? balanceSat, int? walletBalanceSat}) {
-    assert(balanceSat != null);
+    assert(balanceSat != null, 'Balance amount must be provided.');
 
     return preparePayOnchainResponse.isAffordable(balance: balanceSat!);
+  }
+
+  @override
+  String toString() {
+    return 'SendChainSwapFeeOption('
+        'processingSpeed: $processingSpeed, '
+        'feeRateSatPerVbyte: $feeRateSatPerVbyte, '
+        'prepareRefundResponse: ${preparePayOnchainResponse.toFormattedString()}'
+        ')';
   }
 }
 
@@ -67,9 +77,18 @@ class RefundFeeOption extends FeeOption {
 
   @override
   bool isAffordable({required int amountSat, int? balanceSat, int? walletBalanceSat}) {
-    assert(balanceSat != null);
+    assert(balanceSat != null, 'Balance amount must be provided.');
 
     return prepareRefundResponse.isAffordable(balance: balanceSat!);
+  }
+
+  @override
+  String toString() {
+    return 'RefundFeeOption('
+        'processingSpeed: $processingSpeed, '
+        'feeRateSatPerVbyte: $feeRateSatPerVbyte, '
+        'prepareRefundResponse: ${prepareRefundResponse.toFormattedString}'
+        ')';
   }
 }
 
