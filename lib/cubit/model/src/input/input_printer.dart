@@ -50,8 +50,8 @@ extension LnOfferBlindedPathExtension on List<LnOfferBlindedPath> {
 
 extension LnUrlPayRequestDataExtension on LnUrlPayRequestData {
   String toFormattedString() => 'LnUrlPayRequestData(callback: $callback, minSendable: $minSendable, '
-      'maxSendable: $maxSendable, metadata: $metadataStr, '
-      'commentAllowed: $commentAllowed, domain: $domain, lnAddr: $lnAddress)';
+      'maxSendable: $maxSendable, metadataStr: $metadataStr, '
+      'commentAllowed: $commentAllowed, domain: $domain, lnAddress: $lnAddress)';
 }
 
 extension LnUrlWithdrawRequestDataExtension on LnUrlWithdrawRequestData {
