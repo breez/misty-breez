@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 
 class PaymentDetailsSheetDescription extends StatelessWidget {
   final PaymentData paymentData;
@@ -23,7 +24,7 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
       title = '${userProfileState.profileSettings.name}';
     }
     final String description = paymentData.description;
-    if (description.isEmpty || title == description) {
+    if (description.isEmpty || title == description || description.isDefaultDescription) {
       return const SizedBox.shrink();
     }
 
