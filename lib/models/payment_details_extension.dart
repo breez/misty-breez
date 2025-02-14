@@ -71,7 +71,7 @@ extension PaymentDetailsFromJson on PaymentDetails {
         return PaymentDetails.lightning(
           swapId: json['swapId'] as String,
           description: json['description'] as String,
-          liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int?,
+          liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int,
           preimage: json['preimage'] as String?,
           invoice: json['invoice'] as String?,
           bolt12Offer: json['bolt12Offer'] as String?,
