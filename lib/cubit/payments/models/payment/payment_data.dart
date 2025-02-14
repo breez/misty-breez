@@ -11,6 +11,7 @@ import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 class PaymentData {
   final String id;
   final String title;
+  final String description;
   final String destination;
   final String txId;
   final String unblindingData;
@@ -24,6 +25,7 @@ class PaymentData {
   const PaymentData({
     required this.id,
     required this.title,
+    required this.description,
     required this.destination,
     required this.txId,
     required this.unblindingData,
@@ -41,6 +43,7 @@ class PaymentData {
     return PaymentData(
       id: payment.txId ?? '',
       title: factory._title(),
+      description: factory._description(),
       destination: payment.destination ?? '',
       txId: payment.txId ?? '',
       unblindingData: payment.unblindingData ?? '',
@@ -57,6 +60,7 @@ class PaymentData {
     return <String, dynamic>{
       'id': id,
       'title': title,
+      'description': description,
       'destination': destination,
       'txId': txId,
       'unblindingData': unblindingData,
@@ -73,6 +77,7 @@ class PaymentData {
     return PaymentData(
       id: json['id'],
       title: json['title'],
+      description: json['description'],
       destination: json['destination'],
       txId: json['txId'],
       unblindingData: json['unblindingData'],
@@ -163,17 +168,21 @@ class _PaymentDataFactory {
       return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnurlPayDomain;
     }
 
-    final String description = _payment.details.map(
-      lightning: (PaymentDetails_Lightning details) => details.description,
-      bitcoin: (PaymentDetails_Bitcoin details) => details.description,
-      liquid: (PaymentDetails_Liquid details) => details.description,
-      orElse: () => '',
-    );
+    final String description = _description();
     if (description.isNotEmpty && !description.isDefaultDescription) {
       return description;
     }
 
     return _texts.payment_info_title_unknown;
+  }
+
+  String _description() {
+    return _payment.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.description,
+      bitcoin: (PaymentDetails_Bitcoin details) => details.description,
+      liquid: (PaymentDetails_Liquid details) => details.description,
+      orElse: () => '',
+    );
   }
 
   DateTime _paymentTime() {

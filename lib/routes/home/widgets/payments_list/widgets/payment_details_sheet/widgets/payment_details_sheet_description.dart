@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/models/payment_details_extension.dart';
 
 class PaymentDetailsSheetDescription extends StatelessWidget {
   final PaymentData paymentData;
@@ -23,12 +22,7 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
       final UserProfileState userProfileState = userProfileCubit.state;
       title = 'Payment to ${userProfileState.profileSettings.name}';
     }
-    final String description = paymentData.details.map(
-      lightning: (PaymentDetails_Lightning details) => details.description,
-      bitcoin: (PaymentDetails_Bitcoin details) => details.description,
-      liquid: (PaymentDetails_Liquid details) => details.description,
-      orElse: () => '',
-    );
+    final String description = paymentData.description;
     if (description.isEmpty || title == description) {
       return const SizedBox.shrink();
     }
