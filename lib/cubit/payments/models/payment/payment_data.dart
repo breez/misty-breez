@@ -191,29 +191,37 @@ class _PaymentDataFactory {
   }
 
   String? _getLnurlDescription() {
-    final String? lnurlPayDescription = _getLnurlPayDescription();
-
-    if (lnurlPayDescription == null) {
-      return null;
-    }
-
-    return _parseLnurlPayMetadata(lnurlPayDescription);
-  }
-
-  String? _parseLnurlPayMetadata(String lnurlPayDescription) {
-    try {
-      final dynamic metadataJson = jsonDecode(lnurlPayDescription);
-      return metadataJson is Map<String, dynamic> ? metadataJson['text/plain'] : null;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  String? _getLnurlPayDescription() {
-    return _payment.details.map(
+    final String? lnurlPayMetadata = _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo?.lnurlPayMetadata,
       orElse: () => null,
     );
+
+    return lnurlPayMetadata != null ? _parseLnurlPayMetadata(lnurlPayMetadata) : null;
+  }
+
+  String? _parseLnurlPayMetadata(String lnurlPayMetadata) {
+    try {
+      final dynamic metadataJson = jsonDecode(lnurlPayMetadata);
+
+      // Ensure the decoded object is a List
+      if (metadataJson is List) {
+        // Iterate over the list to find the "text/plain" metadata
+        for (int i = 0; i < metadataJson.length; i++) {
+          final dynamic item = metadataJson[i];
+          if (item is List && item.length == 2) {
+            final String type = item[0];
+            final String value = item[1];
+
+            if (type == 'text/plain') {
+              return value;
+            }
+          }
+        }
+      }
+    } catch (_) {
+      return null;
+    }
+    return null;
   }
 
   DateTime _paymentTime() {
