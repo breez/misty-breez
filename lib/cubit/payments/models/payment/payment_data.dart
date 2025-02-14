@@ -177,12 +177,21 @@ class _PaymentDataFactory {
   }
 
   String _description() {
-    return _payment.details.map(
+    final String? lnurlPayDescription = _payment.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.lnurlInfo?.lnurlPayMetadata,
+      orElse: () => null,
+    );
+
+    final String? description = _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.description,
       bitcoin: (PaymentDetails_Bitcoin details) => details.description,
       liquid: (PaymentDetails_Liquid details) => details.description,
-      orElse: () => '',
+      orElse: () => null,
     );
+
+    return lnurlPayDescription?.isNotEmpty == true
+        ? jsonDecode(lnurlPayDescription!)['text/plain'] ?? ''
+        : description ?? '';
   }
 
   DateTime _paymentTime() {
