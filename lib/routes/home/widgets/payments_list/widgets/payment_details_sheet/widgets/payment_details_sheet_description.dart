@@ -44,7 +44,7 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
                 height: 1.208,
               ),
               textAlign:
-                  description.length > 40 && !description.contains('\n') ? TextAlign.start : TextAlign.center,
+                  description.length > 60 && !description.contains('\n') ? TextAlign.start : TextAlign.center,
             ),
           ),
         ),
