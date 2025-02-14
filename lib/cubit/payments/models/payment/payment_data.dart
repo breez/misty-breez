@@ -158,14 +158,24 @@ class _PaymentDataFactory {
       orElse: () => null,
     );
 
-    final String lnAddress = lnurlInfo?.lnAddress ?? '';
-    if (lnAddress.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnAddress;
+    String? lnUrlTitle;
+    if (lnurlInfo != null && lnurlInfo.lnurlPayMetadata != null) {
+      lnUrlTitle = _parseLnurlPayMetadata(lnurlInfo.lnurlPayMetadata!);
+    } else {
+      final String lnAddress = lnurlInfo?.lnAddress ?? '';
+      if (lnAddress.isNotEmpty) {
+        lnUrlTitle = (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnAddress;
+      }
+
+      final String lnurlPayDomain = lnurlInfo?.lnurlPayDomain ?? '';
+      if (lnurlPayDomain.isNotEmpty) {
+        lnUrlTitle =
+            (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnurlPayDomain;
+      }
     }
 
-    final String lnurlPayDomain = lnurlInfo?.lnurlPayDomain ?? '';
-    if (lnurlPayDomain.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnurlPayDomain;
+    if (lnUrlTitle != null && lnUrlTitle.isNotEmpty) {
+      return lnUrlTitle;
     }
 
     final String description = _description();
