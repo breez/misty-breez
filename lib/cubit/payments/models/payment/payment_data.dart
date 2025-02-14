@@ -177,21 +177,43 @@ class _PaymentDataFactory {
   }
 
   String _description() {
-    final String? lnurlPayDescription = _payment.details.map(
-      lightning: (PaymentDetails_Lightning details) => details.lnurlInfo?.lnurlPayMetadata,
-      orElse: () => null,
-    );
+    final String? description = _getDescriptionFromDetails();
+    return _getLnurlDescription() ?? description ?? '';
+  }
 
-    final String? description = _payment.details.map(
+  String? _getDescriptionFromDetails() {
+    return _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.description,
       bitcoin: (PaymentDetails_Bitcoin details) => details.description,
       liquid: (PaymentDetails_Liquid details) => details.description,
       orElse: () => null,
     );
+  }
 
-    return lnurlPayDescription?.isNotEmpty == true
-        ? jsonDecode(lnurlPayDescription!)['text/plain'] ?? ''
-        : description ?? '';
+  String? _getLnurlDescription() {
+    final String? lnurlPayDescription = _getLnurlPayDescription();
+
+    if (lnurlPayDescription == null) {
+      return null;
+    }
+
+    return _parseLnurlPayMetadata(lnurlPayDescription);
+  }
+
+  String? _parseLnurlPayMetadata(String lnurlPayDescription) {
+    try {
+      final dynamic metadataJson = jsonDecode(lnurlPayDescription);
+      return metadataJson is Map<String, dynamic> ? metadataJson['text/plain'] : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? _getLnurlPayDescription() {
+    return _payment.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.lnurlInfo?.lnurlPayMetadata,
+      orElse: () => null,
+    );
   }
 
   DateTime _paymentTime() {
