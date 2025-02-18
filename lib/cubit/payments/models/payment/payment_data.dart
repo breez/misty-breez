@@ -134,6 +134,11 @@ class PaymentData {
   bool get isRefunded => refundTxAmountSat > 0 && status == PaymentState.failed;
 
   int get actualFeeSat => isRefunded ? amountSat - refundTxAmountSat : feeSat;
+
+  String? get lnurlMetadataImage {
+    final Map<String, dynamic> metadataMap = getLnurlPayMetadata(details);
+    return metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
+  }
 }
 
 class _PaymentDataFactory {
