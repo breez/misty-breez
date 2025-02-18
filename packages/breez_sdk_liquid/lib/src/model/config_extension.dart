@@ -22,7 +22,6 @@ extension ConfigCopyWith on Config {
       workingDir: workingDir ?? this.workingDir,
       network: network ?? this.network,
       paymentTimeoutSec: paymentTimeoutSec ?? this.paymentTimeoutSec,
-      zeroConfMinFeeRateMsat: zeroConfMinFeeRateMsat ?? this.zeroConfMinFeeRateMsat,
       zeroConfMaxAmountSat: zeroConfMaxAmountSat ?? this.zeroConfMaxAmountSat,
       breezApiKey: breezApiKey ?? this.breezApiKey,
       externalInputParsers: externalInputParsers ?? this.externalInputParsers,
