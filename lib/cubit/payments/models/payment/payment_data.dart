@@ -150,7 +150,7 @@ class _PaymentDataFactory {
         '';
 
     if (bip353Address.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + bip353Address;
+      return bip353Address;
     }
 
     final LnUrlInfo? lnurlInfo = _payment.details.map(
