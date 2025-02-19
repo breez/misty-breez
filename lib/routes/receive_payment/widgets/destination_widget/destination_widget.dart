@@ -118,7 +118,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void _trackPaymentEvents(String? destination) {
     final InputCubit inputCubit = context.read<InputCubit>();
     inputCubit
-        .trackPaymentEvents(destination)
+        .trackPaymentEvents(destination, paymentType: PaymentType.receive)
         .then((_) => _onPaymentFinished(true))
         .catchError((Object e) => _onTrackPaymentError(e));
   }
