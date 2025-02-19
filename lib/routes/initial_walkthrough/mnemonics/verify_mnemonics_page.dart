@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -106,7 +107,8 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                     _hasError = false;
                   });
                   if (_formKey.currentState!.validate() && !_hasError) {
-                    await MnemonicVerificationStatusPreferences.setVerificationComplete(true);
+                    final SecurityCubit securityCubit = context.read<SecurityCubit>();
+                    await securityCubit.verifyMnemonic();
                     if (context.mounted) {
                       Navigator.of(context).popUntil((Route<dynamic> route) {
                         bool shouldPop = false;

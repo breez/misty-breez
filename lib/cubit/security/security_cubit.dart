@@ -26,6 +26,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
 
   SecurityCubit(this.keyChain) : super(const SecurityState.initial()) {
     hydrate();
+    _loadVerificationStatus();
     FGBGEvents.instance.stream.listen((FGBGType event) {
       final Duration lockInterval = state.lockInterval;
       if (event == FGBGType.foreground) {
@@ -133,6 +134,20 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
 
   void _setLockState(LockState lockState) {
     emit(state.copyWith(lockState: lockState));
+  }
+
+  Future<void> _loadVerificationStatus() async {
+    final bool isVerified = await MnemonicVerificationStatusPreferences.isVerificationComplete();
+    emit(
+      state.copyWith(
+        verificationStatus: isVerified ? VerificationStatus.verified : VerificationStatus.unverified,
+      ),
+    );
+  }
+
+  Future<void> verifyMnemonic() async {
+    await MnemonicVerificationStatusPreferences.setVerificationComplete(true);
+    await _loadVerificationStatus();
   }
 
   @override
