@@ -126,6 +126,7 @@ class InputHandler extends Handler {
     // Show Processing Payment Sheet
     return await showProcessingPaymentSheet(
       context,
+      isLnPayment: true,
       paymentFunc: () async {
         final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
         return await paymentsCubit.sendPayment(prepareResponse);
@@ -163,6 +164,7 @@ class InputHandler extends Handler {
     // Show Processing Payment Sheet
     return await showProcessingPaymentSheet(
       context,
+      isLnPayment: true,
       paymentFunc: () async {
         final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
         return await paymentsCubit.sendPayment(prepareResponse);

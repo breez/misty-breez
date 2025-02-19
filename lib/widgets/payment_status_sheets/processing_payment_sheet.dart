@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
@@ -14,6 +16,7 @@ Future<dynamic> showProcessingPaymentSheet(
   required Future<dynamic> Function() paymentFunc,
   bool promptError = false,
   bool popToHomeOnCompletion = false,
+  bool isLnPayment = false,
   bool isLnUrlPayment = false,
 }) async {
   return await showModalBottomSheet(
@@ -22,6 +25,7 @@ Future<dynamic> showProcessingPaymentSheet(
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) => ProcessingPaymentSheet(
+      isLnPayment: isLnPayment,
       isLnUrlPayment: isLnUrlPayment,
       promptError: promptError,
       popToHomeOnCompletion: popToHomeOnCompletion,
@@ -31,6 +35,7 @@ Future<dynamic> showProcessingPaymentSheet(
 }
 
 class ProcessingPaymentSheet extends StatefulWidget {
+  final bool isLnPayment;
   final bool isLnUrlPayment;
   final bool promptError;
   final bool popToHomeOnCompletion;
@@ -40,6 +45,7 @@ class ProcessingPaymentSheet extends StatefulWidget {
     required this.paymentFunc,
     this.promptError = false,
     this.popToHomeOnCompletion = false,
+    this.isLnPayment = false,
     this.isLnUrlPayment = false,
     super.key,
   });
@@ -54,68 +60,136 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   @override
   void initState() {
     super.initState();
-    _payAndClose();
+    _processPaymentAndClose();
   }
 
-  void _payAndClose() {
-    widget.paymentFunc().then((dynamic payResult) async {
+  void _processPaymentAndClose() {
+    widget.paymentFunc().then(_handlePaymentSuccess).catchError(_handlePaymentError);
+  }
+
+  void _handlePaymentSuccess(dynamic payResult) {
+    if (!mounted) {
+      return;
+    }
+
+    if (widget.isLnPayment) {
+      _handleLnPaymentResult(payResult);
+    } else if (widget.isLnUrlPayment) {
+      _handleLnUrlPaymentResult(payResult);
+    } else {
+      _closeSheetOnCompletion();
+    }
+  }
+
+  void _handleLnPaymentResult(dynamic payResult) {
+    if (payResult is SendPaymentResponse) {
+      _trackLnPaymentEvents(payResult);
+    } else {
+      _onPaymentFailure();
+    }
+  }
+
+  void _handleLnUrlPaymentResult(dynamic payResult) {
+    if (payResult is LnUrlPayResult_EndpointSuccess) {
+      _showSuccessAndClose(payResult);
+    } else {
+      _onPaymentFailure();
+    }
+  }
+
+  void _trackLnPaymentEvents(SendPaymentResponse payResult) {
+    final InputCubit inputCubit = context.read<InputCubit>();
+
+    final Future<void> paymentSuccessFuture = inputCubit.trackPaymentEvents(
+      payResult.payment.destination,
+      paymentType: PaymentType.send,
+    );
+    final Future<void> timeoutFuture = Future<void>.delayed(const Duration(seconds: 10));
+
+    // Wait at least 10 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
+    Future.any(<Future<bool>>[
+      paymentSuccessFuture.then((_) => true),
+      timeoutFuture.then((_) => false),
+    ]).then((bool paymentSucceeded) {
       if (!mounted) {
         return;
       }
-      if (widget.isLnUrlPayment) {
-        if (payResult is LnUrlPayResult) {
-          if (payResult is LnUrlPayResult_EndpointSuccess) {
-            setState(() {
-              _showPaymentSent = true;
-            });
-          }
-          // Close the bottom sheet after 2.25 seconds
-          Future<void>.delayed(const Duration(milliseconds: 2250), () {
-            if (mounted) {
-              Navigator.of(context).pop(payResult);
-            }
-          });
-        } else {
-          if (mounted) {
-            Navigator.of(context).pop();
-            final BreezTranslations texts = getSystemAppLocalizations();
-            showFlushbar(
-              context,
-              message: texts.payment_error_to_send_unknown_reason,
-            );
-          }
-        }
+
+      if (paymentSucceeded) {
+        _showSuccessAndClose();
       } else {
-        if (mounted) {
-          final NavigatorState navigator = Navigator.of(context);
-          if (widget.popToHomeOnCompletion) {
-            navigator.pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
-          } else {
-            navigator.pop();
-          }
-        }
+        _closeSheetOnCompletion();
       }
-    }).catchError((Object err) {
+    }).catchError((_) {
       if (mounted) {
-        Navigator.of(context).pop(err);
-        if (widget.promptError) {
-          final BreezTranslations texts = getSystemAppLocalizations();
-          final ThemeData themeData = Theme.of(context);
-          promptError(
-            context,
-            texts.payment_failed_report_dialog_title,
-            Text(
-              extractExceptionMessage(err, texts),
-              style: themeData.dialogTheme.contentTextStyle,
-            ),
-          );
-        } else if (err is FrbException || err is PaymentError_PaymentTimeout) {
-          final BreezTranslations texts = getSystemAppLocalizations();
-          final String message = extractExceptionMessage(err, texts);
-          showFlushbar(context, message: texts.payment_error_to_send(message));
-        }
+        _onPaymentFailure();
       }
     });
+  }
+
+  void _showSuccessAndClose([dynamic payResult]) {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() => _showPaymentSent = true);
+    Future<void>.delayed(const Duration(milliseconds: 2250), () {
+      if (mounted) {
+        Navigator.of(context).pop(payResult);
+      }
+    });
+  }
+
+  void _closeSheetOnCompletion() {
+    final NavigatorState navigator = Navigator.of(context);
+    if (widget.popToHomeOnCompletion) {
+      navigator.pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
+    } else {
+      navigator.pop();
+    }
+  }
+
+  void _handlePaymentError(Object err) {
+    if (!mounted) {
+      return;
+    }
+
+    Navigator.of(context).pop(err);
+    final BreezTranslations texts = getSystemAppLocalizations();
+
+    if (widget.promptError) {
+      _promptErrorDialog(err, texts);
+    } else if (err is FrbException || err is PaymentError_PaymentTimeout) {
+      _showErrorFlushbar(err, texts);
+    }
+  }
+
+  void _onPaymentFailure() {
+    if (!mounted) {
+      return;
+    }
+    Navigator.of(context).pop();
+    showFlushbar(
+      context,
+      message: getSystemAppLocalizations().payment_error_to_send_unknown_reason,
+    );
+  }
+
+  void _promptErrorDialog(Object err, BreezTranslations texts) {
+    final ThemeData theme = Theme.of(context);
+    promptError(
+      context,
+      texts.payment_failed_report_dialog_title,
+      Text(
+        extractExceptionMessage(err, texts),
+        style: theme.dialogTheme.contentTextStyle,
+      ),
+    );
+  }
+
+  void _showErrorFlushbar(Object err, BreezTranslations texts) {
+    final String message = extractExceptionMessage(err, texts);
+    showFlushbar(context, message: texts.payment_error_to_send(message));
   }
 
   @override
