@@ -21,7 +21,7 @@ class PaymentItemTitle extends StatelessWidget {
     if (title == texts.payment_info_title_unknown && paymentData.paymentType == PaymentType.receive) {
       final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
       final UserProfileState userProfileState = userProfileCubit.state;
-      title = 'Payment to ${userProfileState.profileSettings.name}';
+      title = '${userProfileState.profileSettings.name}';
     }
     return Text(
       title,

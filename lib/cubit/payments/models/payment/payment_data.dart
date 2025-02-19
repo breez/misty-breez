@@ -134,6 +134,11 @@ class PaymentData {
   bool get isRefunded => refundTxAmountSat > 0 && status == PaymentState.failed;
 
   int get actualFeeSat => isRefunded ? amountSat - refundTxAmountSat : feeSat;
+
+  String? get lnurlMetadataImage {
+    final Map<String, dynamic> metadataMap = getLnurlPayMetadata(details);
+    return metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
+  }
 }
 
 class _PaymentDataFactory {
@@ -150,7 +155,7 @@ class _PaymentDataFactory {
         '';
 
     if (bip353Address.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + bip353Address;
+      return bip353Address;
     }
 
     final LnUrlInfo? lnurlInfo = _payment.details.map(
@@ -158,14 +163,21 @@ class _PaymentDataFactory {
       orElse: () => null,
     );
 
-    final String lnAddress = lnurlInfo?.lnAddress ?? '';
-    if (lnAddress.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnAddress;
+    String? lnUrlTitle;
+    if (lnurlInfo != null) {
+      final Map<String, dynamic> metadataMap = getLnurlPayMetadata(_payment.details);
+
+      lnUrlTitle = lnurlInfo.lnAddress?.isNotEmpty == true
+          ? lnurlInfo.lnAddress
+          : metadataMap.isNotEmpty
+              ? metadataMap['text/identifier'] ?? metadataMap['text/email']
+              : lnurlInfo.lnurlPayDomain?.isNotEmpty == true
+                  ? lnurlInfo.lnurlPayDomain
+                  : null;
     }
 
-    final String lnurlPayDomain = lnurlInfo?.lnurlPayDomain ?? '';
-    if (lnurlPayDomain.isNotEmpty) {
-      return (_payment.paymentType == PaymentType.send ? 'Payment to ' : 'Payment from ') + lnurlPayDomain;
+    if (lnUrlTitle != null && lnUrlTitle.isNotEmpty) {
+      return lnUrlTitle;
     }
 
     final String description = _description();
@@ -177,15 +189,56 @@ class _PaymentDataFactory {
   }
 
   String _description() {
+    final String? description = _getDescriptionFromDetails();
+    return _getLnurlDescription() ?? description ?? '';
+  }
+
+  String? _getDescriptionFromDetails() {
     return _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.description,
       bitcoin: (PaymentDetails_Bitcoin details) => details.description,
       liquid: (PaymentDetails_Liquid details) => details.description,
-      orElse: () => '',
+      orElse: () => null,
     );
+  }
+
+  String? _getLnurlDescription() {
+    final Map<String, dynamic> metadataMap = getLnurlPayMetadata(_payment.details);
+    return metadataMap['text/long-desc'] ?? metadataMap['text/plain'];
   }
 
   DateTime _paymentTime() {
     return DateTime.fromMillisecondsSinceEpoch(_payment.timestamp * 1000);
+  }
+}
+
+Map<String, dynamic> getLnurlPayMetadata(PaymentDetails details) {
+  final String? lnurlPayMetadata = details.map(
+    lightning: (PaymentDetails_Lightning details) => details.lnurlInfo?.lnurlPayMetadata,
+    orElse: () => null,
+  );
+
+  if (lnurlPayMetadata == null) {
+    return <String, dynamic>{};
+  }
+
+  return _parseLnurlPayMetadata(lnurlPayMetadata);
+}
+
+Map<String, dynamic> _parseLnurlPayMetadata(String lnurlPayMetadata) {
+  try {
+    final dynamic decoded = json.decode(lnurlPayMetadata);
+    if (decoded is! List) {
+      return <String, dynamic>{};
+    }
+
+    return Map<String, dynamic>.fromEntries(
+      decoded
+          .whereType<List<dynamic>>()
+          .where((dynamic item) => item.length == 2 && item[0] is String)
+          .map((dynamic item) => MapEntry<String, dynamic>(item[0] as String, item[1])),
+    );
+  } catch (_) {
+    return <String, dynamic>{};
   }
 }

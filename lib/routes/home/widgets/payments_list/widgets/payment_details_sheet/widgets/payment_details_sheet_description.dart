@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/utils/extensions/payment_title_extension.dart';
 
 class PaymentDetailsSheetDescription extends StatelessWidget {
   final PaymentData paymentData;
@@ -20,10 +21,10 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
     if (title == texts.payment_info_title_unknown && paymentData.paymentType == PaymentType.receive) {
       final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
       final UserProfileState userProfileState = userProfileCubit.state;
-      title = 'Payment to ${userProfileState.profileSettings.name}';
+      title = '${userProfileState.profileSettings.name}';
     }
     final String description = paymentData.description;
-    if (description.isEmpty || title == description) {
+    if (description.isEmpty || title == description || description.isDefaultDescription) {
       return const SizedBox.shrink();
     }
 
@@ -44,7 +45,7 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
                 height: 1.208,
               ),
               textAlign:
-                  description.length > 40 && !description.contains('\n') ? TextAlign.start : TextAlign.center,
+                  description.length > 60 && !description.contains('\n') ? TextAlign.start : TextAlign.center,
             ),
           ),
         ),
