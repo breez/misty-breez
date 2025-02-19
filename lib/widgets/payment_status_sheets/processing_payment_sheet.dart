@@ -8,6 +8,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
@@ -132,8 +133,11 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       return;
     }
 
-    setState(() => _showPaymentSent = true);
-    Future<void>.delayed(const Duration(milliseconds: 2250), () {
+    setState(() {
+      _showPaymentSent = true;
+    });
+    // Close the bottom sheet after 2.25 seconds
+    Future<void>.delayed(kPaymentSheetPopDelay, () {
       if (mounted) {
         Navigator.of(context).pop(payResult);
       }
