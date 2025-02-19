@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 
 class FeeBreakdown extends StatelessWidget {
-  final PreparePayOnchainResponse feeOption;
+  final FeeOption feeOption;
+  final int? refundAmountSat;
 
-  const FeeBreakdown({required this.feeOption, super.key});
+  const FeeBreakdown({required this.feeOption, super.key, this.refundAmountSat});
 
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
+
+    final Object? feeDetails = switch (feeOption) {
+      final SendChainSwapFeeOption swapFee => swapFee.preparePayOnchainResponse,
+      final RefundFeeOption refundFee => refundFee.prepareRefundResponse,
+      _ => null,
+    };
+
+    if (feeDetails == null) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -21,14 +33,16 @@ class FeeBreakdown extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          SenderAmount(
-            amountSat: (feeOption.receiverAmountSat + feeOption.totalFeesSat).toInt(),
-          ),
-          BoltzServiceFee(
-            boltzServiceFee: (feeOption.totalFeesSat - feeOption.claimFeesSat).toInt(),
-          ),
-          TransactionFee(txFeeSat: feeOption.claimFeesSat.toInt()),
-          RecipientAmount(amountSat: feeOption.receiverAmountSat.toInt()),
+          if (feeDetails is PreparePayOnchainResponse) ...<Widget>[
+            SenderAmount(amountSat: (feeDetails.receiverAmountSat + feeDetails.totalFeesSat).toInt()),
+            BoltzServiceFee(boltzServiceFee: (feeDetails.totalFeesSat - feeDetails.claimFeesSat).toInt()),
+            TransactionFee(txFeeSat: feeDetails.claimFeesSat.toInt()),
+            RecipientAmount(amountSat: feeDetails.receiverAmountSat.toInt()),
+          ] else if (feeDetails is PrepareRefundResponse && refundAmountSat != null) ...<Widget>[
+            SenderAmount(amountSat: refundAmountSat!),
+            TransactionFee(txFeeSat: feeDetails.txFeeSat.toInt()),
+            RecipientAmount(amountSat: refundAmountSat! - (feeDetails.txFeeSat).toInt()),
+          ],
         ],
       ),
     );
