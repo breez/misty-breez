@@ -53,7 +53,6 @@ final ThemeData breezLightTheme = ThemeData(
       borderRadius: BorderRadius.all(Radius.circular(12.0)),
     ),
   ),
-
   dividerColor: const Color(0x33ffffff),
   cardColor: BreezColors.blue[500], // will be replaced with CardTheme.color
   cardTheme: CardTheme(color: BreezColors.blue[500]),

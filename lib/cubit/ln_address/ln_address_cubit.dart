@@ -149,6 +149,15 @@ class LnAddressCubit extends Cubit<LnAddressState> {
           pubKey: pubKey,
           webhookUrl: webhookUrl,
           baseUsername: baseUsername,
+        ).then(
+          (RegisterRecoverLnurlPayResponse response) async {
+            _logger.info('Recovered LNURL Webhook successfully. Re-registering to transfer ownership.');
+            return await _prepareAndRegisterLnurlWebhook(
+              pubKey: pubKey!,
+              webhookUrl: webhookUrl,
+              baseUsername: baseUsername,
+            );
+          },
         );
       } on WebhookNotFoundException {
         // Fallback to register a new webhook if recovery fails
