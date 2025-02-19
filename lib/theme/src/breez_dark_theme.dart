@@ -48,7 +48,6 @@ final ThemeData breezDarkTheme = ThemeData(
       borderRadius: BorderRadius.all(Radius.circular(12.0)),
     ),
   ),
-  dialogBackgroundColor: Colors.transparent,
   dividerColor: const Color(0x337aa5eb),
   cardColor: const Color(0xFF121212), // will be replaced with CardTheme.color
   cardTheme: const CardTheme(color: Color(0xFF121212)),
