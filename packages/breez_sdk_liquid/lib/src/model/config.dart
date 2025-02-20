@@ -60,7 +60,7 @@ class AppConfig {
       final Directory workingDir = await getApplicationDocumentsDirectory();
       path = workingDir.path;
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      final Directory? sharedDirectory = await AppGroupDirectory.getAppGroupDirectory(
+      final Directory? sharedDirectory = await AppGroupDirectory().getAppGroupDirectory(
         'group.F7R2LZH3W5.com.breez.liquid.lBreez',
       );
       if (sharedDirectory == null) {

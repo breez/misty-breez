@@ -9,7 +9,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  app_group_directory: ^2.0.0
+  app_group_directory:
+    git:
+      url: https://github.com/breez/app_group_directory
+      ref: flutter-3.29
   service_injector:
     path: ../service_injector
   breez_liquid:
