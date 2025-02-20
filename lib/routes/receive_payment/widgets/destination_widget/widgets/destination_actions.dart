@@ -1,8 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/theme/src/theme.dart';
+import 'package:l_breez/utils/min_font_size.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
@@ -23,6 +25,8 @@ class DestinationActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AutoSizeGroup textGroup = AutoSizeGroup();
+
     final String? destination = this.destination ?? snapshot?.data?.destination;
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, bottom: 24.0),
@@ -35,6 +39,7 @@ class DestinationActions extends StatelessWidget {
                     destination: destination,
                     lnAddress: lnAddress,
                     paymentMethod: paymentMethod,
+                    textGroup: textGroup,
                   ),
                 ),
                 const SizedBox(width: 32.0),
@@ -42,6 +47,7 @@ class DestinationActions extends StatelessWidget {
                   child: _ShareButton(
                     destination: destination,
                     paymentMethod: paymentMethod,
+                    textGroup: textGroup,
                   ),
                 ),
               ]
@@ -55,16 +61,19 @@ class _CopyButton extends StatelessWidget {
   final String destination;
   final String? paymentMethod;
   final String? lnAddress;
+  final AutoSizeGroup? textGroup;
 
   const _CopyButton({
     required this.destination,
     this.paymentMethod,
     this.lnAddress,
+    this.textGroup,
   });
 
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
+    final MinFontSize minFont = MinFontSize(context);
 
     return ConstrainedBox(
       constraints: const BoxConstraints(
@@ -85,9 +94,13 @@ class _CopyButton extends StatelessWidget {
             size: 20.0,
           ),
           // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
-          label: const Text(
+          label: AutoSizeText(
             'COPY',
             style: balanceFiatConversionTextStyle,
+            maxLines: 1,
+            group: textGroup,
+            minFontSize: minFont.minFontSize,
+            stepGranularity: 0.1,
           ),
           onPressed: () {
             ServiceInjector().deviceClient.setClipboardText(
@@ -111,14 +124,18 @@ class _CopyButton extends StatelessWidget {
 class _ShareButton extends StatelessWidget {
   final String destination;
   final String? paymentMethod;
+  final AutoSizeGroup? textGroup;
 
   const _ShareButton({
     required this.destination,
     required this.paymentMethod,
+    this.textGroup,
   });
 
   @override
   Widget build(BuildContext context) {
+    final MinFontSize minFont = MinFontSize(context);
+
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 48.0,
@@ -141,9 +158,13 @@ class _ShareButton extends StatelessWidget {
             size: 20.0,
           ),
           // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
-          label: const Text(
+          label: AutoSizeText(
             'SHARE',
             style: balanceFiatConversionTextStyle,
+            maxLines: 1,
+            group: textGroup,
+            minFontSize: minFont.minFontSize,
+            stepGranularity: 0.1,
           ),
           onPressed: () {
             Share.share(destination);
