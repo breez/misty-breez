@@ -35,19 +35,30 @@ class InputCubit extends Cubit<InputState> {
     _decodeInvoiceController.add(InputData(data: input, source: source));
   }
 
-  Future<void> trackPaymentEvents(String? paymentDestination) async {
-    _logger.info('Tracking incoming payment events for: $paymentDestination');
+  Future<void> trackPaymentEvents(
+    String? paymentDestination, {
+    required PaymentType paymentType,
+  }) async {
+    final String direction = paymentType == PaymentType.receive ? 'Incoming' : 'Outgoing';
+    _logger.info('$direction payment tracking started for: $paymentDestination');
     final bool paymentDestinationIsEmpty = paymentDestination == null || paymentDestination.isEmpty;
     await _breezSdkLiquid.paymentEventStream.firstWhere((PaymentEvent paymentEvent) {
       final Payment payment = paymentEvent.payment;
       final String receivedPaymentDestination = payment.destination ?? '';
       final bool doesDestinationMatch =
           paymentDestinationIsEmpty || receivedPaymentDestination == paymentDestination;
-      final bool isPaymentReceived = payment.paymentType == PaymentType.receive &&
-          (payment.status == PaymentState.pending || payment.status == PaymentState.complete);
 
-      if (doesDestinationMatch && isPaymentReceived) {
-        _logger.info('Payment Received! Destination: ${payment.destination}, Status: ${payment.status}');
+      /// For outgoing payments, we only consider payments that are complete,
+      /// since we're only interested in successful outgoing transactions.
+      final bool isPaymentValid = paymentType == PaymentType.receive
+          ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
+          : (payment.status == PaymentState.complete);
+
+      final bool isPaymentOfType = payment.paymentType == paymentType;
+      if (doesDestinationMatch && isPaymentOfType && isPaymentValid) {
+        _logger.info(
+          '$direction payment detected! Destination: ${payment.destination}, Status: ${payment.status}',
+        );
         return true;
       }
       return false;

@@ -1,1 +1,1 @@
-const int maxPaymentAmountSat = 4294967;
+const Duration kPaymentSheetPopDelay = Duration(milliseconds: 2250);
