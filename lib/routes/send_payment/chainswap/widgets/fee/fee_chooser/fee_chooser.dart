@@ -41,9 +41,7 @@ class _FeeChooserState extends State<FeeChooser> {
             selectedFeeOption.processingSpeed.waitingTime,
           ),
           const SizedBox(height: 36.0),
-          if (selectedFeeOption is SendChainSwapFeeOption) ...<Widget>[
-            FeeBreakdown(feeOption: selectedFeeOption.preparePayOnchainResponse),
-          ],
+          FeeBreakdown(feeOption: selectedFeeOption, refundAmountSat: widget.amountSat),
         ],
       ),
     );

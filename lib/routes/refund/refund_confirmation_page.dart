@@ -10,13 +10,13 @@ import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class RefundConfirmationPage extends StatefulWidget {
-  final int amountSat;
+  final int refundAmountSat;
   final String swapAddress;
   final String toAddress;
   final String? originalTransaction;
 
   const RefundConfirmationPage({
-    required this.amountSat,
+    required this.refundAmountSat,
     required this.toAddress,
     required this.swapAddress,
     super.key,
@@ -67,7 +67,7 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
 
           if (affordableFees.isNotEmpty) {
             return FeeChooser(
-              amountSat: widget.amountSat,
+              amountSat: widget.refundAmountSat,
               feeOptions: snapshot.data!,
               selectedFeeIndex: selectedFeeIndex,
               onSelect: (int index) => setState(() {
@@ -110,8 +110,8 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
           affordableFees = feeOptions
               .where(
                 (RefundFeeOption f) => f.isAffordable(
-                  balanceSat: widget.amountSat,
-                  amountSat: widget.amountSat,
+                  balanceSat: widget.refundAmountSat,
+                  amountSat: widget.refundAmountSat,
                 ),
               )
               .toList();

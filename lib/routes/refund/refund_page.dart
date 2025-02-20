@@ -69,7 +69,7 @@ class RefundPageState extends State<RefundPage> {
             Navigator.of(context).push(
               FadeInRoute<void>(
                 builder: (_) => RefundConfirmationPage(
-                  amountSat: widget.swapInfo.amountSat.toInt(),
+                  refundAmountSat: widget.swapInfo.amountSat.toInt(),
                   toAddress: _addressController.text,
                   swapAddress: widget.swapInfo.swapAddress,
                 ),
