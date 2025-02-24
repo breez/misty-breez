@@ -12,10 +12,11 @@ packages:
   app_group_directory:
     dependency: transitive
     description:
-      name: app_group_directory
-      sha256: ad89800fd55133b46e1f6940ac6b974562f7fb6394c662c0f4422b90167f2416
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "flutter-3.29"
+      resolved-ref: "02d3774c7cfacde7d9313ea08074d4c171b91226"
+      url: "https://github.com/breez/app_group_directory"
+    source: git
     version: "2.0.0"
   app_links:
     dependency: transitive
@@ -862,10 +863,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: daf97c9d80197ed7b619040e86c8ab9a9dad285e7671ee7390f9180cc828a51e
+      sha256: b89e6e24d1454e149ab20fbb225af58660f0c0bf4475544650700d8e2da54aef
       url: "https://pub.dev"
     source: hosted
-    version: "5.10.1"
+    version: "5.11.0"
   win32_registry:
     dependency: transitive
     description:
