@@ -183,7 +183,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
     }
 
     if (sanitized.length > 64) {
-      return 'Username must not be longer than 64 characters.';
+      return 'Username cannot exceed 64 characters.';
     }
 
     final LnAddressState state = context.read<LnAddressCubit>().state;
