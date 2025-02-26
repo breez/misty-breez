@@ -32,6 +32,9 @@ class DestinationInformationState extends State<DestinationInformation> {
             Rect.fromPoints(offset, offset),
             Offset.zero & overlay.size,
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
           items: <PopupMenuItem<String>>[
             const PopupMenuItem<String>(
               // TODO(erdemyerebasmaz): Replace with const var
