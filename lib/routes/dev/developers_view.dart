@@ -11,7 +11,6 @@ import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
@@ -124,10 +123,6 @@ class _DevelopersViewState extends State<DevelopersView> {
                 .toList(),
           ),
         ],
-      ),
-      // TODO(erdemyerebasmaz): Liquid - Remove Absorb Pointer once execute_command API is implemented
-      body: AbsorbPointer(
-        child: CommandLineInterface(scaffoldKey: scaffoldKey),
       ),
     );
   }
