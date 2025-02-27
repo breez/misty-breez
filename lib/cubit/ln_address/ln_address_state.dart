@@ -1,4 +1,4 @@
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/cubit/ln_address/models/ln_address_update_status.dart';
 
 enum LnAddressStatus { initial, loading, success, error }
 
