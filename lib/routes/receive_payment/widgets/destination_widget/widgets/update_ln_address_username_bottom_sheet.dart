@@ -195,7 +195,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
     return EmailValidator.validate(email) ? null : 'Invalid username.';
   }
 
-  void _handleSubmit() {
+  void _handleSubmit() async {
     if (_usernameController.text.isEmpty) {
       Navigator.pop(context);
       return;
@@ -205,8 +205,28 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
     lnAddressCubit.clearUpdateStatus();
 
     if (_formKey.currentState?.validate() ?? false) {
-      final String username = UsernameFormatter.sanitize(_usernameController.text);
-      lnAddressCubit.setupLightningAddress(baseUsername: username);
+      final String newUsername = UsernameFormatter.sanitize(_usernameController.text);
+      final String currentUsername = widget.lnAddress.split('@').first;
+
+      // Only show confirmation if username is actually changing
+      if (currentUsername != newUsername) {
+        final bool? confirmed = await promptAreYouSure(
+          context,
+          'Confirm Username Change',
+          Text(
+            "Changing your Lightning Address username will permanently release '$currentUsername@breez.fun'"
+            ', making it available for other users.\n\n'
+            'Do you want to proceed?',
+            style: const TextStyle(color: Colors.white),
+          ),
+        );
+
+        if (confirmed != true) {
+          return;
+        }
+        lnAddressCubit.setupLightningAddress(baseUsername: newUsername);
+      }
+      return;
     }
   }
 }
