@@ -145,19 +145,18 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     if (isRecover) {
       // Recover webhook
       try {
-        return await _prepareAndRecoverLnurlWebhook(
+        final RegisterRecoverLnurlPayResponse response = await _prepareAndRecoverLnurlWebhook(
           pubKey: pubKey,
           webhookUrl: webhookUrl,
           baseUsername: baseUsername,
-        ).then(
-          (RegisterRecoverLnurlPayResponse response) async {
-            _logger.info('Recovered LNURL Webhook successfully. Re-registering to transfer ownership.');
-            return await _prepareAndRegisterLnurlWebhook(
-              pubKey: pubKey!,
-              webhookUrl: webhookUrl,
-              baseUsername: baseUsername,
-            );
-          },
+        );
+        _logger.info('Recovered LNURL Webhook successfully. Re-registering to transfer device ownership.');
+        return await _prepareAndRegisterLnurlWebhook(
+          pubKey: pubKey,
+          webhookUrl: webhookUrl,
+          baseUsername: baseUsername,
+          recoveredLightningAddress: response.lightningAddress,
+          isOwnershipTransfer: true,
         );
       } on WebhookNotFoundException {
         // Fallback to register a new webhook if recovery fails
@@ -250,9 +249,27 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
   /// Resolves the appropriate username for LNURL registration.
   ///
+  /// - If [recoveredLightningAddress] is provided, extracts username from it.
   /// - If the webhook is not yet registered, it utilizes default profile name as username.
   /// - If the webhook is already registered, it retrieves the stored username from [BreezPreferences].
-  Future<String?> _resolveUsername({required bool isNewRegistration}) async {
+  Future<String?> _resolveUsername({
+    required bool isNewRegistration,
+    String? recoveredLightningAddress,
+    String? baseUsername,
+  }) async {
+    // If we have a recovered lightning address, extract the username part
+    if (recoveredLightningAddress != null && recoveredLightningAddress.isNotEmpty) {
+      final String username = recoveredLightningAddress.split('@').first;
+      _logger.info('Using username from recovered Lightning Address: $username');
+      return username;
+    }
+
+    // If baseUsername is provided (during update), use it
+    if (baseUsername != null && baseUsername.isNotEmpty) {
+      _logger.info('Using provided baseUsername: $baseUsername');
+      return baseUsername;
+    }
+
     if (isNewRegistration) {
       final String? defaultProfileName = await breezPreferences.defaultProfileName;
       final String formattedUsername = UsernameFormatter.formatDefaultProfileName(defaultProfileName);
@@ -261,6 +278,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     }
 
     // TODO(erdemyerebasmaz): Add null-handling to revert to the profile name if the stored username is null.
+    // For existing registrations, use stored username
     final String? storedUsername = await breezPreferences.lnAddressUsername;
     _logger.info('Refreshing LNURL Webhook: Using stored username: $storedUsername');
     return storedUsername;
@@ -350,13 +368,21 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     required String webhookUrl,
     required String? baseUsername,
     bool? registerWithRetries,
+    bool isOwnershipTransfer = false,
+    String? recoveredLightningAddress,
   }) async {
     _logger.info('Preparing register LNURL Webhook request.');
     final bool isUpdating = baseUsername != null;
     final bool isLnUrlWebhookRegistered = await breezPreferences.isLnUrlWebhookRegistered;
-    final bool isNewRegistration = registerWithRetries ?? !(isUpdating && isLnUrlWebhookRegistered);
 
-    final String? username = baseUsername ?? await _resolveUsername(isNewRegistration: isNewRegistration);
+    final bool isNewRegistration =
+        isOwnershipTransfer ? false : registerWithRetries ?? !(isUpdating && isLnUrlWebhookRegistered);
+
+    final String? username = await _resolveUsername(
+      isNewRegistration: isNewRegistration,
+      recoveredLightningAddress: recoveredLightningAddress,
+      baseUsername: baseUsername,
+    );
 
     // Register without retries if this is an update to existing LNURL Webhook
     if (!isNewRegistration) {
