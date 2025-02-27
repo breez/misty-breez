@@ -150,8 +150,10 @@ class LnUrlRegistrationManager {
     String? baseUsername,
   }) async {
     try {
-      final RegisterRecoverLnurlPayResponse response =
-          await _recoverWebhook(pubKey: pubKey, webhookUrl: webhookUrl);
+      final RegisterRecoverLnurlPayResponse response = await _recoverWebhook(
+        pubKey: pubKey,
+        webhookUrl: webhookUrl,
+      );
 
       if (response.lightningAddress.isNotEmpty) {
         if (_logger.isLoggable(Level.INFO)) {
@@ -313,8 +315,9 @@ class LnUrlRegistrationManager {
       _logger.fine('Unregistering webhook: $webhookUrl');
     }
 
-    final UnregisterRecoverLnurlPayRequest request =
-        await requestBuilder.buildRecoverRequest(webhookUrl: webhookUrl);
+    final UnregisterRecoverLnurlPayRequest request = await requestBuilder.buildRecoverRequest(
+      webhookUrl: webhookUrl,
+    );
     await lnAddressService.unregister(pubKey: pubKey, request: request);
   }
 
@@ -324,8 +327,10 @@ class LnUrlRegistrationManager {
     required String webhookUrl,
     String? username,
   }) async {
-    final RegisterLnurlPayRequest request =
-        await requestBuilder.buildRegisterRequest(webhookUrl: webhookUrl, username: username);
+    final RegisterLnurlPayRequest request = await requestBuilder.buildRegisterRequest(
+      webhookUrl: webhookUrl,
+      username: username,
+    );
 
     if (_logger.isLoggable(Level.INFO)) {
       _logger.info('Attempting to register LNURL Webhook for pubKey: $pubKey');
@@ -423,8 +428,9 @@ class LnUrlRegistrationManager {
       _logger.info('Attempting to recover LNURL Webhook for pubKey: $pubKey');
     }
 
-    final UnregisterRecoverLnurlPayRequest request =
-        await requestBuilder.buildRecoverRequest(webhookUrl: webhookUrl);
+    final UnregisterRecoverLnurlPayRequest request = await requestBuilder.buildRecoverRequest(
+      webhookUrl: webhookUrl,
+    );
 
     try {
       final RegisterRecoverLnurlPayResponse recoverResponse = await lnAddressService.recover(
