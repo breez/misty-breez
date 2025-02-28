@@ -58,6 +58,7 @@ class DestinationInformationState extends State<DestinationInformation> {
             if (context.mounted) {
               showModalBottomSheet(
                 context: context,
+                backgroundColor: themeData.customData.paymentListBgColor,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12.0)),
                 ),
