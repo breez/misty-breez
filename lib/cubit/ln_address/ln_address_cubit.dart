@@ -153,12 +153,15 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         (throw Exception('Failed to retrieve wallet info'));
   }
 
+  /// Clears any update status errors or messages
   void clearUpdateStatus() {
     _logger.info('Clearing LnAddressUpdateStatus');
-    emit(
-      state.copyWith(
-        updateStatus: const LnAddressUpdateStatus(),
-      ),
-    );
+    emit(state.clearUpdateStatus());
+  }
+
+  /// Clears any error state
+  void clearError() {
+    _logger.info('Clearing LnAddress error state');
+    emit(state.clearError());
   }
 }
