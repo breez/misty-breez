@@ -98,7 +98,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Divider(
               height: 32.0,
-              color: Color.fromRGBO(40, 59, 74, 1),
+              color: Color.fromRGBO(40, 59, 74, 0.5),
               indent: 0.0,
               endIndent: 0.0,
             ),
@@ -133,7 +133,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             padding: EdgeInsets.only(top: 8.0),
             child: Divider(
               height: 32.0,
-              color: Color.fromRGBO(40, 59, 74, 1),
+              color: Color.fromRGBO(40, 59, 74, 0.5),
               indent: 0.0,
               endIndent: 0.0,
             ),

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/external_browser.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
@@ -48,7 +49,7 @@ class ShareablePaymentRow extends StatelessWidget {
 
     return Theme(
       data: themeData.copyWith(
-        dividerColor: dividerColor ?? themeData.colorScheme.surface,
+        dividerColor: dividerColor ?? themeData.customData.paymentListBgColorLight,
       ),
       child: ExpansionTile(
         dense: true,
@@ -67,8 +68,8 @@ class ShareablePaymentRow extends StatelessWidget {
           WarningBox(
             boxPadding: EdgeInsets.zero,
             contentPadding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-            backgroundColor: themeData.primaryColorLight.withValues(alpha: .1),
-            borderColor: themeData.primaryColorLight.withValues(alpha: .7),
+            backgroundColor: themeData.customData.paymentListBgColorLight,
+            borderColor: const Color.fromRGBO(10, 20, 40, 4),
             child: Row(
               children: <Widget>[
                 Expanded(

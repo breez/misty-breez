@@ -84,7 +84,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
                   width: 40.0,
                   height: 6.5,
                   decoration: BoxDecoration(
-                    color: Colors.white24,
+                    color: Colors.white12,
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),

@@ -8,6 +8,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/widgets.dart';
@@ -203,7 +204,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      color: themeData.colorScheme.surface,
+      color: themeData.customData.paymentListBgColorLight,
       child: _showPaymentSent ? const PaymentSentContent() : const ProcessingPaymentContent(),
     );
   }

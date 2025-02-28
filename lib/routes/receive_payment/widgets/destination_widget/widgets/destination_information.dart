@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/receive_payment/widgets/widgets.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class DestinationInformation extends StatefulWidget {
@@ -27,13 +28,13 @@ class DestinationInformationState extends State<DestinationInformation> {
 
         showMenu(
           context: context,
-          color: themeData.colorScheme.surface,
+          color: themeData.customData.paymentListBgColorLight,
           position: RelativeRect.fromRect(
             Rect.fromPoints(offset, offset),
             Offset.zero & overlay.size,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(4.0),
           ),
           items: <PopupMenuItem<String>>[
             const PopupMenuItem<String>(

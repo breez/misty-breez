@@ -141,7 +141,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                     width: 40.0,
                     height: 6.5,
                     decoration: BoxDecoration(
-                      color: Colors.white24,
+                      color: Colors.white12,
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
@@ -170,7 +170,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                 ),
                 const Divider(
                   height: 32.0,
-                  color: Colors.white24,
+                  color: Colors.white12,
                   indent: 16.0,
                   endIndent: 16.0,
                 ),

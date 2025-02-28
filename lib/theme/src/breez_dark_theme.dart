@@ -10,7 +10,7 @@ final ThemeData breezDarkTheme = ThemeData(
     secondary: Colors.white,
     onSecondary: Colors.white,
     error: const Color(0xFFeddc97),
-    surface: const Color(0xFF152a3d),
+    surface: const Color(0xFF00091c),
   ),
   primaryColor: const Color(0xFF0085fb),
   primaryColorDark: const Color(0xFF00081C),
@@ -19,11 +19,11 @@ final ThemeData breezDarkTheme = ThemeData(
     backgroundColor: Color(0xFF0085fb),
     sizeConstraints: BoxConstraints(minHeight: 64, minWidth: 64),
   ),
-  canvasColor: const Color(0xFF0c2031),
+  canvasColor: const Color(0xFF00091c),
   bottomAppBarTheme: const BottomAppBarTheme(elevation: 0, color: Color(0xFF0085fb)),
   appBarTheme: AppBarTheme(
     centerTitle: false,
-    backgroundColor: const Color(0xFF0c2031),
+    backgroundColor: const Color(0xFF00091c),
     iconTheme: const IconThemeData(
       color: Colors.white,
     ),
@@ -36,14 +36,14 @@ final ThemeData breezDarkTheme = ThemeData(
       statusBarBrightness: Brightness.dark, // iOS
       statusBarIconBrightness: Brightness.light, // Android
       systemStatusBarContrastEnforced: false,
-      systemNavigationBarColor: Color(0xFF0c2031),
+      systemNavigationBarColor: Color(0xFF00091c),
       systemNavigationBarContrastEnforced: false,
     ),
   ),
   dialogTheme: const DialogTheme(
     titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
     contentTextStyle: TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),
-    backgroundColor: Color(0xFF152a3d),
+    backgroundColor: Color.fromRGBO(10, 20, 40, 1),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(12.0)),
     ),
@@ -158,7 +158,7 @@ final DatePickerThemeData calendarDarkTheme = DatePickerThemeData(
   todayBorder: const BorderSide(color: Color(0xFF0085fb)),
   headerBackgroundColor: const Color(0xFF0085fb),
   headerForegroundColor: Colors.white,
-  backgroundColor: const Color(0xFF152a3d),
+  backgroundColor: const Color.fromRGBO(10, 20, 40, 1),
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.all(
       Radius.circular(12.0),
