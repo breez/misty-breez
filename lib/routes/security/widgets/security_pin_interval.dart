@@ -5,6 +5,7 @@ import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/theme/theme.dart';
 
 class SecurityPinInterval extends StatelessWidget {
   final Duration interval;
@@ -26,29 +27,34 @@ class SecurityPinInterval extends StatelessWidget {
         ),
         maxLines: 1,
       ),
-      trailing: DropdownButtonHideUnderline(
-        child: DropdownButton<int>(
-          iconEnabledColor: Colors.white,
-          value: interval.inSeconds,
-          isDense: true,
-          onChanged: (int? interval) async {
-            if (interval != null) {
-              final SecurityCubit securityCubit = context.read<SecurityCubit>();
-              await securityCubit.setLockInterval(Duration(seconds: interval));
-            }
-          },
-          items: options.map((int seconds) {
-            return DropdownMenuItem<int>(
-              value: seconds,
-              child: Text(
-                _formatSeconds(texts, seconds),
-                style: themeData.primaryTextTheme.titleMedium?.copyWith(
-                  color: Colors.white,
+      trailing: Theme(
+        data: themeData.copyWith(
+          canvasColor: themeData.customData.paymentListBgColor,
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<int>(
+            iconEnabledColor: Colors.white,
+            value: interval.inSeconds,
+            isDense: true,
+            onChanged: (int? interval) async {
+              if (interval != null) {
+                final SecurityCubit securityCubit = context.read<SecurityCubit>();
+                await securityCubit.setLockInterval(Duration(seconds: interval));
+              }
+            },
+            items: options.map((int seconds) {
+              return DropdownMenuItem<int>(
+                value: seconds,
+                child: Text(
+                  _formatSeconds(texts, seconds),
+                  style: themeData.primaryTextTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                  ),
+                  maxLines: 1,
                 ),
-                maxLines: 1,
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
