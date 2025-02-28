@@ -182,7 +182,7 @@ class LnUrlPayService {
       }
     }
 
-    return _ResponseError(response.statusCode, response.body);
+    return LnurlPayServiceResponseError(response.statusCode, response.body);
   }
 
   /// Logs the HTTP response details.
@@ -213,7 +213,7 @@ class LnUrlPayService {
       try {
         final dynamic result = await operation();
 
-        if (result is _ResponseError) {
+        if (result is LnurlPayServiceResponseError) {
           errorHandler(result.statusCode, result.body);
           // If errorHandler doesn't throw, we'll exit the loop
           break;
@@ -243,12 +243,4 @@ class LnUrlPayService {
     // This should never be reached unless errorHandler doesn't throw
     throw Exception('Failed to $operationName after multiple attempts');
   }
-}
-
-/// Represents an HTTP response error.
-class _ResponseError {
-  final int statusCode;
-  final String body;
-
-  _ResponseError(this.statusCode, this.body);
 }
