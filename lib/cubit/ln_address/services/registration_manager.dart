@@ -315,7 +315,7 @@ class LnUrlRegistrationManager {
       _logger.fine('Unregistering webhook: $webhookUrl');
     }
 
-    final UnregisterRecoverLnurlPayRequest request = await requestBuilder.buildRecoverRequest(
+    final UnregisterRecoverLnurlPayRequest request = await requestBuilder.buildUnregisterRecoverRequest(
       webhookUrl: webhookUrl,
     );
     await lnAddressService.unregister(pubKey: pubKey, request: request);
@@ -428,7 +428,7 @@ class LnUrlRegistrationManager {
       _logger.info('Attempting to recover LNURL Webhook for pubKey: $pubKey');
     }
 
-    final UnregisterRecoverLnurlPayRequest request = await requestBuilder.buildRecoverRequest(
+    final UnregisterRecoverLnurlPayRequest request = await requestBuilder.buildUnregisterRecoverRequest(
       webhookUrl: webhookUrl,
     );
 
