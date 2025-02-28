@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
 
 class CustomData {
-  BlendMode loaderColorBlendMode;
   String loaderAssetPath;
   Color pendingTextColor;
   Color dashboardBgColor;
@@ -12,7 +11,6 @@ class CustomData {
   Color navigationDrawerBgColor;
 
   CustomData({
-    required this.loaderColorBlendMode,
     required this.loaderAssetPath,
     required this.pendingTextColor,
     required this.dashboardBgColor,
@@ -24,8 +22,7 @@ class CustomData {
 }
 
 final CustomData blueThemeCustomData = CustomData(
-  loaderColorBlendMode: BlendMode.multiply,
-  loaderAssetPath: 'assets/animations/breez_loader_blue.gif',
+  loaderAssetPath: 'assets/animations/lottie/breez_loader.lottie',
   dashboardBgColor: Colors.white,
   pendingTextColor: const Color(0xff4D88EC),
   paymentListBgColor: const Color(0xFFf9f9f9),
@@ -35,8 +32,7 @@ final CustomData blueThemeCustomData = CustomData(
 );
 
 final CustomData darkThemeCustomData = CustomData(
-  loaderColorBlendMode: BlendMode.multiply,
-  loaderAssetPath: 'assets/animations/breez_loader_dark.gif',
+  loaderAssetPath: 'assets/animations/lottie/breez_loader.lottie',
   pendingTextColor: const Color(0xff4D88EC),
   dashboardBgColor: const Color(0xFF00091c),
   paymentListBgColor: const Color.fromRGBO(10, 20, 40, 1),
