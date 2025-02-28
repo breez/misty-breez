@@ -79,6 +79,7 @@ class AmountFormField extends TextFormField {
                     alignment: Alignment.bottomRight,
                     onPressed: () => showModalBottomSheet(
                       context: context,
+                      backgroundColor: Theme.of(context).customData.paymentListBgColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),

@@ -4,6 +4,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/theme/theme.dart';
 
 export 'widgets/widgets.dart';
 
@@ -53,11 +54,13 @@ class SendOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     final BreezTranslations texts = context.texts();
 
     return BottomActionItem(
       onPress: () => showModalBottomSheet(
         context: context,
+        backgroundColor: themeData.customData.paymentListBgColor,
         builder: (BuildContext context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
@@ -90,10 +93,13 @@ class ReceiveOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     final BreezTranslations texts = context.texts();
+
     return BottomActionItem(
       onPress: () => showModalBottomSheet(
         context: context,
+        backgroundColor: themeData.customData.paymentListBgColor,
         builder: (BuildContext context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(

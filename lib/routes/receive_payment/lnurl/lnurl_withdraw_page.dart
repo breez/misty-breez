@@ -211,7 +211,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                                 Radius.circular(12),
                               ),
                             ),
-                            color: Color.fromRGBO(40, 59, 74, 0.5),
+                            color: Color.fromRGBO(10, 20, 40, 1),
                           ),
                           padding: const EdgeInsets.symmetric(
                             vertical: 32,
@@ -330,7 +330,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
                               yield widget;
                               yield const Divider(
                                 height: 32.0,
-                                color: Color.fromRGBO(40, 59, 74, 1),
+                                color: Color.fromRGBO(40, 59, 74, 0.5),
                                 indent: 0.0,
                                 endIndent: 0.0,
                               );

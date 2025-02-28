@@ -104,7 +104,7 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      color: themeData.colorScheme.surface,
+      color: themeData.customData.paymentListBgColorLight,
       child: FutureBuilder<LNURLPageResult>(
         future: _lnurlWithdrawFuture,
         builder: (BuildContext context, AsyncSnapshot<LNURLPageResult> snapshot) {

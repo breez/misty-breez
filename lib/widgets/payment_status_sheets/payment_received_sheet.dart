@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/constants.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
@@ -41,7 +42,7 @@ class PaymentReceivedSheetState extends State<PaymentReceivedSheet> {
     return Container(
       height: mediaQuerySize.height,
       width: mediaQuerySize.width,
-      color: themeData.colorScheme.surface,
+      color: themeData.customData.paymentListBgColorLight,
       child: const PaymentReceivedContent(),
     );
   }

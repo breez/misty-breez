@@ -26,7 +26,7 @@ class PaymentFilterExporter extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(),
           child: PopupMenuButton<PaymentFilterChoice>(
-            color: themeData.colorScheme.surface,
+            color: themeData.customData.paymentListBgColorLight,
             icon: Icon(
               Icons.more_vert,
               color: themeData.paymentItemTitleTextStyle.color,

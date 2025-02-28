@@ -111,7 +111,7 @@ class CalendarDialogState extends State<CalendarDialog> {
         data: themeData.isLightTheme
             ? themeData
             : themeData.copyWith(
-                disabledColor: themeData.colorScheme.surface,
+                disabledColor: themeData.customData.paymentListBgColorLight,
               ),
         child: TextField(
           decoration: InputDecoration(
