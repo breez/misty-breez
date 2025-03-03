@@ -8,7 +8,7 @@ import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/src/theme.dart';
-import 'package:l_breez/utils/min_font_size.dart';
+import 'package:l_breez/utils/a11y/min_font_size.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 

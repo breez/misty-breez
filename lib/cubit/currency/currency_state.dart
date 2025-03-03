@@ -1,6 +1,6 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/utils/fiat_conversion.dart';
+import 'package:l_breez/utils/utils.dart';
 
 class CurrencyState {
   final List<String> preferredCurrencies;

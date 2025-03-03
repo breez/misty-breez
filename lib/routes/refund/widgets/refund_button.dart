@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class RefundButton extends StatelessWidget {
@@ -45,7 +45,7 @@ class RefundButton extends StatelessWidget {
         context,
         null,
         Text(
-          extractExceptionMessage(e, texts),
+          ExceptionHandler.extractMessage(e, texts),
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );

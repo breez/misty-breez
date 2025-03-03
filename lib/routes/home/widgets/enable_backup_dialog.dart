@@ -4,7 +4,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/utils/min_font_size.dart';
+import 'package:l_breez/utils/a11y/min_font_size.dart';
 
 class EnableBackupDialog extends StatefulWidget {
   const EnableBackupDialog({super.key});

@@ -3,7 +3,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class DestinationQRWidget extends StatelessWidget {
@@ -33,7 +33,7 @@ class DestinationQRWidget extends StatelessWidget {
       return ScrollableErrorMessageWidget(
         showIcon: true,
         title: '${texts.qr_code_dialog_warning_message_error}:',
-        message: extractExceptionMessage(snapshot!.error!, texts),
+        message: ExceptionHandler.extractMessage(snapshot!.error!, texts),
         padding: EdgeInsets.zero,
       );
     } else if (destination == null) {

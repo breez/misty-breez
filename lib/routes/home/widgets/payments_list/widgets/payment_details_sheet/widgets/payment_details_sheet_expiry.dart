@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/utils/date.dart';
+import 'package:l_breez/utils/date/breez_date_utils.dart';
 
 class PaymentDetailsSheetExpiry extends StatelessWidget {
   final DateTime expiryDate;

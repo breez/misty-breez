@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/date.dart';
+import 'package:l_breez/utils/date/breez_date_utils.dart';
 
 class PaymentItemSubtitle extends StatelessWidget {
   final PaymentData paymentData;

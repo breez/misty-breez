@@ -3,7 +3,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:logging/logging.dart';
 
 export 'chain_swap_state.dart';
@@ -41,7 +41,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
       return await _breezSdkLiquid.instance!.payOnchain(req: req);
     } catch (e) {
       _logger.severe('Failed to pay onchain', e);
-      emit(state.copyWith(error: extractExceptionMessage(e, getSystemAppLocalizations())));
+      emit(state.copyWith(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
       rethrow;
     }
   }
@@ -59,7 +59,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
         recommendedFees: recommendedFees,
       );
     } catch (e) {
-      emit(ChainSwapState(error: extractExceptionMessage(e, getSystemAppLocalizations())));
+      emit(ChainSwapState(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
       rethrow;
     }
   }

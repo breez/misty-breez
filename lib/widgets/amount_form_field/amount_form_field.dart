@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/fiat_conversion.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 export 'currency_converter_bottom_sheet.dart';

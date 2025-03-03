@@ -14,7 +14,7 @@ import 'package:l_breez/cubit/cubit.dart';
 // ignore: uri_does_not_exist
 import 'package:l_breez/firebase/firebase_options.dart';
 import 'package:l_breez/main/bootstrap_error_page.dart';
-import 'package:l_breez/utils/date.dart';
+import 'package:l_breez/utils/date/breez_date_utils.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';

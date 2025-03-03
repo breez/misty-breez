@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class LoadingOrError extends StatelessWidget {
@@ -33,7 +33,7 @@ class LoadingOrError extends StatelessWidget {
     return ScrollableErrorMessageWidget(
       showIcon: true,
       title: '${texts.qr_code_dialog_warning_message_error}:',
-      message: extractExceptionMessage(error!, texts),
+      message: ExceptionHandler.extractMessage(error!, texts),
       padding: EdgeInsets.zero,
     );
   }

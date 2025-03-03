@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/utils/payment_validator.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
+import 'package:l_breez/utils/payments/payment_validator.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
 
@@ -68,7 +68,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       await _handleLightningPaymentLimitsResponse();
     } catch (error) {
       setState(() {
-        errorMessage = extractExceptionMessage(error, getSystemAppLocalizations());
+        errorMessage = ExceptionHandler.extractMessage(error, getSystemAppLocalizations());
       });
     } finally {
       setState(() {
@@ -107,7 +107,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
     } catch (error) {
       setState(() {
         _prepareResponse = null;
-        errorMessage = extractExceptionMessage(error, texts);
+        errorMessage = ExceptionHandler.extractMessage(error, texts);
         _isLoading = false;
       });
       rethrow;

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -126,7 +126,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void _onTrackPaymentError(Object e) {
     _logger.warning('Failed to track payment', e);
     if (mounted) {
-      showFlushbar(context, message: extractExceptionMessage(e, context.texts()));
+      showFlushbar(context, message: ExceptionHandler.extractMessage(e, context.texts()));
     }
     _onPaymentFinished(false);
   }

@@ -8,7 +8,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -153,7 +153,7 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
                     errorTextStyle: FieldTextStyle.labelStyle.copyWith(
                       color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
                     ),
-                    message: extractExceptionMessage(snapshotError, texts),
+                    message: ExceptionHandler.extractMessage(snapshotError, texts),
                     padding: EdgeInsets.zero,
                   ),
                 const Expanded(child: SizedBox.expand()),

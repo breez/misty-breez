@@ -30,7 +30,6 @@ class ProcessingPaymentContent extends StatelessWidget {
 
 /// Displays the processing payment title.
 class PaymentProcessingTitle extends StatelessWidget {
-  /// Logger for the PaymentProcessingTitle widget.
   static final Logger _logger = Logger('PaymentProcessingTitle');
 
   /// Standard horizontal padding for the title.
@@ -75,7 +74,6 @@ class PaymentProcessingTitle extends StatelessWidget {
 
 /// Displays the loading message with animated text.
 class PaymentProcessingLoadingMessage extends StatelessWidget {
-  /// Logger for the PaymentProcessingLoadingMessage widget.
   static final Logger _logger = Logger('PaymentProcessingLoadingMessage');
 
   /// Standard horizontal padding for the message.
@@ -137,7 +135,6 @@ class PaymentProcessingAnimation extends StatefulWidget {
 
 class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
     with TickerProviderStateMixin {
-  /// Logger for the PaymentProcessingAnimation widget.
   static final Logger _logger = Logger('PaymentProcessingAnimation');
 
   /// Height of the Lottie animation.

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/sdk_formatted_string_extensions.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:logging/logging.dart';
 
 export 'refund_state.dart';
@@ -106,7 +106,7 @@ class RefundCubit extends Cubit<RefundState> {
       return feeOptions;
     } catch (e) {
       _logger.severe('Failed to fetch refund fee options', e);
-      emit(RefundState(error: extractExceptionMessage(e, getSystemAppLocalizations())));
+      emit(RefundState(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
       rethrow;
     }
   }
@@ -205,7 +205,7 @@ class RefundCubit extends Cubit<RefundState> {
       return refundResponse;
     } catch (e) {
       _logger.severe('Failed to refund swap', e);
-      emit(state.copyWith(error: extractExceptionMessage(e, getSystemAppLocalizations())));
+      emit(state.copyWith(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
       rethrow;
     }
   }

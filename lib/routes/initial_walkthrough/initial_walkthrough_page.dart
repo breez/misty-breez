@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -204,7 +204,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (!mounted) {
         return;
       }
-      showFlushbar(context, message: extractExceptionMessage(error, texts));
+      showFlushbar(context, message: ExceptionHandler.extractMessage(error, texts));
       return;
     } finally {
       navigator.removeRoute(loaderRoute);
