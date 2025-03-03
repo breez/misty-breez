@@ -86,10 +86,10 @@ packages:
     dependency: "direct main"
     description:
       name: archive
-      sha256: "528579c7e4579719f04b21eeeeddfd73a18b31dabc22766893b7d1be7f49b967"
+      sha256: "0c64e928dcbefddecd234205422bcfc2b5e6d31be0b86fef0d0dd48d7b4c9742"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.3"
+    version: "4.0.4"
   args:
     dependency: transitive
     description:
@@ -473,18 +473,18 @@ packages:
     dependency: "direct main"
     description:
       name: extended_image
-      sha256: "85199f9233e03abc2ce2e68cbb2991648666af4a527ae4e6250935be8edfddae"
+      sha256: fcefcf3cba32696c639e9e305a790039709d05a7139320b91bb9d300993452e2
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.0"
+    version: "10.0.0"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
-      sha256: e61dafd94400fff6ef7ed1523d445ff3af137f198f3228e4a3107bc5b4bec5d1
+      sha256: ae468c31c375064964de11cbb31310a58c4462df6e3bae1a0bc0066f586795d5
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.6"
+    version: "5.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -793,10 +793,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "615a505aef59b151b46bbeef55b36ce2b6ed299d160c51d84281946f0aa0ce0e"
+      sha256: "1c2b787f99bdca1f3718543f81d38aa1b124817dfeb9fb196201bea85b6134bf"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.24"
+    version: "2.0.26"
   flutter_rust_bridge:
     dependency: "direct main"
     description:
@@ -2026,7 +2026,7 @@ packages:
     source: hosted
     version: "6.5.0"
   yaml:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: yaml
       sha256: b9da305ac7c39faa3f030eccd175340f968459dae4af175130b3fc47e40d76ce
@@ -2043,4 +2043,4 @@ packages:
     version: "2.2.2"
 sdks:
   dart: ">=3.7.0 <4.0.0"
-  flutter: ">=3.27.0"
+  flutter: ">=3.29.0"
