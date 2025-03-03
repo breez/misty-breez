@@ -10,8 +10,8 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/utils/payment_validator.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
+import 'package:l_breez/utils/payments/payment_validator.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
@@ -102,7 +102,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       await _handleLightningPaymentLimitsResponse();
     } catch (error) {
       final BreezTranslations texts = getSystemAppLocalizations();
-      String message = extractExceptionMessage(error, texts);
+      String message = ExceptionHandler.extractMessage(error, texts);
       if (error is LnUrlPayError_ServiceConnectivity) {
         message = texts.lnurl_fetch_invoice_error_message(
           widget.lnUrlPaymentArguments.requestData.domain,
@@ -192,7 +192,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     } catch (error) {
       setState(() {
         _prepareResponse = null;
-        errorMessage = extractExceptionMessage(error, texts);
+        errorMessage = ExceptionHandler.extractMessage(error, texts);
         _isLoading = false;
       });
       rethrow;

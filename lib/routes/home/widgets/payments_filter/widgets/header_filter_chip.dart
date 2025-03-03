@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/date.dart';
+import 'package:l_breez/utils/date/breez_date_utils.dart';
 
 class HeaderFilterChip extends SliverPadding {
   HeaderFilterChip(

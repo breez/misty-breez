@@ -4,7 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class RestoreFormPage extends StatefulWidget {
@@ -105,7 +105,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
       setState(() {
         _hasError = true;
       });
-      throw Exception(extractExceptionMessage(e, texts));
+      throw Exception(ExceptionHandler.extractMessage(e, texts));
     }
   }
 }

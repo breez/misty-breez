@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:archive/archive_io.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:logging/logging.dart';
-import 'package:share_plus/share_plus.dart';
 
 final Logger _logger = Logger('BreezLogger');
 final Logger _breezSdkLiquidLogger = Logger('BreezSdkLiquid');
@@ -121,16 +119,4 @@ class BreezLogger {
       "${record.stackTrace != null ? "\n${record.stackTrace}" : ""}";
 
   String _formatTime(DateTime time) => time.toUtc().toIso8601String();
-}
-
-void shareLog() async {
-  final AppConfig config = await AppConfig.instance();
-  final String appDir = config.sdkConfig.workingDir;
-  final ZipFileEncoder encoder = ZipFileEncoder();
-  final String zipFilePath = '$appDir/l-breez.logs.zip';
-  encoder.create(zipFilePath);
-  await encoder.addDirectory(Directory('$appDir/logs/'));
-  await encoder.close();
-  final XFile zipFile = XFile(zipFilePath);
-  Share.shareXFiles(<XFile>[zipFile]);
 }

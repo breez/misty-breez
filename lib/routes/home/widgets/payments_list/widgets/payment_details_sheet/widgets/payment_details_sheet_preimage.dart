@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/utils/ln_payment_validator_utils.dart';
+import 'package:l_breez/services/network/ln_payment_validator_service.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class PaymentDetailsSheetPreimage extends StatelessWidget {
@@ -29,7 +29,7 @@ class PaymentDetailsSheetPreimage extends StatelessWidget {
       ),
       sharedValue: paymentPreimage,
       isURL: invoice != null,
-      urlValue: LnPaymentValidatorUtils().formatLnPaymentValidatorUrl(
+      urlValue: LnPaymentValidatorService.formatValidatorUrl(
         invoice: invoice!,
         preimage: paymentPreimage,
       ),

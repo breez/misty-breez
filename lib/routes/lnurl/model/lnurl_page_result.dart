@@ -1,6 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 
 class LNURLPageResult {
   final LnUrlProtocol? protocol;
@@ -15,7 +15,7 @@ class LNURLPageResult {
 
   bool get hasError => error != null;
 
-  String get errorMessage => extractExceptionMessage(
+  String get errorMessage => ExceptionHandler.extractMessage(
         error ?? '',
         getSystemAppLocalizations(),
         defaultErrorMsg: getSystemAppLocalizations().lnurl_payment_page_unknown_error,

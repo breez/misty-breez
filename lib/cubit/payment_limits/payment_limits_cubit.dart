@@ -7,7 +7,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:logging/logging.dart';
 
 export 'payment_limits_state.dart';
@@ -65,7 +65,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
       } catch (e) {
         _logger.severe('fetchLightningLimits error', e);
         final BreezTranslations texts = getSystemAppLocalizations();
-        emit(state.copyWith(errorMessage: extractExceptionMessage(e, texts)));
+        emit(state.copyWith(errorMessage: ExceptionHandler.extractMessage(e, texts)));
         rethrow;
       }
     } else {
@@ -85,7 +85,7 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
       } catch (e) {
         _logger.severe('fetchOnchainLimits error', e);
         final BreezTranslations texts = getSystemAppLocalizations();
-        emit(state.copyWith(errorMessage: extractExceptionMessage(e, texts)));
+        emit(state.copyWith(errorMessage: ExceptionHandler.extractMessage(e, texts)));
         rethrow;
       }
     } else {

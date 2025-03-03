@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/constants.dart';
+import 'package:l_breez/utils/constants/app_constants.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 Future<dynamic> showPaymentReceivedSheet(BuildContext context) {
@@ -25,7 +25,7 @@ class PaymentReceivedSheetState extends State<PaymentReceivedSheet> {
   void initState() {
     super.initState();
     // Close the bottom sheet after 2.25 seconds
-    Future<void>.delayed(kPaymentSheetPopDelay, () {
+    Future<void>.delayed(PaymentSheetTiming.popDelay, () {
       if (mounted) {
         Navigator.of(context).popUntil(
           (Route<dynamic> route) => route.settings.name == Home.routeName,

@@ -8,9 +8,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/utils/min_font_size.dart';
-import 'package:l_breez/utils/payment_validator.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
@@ -159,7 +157,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
           return ScrollableErrorMessageWidget(
             showIcon: true,
             title: '${texts.qr_code_dialog_warning_message_error}:',
-            message: extractExceptionMessage(prepareSnapshot.error!, texts),
+            message: ExceptionHandler.extractMessage(prepareSnapshot.error!, texts),
             padding: EdgeInsets.zero,
           );
         }
@@ -175,7 +173,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                 return ScrollableErrorMessageWidget(
                   showIcon: true,
                   title: '${texts.qr_code_dialog_warning_message_error}:',
-                  message: extractExceptionMessage(receiveSnapshot.error!, texts),
+                  message: ExceptionHandler.extractMessage(receiveSnapshot.error!, texts),
                   padding: EdgeInsets.zero,
                 );
               }

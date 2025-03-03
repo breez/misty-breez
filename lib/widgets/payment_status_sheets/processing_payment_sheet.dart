@@ -9,8 +9,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/constants.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/constants/app_constants.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 Future<dynamic> showProcessingPaymentSheet(
@@ -138,7 +138,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       _showPaymentSent = true;
     });
     // Close the bottom sheet after 2.25 seconds
-    Future<void>.delayed(kPaymentSheetPopDelay, () {
+    Future<void>.delayed(PaymentSheetTiming.popDelay, () {
       if (mounted) {
         Navigator.of(context).pop(payResult);
       }
@@ -186,14 +186,14 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       context,
       texts.payment_failed_report_dialog_title,
       Text(
-        extractExceptionMessage(err, texts),
+        ExceptionHandler.extractMessage(err, texts),
         style: theme.dialogTheme.contentTextStyle,
       ),
     );
   }
 
   void _showErrorFlushbar(Object err, BreezTranslations texts) {
-    final String message = extractExceptionMessage(err, texts);
+    final String message = ExceptionHandler.extractMessage(err, texts);
     showFlushbar(context, message: texts.payment_error_to_send(message));
   }
 

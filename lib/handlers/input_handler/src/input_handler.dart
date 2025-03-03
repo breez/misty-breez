@@ -7,7 +7,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/handlers/handlers.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -66,7 +66,7 @@ class InputHandler extends Handler {
       if (error != null) {
         final BuildContext? context = contextProvider?.getBuildContext();
         if (context != null && context.mounted) {
-          showFlushbar(context, message: extractExceptionMessage(error, context.texts()));
+          showFlushbar(context, message: ExceptionHandler.extractMessage(error, context.texts()));
         } else {
           _logger.info('Skipping handling of error: $error because context is null');
         }

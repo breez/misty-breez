@@ -11,9 +11,7 @@ import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/utils/min_font_size.dart';
-import 'package:l_breez/utils/payment_validator.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -248,7 +246,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           return ScrollableErrorMessageWidget(
             showIcon: true,
             title: '${texts.qr_code_dialog_warning_message_error}:',
-            message: extractExceptionMessage(prepareSnapshot.error!, texts),
+            message: ExceptionHandler.extractMessage(prepareSnapshot.error!, texts),
             padding: EdgeInsets.zero,
           );
         }
@@ -264,7 +262,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                 return ScrollableErrorMessageWidget(
                   showIcon: true,
                   title: '${texts.qr_code_dialog_warning_message_error}:',
-                  message: extractExceptionMessage(receiveSnapshot.error!, texts),
+                  message: ExceptionHandler.extractMessage(receiveSnapshot.error!, texts),
                   padding: EdgeInsets.zero,
                 );
               }

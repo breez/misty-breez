@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/utils/fiat_conversion.dart';
-import 'package:l_breez/utils/min_font_size.dart';
+import 'package:l_breez/utils/utils.dart';
 
 class SenderAmount extends StatelessWidget {
   final int amountSat;

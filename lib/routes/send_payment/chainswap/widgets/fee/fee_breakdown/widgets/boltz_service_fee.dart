@@ -3,7 +3,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/models/currency.dart';
-import 'package:l_breez/utils/min_font_size.dart';
+import 'package:l_breez/utils/a11y/min_font_size.dart';
 
 class BoltzServiceFee extends StatelessWidget {
   final int boltzServiceFee;
@@ -14,14 +14,14 @@ class BoltzServiceFee extends StatelessWidget {
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
-    final MinFontSize minFont = MinFontSize(context);
+    final MinFontSize minFontSize = MinFontSize(context);
 
     return ListTile(
       title: AutoSizeText(
         texts.reverse_swap_confirmation_boltz_fee,
         style: TextStyle(color: Colors.white.withValues(alpha: .4)),
         maxLines: 1,
-        minFontSize: minFont.minFontSize,
+        minFontSize: minFontSize.minFontSize,
         stepGranularity: 0.1,
       ),
       trailing: AutoSizeText(
@@ -30,7 +30,7 @@ class BoltzServiceFee extends StatelessWidget {
         ),
         style: TextStyle(color: themeData.colorScheme.error.withValues(alpha: .4)),
         maxLines: 1,
-        minFontSize: minFont.minFontSize,
+        minFontSize: minFontSize.minFontSize,
         stepGranularity: 0.1,
       ),
     );

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/src/theme.dart';
-import 'package:l_breez/utils/fiat_conversion.dart';
+import 'package:l_breez/utils/utils.dart';
 
 class LnPaymentHeader extends StatefulWidget {
   final String payeeName;

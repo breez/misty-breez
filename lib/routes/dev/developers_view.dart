@@ -1,42 +1,25 @@
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:archive/archive_io.dart';
-import 'package:breez_logger/breez_logger.dart';
 import 'package:breez_preferences/breez_preferences.dart';
-import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
-import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/routes/dev/dev.dart';
+import 'package:l_breez/services/services.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
+export 'widgets/widgets.dart';
+
 final Logger _logger = Logger('DevelopersView');
 
-bool allowRebroadcastRefunds = false;
-
-class Choice {
-  const Choice({
-    required this.title,
-    required this.icon,
-    required this.function,
-  });
-
-  final String title;
-  final IconData icon;
-  final Function(BuildContext context) function;
-}
-
+/// A view that provides developer tools and debugging options
 class DevelopersView extends StatefulWidget {
   static const String routeName = '/developers';
 
@@ -48,127 +31,285 @@ class DevelopersView extends StatefulWidget {
 
 class _DevelopersViewState extends State<DevelopersView> {
   final BreezPreferences _preferences = const BreezPreferences();
-  BugReportBehavior bugReportBehavior = BugReportBehavior.prompt;
+  final OverlayManager _overlayManager = OverlayManager();
+
+  BugReportBehavior _bugReportBehavior = BugReportBehavior.prompt;
+  String _sdkVersion = '';
 
   @override
   void initState() {
     super.initState();
-    _preferences.bugReportBehavior.then(
-      (BugReportBehavior value) => bugReportBehavior = value,
-      onError: (Object e) => _logger.warning(e),
-    );
+    _initializeViewData();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-    final BreezTranslations texts = context.texts();
-    final ThemeData themeData = Theme.of(context);
-
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: const back_button.BackButton(),
-        title: Text(texts.home_drawer_item_title_developers),
-        actions: <Widget>[
-          PopupMenuButton<Choice>(
-            onSelected: (Choice c) => c.function(context),
-            color: themeData.customData.paymentListBgColorLight,
-            icon: Icon(
-              Icons.more_vert,
-              color: themeData.iconTheme.color,
-            ),
-            itemBuilder: (BuildContext context) => <Choice>[
-              Choice(
-                title: texts.developers_page_menu_export_keys_title,
-                icon: Icons.phone_android,
-                function: _exportKeys,
-              ),
-              Choice(
-                title: texts.developers_page_menu_share_logs_title,
-                icon: Icons.share,
-                function: (_) => shareLog(),
-              ),
-              Choice(
-                title: texts.developers_page_menu_rescan_swaps_title,
-                icon: Icons.radar,
-                function: _rescanOnchainSwaps,
-              ),
-              if (bugReportBehavior != BugReportBehavior.prompt)
-                Choice(
-                  title: texts.developers_page_menu_prompt_bug_report_title,
-                  icon: Icons.bug_report,
-                  function: (_) async {
-                    try {
-                      await _preferences.setBugReportBehavior(BugReportBehavior.prompt);
-                      setState(() {
-                        bugReportBehavior = BugReportBehavior.prompt;
-                      });
-                    } catch (e) {
-                      _logger.warning('Failed to set BugReportBehavior: $e');
-                    }
-                  },
-                ),
-            ]
-                .map(
-                  (Choice choice) => PopupMenuItem<Choice>(
-                    value: choice,
-                    child: Text(
-                      choice.title,
-                      style: themeData.textTheme.labelLarge,
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
-    );
+  void dispose() {
+    _overlayManager.removeLoadingOverlay();
+    super.dispose();
   }
 
-  void _exportKeys(BuildContext context) async {
-    final AccountCubit accountCubit = context.read<AccountCubit>();
-    final AccountState accountState = accountCubit.state;
+  /// Initializes all data required by the view
+  Future<void> _initializeViewData() async {
+    await Future.wait(<Future<void>>[
+      _loadSdkVersion(),
+      _loadPreferences(),
+    ]);
+  }
 
-    final CredentialsManager credentialsManager = ServiceInjector().credentialsManager;
-    final Directory appDir = await getApplicationDocumentsDirectory();
-    final ZipFileEncoder encoder = ZipFileEncoder();
-    final String zipFilePath = '${appDir.path}/l-breez-keys.zip';
-    encoder.create(zipFilePath);
-    final List<File> credentialFiles = await credentialsManager.exportCredentials();
-    for (File credentialFile in credentialFiles) {
-      final Uint8List bytes = await credentialFile.readAsBytes();
-      encoder.addArchiveFile(
-        ArchiveFile(basename(credentialFile.path), bytes.length, bytes),
-      );
+  /// Loads the SDK version
+  Future<void> _loadSdkVersion() async {
+    try {
+      final String version = await SdkVersionService.getSdkVersion();
+      if (mounted) {
+        setState(() => _sdkVersion = version);
+      }
+    } catch (e) {
+      _logger.warning('Failed to load SDK version: $e');
+      if (mounted) {
+        setState(() => _sdkVersion = 'Error loading version');
+      }
     }
-
-    final AppConfig config = await AppConfig.instance();
-    final String sdkDirPath = Directory(config.sdkConfig.workingDir).path;
-    final String networkName = config.sdkConfig.network.name;
-    final String fingerprint = accountState.walletInfo!.fingerprint;
-    final String walletStoragePath = '$sdkDirPath/$networkName/$fingerprint';
-    final String storageFilePath = '$walletStoragePath/storage.sql';
-    final File storageFile = File(storageFilePath);
-    await encoder.addFile(storageFile);
-    await encoder.close();
-    final XFile zipFile = XFile(zipFilePath);
-    Share.shareXFiles(<XFile>[zipFile]);
   }
 
-  Future<void> _rescanOnchainSwaps(BuildContext context) async {
+  /// Loads user preferences related to bug reporting
+  Future<void> _loadPreferences() async {
+    try {
+      final BugReportBehavior behavior = await _preferences.bugReportBehavior;
+      if (mounted) {
+        setState(() => _bugReportBehavior = behavior);
+      }
+    } catch (e) {
+      _logger.warning('Failed to load preferences: $e');
+    }
+  }
+
+  /// Syncs the wallet with the network
+  Future<void> _syncWallet() async {
+    _overlayManager.showLoadingOverlay(context);
+
+    try {
+      await ServiceInjector().breezSdkLiquid.instance!.sync();
+
+      if (mounted) {
+        _showSuccessMessage('Wallet synced successfully.');
+      }
+    } catch (e) {
+      _logger.warning('Failed to sync wallet: $e');
+
+      if (mounted) {
+        _showErrorMessage('Failed to sync wallet.');
+      }
+    } finally {
+      _overlayManager.removeLoadingOverlay();
+    }
+  }
+
+  /// Exports wallet keys and credentials to a zip file
+  Future<void> _exportKeys() async {
+    _overlayManager.showLoadingOverlay(context);
+
+    try {
+      final AccountState accountState = context.read<AccountCubit>().state;
+      final WalletInfo? walletInfo = accountState.walletInfo;
+
+      if (walletInfo == null) {
+        throw Exception('Wallet info unavailable');
+      }
+
+      final String keysZipPath = await WalletArchiveService.createKeysArchive(
+        fingerprint: walletInfo.fingerprint,
+      );
+
+      Share.shareXFiles(<XFile>[XFile(keysZipPath)]);
+    } catch (e) {
+      _logger.severe('Failed to export keys: $e');
+
+      if (mounted) {
+        _showErrorMessage('Failed to export keys: ${e.toString()}');
+      }
+    } finally {
+      _overlayManager.removeLoadingOverlay();
+    }
+  }
+
+  /// Share application logs
+  Future<void> _shareLogs() async {
+    _overlayManager.showLoadingOverlay(context);
+
+    try {
+      final String zipPath = await WalletArchiveService.createLogsArchive();
+      Share.shareXFiles(<XFile>[XFile(zipPath)]);
+    } catch (e) {
+      _logger.severe('Failed to share logs: $e');
+
+      if (mounted) {
+        _showErrorMessage('Failed to share logs: ${e.toString()}');
+      }
+    } finally {
+      _overlayManager.removeLoadingOverlay();
+    }
+  }
+
+  /// Rescans on-chain swaps for the user
+  Future<void> _rescanOnchainSwaps() async {
+    _overlayManager.showLoadingOverlay(context);
     final BreezTranslations texts = getSystemAppLocalizations();
     final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
 
     try {
-      return await chainSwapCubit.rescanOnchainSwaps();
-    } catch (error) {
-      if (!context.mounted) {
-        return;
+      await chainSwapCubit.rescanOnchainSwaps();
+
+      if (mounted) {
+        _showSuccessMessage('Rescanned on-chain swaps successfully.');
       }
-      showFlushbar(context, title: extractExceptionMessage(error, texts));
+    } catch (e) {
+      _logger.warning('Failed to rescan on-chain swaps: $e');
+
+      if (mounted) {
+        _showErrorMessage(ExceptionHandler.extractMessage(e, texts));
+      }
+    } finally {
+      _overlayManager.removeLoadingOverlay();
     }
+  }
+
+  /// Toggles the bug report behavior setting to prompt
+  Future<void> _toggleBugReportBehavior() async {
+    try {
+      await _preferences.setBugReportBehavior(BugReportBehavior.prompt);
+
+      if (mounted) {
+        setState(() => _bugReportBehavior = BugReportBehavior.prompt);
+      }
+    } catch (e) {
+      _logger.warning('Failed to update bug report setting: $e');
+
+      if (mounted) {
+        _showErrorMessage('Failed to update bug report settings');
+      }
+    }
+  }
+
+  /// Shows a success message to the user
+  void _showSuccessMessage(String message) {
+    showFlushbar(context, message: message);
+  }
+
+  /// Shows an error message to the user
+  void _showErrorMessage(String message) {
+    showFlushbar(context, message: message);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final BreezTranslations texts = context.texts();
+
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: const back_button.BackButton(),
+        title: Text(texts.home_drawer_item_title_developers),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            _buildInfoCard(),
+            _buildActionButtons(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds the information card showing wallet and SDK details
+  Widget _buildInfoCard() {
+    final ThemeData themeData = Theme.of(context);
+    final WalletInfo? walletInfo = context.select<AccountCubit, WalletInfo?>(
+      (AccountCubit cubit) => cubit.state.walletInfo,
+    );
+    return Card(
+      color: themeData.customData.paymentListBgColorLight,
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            StatusItem(label: 'SDK Version', value: _sdkVersion),
+            if (walletInfo != null) ...<Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: ShareablePaymentRow(
+                  isExpanded: true,
+                  tilePadding: EdgeInsets.zero,
+                  dividerColor: Colors.transparent,
+                  title: 'Public Key',
+                  titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                  sharedValue: walletInfo.pubkey,
+                ),
+              ),
+              StatusItem(label: 'Fingerprint', value: walletInfo.fingerprint),
+              StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),
+              StatusItem(label: 'Pending Receive Amount', value: '${walletInfo.pendingReceiveSat}'),
+              StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
+              StatusItem(
+                label: 'Asset Balances',
+                value: '${walletInfo.assetBalances.map(
+                      (AssetBalance assetBalance) => assetBalance.name,
+                    ).toList()}',
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds the grid of action buttons
+  Widget _buildActionButtons() {
+    final BreezTranslations texts = context.texts();
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        mainAxisSpacing: 12.0,
+        crossAxisSpacing: 12.0,
+        childAspectRatio: 2.5,
+        children: <Widget>[
+          GridActionButton(
+            icon: Icons.refresh,
+            label: 'Sync Wallet',
+            onPressed: _syncWallet,
+          ),
+          GridActionButton(
+            icon: Icons.key,
+            label: texts.developers_page_menu_export_keys_title,
+            onPressed: _exportKeys,
+          ),
+          GridActionButton(
+            icon: Icons.share,
+            label: texts.developers_page_menu_share_logs_title,
+            onPressed: _shareLogs,
+          ),
+          GridActionButton(
+            icon: Icons.radar,
+            label: 'Rescan Swaps',
+            onPressed: _rescanOnchainSwaps,
+          ),
+          if (_bugReportBehavior != BugReportBehavior.prompt)
+            GridActionButton(
+              icon: Icons.bug_report,
+              label: texts.developers_page_menu_prompt_bug_report_title,
+              onPressed: _toggleBugReportBehavior,
+            ),
+        ],
+      ),
+    );
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
@@ -50,7 +50,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
               child: ScrollableErrorMessageWidget(
                 showIcon: true,
                 title: texts.payment_limits_generic_error_title,
-                message: extractExceptionMessage(snapshot.errorMessage, texts),
+                message: ExceptionHandler.extractMessage(snapshot.errorMessage, texts),
               ),
             );
           }
@@ -144,7 +144,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
         showFlushbar(
           context,
           message: texts.reverse_swap_upstream_generic_error_message(
-            extractExceptionMessage(error, texts),
+            ExceptionHandler.extractMessage(error, texts),
           ),
         );
       } finally {

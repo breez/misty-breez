@@ -2,8 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/services/services.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/external_browser.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
@@ -77,7 +77,7 @@ class ShareablePaymentRow extends StatelessWidget {
                     padding: childrenPadding ?? EdgeInsets.zero,
                     child: GestureDetector(
                       onTap: isURL
-                          ? () => launchLinkOnExternalBrowser(
+                          ? () => ExternalBrowserService.launchLink(
                                 context,
                                 linkAddress: urlValue ?? sharedValue,
                               )

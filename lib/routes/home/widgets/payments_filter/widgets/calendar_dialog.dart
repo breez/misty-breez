@@ -4,7 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/date.dart';
+import 'package:l_breez/utils/date/breez_date_utils.dart';
 
 class CalendarDialog extends StatefulWidget {
   final DateTime firstDate;

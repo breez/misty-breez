@@ -1,4 +1,4 @@
-import 'package:l_breez/utils/currency_formatter.dart';
+import 'package:l_breez/utils/utils.dart';
 
 class BitcoinCurrency extends Object {
   final String tickerSymbol;

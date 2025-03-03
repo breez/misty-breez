@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/min_font_size.dart';
+import 'package:l_breez/utils/a11y/min_font_size.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class StatusText extends StatelessWidget {

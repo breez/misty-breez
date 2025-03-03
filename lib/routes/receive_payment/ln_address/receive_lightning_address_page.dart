@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/receive_payment/widgets/widgets.dart';
-import 'package:l_breez/utils/exceptions.dart';
+import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
 class ReceiveLightningAddressPage extends StatefulWidget {
@@ -36,7 +36,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                   ? ScrollableErrorMessageWidget(
                       showIcon: true,
                       title: texts.lightning_address_service_error_title,
-                      message: extractExceptionMessage(lnAddressState.error!, texts),
+                      message: ExceptionHandler.extractMessage(lnAddressState.error!, texts),
                     )
                   : lnAddressState.status == LnAddressStatus.success && lnAddressState.lnurl != null
                       ? Padding(

@@ -13,8 +13,8 @@ import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/src/theme.dart';
 import 'package:l_breez/theme/src/theme_extensions.dart';
 import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/exceptions.dart';
-import 'package:l_breez/utils/payment_validator.dart';
+import 'package:l_breez/utils/exceptions/exception_handler.dart';
+import 'package:l_breez/utils/payments/payment_validator.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -82,7 +82,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       await _handleLightningPaymentLimitsResponse();
     } catch (error) {
       setState(() {
-        errorMessage = extractExceptionMessage(error, getSystemAppLocalizations());
+        errorMessage = ExceptionHandler.extractMessage(error, getSystemAppLocalizations());
       });
     } finally {
       setState(() {

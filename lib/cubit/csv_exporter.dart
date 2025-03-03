@@ -7,7 +7,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:intl/intl.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/payment_details_extension.dart';
-import 'package:l_breez/utils/date.dart';
+import 'package:l_breez/utils/date/breez_date_utils.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 
