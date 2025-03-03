@@ -49,7 +49,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
                                     Radius.circular(12),
                                   ),
                                 ),
-                                color: Color.fromRGBO(40, 59, 74, 0.5),
+                                color: Color.fromRGBO(10, 20, 40, 1),
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
                               child: SingleChildScrollView(

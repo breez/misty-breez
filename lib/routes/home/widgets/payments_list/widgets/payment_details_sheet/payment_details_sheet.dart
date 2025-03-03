@@ -139,7 +139,7 @@ class PaymentDetailsSheet extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 8.0),
                     width: 40.0,
                     height: 6.5,
-                    decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(50)),
+                    decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(50)),
                   ),
                 ),
                 Padding(
@@ -153,7 +153,7 @@ class PaymentDetailsSheet extends StatelessWidget {
                         Radius.circular(12),
                       ),
                     ),
-                    color: Color.fromRGBO(40, 59, 74, 0.5),
+                    color: Color.fromRGBO(10, 20, 40, 1),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
                   child: Column(
@@ -234,7 +234,7 @@ class PaymentDetailsSheet extends StatelessWidget {
                       yield widget;
                       yield const Divider(
                         height: 32.0,
-                        color: Color.fromRGBO(40, 59, 74, 1),
+                        color: Color.fromRGBO(40, 59, 74, 0.5),
                         indent: 0.0,
                         endIndent: 0.0,
                       );

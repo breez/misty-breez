@@ -11,6 +11,7 @@ import 'package:credentials_manager/credentials_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
@@ -74,7 +75,7 @@ class _DevelopersViewState extends State<DevelopersView> {
         actions: <Widget>[
           PopupMenuButton<Choice>(
             onSelected: (Choice c) => c.function(context),
-            color: themeData.colorScheme.surface,
+            color: themeData.customData.paymentListBgColorLight,
             icon: Icon(
               Icons.more_vert,
               color: themeData.iconTheme.color,
