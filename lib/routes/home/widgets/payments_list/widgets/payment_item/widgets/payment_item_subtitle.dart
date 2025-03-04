@@ -27,19 +27,19 @@ class PaymentItemSubtitle extends StatelessWidget {
           BreezDateUtils.formatTimelineRelative(paymentData.paymentTime),
           style: subtitleTextStyle,
         ),
-        if (paymentData.status == PaymentState.pending) ...<Widget>[
-          Text(
-            texts.wallet_dashboard_payment_item_balance_pending_suffix,
-            style: subtitleTextStyle.copyWith(
-              color: themeData.customData.pendingTextColor,
-            ),
-          ),
-        ],
         if (paymentData.isRefunded || paymentData.status == PaymentState.refundable) ...<Widget>[
           Text(
             ' (Failed)',
             style: subtitleTextStyle.copyWith(
               color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
+            ),
+          ),
+        ],
+        if (paymentData.status == PaymentState.pending) ...<Widget>[
+          Text(
+            texts.wallet_dashboard_payment_item_balance_pending_suffix,
+            style: subtitleTextStyle.copyWith(
+              color: themeData.customData.pendingTextColor,
             ),
           ),
         ],
