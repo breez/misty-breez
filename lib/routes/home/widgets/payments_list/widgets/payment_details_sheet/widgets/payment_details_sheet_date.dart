@@ -25,7 +25,7 @@ class PaymentDetailsSheetDate extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
-            '${texts.payment_details_dialog_date_and_time}:',
+            texts.payment_details_sheet_date_time_label,
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
               color: Colors.white,

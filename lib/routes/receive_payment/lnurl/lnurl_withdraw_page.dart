@@ -432,13 +432,11 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       final String networkLimit = '(${currencyState.bitcoinCurrency.format(
         effectiveMaxSat,
       )})';
-      // TODO(erdemyerebasmaz): Add necessary messages to Breez-Translations that uses formatted string for amount
       message = throwError
           ? texts.valid_payment_error_exceeds_the_limit(networkLimit)
           : '${texts.lnurl_withdraw_dialog_error_amount_exceeds(effectiveMaxSat)} ${currencyState.bitcoinCurrency.displayName}';
     } else if (amountSat < effectiveMinSat) {
       final String effMinSendableFormatted = currencyState.bitcoinCurrency.format(effectiveMinSat);
-      // TODO(erdemyerebasmaz): Add necessary messages to Breez-Translations that uses formatted string for amount
       message = throwError
           ? '${texts.invoice_payment_validator_error_payment_below_invoice_limit(effMinSendableFormatted)}.'
           : '${texts.lnurl_withdraw_dialog_error_amount_below(effectiveMinSat)} ${currencyState.bitcoinCurrency.displayName}';

@@ -38,7 +38,7 @@ class LnUrlPaymentComment extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             AutoSizeText(
-              // TODO(erdemyerebasmaz): Add message to Breez-Translation instead of reusing another value
+              // TODO(erdemyerebasmaz): Add message to Breez-Translations instead of reusing another value
               texts.payment_details_dialog_share_comment,
               style: themeData.primaryTextTheme.headlineMedium?.copyWith(
                 fontSize: 18.0,

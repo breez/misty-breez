@@ -22,7 +22,7 @@ class PaymentDetailsSheetPreimage extends StatelessWidget {
     return ShareablePaymentRow(
       tilePadding: EdgeInsets.zero,
       dividerColor: Colors.transparent,
-      title: '${texts.payment_details_dialog_single_info_pre_image}:',
+      title: texts.payment_details_sheet_preimage_label,
       titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
         fontSize: 18.0,
         color: Colors.white,
