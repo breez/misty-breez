@@ -33,6 +33,11 @@ class RefundButton extends StatelessWidget {
     navigator.push(loaderRoute);
     try {
       await refundCubit.refund(req: req);
+
+      if (!context.mounted) {
+        return;
+      }
+
       navigator.popUntil(
         (Route<dynamic> route) => route.settings.name == Home.routeName,
       );
