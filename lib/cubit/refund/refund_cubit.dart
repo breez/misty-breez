@@ -197,15 +197,13 @@ class RefundCubit extends Cubit<RefundState> {
   /// Emits the transaction ID upon success.
   Future<RefundResponse> refund({required RefundRequest req}) async {
     try {
-      _logger.info(
-        'Refunding swap ${req.swapAddress} to ${req.refundAddress} with fee ${req.feeRateSatPerVbyte}',
-      );
+      _logger.info('Processing refund for ${req.toFormattedString()}');
       final RefundResponse refundResponse = await _breezSdkLiquid.instance!.refund(req: req);
       _logger.info('Refund succeeded. txId: ${refundResponse.refundTxId}');
       emit(state.copyWith(refundTxId: refundResponse.refundTxId, error: ''));
       return refundResponse;
     } catch (e) {
-      _logger.severe('Failed to refund swap', e);
+      _logger.severe('Failed to refund', e);
       emit(state.copyWith(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
       rethrow;
     } finally {
