@@ -7,8 +7,13 @@ import 'package:l_breez/widgets/widgets.dart';
 
 class RefundItemCardAction extends StatelessWidget {
   final RefundableSwap refundableSwap;
+  final String lastRefundTxId;
 
-  const RefundItemCardAction(this.refundableSwap, {super.key});
+  const RefundItemCardAction({
+    required this.refundableSwap,
+    required this.lastRefundTxId,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +22,14 @@ class RefundItemCardAction extends StatelessWidget {
       padding: const EdgeInsets.only(top: 16.0),
       child: Center(
         child: SubmitButton(
-          texts.get_refund_action_continue,
+          lastRefundTxId.isNotEmpty ? texts.get_refund_action_broadcasted : texts.get_refund_action_continue,
           () {
             Navigator.of(context).pushNamed(
               RefundPage.routeName,
               arguments: refundableSwap,
             );
           },
+          enabled: lastRefundTxId.isEmpty,
         ),
       ),
     );

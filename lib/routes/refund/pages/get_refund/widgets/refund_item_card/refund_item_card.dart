@@ -17,6 +17,8 @@ class RefundItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
 
+    final String lastRefundTxId = refundableSwap.lastRefundTxId ?? '';
+
     return Card(
       color: themeData.customData.paymentListBgColorLight,
       margin: const EdgeInsets.all(16),
@@ -31,10 +33,10 @@ class RefundItemCard extends StatelessWidget {
             if (refundableSwap.swapAddress.isNotEmpty) ...<Widget>[
               RefundItemCardOriginalTx(swapAddress: refundableSwap.swapAddress),
             ],
-            if (refundableSwap.lastRefundTxId != null &&
-                refundableSwap.lastRefundTxId!.isNotEmpty) ...<Widget>[
-              RefundItemCardAction(refundableSwap),
-            ],
+            RefundItemCardAction(
+              refundableSwap: refundableSwap,
+              lastRefundTxId: lastRefundTxId,
+            ),
           ],
         ),
       ),
