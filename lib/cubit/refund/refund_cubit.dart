@@ -208,6 +208,9 @@ class RefundCubit extends Cubit<RefundState> {
       _logger.severe('Failed to refund swap', e);
       emit(state.copyWith(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
       rethrow;
+    } finally {
+      _logger.info('Refund process completed, refreshing refundables list.');
+      await listRefundables();
     }
   }
 }
