@@ -3,6 +3,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/services/services.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:l_breez/utils/utils.dart';
 
 export 'refund_item_card_action.dart';
 export 'refund_item_card_amount.dart';
@@ -37,7 +38,10 @@ class RefundItemCard extends StatelessWidget {
             if (lastRefundTxId.isNotEmpty) ...<Widget>[
               TxWidget(
                 txID: lastRefundTxId,
-                txURL: BlockchainExplorerService.formatTransactionUrl(txid: lastRefundTxId),
+                txURL: BlockchainExplorerService.formatTransactionUrl(
+                  txid: lastRefundTxId,
+                  mempoolInstance: NetworkConstants.defaultBitcoinMempoolInstance,
+                ),
               ),
             ],
             RefundItemCardAction(
