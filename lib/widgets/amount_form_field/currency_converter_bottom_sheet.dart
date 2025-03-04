@@ -149,8 +149,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
-                    'Select Fiat Currency:',
+                    texts.currency_converter_sheet_label,
                     style: themeData.primaryTextTheme.headlineMedium!.copyWith(
                       fontSize: 18.0,
                       color: Colors.white,

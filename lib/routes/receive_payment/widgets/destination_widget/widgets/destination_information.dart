@@ -1,3 +1,5 @@
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/routes/receive_payment/widgets/widgets.dart';
 import 'package:l_breez/theme/theme.dart';
@@ -18,6 +20,7 @@ class DestinationInformation extends StatefulWidget {
 class DestinationInformationState extends State<DestinationInformation> {
   @override
   Widget build(BuildContext context) {
+    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
     return GestureDetector(
@@ -37,17 +40,16 @@ class DestinationInformationState extends State<DestinationInformation> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           items: <PopupMenuItem<String>>[
-            const PopupMenuItem<String>(
+            PopupMenuItem<String>(
               // TODO(erdemyerebasmaz): Replace with const var
               value: 'customize',
               child: Row(
                 children: <Widget>[
-                  Icon(Icons.edit),
-                  SizedBox(
+                  const Icon(Icons.edit),
+                  const SizedBox(
                     width: 8.0,
                   ),
-                  // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
-                  Text('Customize Address'),
+                  Text(texts.update_ln_address_username_title),
                 ],
               ),
             ),

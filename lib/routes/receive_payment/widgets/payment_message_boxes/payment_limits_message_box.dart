@@ -47,22 +47,22 @@ class PaymentLimitsMessageBox extends StatelessWidget {
   }
 
   String _formatLimitsMessage(BuildContext context, Limits limits) {
+    final BreezTranslations texts = context.texts();
     final CurrencyState currencyState = context.read<CurrencyCubit>().state;
 
     // Get the minimum sendable amount (in sats), can not be less than 1 or more than maxSendable
     final int minSendableSat = limits.minSat.toInt();
     final bool minSendableAboveMin = minSendableSat >= 1;
     if (!minSendableAboveMin) {
-      return "Minimum sendable amount can't be less than ${currencyState.bitcoinCurrency.format(1)}.";
+      return texts.payment_limits_message_min_below_limit(currencyState.bitcoinCurrency.format(1));
     }
 
     final int maxSendableSat = limits.maxSat.toInt();
     if (minSendableSat > maxSendableSat) {
-      return "Minimum sendable amount can't be greater than maximum sendable amount.";
+      return texts.payment_limits_message_min_greater_limit;
     }
     final String minSendableFormatted = currencyState.bitcoinCurrency.format(minSendableSat);
     final String maxSendableFormatted = currencyState.bitcoinCurrency.format(maxSendableSat);
-    // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
-    return 'Send at least $minSendableFormatted and at most $maxSendableFormatted to this address.';
+    return texts.payment_limits_message(minSendableFormatted, maxSendableFormatted);
   }
 }

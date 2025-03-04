@@ -27,7 +27,7 @@ class PaymentDetailsSheetAmount extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
-            texts.ln_payment_amount_label,
+            texts.payment_details_sheet_amount_label,
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
               color: Colors.white,

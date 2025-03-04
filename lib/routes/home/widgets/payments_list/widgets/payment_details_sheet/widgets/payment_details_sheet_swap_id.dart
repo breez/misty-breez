@@ -16,7 +16,7 @@ class PaymentDetailsSheetSwapId extends StatelessWidget {
     return ShareablePaymentRow(
       tilePadding: EdgeInsets.zero,
       dividerColor: Colors.transparent,
-      title: '${texts.payment_details_dialog_single_info_swap_id}:',
+      title: texts.payment_details_sheet_swap_id_label,
       titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
         fontSize: 18.0,
         color: Colors.white,

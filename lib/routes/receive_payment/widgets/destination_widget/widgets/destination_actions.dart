@@ -93,9 +93,8 @@ class _CopyButton extends StatelessWidget {
             IconData(0xe90b, fontFamily: 'icomoon'),
             size: 20.0,
           ),
-          // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
           label: AutoSizeText(
-            'COPY',
+            texts.destination_action_copy_label,
             style: balanceFiatConversionTextStyle,
             maxLines: 1,
             group: textGroup,
@@ -134,6 +133,7 @@ class _ShareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BreezTranslations texts = context.texts();
     final MinFontSize minFont = MinFontSize(context);
 
     return ConstrainedBox(
@@ -142,10 +142,9 @@ class _ShareButton extends StatelessWidget {
         minWidth: 138.0,
       ),
       child: Tooltip(
-        // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
         message: (paymentMethod != null && paymentMethod!.isNotEmpty)
-            ? 'Share $paymentMethod'
-            : 'Share deposit address',
+            ? texts.destination_action_share_payment_method_tooltip(paymentMethod!)
+            : texts.destination_action_share_default_tooltip,
         child: OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.white),
@@ -157,9 +156,8 @@ class _ShareButton extends StatelessWidget {
             IconData(0xe917, fontFamily: 'icomoon'),
             size: 20.0,
           ),
-          // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
           label: AutoSizeText(
-            'SHARE',
+            texts.destination_action_share_label,
             style: balanceFiatConversionTextStyle,
             maxLines: 1,
             group: textGroup,
