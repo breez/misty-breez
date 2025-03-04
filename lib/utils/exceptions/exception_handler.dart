@@ -75,6 +75,10 @@ class ExceptionHandler {
     } else if (error is PaymentError_InvalidNetwork) {
       message = 'Invalid network: ${error.err}';
     } else if (error is PaymentError_Generic) {
+      if (error.err.toLowerCase().contains('non-final') ||
+          error.err.toLowerCase().contains('rpc error -26')) {
+        message = 'The transaction cannot be broadcast at this time. Please try again later.';
+      }
       message = 'Payment error: ${error.err}';
     } else if (error is PaymentError_InvalidOrExpiredFees) {
       message = 'The provided fees have expired';
