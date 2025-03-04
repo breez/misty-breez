@@ -4,11 +4,13 @@ class RefundState {
   final List<RefundableSwap>? refundables;
   final String? refundTxId;
   final String? error;
+  final bool rebroadcastEnabled;
 
   RefundState({
     this.refundables,
     this.refundTxId,
     this.error = '',
+    this.rebroadcastEnabled = false,
   });
 
   RefundState.initial() : this();
@@ -17,11 +19,13 @@ class RefundState {
     List<RefundableSwap>? refundables,
     String? refundTxId,
     String? error,
+    bool? rebroadcastEnabled,
   }) {
     return RefundState(
       refundables: refundables ?? this.refundables,
       refundTxId: refundTxId ?? this.refundTxId,
       error: error ?? this.error,
+      rebroadcastEnabled: rebroadcastEnabled ?? this.rebroadcastEnabled,
     );
   }
 
