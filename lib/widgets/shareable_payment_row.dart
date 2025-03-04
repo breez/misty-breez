@@ -23,6 +23,7 @@ class ShareablePaymentRow extends StatelessWidget {
   final Color? dividerColor;
   final AutoSizeGroup? labelAutoSizeGroup;
   final AutoSizeGroup? valueAutoSizeGroup;
+  final bool shouldPop;
 
   const ShareablePaymentRow({
     required this.title,
@@ -40,6 +41,7 @@ class ShareablePaymentRow extends StatelessWidget {
     this.dividerColor,
     this.labelAutoSizeGroup,
     this.valueAutoSizeGroup,
+    this.shouldPop = true,
   });
 
   @override
@@ -117,7 +119,9 @@ class ShareablePaymentRow extends StatelessWidget {
                           ),
                           onPressed: () {
                             ServiceInjector().deviceClient.setClipboardText(sharedValue);
-                            Navigator.pop(context);
+                            if (shouldPop) {
+                              Navigator.pop(context);
+                            }
                             showFlushbar(
                               context,
                               message: texts.payment_details_dialog_copied(
