@@ -1,3 +1,5 @@
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/routes.dart';
@@ -9,24 +11,19 @@ class RefundableSwapList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (refundables.isEmpty) {
+      final BreezTranslations texts = context.texts();
+
+      return Center(
+        child: Text(texts.get_refund_no_refundable_items),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       itemCount: refundables.length,
       itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: <Widget>[
-              RefundItem(refundables[index]),
-              if (index != refundables.length) ...<Widget>[
-                const Divider(
-                  height: 0.0,
-                  color: Color.fromRGBO(255, 255, 255, 0.52),
-                ),
-              ],
-            ],
-          ),
-        );
+        return RefundItemCard(refundableSwap: refundables[index]);
       },
     );
   }
