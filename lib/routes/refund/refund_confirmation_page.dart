@@ -100,10 +100,11 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
 
   void _fetchRefundFeeOptions() {
     final RefundCubit refundCubit = context.read<RefundCubit>();
-    _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(
-      toAddress: widget.toAddress,
+    final RefundParams refundParams = RefundParams(
       swapAddress: widget.swapAddress,
+      toAddress: widget.toAddress,
     );
+    _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(params: refundParams);
     _fetchFeeOptionsFuture.then(
       (List<RefundFeeOption> feeOptions) {
         setState(() {

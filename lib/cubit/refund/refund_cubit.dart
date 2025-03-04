@@ -13,7 +13,22 @@ export 'refund_state.dart';
 
 final Logger _logger = Logger('RefundCubit');
 
-/// Cubit that handles refund operations.
+/// A class that encapsulates refund request parameters
+class RefundParams {
+  /// The swap address for the refund
+  final String swapAddress;
+
+  /// The destination address for the refund
+  final String toAddress;
+
+  /// Constructor for RefundParams
+  const RefundParams({
+    required this.swapAddress,
+    required this.toAddress,
+  });
+}
+
+/// Cubit that handles refund operations for failed or expired swaps.
 class RefundCubit extends Cubit<RefundState> {
   StreamSubscription<PaymentEvent>? _paymentEventSubscription;
 
@@ -21,7 +36,6 @@ class RefundCubit extends Cubit<RefundState> {
 
   RefundCubit(this._breezSdkLiquid) : super(RefundState.initial()) {
     _initializeRefundCubit();
-    _listenRefundEvents();
   }
 
   /// Initializes the cubit by waiting for initial SDK info and then
@@ -32,8 +46,10 @@ class RefundCubit extends Cubit<RefundState> {
       await _breezSdkLiquid.getInfoResponseStream.first;
       // Fire-and-forget the list refresh.
       listRefundables();
+      _listenRefundEvents();
     } catch (e) {
       _logger.severe('Failed to initialize Refund Cubit', e);
+      emit(state.copyWith(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
     }
   }
 
@@ -43,13 +59,19 @@ class RefundCubit extends Cubit<RefundState> {
       _logger.info('Refreshing refundables');
       final List<RefundableSwap> refundables = await _breezSdkLiquid.instance!.listRefundables();
       _logger.info(
-        'Fetched refundables: ${refundables.map((RefundableSwap r) => r.toFormattedString()).toList()}',
+        'Fetched ${refundables.length} refundables: '
+        '${refundables.map((RefundableSwap r) => r.toFormattedString()).toList()}',
       );
-      emit(state.copyWith(refundables: refundables));
+      emit(state.copyWith(refundables: refundables, error: ''));
     } catch (e) {
       _logger.severe('Failed to list refundables', e);
       // In case of error, set refundables to empty list rather than leaving it unchanged
-      emit(state.copyWith(refundables: <RefundableSwap>[]));
+      emit(
+        state.copyWith(
+          refundables: <RefundableSwap>[],
+          error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations()),
+        ),
+      );
     }
   }
 
@@ -58,15 +80,20 @@ class RefundCubit extends Cubit<RefundState> {
   void _listenRefundEvents() {
     _logger.info('Listening to refund-related events');
     _paymentEventSubscription = _breezSdkLiquid.paymentEventStream.listen(
-      (PaymentEvent paymentEvent) {
-        _logger.info('Received payment event: ${paymentEvent.toFormattedString()}');
-        if (paymentEvent.sdkEvent.isRefundRelated(hasRefundables: state.hasRefundables)) {
-          _logger.info('Refund-related event detected. Refreshing refundables.');
-          listRefundables();
-        }
-      },
-      onError: (Object e) => _logger.severe('Error in _listenRefundEvents', e),
+      _handlePaymentEvent,
+      onError: (Object e) => _logger.severe('Error in payment event stream', e),
     );
+  }
+
+  /// Handles incoming payment events and refreshes refundables when needed
+  ///
+  /// [paymentEvent] The payment event to handle
+  void _handlePaymentEvent(PaymentEvent paymentEvent) {
+    _logger.info('Received payment event: ${paymentEvent.toFormattedString()}');
+    if (paymentEvent.sdkEvent.isRefundRelated(hasRefundables: state.hasRefundables)) {
+      _logger.info('Refund-related event detected. Refreshing refundables.');
+      listRefundables();
+    }
   }
 
   @override
@@ -76,7 +103,7 @@ class RefundCubit extends Cubit<RefundState> {
   }
 
   /// Fetches the recommended fees from the SDK.
-  Future<RecommendedFees> _recommendedFees() async {
+  Future<RecommendedFees> _fetchRecommendedFees() async {
     try {
       _logger.info('Fetching recommended fees');
       final RecommendedFees fees = await _breezSdkLiquid.instance!.recommendedFees();
@@ -88,26 +115,29 @@ class RefundCubit extends Cubit<RefundState> {
     }
   }
 
-  /// Fetches refund fee options for a given [swapAddress] and [toAddress].
+  /// Fetches refund fee options for a given [params].
   ///
   /// Returns a list of [RefundFeeOption] representing different fee rates.
   Future<List<RefundFeeOption>> fetchRefundFeeOptions({
-    required String toAddress,
-    required String swapAddress,
+    required RefundParams params,
   }) async {
     try {
-      _logger.info('Fetching refund fee options for swapAddress: $swapAddress, toAddress: $toAddress');
-      final RecommendedFees recommendedFees = await _recommendedFees();
+      _logger.info(
+        'Fetching refund fee options for swapAddress: ${params.swapAddress}, '
+        'toAddress: ${params.toAddress}',
+      );
+
+      final RecommendedFees recommendedFees = await _fetchRecommendedFees();
       final List<RefundFeeOption> feeOptions = await _constructFeeOptionList(
-        toAddress: toAddress,
-        swapAddress: swapAddress,
+        params: params,
         recommendedFees: recommendedFees,
       );
+
       _logger.info('Constructed fee options: $feeOptions');
       return feeOptions;
     } catch (e) {
       _logger.severe('Failed to fetch refund fee options', e);
-      emit(RefundState(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
+      emit(state.copyWith(error: ExceptionHandler.extractMessage(e, getSystemAppLocalizations())));
       rethrow;
     }
   }
@@ -116,11 +146,10 @@ class RefundCubit extends Cubit<RefundState> {
   ///
   /// Each option corresponds to a different processing speed.
   Future<List<RefundFeeOption>> _constructFeeOptionList({
-    required String toAddress,
-    required String swapAddress,
+    required RefundParams params,
     required RecommendedFees recommendedFees,
   }) async {
-    _logger.info('Constructing refund fee options for swapAddress: $swapAddress');
+    _logger.info('Constructing refund fee options for swapAddress: ${params.swapAddress}');
 
     // Map each processing speed to its corresponding fee.
     final Map<ProcessingSpeed, BigInt> processingSpeedToFeeMap = <ProcessingSpeed, BigInt>{
@@ -130,16 +159,17 @@ class RefundCubit extends Cubit<RefundState> {
     };
 
     try {
-      final List<RefundFeeOption> feeOptions = await Future.wait(
-        processingSpeedToFeeMap.entries.map(
-          (MapEntry<ProcessingSpeed, BigInt> entry) => _createRefundFeeOption(
-            processingSpeed: entry.key,
-            feeRate: entry.value,
-            swapAddress: swapAddress,
-            toAddress: toAddress,
-          ),
-        ),
-      );
+      final List<Future<RefundFeeOption>> feeOptionFutures = processingSpeedToFeeMap.entries
+          .map(
+            (MapEntry<ProcessingSpeed, BigInt> entry) => _createRefundFeeOption(
+              processingSpeed: entry.key,
+              feeRate: entry.value,
+              params: params,
+            ),
+          )
+          .toList();
+
+      final List<RefundFeeOption> feeOptions = await Future.wait(feeOptionFutures);
       _logger.info('Successfully constructed refund fee options: $feeOptions');
       return feeOptions;
     } catch (e) {
@@ -149,21 +179,26 @@ class RefundCubit extends Cubit<RefundState> {
   }
 
   /// Creates a single refund fee option for the given [processingSpeed] and [feeRate].
+  ///
+  /// [processingSpeed] The processing speed for this fee option
+  /// [feeRate] The fee rate in sat/vbyte
+  /// [params] The refund parameters
   Future<RefundFeeOption> _createRefundFeeOption({
     required ProcessingSpeed processingSpeed,
     required BigInt feeRate,
-    required String swapAddress,
-    required String toAddress,
+    required RefundParams params,
   }) async {
     try {
       _logger.info('Creating refund fee option for processingSpeed: $processingSpeed, feeRate: $feeRate');
       final PrepareRefundRequest request = PrepareRefundRequest(
-        swapAddress: swapAddress,
+        swapAddress: params.swapAddress,
         feeRateSatPerVbyte: feeRate.toInt(),
-        refundAddress: toAddress,
+        refundAddress: params.toAddress,
       );
+
       final PrepareRefundResponse response = await prepareRefund(request);
-      _logger.info('Successfully created refund fee option for $processingSpeed');
+
+      _logger.info('Created refund fee option for $processingSpeed with fee ${response.txFeeSat} sat');
       return RefundFeeOption(
         processingSpeed: processingSpeed,
         feeRateSatPerVbyte: feeRate,
@@ -181,8 +216,10 @@ class RefundCubit extends Cubit<RefundState> {
   Future<PrepareRefundResponse> prepareRefund(PrepareRefundRequest req) async {
     try {
       _logger.info(
-        'Preparing refund for swap ${req.swapAddress} to ${req.refundAddress} with fee ${req.feeRateSatPerVbyte}',
+        'Preparing refund for swap ${req.swapAddress} to ${req.refundAddress} '
+        'with fee ${req.feeRateSatPerVbyte} sat/vbyte',
       );
+
       final PrepareRefundResponse response = await _breezSdkLiquid.instance!.prepareRefund(req: req);
       _logger.info('Prepared refund response: $response');
       return response;
@@ -194,11 +231,12 @@ class RefundCubit extends Cubit<RefundState> {
 
   /// Broadcasts a refund transaction for a failed or expired swap.
   ///
-  /// Emits the transaction ID upon success.
+  /// Emits the transaction ID upon success and returns the [RefundResponse].
   Future<RefundResponse> refund({required RefundRequest req}) async {
     try {
       _logger.info('Processing refund for ${req.toFormattedString()}');
       final RefundResponse refundResponse = await _breezSdkLiquid.instance!.refund(req: req);
+
       _logger.info('Refund succeeded. txId: ${refundResponse.refundTxId}');
       emit(state.copyWith(refundTxId: refundResponse.refundTxId, error: ''));
       return refundResponse;
