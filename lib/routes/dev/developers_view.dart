@@ -173,8 +173,30 @@ class _DevelopersViewState extends State<DevelopersView> {
     }
   }
 
+  /// Updates the refund state to enable rebroadcasting refunds
+  Future<void> _enableRefundRebroadcast() async {
+    _overlayManager.showLoadingOverlay(context);
+
+    try {
+      context.read<RefundCubit>().enableRebroadcast();
+
+      if (mounted) {
+        _showSuccessMessage('Refunds can now be rebroadcasted.');
+      }
+    } catch (e) {
+      _logger.warning('Failed to enable rebroadcasting refunds: $e');
+
+      if (mounted) {
+        _showErrorMessage('Failed to update refund state.');
+      }
+    } finally {
+      _overlayManager.removeLoadingOverlay();
+    }
+  }
+
   /// Toggles the bug report behavior setting to prompt
   Future<void> _toggleBugReportBehavior() async {
+    _overlayManager.showLoadingOverlay(context);
     try {
       await _preferences.setBugReportBehavior(BugReportBehavior.prompt);
 
@@ -187,6 +209,8 @@ class _DevelopersViewState extends State<DevelopersView> {
       if (mounted) {
         _showErrorMessage('Failed to update bug report settings');
       }
+    } finally {
+      _overlayManager.removeLoadingOverlay();
     }
   }
 
@@ -273,6 +297,10 @@ class _DevelopersViewState extends State<DevelopersView> {
   Widget _buildActionButtons() {
     final BreezTranslations texts = context.texts();
 
+    final bool hasRefundables = context.select<RefundCubit, bool>(
+      (RefundCubit cubit) => cubit.state.hasRefundables,
+    );
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: GridView.count(
@@ -303,6 +331,13 @@ class _DevelopersViewState extends State<DevelopersView> {
             label: 'Rescan Swaps',
             onPressed: _rescanOnchainSwaps,
           ),
+          if (hasRefundables) ...<Widget>[
+            GridActionButton(
+              icon: Icons.sync_alt,
+              label: 'Enable Refund Rebroadcast',
+              onPressed: _enableRefundRebroadcast,
+            ),
+          ],
           if (_bugReportBehavior != BugReportBehavior.prompt)
             GridActionButton(
               icon: Icons.bug_report,

@@ -249,4 +249,12 @@ class RefundCubit extends Cubit<RefundState> {
       await listRefundables();
     }
   }
+
+  /// Enables rebroadcasting of refunds by updating the state.
+  ///
+  /// This sets `rebroadcastEnabled` to `true`, allowing the UI to trigger
+  /// a refund rebroadcast if needed.
+  void enableRebroadcast() {
+    emit(state.copyWith(rebroadcastEnabled: true));
+  }
 }
