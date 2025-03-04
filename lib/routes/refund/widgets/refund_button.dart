@@ -37,7 +37,6 @@ class RefundButton extends StatelessWidget {
         (Route<dynamic> route) => route.settings.name == Home.routeName,
       );
     } catch (e) {
-      navigator.pop(loaderRoute);
       if (!context.mounted) {
         return;
       }
@@ -49,6 +48,10 @@ class RefundButton extends StatelessWidget {
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
+    } finally {
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
     }
   }
 }
