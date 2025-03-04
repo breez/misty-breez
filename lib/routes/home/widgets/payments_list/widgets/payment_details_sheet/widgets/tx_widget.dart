@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:l_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 
-// TODO(erdemyerebasmaz): Liquid - This file is unused - Re-add for swap tx's after input parser is implemented
 class TxWidget extends StatelessWidget {
   final String txURL;
   final String txID;
