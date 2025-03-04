@@ -16,7 +16,7 @@ Future<LNURLPageResult?> handleAuthRequest(
   BuildContext context,
   LnUrlAuthRequestData reqData,
 ) async {
-  return promptAreYouSure(context, null, LoginText(domain: reqData.domain)).then(
+  return promptAreYouSure(context, body: LoginText(domain: reqData.domain)).then(
     (bool? permitted) async {
       if (permitted == true && context.mounted) {
         final BreezTranslations texts = context.texts();
@@ -61,9 +61,8 @@ void handleLNURLAuthPageResult(BuildContext context, LNURLPageResult result) {
     _logger.info("Handle LNURL auth page result with error '${result.error}'");
     promptError(
       context,
-      context.texts().lnurl_webview_error_title,
-      Text(result.errorMessage),
-      okFunc: () => Navigator.of(context).pop(),
+      title: context.texts().lnurl_webview_error_title,
+      body: Text(result.errorMessage),
     );
     throw result.error!;
   }

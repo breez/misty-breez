@@ -38,8 +38,8 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
 
         final bool? shouldPop = await promptAreYouSure(
           context,
-          texts.bootstrap_error_page_close_popup_title,
-          Text(texts.bootstrap_error_page_close_popup_message),
+          title: texts.bootstrap_error_page_close_popup_title,
+          body: Text(texts.bootstrap_error_page_close_popup_message),
         );
         if (shouldPop ?? false) {
           exit(0);

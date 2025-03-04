@@ -3,118 +3,41 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 Future<void> promptError(
-  BuildContext context,
+  BuildContext context, {
+  required Widget body,
   String? title,
-  Widget body, {
-  String? okText,
-  String? optionText,
-  Function? optionFunc,
-  Function? okFunc,
-  bool disableBack = false,
 }) {
   final BreezTranslations texts = context.texts();
   final ThemeData themeData = Theme.of(context);
 
-  bool canPop = !disableBack;
+  final Logger logger = Logger('ErrorDialog');
+  final String bodyText = body is Text ? (body).data ?? '' : '';
+  logger.info(
+    'Showing error dialog - ${title != null ? 'Title: "$title", ' : ''}${bodyText.isNotEmpty ? 'Body: "$bodyText"' : ''}',
+  );
 
   return showDialog<void>(
     useRootNavigator: false,
     context: context,
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
-      return PopScope(
-        canPop: canPop,
-        child: AlertDialog(
-          contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-          title: title == null ? null : Text(title),
-          content: SingleChildScrollView(
-            child: body,
-          ),
-          actions: <Widget>[
-            optionText != null
-                ? TextButton(
-                    child: Text(
-                      optionText,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'IBMPlexSans',
-                        fontSize: 16.4,
-                        letterSpacing: 0.0,
-                        color: themeData.dialogTheme.titleTextStyle?.color,
-                      ),
-                    ),
-                    onPressed: () {
-                      canPop = true;
-                      optionFunc!();
-                    },
-                  )
-                : Container(),
-            TextButton(
-              child: Text(
-                okText ?? texts.error_dialog_default_action_ok,
-                style: themeData.primaryTextTheme.labelLarge,
-              ),
-              onPressed: () {
-                canPop = true;
-                Navigator.of(context).pop();
-                okFunc != null && okFunc();
-              },
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
-Future<bool?> promptAreYouSure(
-  BuildContext context,
-  String? title,
-  Widget body, {
-  EdgeInsets contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
-  bool wideTitle = false,
-  String? okText,
-  String? cancelText,
-  TextStyle textStyle = const TextStyle(color: Colors.white),
-}) {
-  final BreezTranslations texts = context.texts();
-  final ThemeData themeData = Theme.of(context);
-
-  Widget? titleWidget = title == null ? null : Text(title);
-  if (wideTitle) {
-    titleWidget = SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: titleWidget,
-    );
-  }
-  return showDialog<bool>(
-    useRootNavigator: false,
-    context: context,
-    builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: contentPadding,
-        title: titleWidget,
-        content: SingleChildScrollView(
-          child: body,
-        ),
+        contentPadding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0.0),
+        title: title == null ? null : Text(title),
+        content: SingleChildScrollView(child: body),
         actions: <Widget>[
           TextButton(
             child: Text(
-              cancelText ?? texts.error_dialog_default_action_no,
+              texts.error_dialog_default_action_ok,
               style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () {
-              Navigator.of(context).pop(false);
+              logger.info('Dialog ${texts.error_dialog_default_action_yes} button pressed');
+              Navigator.of(context).pop();
             },
-          ),
-          TextButton(
-            child: Text(
-              okText ?? texts.error_dialog_default_action_yes,
-              style: themeData.primaryTextTheme.labelLarge,
-            ),
-            onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
       );
@@ -122,47 +45,48 @@ Future<bool?> promptAreYouSure(
   );
 }
 
-Future<bool?> promptMessage(
-  BuildContext context,
+Future<bool?> promptAreYouSure(
+  BuildContext context, {
+  required Widget body,
   String? title,
-  Widget body, {
-  EdgeInsets contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
-  bool wideTitle = false,
-  String? closeText,
-  TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
   final BreezTranslations texts = context.texts();
   final ThemeData themeData = Theme.of(context);
 
-  Widget? titleWidget = title == null
-      ? null
-      : Text(
-          title,
-          style: themeData.dialogTheme.titleTextStyle,
-        );
-  if (wideTitle) {
-    titleWidget = SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: titleWidget,
-    );
-  }
+  final Logger logger = Logger('AreYouSureDialog');
+  final String bodyText = body is Text ? (body).data ?? '' : '';
+  logger.info(
+    'Showing are you sure dialog - ${title != null ? 'Title: "$title", ' : ''}${bodyText.isNotEmpty ? 'Body: "$bodyText"' : ''}',
+  );
+
   return showDialog<bool>(
     useRootNavigator: false,
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: contentPadding,
-        title: titleWidget,
-        content: SingleChildScrollView(
-          child: body,
-        ),
+        contentPadding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0.0),
+        title: title == null ? null : Text(title),
+        content: SingleChildScrollView(child: body),
         actions: <Widget>[
           TextButton(
             child: Text(
-              closeText ?? texts.error_dialog_default_action_close,
+              texts.error_dialog_default_action_no,
               style: themeData.primaryTextTheme.labelLarge,
             ),
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () {
+              logger.info('Dialog ${texts.error_dialog_default_action_no} button pressed');
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: Text(
+              texts.error_dialog_default_action_yes,
+              style: themeData.primaryTextTheme.labelLarge,
+            ),
+            onPressed: () {
+              logger.info('Dialog ${texts.error_dialog_default_action_yes} button pressed');
+              Navigator.of(context).pop(true);
+            },
           ),
         ],
       );

@@ -155,8 +155,8 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
       if (currentUsername != newUsername) {
         final bool? confirmed = await promptAreYouSure(
           context,
-          'Confirm Username Change',
-          Text(
+          title: 'Confirm Username Change',
+          body: Text(
             "Changing your Lightning Address username will permanently release '$currentUsername@$_domain'"
             ', making it available for other users.\n\n'
             'Do you want to proceed?',

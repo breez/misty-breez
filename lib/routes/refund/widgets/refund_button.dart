@@ -43,8 +43,8 @@ class RefundButton extends StatelessWidget {
       }
       promptError(
         context,
-        null,
-        Text(
+        title: 'Refund Failed',
+        body: Text(
           ExceptionHandler.extractMessage(e, texts),
           style: themeData.dialogTheme.contentTextStyle,
         ),
