@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/widgets/widgets.dart';
 
 class RefundItemCardAction extends StatelessWidget {
   final RefundableSwap refundableSwap;
@@ -20,6 +19,7 @@ class RefundItemCardAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     final bool allowRebroadcast = context.select<RefundCubit, bool>(
       (RefundCubit cubit) => cubit.state.rebroadcastEnabled,
@@ -28,19 +28,32 @@ class RefundItemCardAction extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Center(
-        child: SubmitButton(
-          lastRefundTxId.isNotEmpty
-              ? allowRebroadcast
-                  ? 'REBROADCAST'
-                  : texts.get_refund_action_broadcasted
-              : texts.get_refund_action_continue,
-          () {
-            Navigator.of(context).pushNamed(
-              RefundPage.routeName,
-              arguments: refundableSwap,
-            );
-          },
-          enabled: lastRefundTxId.isEmpty || allowRebroadcast,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            backgroundColor: themeData.primaryColor,
+            elevation: 0.0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+          ),
+          onPressed: lastRefundTxId.isEmpty || allowRebroadcast
+              ? () {
+                  Navigator.of(context).pushNamed(
+                    RefundPage.routeName,
+                    arguments: refundableSwap,
+                  );
+                }
+              : null,
+          child: Text(
+            lastRefundTxId.isNotEmpty
+                ? allowRebroadcast
+                    // TODO(erdemyerebasmaz): Add message to Breez-Translations
+                    ? 'REBROADCAST'
+                    : texts.get_refund_action_broadcasted
+                : texts.get_refund_action_continue,
+            style: themeData.textTheme.labelLarge,
+          ),
         ),
       ),
     );

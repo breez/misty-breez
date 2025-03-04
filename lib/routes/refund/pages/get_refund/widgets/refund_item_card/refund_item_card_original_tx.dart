@@ -1,42 +1,48 @@
-import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class RefundItemCardOriginalTx extends StatelessWidget {
   final String swapAddress;
+  final AutoSizeGroup? labelAutoSizeGroup;
 
-  const RefundItemCardOriginalTx({required this.swapAddress, super.key});
+  const RefundItemCardOriginalTx({
+    required this.swapAddress,
+    this.labelAutoSizeGroup,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            '${texts.send_on_chain_original_transaction}:',
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: AutoSizeText(
+            // TODO(erdemyerebasmaz): Add message to Breez-Translations
+            'Transaction:',
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
               color: Colors.white,
             ),
+            textAlign: TextAlign.left,
+            maxLines: 1,
+            group: labelAutoSizeGroup,
           ),
-          Flexible(
-            child: Text(
-              _formatAddress(swapAddress),
-              style: themeData.primaryTextTheme.displaySmall!.copyWith(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.right,
-              overflow: TextOverflow.ellipsis,
+        ),
+        Expanded(
+          child: Text(
+            _formatAddress(swapAddress),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(
+              fontSize: 18.0,
+              color: Colors.white,
             ),
+            textAlign: TextAlign.right,
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
