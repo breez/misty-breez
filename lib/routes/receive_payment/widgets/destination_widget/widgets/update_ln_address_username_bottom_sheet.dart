@@ -280,10 +280,7 @@ class UsernameFormField extends StatelessWidget {
               validator: validator,
               inputFormatters: <TextInputFormatter>[
                 UsernameInputFormatter(),
-                // 64 is the maximum allowed length for a username
-                // but a %12.5 margin of error is added for good measure,
-                // which is likely to get sanitized by the UsernameFormatter
-                LengthLimitingTextInputFormatter(72),
+                LengthLimitingTextInputFormatter(64),
               ],
               onEditingComplete: () => focusNode.unfocus(),
             );
