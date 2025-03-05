@@ -221,7 +221,7 @@ class RefundCubit extends Cubit<RefundState> {
       );
 
       final PrepareRefundResponse response = await _breezSdkLiquid.instance!.prepareRefund(req: req);
-      _logger.info('Prepared refund response: $response');
+      _logger.info('Prepared refund response: ${response.toFormattedString()}');
       return response;
     } catch (e) {
       _logger.severe('Failed to prepare refund', e);

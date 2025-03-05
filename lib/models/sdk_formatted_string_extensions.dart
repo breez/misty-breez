@@ -68,7 +68,7 @@ extension PaymentFormatter on Payment {
       'feesSat: $feesSat, '
       'swapperFeesSat: ${swapperFeesSat ?? "N/A"}, '
       'paymentType: $paymentType, '
-      'status: $status'
+      'status: $status, '
       'details: ${details.toFormattedString()}'
       ')';
 }
