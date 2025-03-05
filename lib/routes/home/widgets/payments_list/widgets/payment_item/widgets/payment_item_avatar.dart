@@ -19,41 +19,44 @@ class PaymentItemAvatar extends StatelessWidget {
     final BreezTranslations texts = context.texts();
 
     final String? base64String = paymentData.lnurlMetadataImage;
-    if (base64String?.isNotEmpty ?? false) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colors.white,
-        child: LNURLMetadataImage(
-          base64String: base64String!,
-          imageSize: radius,
-        ),
-      );
-    }
+    Widget avatarChild;
 
-    final String title = paymentData.title;
-    if (title == texts.payment_info_title_unknown) {
-      final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
-      final UserProfileState userProfileState = userProfileCubit.state;
-      final UserProfileSettings user = userProfileState.profileSettings;
-      String? avatarURL = '';
-      if (paymentData.paymentType == PaymentType.receive) {
-        avatarURL = user.avatarURL;
+    if (base64String?.isNotEmpty ?? false) {
+      avatarChild = LNURLMetadataImage(
+        base64String: base64String!,
+        imageSize: radius,
+      );
+    } else {
+      final String title = paymentData.title;
+      if (title == texts.payment_info_title_unknown) {
+        final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
+        final UserProfileState userProfileState = userProfileCubit.state;
+        final UserProfileSettings user = userProfileState.profileSettings;
+        String? avatarURL = '';
+
+        if (paymentData.paymentType == PaymentType.receive) {
+          avatarURL = user.avatarURL;
+        }
+        avatarChild = BreezAvatar(avatarURL, radius: radius);
+      } else {
+        avatarChild = Icon(
+          paymentData.status == PaymentState.refundPending
+              ? Icons.sync_alt
+              : paymentData.isRefunded || paymentData.status == PaymentState.refundable
+                  ? Icons.close_rounded
+                  : paymentData.paymentType == PaymentType.receive
+                      ? Icons.add_rounded
+                      : Icons.remove_rounded,
+          size: radius,
+          color: const Color(0xb3303234),
+        );
       }
-      return BreezAvatar(avatarURL, radius: radius);
     }
 
     return CircleAvatar(
       radius: radius,
       backgroundColor: Colors.white,
-      child: Icon(
-        paymentData.isRefunded || paymentData.status == PaymentState.refundable
-            ? Icons.close_rounded
-            : paymentData.paymentType == PaymentType.receive
-                ? Icons.add_rounded
-                : Icons.remove_rounded,
-        size: radius,
-        color: const Color(0xb3303234),
-      ),
+      child: avatarChild,
     );
   }
 }

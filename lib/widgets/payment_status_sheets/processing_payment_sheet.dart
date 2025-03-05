@@ -181,13 +181,13 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   }
 
   void _promptErrorDialog(Object err, BreezTranslations texts) {
-    final ThemeData theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     promptError(
       context,
       title: texts.payment_failed_report_dialog_title,
       body: Text(
         ExceptionHandler.extractMessage(err, texts),
-        style: theme.dialogTheme.contentTextStyle,
+        style: themeData.dialogTheme.contentTextStyle,
       ),
     );
   }

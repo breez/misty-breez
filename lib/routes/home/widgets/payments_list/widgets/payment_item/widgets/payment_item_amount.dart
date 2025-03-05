@@ -21,36 +21,55 @@ class PaymentItemAmount extends StatelessWidget {
       child: BlocBuilder<UserProfileCubit, UserProfileState>(
         builder: (BuildContext context, UserProfileState userModel) {
           final bool hideBalance = userModel.profileSettings.hideBalance;
+
           return BlocBuilder<CurrencyCubit, CurrencyState>(
             builder: (BuildContext context, CurrencyState currencyState) {
-              final String amount = currencyState.bitcoinCurrency.format(
-                paymentData.amountSat,
+              int amountSat = paymentData.amountSat;
+              int actualFeeSat = paymentData.actualFeeSat;
+
+              // Calculate the full refund amount (payment + fee) for pending refunds
+              // or completed refunds where the refund transaction amount is not tracked
+              // and then display it on Amount Widget with hidden fees
+              final bool shouldEstimateRefundAmount = paymentData.status == PaymentState.refundPending ||
+                  (paymentData.isRefunded && paymentData.refundTxAmountSat == 0);
+
+              if (shouldEstimateRefundAmount) {
+                amountSat = paymentData.amountSat + paymentData.feeSat;
+                actualFeeSat = 0;
+              }
+
+              final String amountFormatted = currencyState.bitcoinCurrency.format(
+                amountSat,
                 includeDisplayName: false,
               );
 
-              final int actualFeeSat = paymentData.actualFeeSat;
               final String actualFeeFormatted = currencyState.bitcoinCurrency.format(
                 actualFeeSat,
                 includeDisplayName: false,
               );
 
+              final bool isPending = paymentData.status == PaymentState.pending ||
+                  paymentData.status == PaymentState.refundPending;
+
               return Column(
-                mainAxisAlignment: paymentData.feeSat == 0 || paymentData.status == PaymentState.pending
+                mainAxisAlignment: (actualFeeSat == 0 || isPending)
                     ? MainAxisAlignment.center
                     : MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  (paymentData.isRefunded)
-                      ? const SizedBox.shrink()
-                      : Text(
-                          hideBalance
-                              ? texts.wallet_dashboard_payment_item_balance_hide
-                              : paymentData.paymentType == PaymentType.receive
-                                  ? texts.wallet_dashboard_payment_item_balance_positive(amount)
-                                  : texts.wallet_dashboard_payment_item_balance_negative(amount),
-                          style: themeData.paymentItemAmountTextStyle,
-                        ),
-                  (actualFeeSat == 0 || paymentData.status == PaymentState.pending)
+                  // Amount widget
+                  Text(
+                    hideBalance
+                        ? texts.wallet_dashboard_payment_item_balance_hide
+                        : shouldEstimateRefundAmount
+                            ? amountFormatted
+                            : paymentData.paymentType == PaymentType.receive
+                                ? texts.wallet_dashboard_payment_item_balance_positive(amountFormatted)
+                                : texts.wallet_dashboard_payment_item_balance_negative(amountFormatted),
+                    style: themeData.paymentItemAmountTextStyle,
+                  ),
+                  // Fee widget
+                  (actualFeeSat == 0 || isPending)
                       ? const SizedBox.shrink()
                       : Text(
                           hideBalance
