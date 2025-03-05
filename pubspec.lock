@@ -145,27 +145,6 @@ packages:
       relative: true
     source: path
     version: "0.7.1"
-  breez_logger:
-    dependency: "direct main"
-    description:
-      path: "packages/breez_logger"
-      relative: true
-    source: path
-    version: "0.0.0"
-  breez_preferences:
-    dependency: "direct main"
-    description:
-      path: "packages/breez_preferences"
-      relative: true
-    source: path
-    version: "0.0.0"
-  breez_sdk_liquid:
-    dependency: "direct main"
-    description:
-      path: "packages/breez_sdk_liquid"
-      relative: true
-    source: path
-    version: "0.0.0"
   breez_translations:
     dependency: "direct main"
     description:
@@ -351,13 +330,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
-  credentials_manager:
-    dependency: "direct main"
-    description:
-      path: "packages/credentials_manager"
-      relative: true
-    source: path
-    version: "0.0.0"
   cross_file:
     dependency: transitive
     description:
@@ -402,13 +374,6 @@ packages:
     dependency: transitive
     description:
       path: "packages/deep_link_client"
-      relative: true
-    source: path
-    version: "0.0.0"
-  device_client:
-    dependency: "direct main"
-    description:
-      path: "packages/device_client"
       relative: true
     source: path
     version: "0.0.0"
@@ -613,13 +578,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.10.4"
-  firebase_notifications_client:
-    dependency: "direct main"
-    description:
-      path: "packages/notifications_client/firebase_notifications_client"
-      relative: true
-    source: path
-    version: "0.0.0"
   fixnum:
     dependency: transitive
     description:
@@ -1112,13 +1070,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
-  keychain:
-    dependency: "direct main"
-    description:
-      path: "packages/keychain"
-      relative: true
-    source: path
-    version: "0.0.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -1143,13 +1094,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  lightning_links:
-    dependency: "direct main"
-    description:
-      path: "packages/lightning_links"
-      relative: true
-    source: path
-    version: "0.0.0"
   lints:
     dependency: transitive
     description:
@@ -1518,20 +1462,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
-  sdk_connectivity_cubit:
-    dependency: "direct main"
-    description:
-      path: "packages/sdk_connectivity_cubit"
-      relative: true
-    source: path
-    version: "0.0.0"
-  service_injector:
-    dependency: "direct main"
-    description:
-      path: "packages/service_injector"
-      relative: true
-    source: path
-    version: "0.0.0"
   share_plus:
     dependency: "direct main"
     description:
