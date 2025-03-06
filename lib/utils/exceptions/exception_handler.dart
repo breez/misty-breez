@@ -90,8 +90,6 @@ class ExceptionHandler {
       message = 'The specified invoice is not valid: ${error.err}';
     } else if (error is PaymentError_InvalidPreimage) {
       message = 'The generated preimage is not valid';
-    } else if (error is PaymentError_LwkError) {
-      message = 'Lwk error: ${error.err}';
     } else if (error is PaymentError_PairsNotFound) {
       message = 'Boltz did not return any pairs from the request';
     } else if (error is PaymentError_PaymentTimeout) {
