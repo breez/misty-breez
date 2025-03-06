@@ -30,8 +30,10 @@ class _AccountRequiredActionsIndicatorState extends State<AccountRequiredActions
           warnings.add(const RefundablesWarningAction());
         }
 
-        final SecurityState securityState = context.read<SecurityCubit>().state;
-        if (securityState.verificationStatus != VerificationStatus.verified) {
+        final VerificationStatus verificationStatus = context.select<SecurityCubit, VerificationStatus>(
+          (SecurityCubit cubit) => cubit.state.verificationStatus,
+        );
+        if (verificationStatus != VerificationStatus.verified) {
           _logger.info('Adding mnemonic verification warning.');
           warnings.add(const VerifyMnemonicWarningAction());
         }
