@@ -133,59 +133,11 @@ class PaymentProcessingAnimation extends StatefulWidget {
   State<PaymentProcessingAnimation> createState() => _PaymentProcessingAnimationState();
 }
 
-class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
-    with TickerProviderStateMixin {
+class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation> {
   static final Logger _logger = Logger('PaymentProcessingAnimation');
-
-  /// Height of the Lottie animation.
-  static const double _animationHeight = 48.0;
 
   /// Maximum number of retry attempts for loading animation.
   static const int _maxRetryAttempts = 3;
-
-  /// Controls the animation of the Lottie asset.
-  late final AnimationController _controller;
-
-  /// Duration of the animation loop in milliseconds.
-  static const int _animationDurationMs = 3800;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeAnimationController();
-  }
-
-  /// Initializes the animation controller.
-  void _initializeAnimationController() {
-    try {
-      _controller = AnimationController(vsync: this);
-    } catch (e, stackTrace) {
-      _logger.severe(
-        'Failed to initialize animation controller',
-        e,
-        stackTrace,
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _disposeAnimationController();
-    super.dispose();
-  }
-
-  /// Safely disposes the animation controller.
-  void _disposeAnimationController() {
-    try {
-      _controller.dispose();
-    } catch (e, stackTrace) {
-      _logger.warning(
-        'Error disposing animation controller',
-        e,
-        stackTrace,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,11 +149,8 @@ class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
       child: Lottie.asset(
         customData.loaderAssetPath,
         decoder: (List<int> bytes) => _decodeLottieFileWithRetry(bytes, _maxRetryAttempts),
-        height: _animationHeight,
-        controller: _controller,
         repeat: true,
         reverse: false,
-        onLoaded: _onLottieLoaded,
         filterQuality: FilterQuality.high,
         fit: BoxFit.fill,
         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
@@ -211,29 +160,10 @@ class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
             stackTrace,
           );
           // Fallback to a simple CircularProgressIndicator if Lottie fails
-          return const SizedBox(
-            height: _animationHeight,
-            child: Center(child: CircularProgressIndicator()),
-          );
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
-  }
-
-  /// Handles the successful loading of a Lottie composition.
-  void _onLottieLoaded(LottieComposition composition) {
-    try {
-      _controller
-        ..duration = const Duration(milliseconds: _animationDurationMs)
-        ..repeat();
-      _logger.fine('Animation loaded and configured successfully');
-    } catch (e, stackTrace) {
-      _logger.severe(
-        'Error setting up animation controller after loading',
-        e,
-        stackTrace,
-      );
-    }
   }
 
   /// Custom decoder for Lottie files with retry mechanism.
