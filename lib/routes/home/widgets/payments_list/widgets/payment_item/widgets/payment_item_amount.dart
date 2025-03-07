@@ -23,19 +23,31 @@ class PaymentItemAmount extends StatelessWidget {
           final bool hideBalance = userModel.profileSettings.hideBalance;
           return BlocBuilder<CurrencyCubit, CurrencyState>(
             builder: (BuildContext context, CurrencyState currencyState) {
-              final String amount = currencyState.bitcoinCurrency.format(
+              String amount = currencyState.bitcoinCurrency.format(
                 paymentData.amountSat,
                 includeDisplayName: false,
               );
 
-              final int actualFeeSat = paymentData.actualFeeSat;
+              int actualFeeSat = paymentData.actualFeeSat;
               final String actualFeeFormatted = currencyState.bitcoinCurrency.format(
                 actualFeeSat,
                 includeDisplayName: false,
               );
 
+              if (paymentData.status == PaymentState.refundPending) {
+                amount = currencyState.bitcoinCurrency.format(
+                  paymentData.amountSat + actualFeeSat,
+                  includeDisplayName: false,
+                );
+
+                actualFeeSat = 0;
+              }
+
+              final bool isPending = paymentData.status == PaymentState.pending ||
+                  paymentData.status == PaymentState.refundPending;
+
               return Column(
-                mainAxisAlignment: paymentData.feeSat == 0 || paymentData.status == PaymentState.pending
+                mainAxisAlignment: (actualFeeSat == 0 || isPending)
                     ? MainAxisAlignment.center
                     : MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -45,12 +57,14 @@ class PaymentItemAmount extends StatelessWidget {
                       : Text(
                           hideBalance
                               ? texts.wallet_dashboard_payment_item_balance_hide
-                              : paymentData.paymentType == PaymentType.receive
-                                  ? texts.wallet_dashboard_payment_item_balance_positive(amount)
-                                  : texts.wallet_dashboard_payment_item_balance_negative(amount),
+                              : paymentData.status == PaymentState.refundPending
+                                  ? amount
+                                  : paymentData.paymentType == PaymentType.receive
+                                      ? texts.wallet_dashboard_payment_item_balance_positive(amount)
+                                      : texts.wallet_dashboard_payment_item_balance_negative(amount),
                           style: themeData.paymentItemAmountTextStyle,
                         ),
-                  (actualFeeSat == 0 || paymentData.status == PaymentState.pending)
+                  (actualFeeSat == 0 || isPending)
                       ? const SizedBox.shrink()
                       : Text(
                           hideBalance
