@@ -3,6 +3,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 
@@ -41,11 +42,17 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
             reverse: true,
             child: BlocBuilder<CurrencyCubit, CurrencyState>(
               builder: (BuildContext context, CurrencyState state) {
+                int refundTxAmountSat = paymentData.refundTxAmountSat;
+                if (paymentData.status == PaymentState.refundPending) {
+                  refundTxAmountSat = paymentData.amountSat + paymentData.actualFeeSat;
+                }
                 final String amountSats = BitcoinCurrency.fromTickerSymbol(
                   state.bitcoinTicker,
-                ).format(paymentData.refundTxAmountSat);
+                ).format(refundTxAmountSat);
                 return Text(
-                  texts.payment_details_dialog_amount_positive(amountSats),
+                  paymentData.status == PaymentState.refundPending
+                      ? amountSats
+                      : texts.payment_details_dialog_amount_positive(amountSats),
                   style: themeData.primaryTextTheme.displaySmall!.copyWith(
                     fontSize: 18.0,
                     color: Colors.white,
