@@ -158,14 +158,16 @@ class PaymentDetailsSheet extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
                   child: Column(
                     children: <Widget>[
-                      PaymentDetailsSheetAmount(
-                        paymentData: paymentData,
-                        labelAutoSizeGroup: _labelGroup,
-                      ),
-                      PaymentDetailsSheetFee(
-                        paymentData: paymentData,
-                        labelAutoSizeGroup: _labelGroup,
-                      ),
+                      if (paymentData.status != PaymentState.refundPending) ...<Widget>[
+                        PaymentDetailsSheetAmount(
+                          paymentData: paymentData,
+                          labelAutoSizeGroup: _labelGroup,
+                        ),
+                        PaymentDetailsSheetFee(
+                          paymentData: paymentData,
+                          labelAutoSizeGroup: _labelGroup,
+                        ),
+                      ],
                       if (paymentData.isRefunded) ...<Widget>[
                         PaymentDetailsSheetRefundTxAmount(
                           paymentData: paymentData,
