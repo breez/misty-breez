@@ -27,9 +27,15 @@ class PaymentItemSubtitle extends StatelessWidget {
           BreezDateUtils.formatTimelineRelative(paymentData.paymentTime),
           style: subtitleTextStyle,
         ),
-        if (paymentData.isRefunded ||
-            paymentData.status == PaymentState.refundable ||
-            paymentData.status == PaymentState.refundPending) ...<Widget>[
+        if (paymentData.status == PaymentState.refundPending) ...<Widget>[
+          Text(
+            ' (Pending Refund)',
+            style: subtitleTextStyle.copyWith(
+              color: themeData.customData.pendingTextColor,
+            ),
+          ),
+        ],
+        if (paymentData.isRefunded || paymentData.status == PaymentState.refundable) ...<Widget>[
           Text(
             ' (Failed)',
             style: subtitleTextStyle.copyWith(
