@@ -40,13 +40,13 @@ class PaymentItemAvatar extends StatelessWidget {
         avatarChild = BreezAvatar(avatarURL, radius: radius);
       } else {
         avatarChild = Icon(
-          paymentData.isRefunded ||
-                  paymentData.status == PaymentState.refundable ||
-                  paymentData.status == PaymentState.refundPending
-              ? Icons.close_rounded
-              : paymentData.paymentType == PaymentType.receive
-                  ? Icons.add_rounded
-                  : Icons.remove_rounded,
+          paymentData.status == PaymentState.refundPending
+              ? Icons.sync_alt
+              : paymentData.isRefunded || paymentData.status == PaymentState.refundable
+                  ? Icons.close_rounded
+                  : paymentData.paymentType == PaymentType.receive
+                      ? Icons.add_rounded
+                      : Icons.remove_rounded,
           size: radius,
           color: const Color(0xb3303234),
         );
