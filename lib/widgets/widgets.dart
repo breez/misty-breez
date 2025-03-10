@@ -2,7 +2,6 @@ export 'amount_form_field/amount_form_field.dart';
 export 'back_button.dart';
 export 'backup_in_progress_dialog.dart';
 export 'breez_avatar.dart';
-export 'collapsible_list_item.dart';
 export 'error_dialog.dart';
 export 'flushbar.dart';
 export 'keyboard_done_action.dart';

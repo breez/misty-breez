@@ -13,20 +13,10 @@ class BlockchainExplorerService {
   /// Returns a formatted URL string
   static String formatTransactionUrl({
     required String txid,
-    String mempoolInstance = NetworkConstants.defaultMempoolInstance,
+    String mempoolInstance = NetworkConstants.defaultLiquidMempoolInstance,
     String unblindingData = '',
   }) {
     final String blinded = unblindingData.isEmpty ? '' : '#blinded=$unblindingData';
     return '$mempoolInstance/tx/$txid$blinded';
-  }
-
-  /// Formats a URL for fetching recommended fees from a blockchain explorer
-  ///
-  /// [mempoolInstance] The blockchain explorer base URL. Defaults to a Liquid mempool instance.
-  /// Returns a formatted URL string
-  static String formatRecommendedFeesUrl({
-    String mempoolInstance = NetworkConstants.defaultMempoolInstance,
-  }) {
-    return '$mempoolInstance/api/v1/fees/recommended';
   }
 }

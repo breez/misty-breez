@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
@@ -8,28 +6,25 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
+import 'package:logging/logging.dart';
+
+final Logger _logger = Logger('RefundConfirmationPage');
 
 class RefundConfirmationPage extends StatefulWidget {
   final int refundAmountSat;
-  final String swapAddress;
-  final String toAddress;
-  final String? originalTransaction;
+  final RefundParams refundParams;
 
   const RefundConfirmationPage({
     required this.refundAmountSat,
-    required this.toAddress,
-    required this.swapAddress,
+    required this.refundParams,
     super.key,
-    this.originalTransaction,
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return RefundConfirmationState();
-  }
+  State<RefundConfirmationPage> createState() => _RefundConfirmationPageState();
 }
 
-class RefundConfirmationState extends State<RefundConfirmationPage> {
+class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
   List<RefundFeeOption> affordableFees = <RefundFeeOption>[];
   int selectedFeeIndex = -1;
 
@@ -53,16 +48,15 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
         future: _fetchFeeOptionsFuture,
         builder: (BuildContext context, AsyncSnapshot<List<RefundFeeOption>> snapshot) {
           if (snapshot.error != null) {
+            _logger.severe('Error fetching refund fee options: ${snapshot.error}');
             return _ErrorMessage(
-              message: texts.sweep_all_coins_error_retrieve_fees,
+              message: (snapshot.error is PaymentError_InsufficientFunds)
+                  ? texts.reverse_swap_confirmation_error_funds_fee
+                  : texts.sweep_all_coins_error_retrieve_fees,
             );
           }
           if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: Loader(
-                color: Colors.white,
-              ),
-            );
+            return const Center(child: Loader());
           }
 
           if (affordableFees.isNotEmpty) {
@@ -75,51 +69,41 @@ class RefundConfirmationState extends State<RefundConfirmationPage> {
               }),
             );
           } else {
-            return _ErrorMessage(
-              message: texts.sweep_all_coins_error_amount_small,
-            );
+            return _ErrorMessage(message: texts.sweep_all_coins_error_amount_small);
           }
         },
       ),
       bottomNavigationBar:
           (affordableFees.isNotEmpty && selectedFeeIndex >= 0 && selectedFeeIndex < affordableFees.length)
-              ? RefundButton(
-                  req: RefundRequest(
-                    feeRateSatPerVbyte: affordableFees[selectedFeeIndex].feeRateSatPerVbyte.toInt(),
-                    refundAddress: widget.toAddress,
-                    swapAddress: widget.swapAddress,
+              ? SafeArea(
+                  child: RefundConfirmationButton(
+                    req: RefundRequest(
+                      feeRateSatPerVbyte: affordableFees[selectedFeeIndex].feeRateSatPerVbyte.toInt(),
+                      refundAddress: widget.refundParams.toAddress,
+                      swapAddress: widget.refundParams.swapAddress,
+                    ),
                   ),
                 )
-              : SingleButtonBottomBar(
-                  text: texts.sweep_all_coins_action_retry,
-                  onPressed: () => _fetchRefundFeeOptions,
-                  stickToBottom: true,
-                ),
+              : null,
     );
   }
 
   void _fetchRefundFeeOptions() {
     final RefundCubit refundCubit = context.read<RefundCubit>();
-    final RefundParams refundParams = RefundParams(
-      swapAddress: widget.swapAddress,
-      toAddress: widget.toAddress,
+    _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(
+      params: widget.refundParams,
     );
-    _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(params: refundParams);
     _fetchFeeOptionsFuture.then(
       (List<RefundFeeOption> feeOptions) {
-        setState(() {
-          affordableFees = feeOptions
-              .where(
-                (RefundFeeOption f) => f.isAffordable(
-                  balanceSat: widget.refundAmountSat,
-                  amountSat: widget.refundAmountSat,
-                ),
-              )
-              .toList();
-          selectedFeeIndex = (affordableFees.length / 2).floor();
-        });
+        if (mounted) {
+          setState(() {
+            affordableFees = feeOptions;
+            selectedFeeIndex = (affordableFees.length / 2).floor();
+          });
+        }
       },
       onError: (Object error, StackTrace stackTrace) {
+        _logger.severe('Error processing refund fee options: $error');
         setState(() {
           affordableFees = <RefundFeeOption>[];
           selectedFeeIndex = -1;

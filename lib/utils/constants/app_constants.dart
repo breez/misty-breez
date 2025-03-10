@@ -19,8 +19,11 @@ class NetworkConstants {
   /// Private constructor to prevent instantiation
   NetworkConstants._();
 
+  /// Default Liquid Mempool instance URL
+  static const String defaultLiquidMempoolInstance = 'https://liquid.network/';
+
   /// Default Mempool instance URL
-  static const String defaultMempoolInstance = 'https://liquid.fra.mempool.space/';
+  static const String defaultBitcoinMempoolInstance = 'https://mempool.space/';
 }
 
 /// Payment-related constants
