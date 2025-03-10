@@ -82,3 +82,11 @@ extension PrepareRefundResponseFormatted on PrepareRefundResponse {
       'lastRefundTxId: ${lastRefundTxId ?? 'N/A'} '
       ')';
 }
+
+extension RefundRequestFormatted on RefundRequest {
+  String toFormattedString() => 'RefundRequest('
+      'swapAddress: $swapAddress, '
+      'refundAddress: $refundAddress, '
+      'feeRateSatPerVbyte: $feeRateSatPerVbyte'
+      ')';
+}

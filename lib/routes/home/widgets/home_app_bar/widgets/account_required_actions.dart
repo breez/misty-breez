@@ -22,8 +22,10 @@ class _AccountRequiredActionsIndicatorState extends State<AccountRequiredActions
       builder: (BuildContext context) {
         final List<Widget> warnings = <Widget>[];
 
-        final RefundState refundState = context.watch<RefundCubit>().state;
-        if (refundState.hasRefundables) {
+        final bool hasRefundables = context.select<RefundCubit, bool>(
+          (RefundCubit cubit) => cubit.state.hasRefundables,
+        );
+        if (hasRefundables) {
           _logger.info('Adding refundables warning.');
           warnings.add(const RefundablesWarningAction());
         }

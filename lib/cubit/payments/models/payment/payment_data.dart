@@ -131,7 +131,13 @@ class PaymentData {
         orElse: () => 0,
       );
 
-  bool get isRefunded => refundTxAmountSat > 0 && status == PaymentState.failed;
+  String? get refundTxId => details.map(
+        bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxId,
+        lightning: (PaymentDetails_Lightning details) => details.refundTxId,
+        orElse: () => null,
+      );
+
+  bool get isRefunded => (refundTxAmountSat > 0 || refundTxId != null) && status == PaymentState.failed;
 
   int get actualFeeSat => isRefunded ? amountSat - refundTxAmountSat : feeSat;
 

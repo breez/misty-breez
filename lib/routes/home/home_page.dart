@@ -75,8 +75,8 @@ class HomeState extends State<Home> with AutoLockMixin<Home>, HandlerContextProv
           final BreezTranslations texts = context.texts();
           final bool? shouldPop = await promptAreYouSure(
             context,
-            texts.close_popup_title,
-            Text(texts.close_popup_message),
+            title: texts.close_popup_title,
+            body: Text(texts.close_popup_message),
           );
           if (shouldPop ?? false) {
             exit(0);

@@ -184,8 +184,8 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     final ThemeData theme = Theme.of(context);
     promptError(
       context,
-      texts.payment_failed_report_dialog_title,
-      Text(
+      title: texts.payment_failed_report_dialog_title,
+      body: Text(
         ExceptionHandler.extractMessage(err, texts),
         style: theme.dialogTheme.contentTextStyle,
       ),

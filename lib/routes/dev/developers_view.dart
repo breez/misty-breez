@@ -249,6 +249,7 @@ class _DevelopersViewState extends State<DevelopersView> {
                     color: Colors.white,
                   ),
                   sharedValue: walletInfo.pubkey,
+                  shouldPop: false,
                 ),
               ),
               StatusItem(label: 'Fingerprint', value: walletInfo.fingerprint),

@@ -57,8 +57,8 @@ void handleLNURLWithdrawPageResult(BuildContext context, LNURLPageResult result)
     final ThemeData themeData = Theme.of(context);
     promptError(
       context,
-      texts.invoice_receive_fail,
-      Text(
+      title: texts.invoice_receive_fail,
+      body: Text(
         texts.invoice_receive_fail_message(result.errorMessage),
         style: themeData.dialogTheme.contentTextStyle,
       ),

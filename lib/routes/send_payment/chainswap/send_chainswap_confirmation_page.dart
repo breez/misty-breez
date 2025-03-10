@@ -6,6 +6,9 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/widgets/widgets.dart';
+import 'package:logging/logging.dart';
+
+final Logger _logger = Logger('SendChainSwapConfirmationPage');
 
 class SendChainSwapConfirmationPage extends StatefulWidget {
   final int amountSat;
@@ -47,6 +50,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
         future: _fetchFeeOptionsFuture,
         builder: (BuildContext context, AsyncSnapshot<List<SendChainSwapFeeOption>> snapshot) {
           if (snapshot.error != null) {
+            _logger.severe('Error fetching send chain swap fee options: ${snapshot.error}');
             return _ErrorMessage(
               message: (snapshot.error is PaymentError_InsufficientFunds)
                   ? texts.reverse_swap_confirmation_error_funds_fee
@@ -108,6 +112,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
         }
       },
       onError: (Object error, StackTrace stackTrace) {
+        _logger.severe('Error processing send chain swap fee options: $error');
         setState(() {
           affordableFees = <SendChainSwapFeeOption>[];
           selectedFeeIndex = -1;

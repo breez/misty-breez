@@ -33,22 +33,30 @@ class RefundButton extends StatelessWidget {
     navigator.push(loaderRoute);
     try {
       await refundCubit.refund(req: req);
+
+      if (!context.mounted) {
+        return;
+      }
+
       navigator.popUntil(
         (Route<dynamic> route) => route.settings.name == Home.routeName,
       );
     } catch (e) {
-      navigator.pop(loaderRoute);
       if (!context.mounted) {
         return;
       }
       promptError(
         context,
-        null,
-        Text(
+        title: 'Refund Failed',
+        body: Text(
           ExceptionHandler.extractMessage(e, texts),
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
+    } finally {
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
     }
   }
 }
