@@ -16,7 +16,7 @@ class PaymentDetailsSheetLnUrlPayComment extends StatelessWidget {
     return ShareablePaymentRow(
       tilePadding: EdgeInsets.zero,
       dividerColor: Colors.transparent,
-      title: '${texts.payment_details_dialog_share_comment}:',
+      title: texts.payment_details_sheet_comment_label,
       titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
         fontSize: 18.0,
         color: Colors.white,

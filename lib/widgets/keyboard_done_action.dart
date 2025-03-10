@@ -3,8 +3,11 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/theme/theme.dart';
+import 'package:logging/logging.dart';
 
 const double _kBarSize = 45.0;
+
+Logger _logger = Logger('KeyboardDoneAction');
 
 class KeyboardDoneAction {
   final List<FocusNode> focusNodes;
@@ -22,25 +25,29 @@ class KeyboardDoneAction {
     for (FocusNode f in focusNodes) {
       f.removeListener(_onFocus);
     }
-    _overlayEntry?.remove();
+    _hideOverlay();
   }
 
   void _onFocus() {
     final bool hasFocus = focusNodes.any((FocusNode f) => f.hasFocus);
     if (hasFocus && _overlayEntry == null) {
       _showOverlay();
-    } else {
+    } else if (!hasFocus) {
       _hideOverlay();
     }
   }
 
   void _showOverlay() {
+    // Ensure we have a valid context before creating overlay
+    if (focusNodes.isEmpty || focusNodes[0].context == null) {
+      return;
+    }
+
     final OverlayState os = Overlay.of(focusNodes[0].context!);
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
         final BreezTranslations texts = context.texts();
         final MediaQueryData queryData = MediaQuery.of(context);
-        // Update and build footer, if any
         return Positioned(
           bottom: queryData.viewInsets.bottom,
           left: 0,
@@ -78,7 +85,13 @@ class KeyboardDoneAction {
   }
 
   void _hideOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
+    if (_overlayEntry != null) {
+      try {
+        _overlayEntry?.remove();
+      } catch (e) {
+        _logger.warning('Error removing overlay: $e');
+      }
+      _overlayEntry = null;
+    }
   }
 }

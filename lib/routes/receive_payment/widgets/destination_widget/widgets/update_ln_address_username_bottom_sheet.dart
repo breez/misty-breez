@@ -75,7 +75,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const BottomSheetHandle(),
-              const BottomSheetTitle(title: 'Customize Address:'),
+              BottomSheetTitle(title: '${texts.update_ln_address_username_title}:'),
               UsernameFormField(
                 formKey: _formKey,
                 controller: _usernameController,
@@ -97,18 +97,13 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
 
   /// Handle changes to the update status from the LnAddressCubit.
   void _onUpdateStatusChanged(BuildContext context, LnAddressState state) {
+    final BreezTranslations texts = context.texts();
     if (state.updateStatus.status == UpdateStatus.success) {
       Navigator.pop(context);
-      showFlushbar(
-        context,
-        message: 'Successfully updated Lightning Address username.',
-      );
+      showFlushbar(context, message: texts.update_ln_address_username_success);
     } else if (state.updateStatus.status == UpdateStatus.error) {
       if (state.updateStatus.error is! UsernameConflictException) {
-        showFlushbar(
-          context,
-          message: 'Failed to update Lightning Address username.',
-        );
+        showFlushbar(context, message: texts.update_ln_address_username_failed);
       }
       _formKey.currentState?.validate();
     }
@@ -116,22 +111,23 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
 
   /// Validates the username input.
   String? _validateUsername(String? value) {
+    final BreezTranslations texts = context.texts();
     final String sanitized = UsernameFormatter.sanitize(value ?? '');
     if (sanitized.isEmpty) {
-      return 'Please enter a username';
+      return texts.validator_ln_address_username_empty;
     }
 
     if (sanitized.length > 64) {
-      return 'Username cannot exceed 64 characters.';
+      return texts.validator_ln_address_username_exceed_length;
     }
 
     final LnAddressState state = context.read<LnAddressCubit>().state;
     if (state.updateStatus.error is UsernameConflictException) {
-      return 'Username is already taken';
+      return texts.validator_ln_address_username_taken;
     }
 
     final String email = '$sanitized@$_domain';
-    return EmailValidator.validate(email) ? null : 'Invalid username.';
+    return EmailValidator.validate(email) ? null : texts.validator_ln_address_username_invalid;
   }
 
   /// Handles the form submission.
@@ -153,13 +149,12 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
 
       // Only show confirmation if username is actually changing
       if (currentUsername != newUsername) {
+        final BreezTranslations texts = context.texts();
         final bool? confirmed = await promptAreYouSure(
           context,
-          title: 'Confirm Username Change',
+          title: texts.update_ln_address_username_confirmation_title,
           body: Text(
-            "Changing your Lightning Address username will permanently release '$currentUsername@$_domain'"
-            ', making it available for other users.\n\n'
-            'Do you want to proceed?',
+            texts.update_ln_address_username_confirmation_message(currentUsername, _domain),
             style: const TextStyle(color: Colors.white),
           ),
         );
@@ -241,6 +236,7 @@ class UsernameFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
     return Padding(
@@ -256,7 +252,7 @@ class UsernameFormField extends StatelessWidget {
               controller: controller,
               focusNode: focusNode,
               decoration: InputDecoration(
-                labelText: 'Username',
+                labelText: texts.update_ln_address_username_label,
                 errorBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: themeData.colorScheme.error),
                 ),
@@ -273,7 +269,7 @@ class UsernameFormField extends StatelessWidget {
                   child: Text('@$domain'),
                 ),
                 border: const OutlineInputBorder(),
-                errorText: isConflict ? 'Username is already taken' : null,
+                errorText: isConflict ? texts.validator_ln_address_username_taken : null,
               ),
               keyboardType: TextInputType.emailAddress,
               autofocus: true,

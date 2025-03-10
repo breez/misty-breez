@@ -1,5 +1,5 @@
-//import 'package:breez_translations/breez_translations_locales.dart';
-//import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
@@ -10,14 +10,13 @@ class PaymentDetailsSheetLnUrlPaySuccessDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final BreezTranslations texts = context.texts();
+    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
     return ShareablePaymentRow(
       tilePadding: EdgeInsets.zero,
       dividerColor: Colors.transparent,
-      // TODO(danielgranhao): translate.
-      title: 'LNURL Pay Success Description:',
+      title: texts.payment_details_sheet_lnurlpay_success_description_label,
       titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
         fontSize: 18.0,
         color: Colors.white,

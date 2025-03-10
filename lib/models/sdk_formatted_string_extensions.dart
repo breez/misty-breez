@@ -22,10 +22,16 @@ extension RecommendedFeesFormatter on RecommendedFees {
 }
 
 extension PaymentEventFormatter on PaymentEvent {
-  String toFormattedString() => 'PaymentEvent('
-      'sdkEvent: ${sdkEvent.toFormattedString()}, '
-      'payment: ${payment.toFormattedString()}'
-      ')';
+  String toFormattedString() {
+    final String sdkEventStr = sdkEvent.toFormattedString();
+    final String paymentStr = payment.toFormattedString();
+
+    if (sdkEventStr.contains(paymentStr)) {
+      return 'PaymentEvent(sdkEvent: $sdkEventStr)';
+    }
+
+    return 'PaymentEvent(sdkEvent: $sdkEventStr, payment: $paymentStr)';
+  }
 }
 
 extension SdkEventFormatter on SdkEvent {
@@ -62,7 +68,7 @@ extension PaymentFormatter on Payment {
       'feesSat: $feesSat, '
       'swapperFeesSat: ${swapperFeesSat ?? "N/A"}, '
       'paymentType: $paymentType, '
-      'status: $status'
+      'status: $status, '
       'details: ${details.toFormattedString()}'
       ')';
 }

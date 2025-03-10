@@ -26,8 +26,7 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
-            // TODO(erdemyerebasmaz): Add these messages to Breez-Translations
-            'Refund Tx ${texts.ln_payment_amount_label}',
+            texts.payment_details_sheet_refund_tx_amount_label,
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
               color: Colors.white,
