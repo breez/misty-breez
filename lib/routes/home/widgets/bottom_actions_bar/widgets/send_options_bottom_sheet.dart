@@ -33,8 +33,9 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
                 iconAssetPath: 'assets/icons/lightning.png',
                 enabled: hasBalance,
               ),
-              title: Text(
-                texts.bottom_action_bar_enter_payment_info,
+              title: const Text(
+                // TODO(erdemyerebasmaz): Add message to Breez-Translations
+                'Pay Invoice or Lightning Address',
                 style: bottomSheetTextStyle,
               ),
               onTap: () {
