@@ -277,9 +277,15 @@ class _DevelopersViewState extends State<DevelopersView> {
                 ),
               ),
               StatusItem(label: 'Fingerprint', value: walletInfo.fingerprint),
-              StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),
-              StatusItem(label: 'Pending Receive Amount', value: '${walletInfo.pendingReceiveSat}'),
-              StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
+              if (walletInfo.balanceSat > BigInt.zero) ...<Widget>[
+                StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),
+              ],
+              if (walletInfo.pendingReceiveSat > BigInt.zero) ...<Widget>[
+                StatusItem(label: 'Pending Receive Amount', value: '${walletInfo.pendingReceiveSat}'),
+              ],
+              if (walletInfo.pendingSendSat > BigInt.zero) ...<Widget>[
+                StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
+              ],
               StatusItem(
                 label: 'Asset Balances',
                 value: '${walletInfo.assetBalances.map(
