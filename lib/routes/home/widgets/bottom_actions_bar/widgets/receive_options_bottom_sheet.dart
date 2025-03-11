@@ -44,7 +44,7 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         ),
         ListTile(
           leading: const BottomActionItemImage(
-            iconAssetPath: 'assets/icons/paste.png',
+            iconAssetPath: 'assets/icons/lightning.png',
           ),
           title: Text(
             texts.bottom_action_bar_receive_invoice,

@@ -30,7 +30,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
             ListTile(
               enabled: hasBalance,
               leading: BottomActionItemImage(
-                iconAssetPath: 'assets/icons/paste.png',
+                iconAssetPath: 'assets/icons/lightning.png',
                 enabled: hasBalance,
               ),
               title: Text(
