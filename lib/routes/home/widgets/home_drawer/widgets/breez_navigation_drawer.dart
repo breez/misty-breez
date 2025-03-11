@@ -87,11 +87,11 @@ class BreezNavigationDrawer extends StatelessWidget {
 
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
-                systemNavigationBarColor: themeData.customData.navigationDrawerBgColor,
+                systemNavigationBarColor: themeData.customData.surfaceBgColor,
               ),
           child: Theme(
             data: themeData.copyWith(
-              canvasColor: themeData.customData.navigationDrawerBgColor,
+              canvasColor: themeData.customData.surfaceBgColor,
             ),
             child: Drawer(
               child: Column(

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/exceptions/exception_handler.dart';
 import 'package:l_breez/utils/payments/payment_validator.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
@@ -154,13 +155,13 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                     ),
                   ),
                   Container(
-                    decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(
+                    decoration: ShapeDecoration(
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(12),
                         ),
                       ),
-                      color: Color.fromRGBO(10, 20, 40, 1),
+                      color: themeData.customData.surfaceBgColor,
                     ),
                     padding: const EdgeInsets.symmetric(
                       vertical: 16,

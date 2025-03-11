@@ -5,6 +5,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/sdk_formatted_string_extensions.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 import 'package:l_breez/widgets/widgets.dart';
@@ -39,6 +40,7 @@ class RefundPageState extends State<RefundPage> {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -52,13 +54,13 @@ class RefundPageState extends State<RefundPage> {
           child: Column(
             children: <Widget>[
               Container(
-                decoration: const ShapeDecoration(
-                  shape: RoundedRectangleBorder(
+                decoration: ShapeDecoration(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(12),
                     ),
                   ),
-                  color: Color.fromRGBO(10, 20, 40, 1),
+                  color: themeData.customData.surfaceBgColor,
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
                 child: RefundForm(

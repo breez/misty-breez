@@ -78,13 +78,13 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
   /// Builds the main content container with form and action buttons.
   Widget _buildContentContainer(BreezTranslations texts, ThemeData themeData) {
     return Container(
-      decoration: const ShapeDecoration(
-        shape: RoundedRectangleBorder(
+      decoration: ShapeDecoration(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
           ),
         ),
-        color: Color.fromRGBO(10, 20, 40, 1),
+        color: themeData.customData.surfaceBgColor,
       ),
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
       child: Column(

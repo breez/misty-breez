@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/currency.dart';
 import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/theme/theme.dart';
 
 class SendChainSwapFormPage extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -32,19 +33,21 @@ class SendChainSwapFormPage extends StatefulWidget {
 class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
         child: Column(
           children: <Widget>[
             Container(
-              decoration: const ShapeDecoration(
-                shape: RoundedRectangleBorder(
+              decoration: ShapeDecoration(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(12),
                   ),
                 ),
-                color: Color.fromRGBO(10, 20, 40, 1),
+                color: themeData.customData.surfaceBgColor,
               ),
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
               child: SendChainSwapForm(
