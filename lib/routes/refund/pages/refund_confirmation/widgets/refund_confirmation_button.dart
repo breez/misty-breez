@@ -32,6 +32,7 @@ class RefundConfirmationButton extends StatelessWidget {
         context,
         promptError: true,
         popToHomeOnCompletion: true,
+        isBroadcast: true,
         paymentFunc: () async => await refundCubit.refund(req: req),
       );
     } catch (e) {

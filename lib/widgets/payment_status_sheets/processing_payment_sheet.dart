@@ -20,6 +20,7 @@ Future<dynamic> showProcessingPaymentSheet(
   bool popToHomeOnCompletion = false,
   bool isLnPayment = false,
   bool isLnUrlPayment = false,
+  bool isBroadcast = false,
 }) async {
   return await showModalBottomSheet(
     context: context,
@@ -29,6 +30,7 @@ Future<dynamic> showProcessingPaymentSheet(
     builder: (BuildContext context) => ProcessingPaymentSheet(
       isLnPayment: isLnPayment,
       isLnUrlPayment: isLnUrlPayment,
+      isBroadcast: isBroadcast,
       promptError: promptError,
       popToHomeOnCompletion: popToHomeOnCompletion,
       paymentFunc: paymentFunc,
@@ -39,6 +41,7 @@ Future<dynamic> showProcessingPaymentSheet(
 class ProcessingPaymentSheet extends StatefulWidget {
   final bool isLnPayment;
   final bool isLnUrlPayment;
+  final bool isBroadcast;
   final bool promptError;
   final bool popToHomeOnCompletion;
   final Future<dynamic> Function() paymentFunc;
@@ -49,6 +52,7 @@ class ProcessingPaymentSheet extends StatefulWidget {
     this.popToHomeOnCompletion = false,
     this.isLnPayment = false,
     this.isLnUrlPayment = false,
+    this.isBroadcast = false,
     super.key,
   });
 
@@ -205,7 +209,9 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       color: themeData.customData.paymentListBgColorLight,
-      child: _showPaymentSent ? const PaymentSentContent() : const ProcessingPaymentContent(),
+      child: _showPaymentSent
+          ? const PaymentSentContent()
+          : ProcessingPaymentContent(isBroadcast: widget.isBroadcast),
     );
   }
 }

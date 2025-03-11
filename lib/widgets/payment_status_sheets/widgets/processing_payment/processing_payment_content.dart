@@ -12,17 +12,19 @@ import 'package:lottie/lottie.dart';
 /// This widget handles the visualization of payment processing state, showing
 /// an animated loader and appropriate text to inform the user of ongoing operations.
 class ProcessingPaymentContent extends StatelessWidget {
+  final bool isBroadcast;
+
   /// Creates a processing payment content widget.
-  const ProcessingPaymentContent({super.key});
+  const ProcessingPaymentContent({required this.isBroadcast, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        PaymentProcessingTitle(),
-        PaymentProcessingLoadingMessage(),
-        PaymentProcessingAnimation(),
+        PaymentProcessingTitle(isBroadcast: isBroadcast),
+        PaymentProcessingLoadingMessage(isBroadcast: isBroadcast),
+        const PaymentProcessingAnimation(),
       ],
     );
   }
@@ -38,8 +40,10 @@ class PaymentProcessingTitle extends StatelessWidget {
   /// Title text size.
   static const double _fontSize = 24.0;
 
+  final bool isBroadcast;
+
   /// Creates a payment processing title widget.
-  const PaymentProcessingTitle({super.key});
+  const PaymentProcessingTitle({required this.isBroadcast, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class PaymentProcessingTitle extends StatelessWidget {
       return Padding(
         padding: _padding,
         child: Text(
-          texts.processing_payment_dialog_processing_payment,
+          isBroadcast ? 'Broadcasting' : texts.processing_payment_dialog_processing_payment,
           style: themeData.dialogTheme.titleTextStyle?.copyWith(
             fontSize: _fontSize,
             color: themeData.isLightTheme ? null : Colors.white,
@@ -61,10 +65,10 @@ class PaymentProcessingTitle extends StatelessWidget {
     } catch (e, stackTrace) {
       _logger.warning('Error building title widget', e, stackTrace);
       // Fallback to a simpler text widget if styling fails
-      return const Padding(
+      return Padding(
         padding: _padding,
         child: Text(
-          'Processing Payment',
+          isBroadcast ? 'Broadcasting' : 'Processing Payment',
           textAlign: TextAlign.center,
         ),
       );
@@ -82,8 +86,10 @@ class PaymentProcessingLoadingMessage extends StatelessWidget {
   /// Height for the loading message container.
   static const double _height = 64.0;
 
+  final bool isBroadcast;
+
   /// Creates a payment processing loading message widget.
-  const PaymentProcessingLoadingMessage({super.key});
+  const PaymentProcessingLoadingMessage({required this.isBroadcast, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +106,9 @@ class PaymentProcessingLoadingMessage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               LoadingAnimatedText(
-                loadingMessage: texts.processing_payment_dialog_wait,
+                loadingMessage: isBroadcast
+                    ? 'Please wait while the transaction is being broadcasted'
+                    : texts.processing_payment_dialog_wait,
                 textStyle: themeData.dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
