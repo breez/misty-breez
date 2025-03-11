@@ -114,18 +114,6 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
               prefixIcon: const SizedBox.shrink(),
               contentPadding: EdgeInsets.zero,
               labelText: texts.enter_payment_info_page_label,
-              suffixIcon: IconButton(
-                padding: const EdgeInsets.only(bottom: 12.0, right: 12.0),
-                alignment: Alignment.bottomRight,
-                icon: Image(
-                  image: const AssetImage('assets/icons/qr_scan.png'),
-                  color: themeData.iconTheme.color,
-                  width: 24.0,
-                  height: 24.0,
-                ),
-                tooltip: texts.enter_payment_info_page_scan_tooltip,
-                onPressed: _scanBarcode,
-              ),
             ),
             style: FieldTextStyle.textStyle,
             validator: (String? value) => _errorMessage.isNotEmpty ? _errorMessage : null,
