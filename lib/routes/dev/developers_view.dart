@@ -252,7 +252,7 @@ class _DevelopersViewState extends State<DevelopersView> {
       (AccountCubit cubit) => cubit.state.walletInfo,
     );
     return Card(
-      color: themeData.customData.paymentListBgColorLight,
+      color: themeData.customData.surfaceBgColor,
       margin: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -264,7 +264,6 @@ class _DevelopersViewState extends State<DevelopersView> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ShareablePaymentRow(
-                  isExpanded: true,
                   tilePadding: EdgeInsets.zero,
                   dividerColor: Colors.transparent,
                   title: 'Public Key',
@@ -293,7 +292,16 @@ class _DevelopersViewState extends State<DevelopersView> {
                     ).toList()}',
               ),
             ],
-          ],
+          ].expand((Widget widget) sync* {
+            yield widget;
+            yield const Divider(
+              height: 8.0,
+              color: Color.fromRGBO(40, 59, 74, 0.5),
+              indent: 0.0,
+              endIndent: 0.0,
+            );
+          }).toList()
+            ..removeLast(),
         ),
       ),
     );
