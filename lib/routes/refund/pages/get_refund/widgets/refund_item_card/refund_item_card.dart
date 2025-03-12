@@ -10,7 +10,6 @@ import 'package:l_breez/widgets/widgets.dart';
 export 'refund_item_card_action.dart';
 export 'refund_item_card_amount.dart';
 export 'refund_item_card_date.dart';
-export 'refund_item_card_original_tx.dart';
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 
