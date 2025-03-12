@@ -35,7 +35,7 @@ class _SendOptionsBottomSheetState extends State<SendOptionsBottomSheet> {
               ),
               title: const Text(
                 // TODO(erdemyerebasmaz): Add message to Breez-Translations
-                'Pay Invoice or Lightning Address',
+                'Pay with Lightning',
                 style: bottomSheetTextStyle,
               ),
               onTap: () {
