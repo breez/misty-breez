@@ -1,5 +1,5 @@
 name: l_breez
-description: "Flutter app showcasing Breez Liquid SDK."
+description: "Flutter app showcasing Breez SDK - Nodeless (Liquid Implementation)."
 publish_to: 'none'
 version: 0.1.0
 
