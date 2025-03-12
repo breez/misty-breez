@@ -180,13 +180,13 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
               if (receiveSnapshot.hasData) {
                 return Container(
-                  decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
+                  decoration: ShapeDecoration(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
                       ),
                     ),
-                    color: Color.fromRGBO(10, 20, 40, 1),
+                    color: themeData.customData.surfaceBgColor,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
                   child: SingleChildScrollView(
@@ -228,13 +228,13 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (BuildContext context, CurrencyState currencyState) {
         return Container(
-          decoration: const ShapeDecoration(
-            shape: RoundedRectangleBorder(
+          decoration: ShapeDecoration(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(12),
               ),
             ),
-            color: Color.fromRGBO(10, 20, 40, 1),
+            color: themeData.customData.surfaceBgColor,
           ),
           padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
           child: Form(

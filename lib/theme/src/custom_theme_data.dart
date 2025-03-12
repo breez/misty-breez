@@ -8,7 +8,7 @@ class CustomData {
   Color paymentListBgColor;
   Color paymentListBgColorLight;
   Color navigationDrawerHeaderBgColor;
-  Color navigationDrawerBgColor;
+  Color surfaceBgColor;
 
   CustomData({
     required this.loaderAssetPath,
@@ -17,7 +17,7 @@ class CustomData {
     required this.paymentListBgColor,
     required this.paymentListBgColorLight,
     required this.navigationDrawerHeaderBgColor,
-    required this.navigationDrawerBgColor,
+    required this.surfaceBgColor,
   });
 }
 
@@ -27,7 +27,7 @@ final CustomData blueThemeCustomData = CustomData(
   pendingTextColor: const Color(0xff4D88EC),
   paymentListBgColor: const Color(0xFFf9f9f9),
   paymentListBgColorLight: Colors.white,
-  navigationDrawerBgColor: BreezColors.blue[500]!,
+  surfaceBgColor: BreezColors.blue[500]!,
   navigationDrawerHeaderBgColor: const Color.fromRGBO(0, 103, 255, 1),
 );
 
@@ -37,6 +37,6 @@ final CustomData darkThemeCustomData = CustomData(
   dashboardBgColor: const Color(0xFF00091c),
   paymentListBgColor: const Color.fromRGBO(10, 20, 40, 1),
   paymentListBgColorLight: const Color.fromRGBO(10, 20, 40, 1.33),
-  navigationDrawerBgColor: const Color.fromRGBO(10, 20, 40, 1),
+  surfaceBgColor: const Color.fromRGBO(10, 20, 40, 1),
   navigationDrawerHeaderBgColor: const Color(0xFF00091c),
 );

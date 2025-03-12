@@ -7,6 +7,7 @@ import 'package:l_breez/models/payment_details_extension.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/widgets/payment_details_sheet/widgets/payment_details_sheet_bip_353_address.dart';
 import 'package:l_breez/routes/home/widgets/payments_list/widgets/payment_details_sheet/widgets/payment_details_sheet_header.dart';
 import 'package:l_breez/routes/home/widgets/widgets.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
 export 'widgets/widgets.dart';
@@ -147,13 +148,13 @@ class PaymentDetailsSheet extends StatelessWidget {
                   child: PaymentDetailsSheetHeader(paymentData: paymentData),
                 ),
                 Container(
-                  decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
+                  decoration: ShapeDecoration(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
                       ),
                     ),
-                    color: Color.fromRGBO(10, 20, 40, 1),
+                    color: themeData.customData.surfaceBgColor,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
                   child: Column(

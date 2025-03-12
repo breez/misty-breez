@@ -22,7 +22,7 @@ class RefundItemCard extends StatelessWidget {
     final String lastRefundTxId = refundableSwap.lastRefundTxId ?? '';
 
     return Card(
-      color: themeData.customData.paymentListBgColorLight,
+      color: themeData.customData.surfaceBgColor,
       margin: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16.0),

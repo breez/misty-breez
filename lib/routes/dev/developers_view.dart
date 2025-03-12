@@ -252,7 +252,7 @@ class _DevelopersViewState extends State<DevelopersView> {
       (AccountCubit cubit) => cubit.state.walletInfo,
     );
     return Card(
-      color: themeData.customData.navigationDrawerBgColor,
+      color: themeData.customData.surfaceBgColor,
       margin: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16),

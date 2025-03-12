@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/receive_payment/widgets/widgets.dart';
+import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
 
@@ -127,18 +128,19 @@ class LnAddressSuccessView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
+    final ThemeData themeData = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(top: 32.0, bottom: 40.0),
       child: SingleChildScrollView(
         child: Container(
-          decoration: const ShapeDecoration(
-            shape: RoundedRectangleBorder(
+          decoration: ShapeDecoration(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(12),
               ),
             ),
-            color: Color.fromRGBO(40, 59, 74, 0.5),
+            color: themeData.customData.surfaceBgColor,
           ),
           padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
           child: SingleChildScrollView(
