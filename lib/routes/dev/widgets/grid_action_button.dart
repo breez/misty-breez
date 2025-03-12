@@ -1,41 +1,53 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:l_breez/theme/src/theme.dart';
+import 'package:l_breez/utils/utils.dart';
+
+final AutoSizeGroup textGroup = AutoSizeGroup();
 
 class GridActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final String tooltip;
   final VoidCallback onPressed;
 
   const GridActionButton({
     required this.icon,
     required this.label,
+    required this.tooltip,
     required this.onPressed,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: themeData.primaryColor,
-        elevation: 0.0,
-        disabledBackgroundColor: themeData.disabledColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+    final MinFontSize minFont = MinFontSize(context);
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 48.0,
+        minWidth: 138.0,
       ),
-      onPressed: onPressed,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(icon, size: 24, color: Colors.white),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: themeData.textTheme.labelLarge?.copyWith(color: Colors.white),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+      child: Tooltip(
+        message: tooltip,
+        child: OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Colors.white),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
-        ],
+          icon: Icon(icon, size: 20.0),
+          label: AutoSizeText(
+            label.toUpperCase(),
+            style: balanceFiatConversionTextStyle,
+            maxLines: 1,
+            group: textGroup,
+            minFontSize: minFont.minFontSize,
+            stepGranularity: 0.1,
+          ),
+          onPressed: onPressed,
+        ),
       ),
     );
   }

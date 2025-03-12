@@ -202,6 +202,7 @@ class _DevelopersViewState extends State<DevelopersView> {
 
       if (mounted) {
         setState(() => _bugReportBehavior = BugReportBehavior.prompt);
+        _showSuccessMessage('Successfully updated bug report setting.');
       }
     } catch (e) {
       _logger.warning('Failed to update bug report setting: $e');
@@ -238,7 +239,6 @@ class _DevelopersViewState extends State<DevelopersView> {
         child: Column(
           children: <Widget>[
             _buildInfoCard(),
-            _buildActionButtons(),
           ],
         ),
       ),
@@ -252,7 +252,7 @@ class _DevelopersViewState extends State<DevelopersView> {
       (AccountCubit cubit) => cubit.state.walletInfo,
     );
     return Card(
-      color: themeData.customData.paymentListBgColorLight,
+      color: themeData.customData.navigationDrawerBgColor,
       margin: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -264,7 +264,6 @@ class _DevelopersViewState extends State<DevelopersView> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ShareablePaymentRow(
-                  isExpanded: true,
                   tilePadding: EdgeInsets.zero,
                   dividerColor: Colors.transparent,
                   title: 'Public Key',
@@ -277,17 +276,33 @@ class _DevelopersViewState extends State<DevelopersView> {
                 ),
               ),
               StatusItem(label: 'Fingerprint', value: walletInfo.fingerprint),
-              StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),
-              StatusItem(label: 'Pending Receive Amount', value: '${walletInfo.pendingReceiveSat}'),
-              StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
+              if (walletInfo.balanceSat > BigInt.zero) ...<Widget>[
+                StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),
+              ],
+              if (walletInfo.pendingReceiveSat > BigInt.zero) ...<Widget>[
+                StatusItem(label: 'Pending Receive Amount', value: '${walletInfo.pendingReceiveSat}'),
+              ],
+              if (walletInfo.pendingSendSat > BigInt.zero) ...<Widget>[
+                StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
+              ],
               StatusItem(
                 label: 'Asset Balances',
                 value: '${walletInfo.assetBalances.map(
                       (AssetBalance assetBalance) => assetBalance.name,
                     ).toList()}',
               ),
+              _buildActionButtons(),
             ],
-          ],
+          ].expand((Widget widget) sync* {
+            yield widget;
+            yield const Divider(
+              height: 8.0,
+              color: Color.fromRGBO(40, 59, 74, 0.5),
+              indent: 0.0,
+              endIndent: 0.0,
+            );
+          }).toList()
+            ..removeLast(),
         ),
       ),
     );
@@ -302,46 +317,58 @@ class _DevelopersViewState extends State<DevelopersView> {
     );
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(top: 32),
       child: GridView.count(
         crossAxisCount: 2,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        mainAxisSpacing: 12.0,
-        crossAxisSpacing: 12.0,
-        childAspectRatio: 2.5,
+        mainAxisSpacing: 16.0,
+        crossAxisSpacing: 32.0,
+        childAspectRatio: 3,
         children: <Widget>[
           GridActionButton(
             icon: Icons.refresh,
-            label: 'Sync Wallet',
+            // TODO(erdemyerebasmaz): Add messages to Breez-Translations
+            label: 'Sync',
+            tooltip: 'Sync Wallet',
             onPressed: _syncWallet,
           ),
           GridActionButton(
             icon: Icons.key,
-            label: texts.developers_page_menu_export_keys_title,
+            // TODO(erdemyerebasmaz): Add message to Breez-Translations
+            label: 'Keys',
+            tooltip: texts.developers_page_menu_export_keys_title,
             onPressed: _exportKeys,
           ),
           GridActionButton(
             icon: Icons.share,
-            label: texts.developers_page_menu_share_logs_title,
+            // TODO(erdemyerebasmaz): Add message to Breez-Translations
+            label: 'Logs',
+            tooltip: texts.developers_page_menu_share_logs_title,
             onPressed: _shareLogs,
           ),
           GridActionButton(
             icon: Icons.radar,
-            label: 'Rescan Swaps',
+            // TODO(erdemyerebasmaz): Add messages to Breez-Translations
+            label: 'Rescan',
+            tooltip: 'Rescan Swaps',
             onPressed: _rescanOnchainSwaps,
           ),
           if (hasRefundables) ...<Widget>[
             GridActionButton(
               icon: Icons.sync_alt,
-              label: 'Enable Refund Rebroadcast',
+              // TODO(erdemyerebasmaz): Add messages to Breez-Translations
+              label: 'Rebroadcast',
+              tooltip: 'Enable Refund Rebroadcast',
               onPressed: _enableRefundRebroadcast,
             ),
           ],
           if (_bugReportBehavior != BugReportBehavior.prompt)
             GridActionButton(
               icon: Icons.bug_report,
-              label: texts.developers_page_menu_prompt_bug_report_title,
+              // TODO(erdemyerebasmaz): Add message to Breez-Translations
+              label: 'Bug Report',
+              tooltip: texts.developers_page_menu_prompt_bug_report_title,
               onPressed: _toggleBugReportBehavior,
             ),
         ],
