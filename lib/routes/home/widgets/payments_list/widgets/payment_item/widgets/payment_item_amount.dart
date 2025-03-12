@@ -35,6 +35,7 @@ class PaymentItemAmount extends StatelessWidget {
 
               if (shouldEstimateRefundAmount) {
                 amountSat = paymentData.amountSat + paymentData.feeSat;
+                // Hide fees
                 actualFeeSat = 0;
               }
 

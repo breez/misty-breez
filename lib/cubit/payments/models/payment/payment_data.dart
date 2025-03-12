@@ -139,7 +139,7 @@ class PaymentData {
 
   bool get isRefunded => (refundTxAmountSat > 0 || refundTxId != null) && status == PaymentState.failed;
 
-  int get actualFeeSat => isRefunded ? amountSat - refundTxAmountSat : feeSat;
+  int get actualFeeSat => (isRefunded && refundTxAmountSat > 0) ? amountSat - refundTxAmountSat : feeSat;
 
   String? get lnurlMetadataImage {
     final Map<String, dynamic> metadataMap = getLnurlPayMetadata(details);
