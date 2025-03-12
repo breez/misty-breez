@@ -13,7 +13,7 @@ export 'payment_details_sheet_lnurl_pay_success_description.dart';
 export 'payment_details_sheet_lnurl_pay_success_message.dart';
 export 'payment_details_sheet_lnurl_pay_success_url.dart';
 export 'payment_details_sheet_preimage.dart';
-export 'payment_details_sheet_refund_tx_fee_amount.dart';
+export 'payment_details_sheet_refund_tx_amount.dart';
 export 'payment_details_sheet_swap_id.dart';
 export 'payment_details_sheet_tx_id.dart';
 export 'tx_widget.dart';
