@@ -24,8 +24,6 @@ class LnPaymentHeader extends StatefulWidget {
 }
 
 class _LnPaymentHeaderState extends State<LnPaymentHeader> {
-  bool _showFiatCurrency = false;
-
   @override
   Widget build(BuildContext context) {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
@@ -60,55 +58,33 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
             ),
             textAlign: TextAlign.center,
           ),
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onLongPressStart: (_) {
-              setState(() {
-                _showFiatCurrency = true;
-              });
-            },
-            onLongPressEnd: (_) {
-              setState(() {
-                _showFiatCurrency = false;
-              });
-            },
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minWidth: double.infinity,
-              ),
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: balanceAmountTextStyle.copyWith(
-                    color: themeData.colorScheme.onSurface,
-                  ),
-                  text: _showFiatCurrency && fiatConversion != null
-                      ? fiatConversion.format(
-                          widget.totalAmount,
-                          addCurrencySymbol: false,
-                          includeDisplayName: true,
-                        )
-                      : currencyState.bitcoinCurrency.format(
-                          widget.totalAmount,
-                          removeTrailingZeros: true,
-                          includeDisplayName: false,
-                        ),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text: _showFiatCurrency && fiatConversion != null
-                          ? ''
-                          : ' ${currencyState.bitcoinCurrency.displayName}',
-                      style: balanceCurrencyTextStyle.copyWith(
-                        color: themeData.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              minWidth: double.infinity,
+            ),
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: balanceAmountTextStyle.copyWith(
+                  color: themeData.colorScheme.onSurface,
                 ),
+                text: currencyState.bitcoinCurrency.format(
+                  widget.totalAmount,
+                  removeTrailingZeros: true,
+                  includeDisplayName: false,
+                ),
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: ' ${currencyState.bitcoinCurrency.displayName}',
+                    style: balanceCurrencyTextStyle.copyWith(
+                      color: themeData.colorScheme.onSurface,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          /*
-          if (fiatConversion != null) ...[
+          if (fiatConversion != null) ...<Widget>[
             AutoSizeText(
               fiatConversion.format(
                 widget.totalAmount,
@@ -117,12 +93,11 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
               ),
               style: balanceFiatConversionTextStyle.copyWith(
                 fontSize: 18.0,
-                color: themeData.colorScheme.onSurface.withOpacity(0.7),
+                color: themeData.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
           ],
-           */
           if (widget.errorMessage.isNotEmpty) ...<Widget>[
             AutoSizeText(
               widget.errorMessage,
