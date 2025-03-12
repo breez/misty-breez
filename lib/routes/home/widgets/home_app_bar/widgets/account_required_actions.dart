@@ -22,12 +22,12 @@ class _AccountRequiredActionsIndicatorState extends State<AccountRequiredActions
       builder: (BuildContext context) {
         final List<Widget> warnings = <Widget>[];
 
-        final bool hasRefundables = context.select<RefundCubit, bool>(
-          (RefundCubit cubit) => cubit.state.hasRefundables,
+        final bool hasNonRefunded = context.select<RefundCubit, bool>(
+          (RefundCubit cubit) => cubit.state.hasNonRefunded,
         );
-        if (hasRefundables) {
-          _logger.info('Adding refundables warning.');
-          warnings.add(const RefundablesWarningAction());
+        if (hasNonRefunded) {
+          _logger.info('Adding non-refunded refundables warning.');
+          warnings.add(const NonRefundedRefundablesWarningAction());
         }
 
         final VerificationStatus verificationStatus = context.select<SecurityCubit, VerificationStatus>(
@@ -65,10 +65,10 @@ class _AccountRequiredActionsIndicatorState extends State<AccountRequiredActions
   }
 }
 
-class RefundablesWarningAction extends StatelessWidget {
-  static final Logger _logger = Logger('RefundablesWarningAction');
+class NonRefundedRefundablesWarningAction extends StatelessWidget {
+  static final Logger _logger = Logger('NonRefundedRefundablesWarningAction');
 
-  const RefundablesWarningAction({super.key});
+  const NonRefundedRefundablesWarningAction({super.key});
 
   @override
   Widget build(BuildContext context) {

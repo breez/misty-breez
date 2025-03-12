@@ -30,6 +30,10 @@ class RefundState {
   }
 
   bool get hasRefundables => refundables?.isNotEmpty ?? false;
+
+  /// Returns true if there are any refundable swaps that haven't been refunded yet
+  bool get hasNonRefunded =>
+      hasRefundables && refundables!.any((RefundableSwap swap) => swap.lastRefundTxId == null);
 }
 
 /// Extension on [SdkEvent] to determine if the event is refund-related.
