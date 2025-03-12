@@ -23,7 +23,6 @@ class RefundItemCard extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     final String lastRefundTxId = refundableSwap.lastRefundTxId ?? '';
-    final String refundId = refundableSwap.lastRefundTxId ?? refundableSwap.swapAddress;
 
     return Card(
       color: themeData.customData.surfaceBgColor,
@@ -42,12 +41,17 @@ class RefundItemCard extends StatelessWidget {
                 fontSize: 18.0,
                 color: Colors.white,
               ),
-              sharedValue: refundId,
+              sharedValue: lastRefundTxId.isNotEmpty ? lastRefundTxId : refundableSwap.swapAddress,
               isURL: true,
-              urlValue: BlockchainExplorerService.formatTransactionUrl(
-                txid: refundId,
-                mempoolInstance: NetworkConstants.defaultBitcoinMempoolInstance,
-              ),
+              urlValue: lastRefundTxId.isNotEmpty
+                  ? BlockchainExplorerService.formatTransactionUrl(
+                      txid: lastRefundTxId,
+                      mempoolInstance: NetworkConstants.defaultBitcoinMempoolInstance,
+                    )
+                  : BlockchainExplorerService.formatAddressUrl(
+                      address: refundableSwap.swapAddress,
+                      mempoolInstance: NetworkConstants.defaultBitcoinMempoolInstance,
+                    ),
             ),
             const Divider(
               height: 32.0,
