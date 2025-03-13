@@ -45,6 +45,7 @@ class PaymentDetailsSheetFee extends StatelessWidget {
                 final String actualFeeFormatted = BitcoinCurrency.fromTickerSymbol(
                   state.bitcoinTicker,
                 ).format(paymentData.actualFeeSat);
+
                 return Text(
                   actualFeeFormatted,
                   style: themeData.primaryTextTheme.displaySmall!.copyWith(

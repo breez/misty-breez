@@ -3,6 +3,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/models/currency.dart';
 
@@ -41,11 +42,22 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
             reverse: true,
             child: BlocBuilder<CurrencyCubit, CurrencyState>(
               builder: (BuildContext context, CurrencyState state) {
+                int refundTxAmountSat = paymentData.refundTxAmountSat;
+                // Calculate the full refund amount (payment + fee) for pending refunds
+                // or completed refunds where the refund transaction amount is not tracked
+                final bool shouldEstimateRefundAmount = paymentData.status == PaymentState.refundPending ||
+                    (paymentData.isRefunded && paymentData.refundTxAmountSat == 0);
+
+                if (shouldEstimateRefundAmount) {
+                  refundTxAmountSat = paymentData.amountSat + paymentData.feeSat;
+                }
                 final String amountSats = BitcoinCurrency.fromTickerSymbol(
                   state.bitcoinTicker,
-                ).format(paymentData.refundTxAmountSat);
+                ).format(refundTxAmountSat);
                 return Text(
-                  texts.payment_details_dialog_amount_positive(amountSats),
+                  shouldEstimateRefundAmount
+                      ? amountSats
+                      : texts.payment_details_dialog_amount_positive(amountSats),
                   style: themeData.primaryTextTheme.displaySmall!.copyWith(
                     fontSize: 18.0,
                     color: Colors.white,

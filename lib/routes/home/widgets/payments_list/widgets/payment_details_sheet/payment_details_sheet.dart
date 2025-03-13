@@ -167,7 +167,8 @@ class PaymentDetailsSheet extends StatelessWidget {
                         paymentData: paymentData,
                         labelAutoSizeGroup: _labelGroup,
                       ),
-                      if (paymentData.isRefunded) ...<Widget>[
+                      if (paymentData.isRefunded ||
+                          paymentData.status == PaymentState.refundPending) ...<Widget>[
                         PaymentDetailsSheetRefundTxAmount(
                           paymentData: paymentData,
                           labelAutoSizeGroup: _labelGroup,
