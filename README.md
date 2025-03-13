@@ -4,15 +4,33 @@
 
 # Misty Breez
 
-<img align="right" width="112" height="42" title="Breez logo"
-src="./assets/images/liquid-logo-color.svg">
+Misty Breez is a mobile app built with Flutter that serves as a reference implementation for the [Breez SDK - Nodeless](https://sdk-doc-liquid.breez.technology/) that:
+* Demonstrates the full capabilities of building with the SDK
+* Showcases best practices for designing an intuitive UI and UX for self-custodial Lightning payments
+* Offers a ready-made solution that can be white-labeled for partners looking to build a new app
 
-Misty Breez is a migration of [Breez mobile app](https://github.com/breez/breezmobile) to
-the [Breez Liquid SDK](https://github.com/breez/breez-sdk-liquid) infrastructure.
+## Features
 
-## Build
+- [x] **Sending payments** via various protocols such as: Bolt11, Bolt12, BIP353, LNURL-Pay, Lightning address, BTC address
+- [x] **Receiving payments** via various protocols such as: Bolt11, LNURL-Withdraw, LNURL-Pay, Lightning address, BTC address
+- [x] A built-in, customizable user@breez.fun Lightning address
+- [x] Receive payments even when the app is offline (requires notifications)
+- [x] Self-custodial: keys are only held by users
+- [x] Free open-source software (ofc!)
 
-### Build the lightning_tookit plugin
+## Installation 
+
+#### Android 
+
+[Latest APK](https://github.com/breez/misty-breez/releases/tag/v0.1.0-alpha)
+
+#### iOS
+
+[TestFlight](https://testflight.apple.com/join/z8ZN1V6c)
+
+## For Developers
+
+**Build the lightning_tookit plugin**
 
 Misty Breez depends on Breez Liquid SDK's [breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/dart) & [flutter_breez_liquid](https://github.com/breez/breez-sdk-liquid/tree/main/packages/flutter) plugin,
 so be sure to follow those instructions first.
@@ -34,7 +52,7 @@ misty-breez/
 
 ```
 
-### Add Firebase configuration
+**Add Firebase configuration**
 
 FlutterFire CLI currently requires the official Firebase CLI to also be installed, see [Install the Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli) for how to install it.
 
@@ -52,65 +70,20 @@ From Flutter project directory, run the following command to start the app confi
 flutterfire configure -p breez-technology -o lib/firebase/firebase_options.dart --platforms="android,ios" -a com.breez.liquid.l_breez -y
 ```
 
-### Android
+**Android**
 
 ```
 flutter build apk --target=lib/main/main.dart 
 ```
 
-### iOS
+**iOS**
 
 ```
 flutter build ios --target=lib/main/main.dart 
 ```
 
-## Run
+**Run**
 
 ```
 flutter run --target=lib/main/main.dart 
 ```
-
-___
-
-## Contributors
-
-### Pre-commit `dart format` with Lefthook
-
-[Lefthook](https://github.com/evilmartians/lefthook) is a Git hooks manager that allows custom logic to be
-executed prior to Git commit or push. Misty Breez comes with Lefthook configuration (`lefthook.yml`), but it must
-be installed first.
-
-### Installation
-
-- Install Lefthook.
-  See [installation guide](https://github.com/evilmartians/lefthook/blob/master/docs/install.md).
-- Run the following command from project root folder to install hooks:
-
-```sh
-$ lefthook install
-```
-
-Before you commit your changes, Lefthook will automatically run `dart format`.
-
-### Skipping hooks
-
-Should the need arise to skip `pre-commit` hook, CLI users can use the standard Git option `--no-verify` to skip `pre-commit` hook:
-
-```sh
-$ git commit -m "..." --no-verify
-```
-
-There currently is no Github Desktop support to skip git-hooks. However, you can run:
-```sh
-$ lefthook uninstall
-```
-to clear hooks related to `lefthook.yml` configuration before committing your changes.
-
-Do no forget to run `lefthook install` to re-activate `pre-commit` hook.
-
-```sh
-$ lefthook install
-```
-
-### Troubleshooting
-For troubleshooting, please check the [troubleshooting.md](troubleshooting.md) file
