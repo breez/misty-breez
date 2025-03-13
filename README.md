@@ -14,9 +14,10 @@ Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.te
 
 - [x] **Sending payments** via protocols such as: Bolt11, Bolt12, LNURL-Pay, Lightning address, BTC address
 - [x] **Receiving payments** via protocols such as: Bolt11, LNURL-Withdraw, LNURL-Pay, Lightning address, BTC address
-- [x] Complete LNURL functionality
-- [x] Keys are only held by users
-- [x] Open-source
+- [x] A built-in, customizable user@breez.fun Lightning address
+- [x] Receive payments even when the app is offline (requires notifications)
+- [x] Self-custodial: keys are only held by users
+- [x] Free open-source software (ofc!)
 
 ## Installation 
 
