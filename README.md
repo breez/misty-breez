@@ -17,7 +17,7 @@ Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.te
 
 - **Sending payments** *via various protocols such as: Bolt11, Bolt12, LNURL-Pay, Lightning address, BIP353, BTC address.*
 - **Receiving payments** *via various protocols such as: Bolt11, LNURL-Withdraw, BTC address.*
-- **Interacting with the SDK ** *e.g. balance, max allow to pay, max allow to receive, refunds.*
+- **Interacting with the SDK** *e.g. balance, max allow to pay, max allow to receive, refunds.*
 
 ## Key Features
 
@@ -31,11 +31,11 @@ Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.te
 
 ### Android 
 
-TBA
+[Latest APK](https://github.com/breez/misty-breez/releases/tag/v0.1.0-alpha)
 
 ### iOS
 
-TBA
+[TestFlight](https://testflight.apple.com/join/z8ZN1V6c)
 
 ## For Developers
 
