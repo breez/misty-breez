@@ -16,7 +16,7 @@ Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.te
 **Core Functions**
 
 - **Sending payments** *via protocols such as: bolt11, bolt12, lnurl-pay, lightning address, btc address.*
-- **Receiving payments** *via protocols such as: bolt11, lnurl-withdraw, btc address.*
+- **Receiving payments** *via protocols such as: bolt11, lnurl-withdraw, lnurl-pay, lightning address, btc address.*
 - **Interacting with a wallet** *e.g. balance, max allow to pay, max allow to receive, on-chain balance.*
 
 **Key Features**
@@ -26,6 +26,11 @@ Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.te
 - [x] LNURL functionality
 - [x] Keys are only held by users
 - [x] Open-source
+
+**Install Misty Breez**
+
+* [iOS (TestFlight)](https://testflight.apple.com/join/z8ZN1V6c)
+* [Android](https://github.com/breez/misty-breez/releases/tag/v0.1.0-alpha)
 
 
 ## Build
