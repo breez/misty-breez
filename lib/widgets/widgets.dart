@@ -5,7 +5,6 @@ export 'breez_avatar.dart';
 export 'error_dialog.dart';
 export 'flushbar.dart';
 export 'keyboard_done_action.dart';
-export 'link_launcher.dart';
 export 'loader.dart';
 export 'loading_animated_text.dart';
 export 'payment_status_sheets/payment_status_sheets.dart';

@@ -38,7 +38,7 @@ class FeeOptionButton extends StatelessWidget {
         child: TextButton(
           onPressed: isAffordable ? () => onSelect() : null,
           child: Text(
-            text,
+            text.toUpperCase(),
             style: themeData.textTheme.labelLarge!.copyWith(
               color: !isAffordable
                   ? themeData.primaryColor.withValues(alpha: .4)

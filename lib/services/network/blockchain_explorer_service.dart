@@ -19,4 +19,16 @@ class BlockchainExplorerService {
     final String blinded = unblindingData.isEmpty ? '' : '#blinded=$unblindingData';
     return '$mempoolInstance/tx/$txid$blinded';
   }
+
+  /// Formats a URL for viewing an address on a blockchain explorer
+  ///
+  /// [address] Address to view
+  /// [mempoolInstance] The blockchain explorer base URL. Defaults to a Liquid mempool instance.
+  /// Returns a formatted URL string
+  static String formatAddressUrl({
+    required String address,
+    String mempoolInstance = NetworkConstants.defaultLiquidMempoolInstance,
+  }) {
+    return '$mempoolInstance/address/$address';
+  }
 }

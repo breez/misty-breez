@@ -1,14 +1,17 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/services/services.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/utils.dart';
+import 'package:l_breez/widgets/widgets.dart';
 
 export 'refund_item_card_action.dart';
 export 'refund_item_card_amount.dart';
-export 'refund_item_card_header.dart';
-export 'refund_item_card_original_tx.dart';
+export 'refund_item_card_date.dart';
+
+final AutoSizeGroup _labelGroup = AutoSizeGroup();
 
 class RefundItemCard extends StatelessWidget {
   final RefundableSwap refundableSwap;
@@ -29,21 +32,53 @@ class RefundItemCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            RefundItemCardHeader(timestamp: refundableSwap.timestamp),
-            const Divider(height: 24),
-            RefundItemCardAmount(refundTxSat: refundableSwap.amountSat.toInt()),
-            if (refundableSwap.swapAddress.isNotEmpty) ...<Widget>[
-              RefundItemCardOriginalTx(swapAddress: refundableSwap.swapAddress),
-            ],
-            if (lastRefundTxId.isNotEmpty) ...<Widget>[
-              TxWidget(
-                txID: lastRefundTxId,
-                txURL: BlockchainExplorerService.formatTransactionUrl(
-                  txid: lastRefundTxId,
-                  mempoolInstance: NetworkConstants.defaultBitcoinMempoolInstance,
-                ),
+            ShareablePaymentRow(
+              isExpanded: true,
+              tilePadding: EdgeInsets.zero,
+              dividerColor: Colors.transparent,
+              title: 'Transaction',
+              titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                fontSize: 18.0,
+                color: Colors.white,
               ),
-            ],
+              sharedValue: lastRefundTxId.isNotEmpty ? lastRefundTxId : refundableSwap.swapAddress,
+              isURL: true,
+              urlValue: lastRefundTxId.isNotEmpty
+                  ? BlockchainExplorerService.formatTransactionUrl(
+                      txid: lastRefundTxId,
+                      mempoolInstance: NetworkConstants.defaultBitcoinMempoolInstance,
+                    )
+                  : BlockchainExplorerService.formatAddressUrl(
+                      address: refundableSwap.swapAddress,
+                      mempoolInstance: NetworkConstants.defaultBitcoinMempoolInstance,
+                    ),
+            ),
+            const Divider(
+              height: 32.0,
+              color: Color.fromRGBO(40, 59, 74, 0.5),
+              indent: 0.0,
+              endIndent: 0.0,
+            ),
+            RefundItemCardAmount(
+              refundTxSat: refundableSwap.amountSat.toInt(),
+              labelAutoSizeGroup: _labelGroup,
+            ),
+            const Divider(
+              height: 32.0,
+              color: Color.fromRGBO(40, 59, 74, 0.5),
+              indent: 0.0,
+              endIndent: 0.0,
+            ),
+            RefundItemCardDate(
+              timestamp: refundableSwap.timestamp,
+              labelAutoSizeGroup: _labelGroup,
+            ),
+            const Divider(
+              height: 32.0,
+              color: Color.fromRGBO(40, 59, 74, 0.5),
+              indent: 0.0,
+              endIndent: 0.0,
+            ),
             RefundItemCardAction(
               refundableSwap: refundableSwap,
               lastRefundTxId: lastRefundTxId,

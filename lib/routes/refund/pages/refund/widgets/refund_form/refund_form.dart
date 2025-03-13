@@ -1,5 +1,3 @@
-import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/routes/routes.dart';
@@ -42,7 +40,6 @@ class _RefundFormState extends State<RefundForm> {
 
   @override
   Widget build(BuildContext context) {
-    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
     return Form(
@@ -82,7 +79,8 @@ class _RefundFormState extends State<RefundForm> {
           ShareablePaymentRow(
             tilePadding: EdgeInsets.zero,
             dividerColor: Colors.transparent,
-            title: '${texts.send_on_chain_original_transaction}:',
+            // TODO(erdemyerebasmaz): Add message to Breez-Translations
+            title: 'Transaction:',
             titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
               color: Colors.white,
