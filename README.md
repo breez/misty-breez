@@ -2,13 +2,31 @@
 ![Build iOS workflow](https://github.com/breez/misty-breez/actions/workflows/build-ios.yml/badge.svg)
 ![CI workflow](https://github.com/breez/misty-breez/actions/workflows/CI.yml/badge.svg)
 
-# Misty Breez
-
-<img align="right" width="112" height="42" title="Breez logo"
+<img align="center" width="112" height="42" title="Breez logo"
 src="./assets/images/liquid-logo-color.svg">
 
-Misty Breez is a migration of [Breez mobile app](https://github.com/breez/breezmobile) to
-the [Breez Liquid SDK](https://github.com/breez/breez-sdk-liquid) infrastructure.
+# Misty Breez
+
+Misty Breez is a reference app built with the [Breez SDK - Nodeless](https://sdk-doc-liquid.breez.technology/), showcasing best practices for delivering a frictionless bitcoin payment experience — and is available to partners as a white-label solution.
+
+The app demonstrates how to design intuitive UI and UX with the [Breez SDK](https://sdk-doc-liquid.breez.technology/), and offer end-users self-custodial Lightning payments — with no channels or setup fees — so they can send and receive bitcoin out-of-the-box.
+
+Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.technology/), Misty Breez is a ready-made solution for partners to offer bitcoin payments in their own branded apps.
+
+**Core Functions**
+
+- **Sending payments** *via protocols such as: bolt11, bolt12, lnurl-pay, lightning address, btc address.*
+- **Receiving payments** *via protocols such as: bolt11, lnurl-withdraw, btc address.*
+- **Interacting with a wallet** *e.g. balance, max allow to pay, max allow to receive, on-chain balance.*
+
+**Key Features**
+
+- [x] Send and receive Lightning payments 
+- [x] On-chain interoperability
+- [x] LNURL functionality
+- [x] Keys are only held by users
+- [x] Open-source
+
 
 ## Build
 
@@ -72,13 +90,6 @@ flutter run --target=lib/main/main.dart
 
 ___
 
-## Contributors
-
-### Pre-commit `dart format` with Lefthook
-
-[Lefthook](https://github.com/evilmartians/lefthook) is a Git hooks manager that allows custom logic to be
-executed prior to Git commit or push. Misty Breez comes with Lefthook configuration (`lefthook.yml`), but it must
-be installed first.
 
 ### Installation
 
@@ -113,4 +124,4 @@ $ lefthook install
 ```
 
 ### Troubleshooting
-For troubleshooting, please check the [troubleshooting.md](troubleshooting.md) file
+For troubleshooting, please check the [troubleshooting.md](troubleshooting.md) file.
