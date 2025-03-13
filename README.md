@@ -25,7 +25,6 @@ Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.te
 - [x] On-chain interoperability
 - [x] LNURL functionality
 - [x] Keys are only held by users
-- [x] USDT and multi-asset support
 - [x] Open-source
 
 
