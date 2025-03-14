@@ -6,9 +6,9 @@
 
 Misty Breez is a reference app built with the [Breez SDK - Nodeless](https://sdk-doc-liquid.breez.technology/), showcasing best practices for delivering a frictionless bitcoin payment experience — and is available to partners as a white-label solution.
 
-The app demonstrates how to design intuitive UI and UX with the [Breez SDK](https://sdk-doc-liquid.breez.technology/), and offer end-users self-custodial Lightning payments — with no channels or setup fees — so they can send and receive bitcoin out-of-the-box.
+The app demonstrates how to design intuitive UI and UX with the Breez SDK, and offer end-users self-custodial Lightning payments — with no channels or setup fees — so they can send and receive bitcoin out-of-the-box.
 
-Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.technology/), Misty Breez is a ready-made solution for partners to offer bitcoin payments in their own branded apps.
+Powered by a nodeless Lightning implementation, Misty Breez is a ready-made solution for partners to offer bitcoin payments in their own branded apps.
 
 ## Features
 
@@ -21,11 +21,11 @@ Powered by a [nodeless Lightning implementation](https://sdk-doc-liquid.breez.te
 
 ## Installation 
 
-### Android 
+#### Android 
 
 [Latest APK](https://github.com/breez/misty-breez/releases/tag/v0.1.0-alpha)
 
-### iOS
+#### iOS
 
 [TestFlight](https://testflight.apple.com/join/z8ZN1V6c)
 
