@@ -156,6 +156,7 @@ class _PaymentDataFactory {
   String _title() {
     final String bip353Address = _payment.details.map(
           lightning: (PaymentDetails_Lightning details) => details.bip353Address,
+          liquid: (PaymentDetails_Liquid details) => details.bip353Address,
           orElse: () => null,
         ) ??
         '';
@@ -166,6 +167,7 @@ class _PaymentDataFactory {
 
     final LnUrlInfo? lnurlInfo = _payment.details.map(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
+      liquid: (PaymentDetails_Liquid details) => details.lnurlInfo,
       orElse: () => null,
     );
 
