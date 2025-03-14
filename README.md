@@ -4,10 +4,10 @@
 
 # Misty Breez
 
-Misty Breez is a mobile app built with Flutter that serves as a reference implementation for the [Breez SDK - Nodeless](https://sdk-doc-liquid.breez.technology/):
-* It demonstrates comprehensive usage of the SDK's capabilities
-* It showcases best practices for designing an intuitive UI and UX for self-custodial Lightning payments.
-* It can be used as an off-the-shelf solution for partners looking to white-label an existing mobile app.
+Misty Breez is a mobile app built with Flutter that serves as a reference implementation for the [Breez SDK - Nodeless](https://sdk-doc-liquid.breez.technology/) that:
+* Demonstrates comprehensive usage of the SDK's capabilities
+* Showcases best practices for designing an intuitive UI and UX for self-custodial Lightning payments.
+* Can be used as an off-the-shelf solution for partners looking to white-label an existing mobile app.
 
 ## Features
 
