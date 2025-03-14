@@ -11,8 +11,8 @@ Misty Breez is a mobile app built with Flutter that serves as a reference implem
 
 ## Features
 
-- [x] **Sending payments** via protocols such as: Bolt11, Bolt12, BIP353, LNURL-Pay, Lightning address, BTC address
-- [x] **Receiving payments** via protocols such as: Bolt11, LNURL-Withdraw, LNURL-Pay, Lightning address, BTC address
+- [x] **Sending payments** via various protocols such as: Bolt11, Bolt12, BIP353, LNURL-Pay, Lightning address, BTC address
+- [x] **Receiving payments** via various protocols such as: Bolt11, LNURL-Withdraw, LNURL-Pay, Lightning address, BTC address
 - [x] A built-in, customizable user@breez.fun Lightning address
 - [x] Receive payments even when the app is offline (requires notifications)
 - [x] Self-custodial: keys are only held by users
