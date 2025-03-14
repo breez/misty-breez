@@ -85,12 +85,14 @@ class PaymentDetailsSheet extends StatelessWidget {
 
     final String bip353Address = paymentData.details.map(
           lightning: (PaymentDetails_Lightning details) => details.bip353Address,
+          liquid: (PaymentDetails_Liquid details) => details.bip353Address,
           orElse: () => null,
         ) ??
         '';
 
     final LnUrlInfo? lnurlInfo = paymentData.details.map(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
+      liquid: (PaymentDetails_Liquid details) => details.lnurlInfo,
       orElse: () => null,
     );
 
