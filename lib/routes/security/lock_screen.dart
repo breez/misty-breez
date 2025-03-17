@@ -22,6 +22,12 @@ class LockScreen extends StatelessWidget {
       child: Scaffold(
         body: BlocBuilder<SecurityCubit, SecurityState>(
           builder: (BuildContext context, SecurityState state) {
+            // If PIN is disabled, immediately authorize
+            if (state.pinStatus != PinStatus.enabled) {
+              // Future.microtask is used to ensure navigation happens after build completes
+              Future<void>.microtask(() => _authorized(navigator));
+            }
+
             return PinCodeWidget(
               label: texts.lock_screen_enter_pin,
               localAuthenticationOption: state.localAuthenticationOption,

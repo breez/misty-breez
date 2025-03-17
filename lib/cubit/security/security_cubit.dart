@@ -49,17 +49,30 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   }
 
   Future<bool> testPin(String pin) async {
+    // Allow access if PIN is disabled
+    if (state.pinStatus != PinStatus.enabled) {
+      _setLockState(LockState.unlocked);
+      _logger.info('PIN check bypassed: PIN is disabled');
+      return true;
+    }
+
     final String? storedPin = await keyChain.read(pinCodeKey);
     if (storedPin == null) {
-      _setLockState(LockState.locked);
-      throw SecurityStorageException();
+      _logger.warning('PIN not found in storage but state indicates enabled');
+      // Update both states and persist immediately
+      await clearPin(); // Use existing method to ensure proper cleanup
+      return true;
     }
-    return storedPin == pin;
+
+    // Actual PIN comparison
+    final bool matches = storedPin == pin;
+    _logger.fine('PIN verification result: $matches');
+    return matches;
   }
 
   Future<void> clearPin() async {
-    await keyChain.delete(pinCodeKey);
     emit(state.copyWith(pinStatus: PinStatus.disabled));
+    await keyChain.delete(pinCodeKey);
     _setLockState(LockState.unlocked);
   }
 
@@ -153,7 +166,12 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   @override
   SecurityState? fromJson(Map<String, dynamic> json) {
     final SecurityState state = SecurityState.fromJson(json);
-    _setLockState(state.pinStatus == PinStatus.enabled ? LockState.locked : LockState.unlocked);
+    // Only lock if PIN is enabled and not already in another lock state
+    if (state.pinStatus == PinStatus.enabled && state.lockState != LockState.unlocked) {
+      _setLockState(LockState.locked);
+    } else {
+      _setLockState(LockState.unlocked);
+    }
     return state;
   }
 

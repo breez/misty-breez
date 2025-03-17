@@ -36,6 +36,12 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
               key: ValueKey<int>(DateTime.now().millisecondsSinceEpoch),
               builder: (BuildContext context, SecurityState state) {
                 _logger.info('Building with: $state');
+                // If PIN is disabled, skip PIN check
+                if (state.pinStatus != PinStatus.enabled || _allowed) {
+                  _allowed = true;
+                  return widget.securedWidget;
+                }
+
                 if (state.pinStatus == PinStatus.enabled && !_allowed) {
                   final BreezTranslations texts = context.texts();
                   return Scaffold(
