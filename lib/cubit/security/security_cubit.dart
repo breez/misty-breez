@@ -49,13 +49,6 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   }
 
   Future<bool> testPin(String pin) async {
-    // Allow access if PIN is disabled
-    if (state.pinStatus != PinStatus.enabled) {
-      _setLockState(LockState.unlocked);
-      _logger.info('PIN check bypassed: PIN is disabled');
-      return true;
-    }
-
     final String? storedPin = await keyChain.read(pinCodeKey);
     if (storedPin == null) {
       _logger.warning('PIN not found in storage but state indicates enabled');
