@@ -44,7 +44,7 @@ def envVariables = [
 
 android {
     namespace = "com.breez.liquid.l_breez"
-    compileSdkVersion 35
+    compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
