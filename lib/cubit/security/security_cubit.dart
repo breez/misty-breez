@@ -159,12 +159,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   @override
   SecurityState? fromJson(Map<String, dynamic> json) {
     final SecurityState state = SecurityState.fromJson(json);
-    // Only lock if PIN is enabled and not already in another lock state
-    if (state.pinStatus == PinStatus.enabled && state.lockState != LockState.unlocked) {
-      _setLockState(LockState.locked);
-    } else {
-      _setLockState(LockState.unlocked);
-    }
+    _setLockState(state.pinStatus == PinStatus.enabled ? LockState.locked : LockState.unlocked);
     return state;
   }
 
