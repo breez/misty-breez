@@ -108,14 +108,14 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                   });
                   if (_formKey.currentState!.validate() && !_hasError) {
                     final SecurityCubit securityCubit = context.read<SecurityCubit>();
-                    await securityCubit.verifyMnemonic();
+                    await securityCubit.completeMnemonicVerification();
                     if (context.mounted) {
                       Navigator.of(context).popUntil((Route<dynamic> route) {
                         bool shouldPop = false;
                         // Pop to where the verification flow has started from,
                         // which is either from "Verify Backup Phrase" option on Security page
                         // or through WarningAction on Home page.
-                        if (route.settings.name == SecurityPage.routeName ||
+                        if (route.settings.name == SecuritySettings.routeName ||
                             route.settings.name == Home.routeName) {
                           shouldPop = true;
                         }

@@ -1,8 +1,6 @@
-export 'digit_button_widget.dart';
-export 'digit_masked_widget.dart';
-export 'local_auth_switch.dart';
-export 'mnemonics/security_mnemonics_management.dart';
-export 'num_pad_widget.dart';
-export 'pin_code_widget.dart';
-export 'security_pin_interval.dart';
-export 'security_pin_management.dart';
+export 'digit_button.dart';
+export 'digit_masked.dart';
+export 'num_pad.dart';
+export 'pin_code.dart';
+export 'security_settings/security_settings.dart';
+export 'shake_controller.dart';

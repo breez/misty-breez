@@ -1,13 +1,16 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/routes.dart';
+import 'package:l_breez/routes/security/widgets/security_settings/security_mnemonics_mgmt.dart';
+import 'package:l_breez/routes/security/widgets/security_settings/security_pin_mgmt.dart';
 import 'package:l_breez/widgets/back_button.dart' as back_button;
 
-class SecurityPage extends StatelessWidget {
-  static const String routeName = '/security';
+/// A screen for managing security settings
+class SecuritySettings extends StatelessWidget {
+  /// Route name for navigation
+  static const String routeName = '/security_settings';
 
-  const SecurityPage({super.key});
+  const SecuritySettings({super.key});
 
   @override
   Widget build(BuildContext context) {
