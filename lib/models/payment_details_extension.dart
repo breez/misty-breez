@@ -47,6 +47,8 @@ extension PaymentDetailsToJson on PaymentDetails {
         'description': details.description,
         'assetId': details.assetId,
         'assetInfo': details.assetInfo?.toJson(),
+        'lnurlInfo': details.lnurlInfo?.toJson(),
+        'bip353Address': details.bip353Address,
       },
       bitcoin: (PaymentDetails_Bitcoin details) => <String, dynamic>{
         'type': 'bitcoin',
@@ -91,6 +93,8 @@ extension PaymentDetailsFromJson on PaymentDetails {
           description: json['description'] as String,
           assetId: json['assetId'] as String,
           assetInfo: json['assetInfo'] != null ? AssetInfoFromJson.fromJson(json['assetInfo']) : null,
+          lnurlInfo: json['lnurlInfo'] != null ? LnUrlInfoFromJson.fromJson(json['lnurlInfo']) : null,
+          bip353Address: json['bip353Address'] as String?,
         );
 
       case 'bitcoin':
@@ -138,7 +142,9 @@ extension PaymentDetailsExtension on PaymentDetails {
                 return o.destination == current.destination &&
                     o.description == current.description &&
                     o.assetId == current.assetId &&
-                    (o.assetInfo?.toJson() == current.assetInfo?.toJson());
+                    (o.assetInfo?.toJson() == current.assetInfo?.toJson()) &&
+                    (o.lnurlInfo?.toJson() == current.lnurlInfo?.toJson()) &&
+                    o.bip353Address == current.bip353Address;
               },
               bitcoin: (PaymentDetails_Bitcoin o) {
                 final PaymentDetails_Bitcoin current = this as PaymentDetails_Bitcoin;
