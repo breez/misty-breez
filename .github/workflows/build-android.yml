@@ -125,15 +125,15 @@ jobs:
 
       - name: Decode Keystore
         env:
-            STORE_FILE_BASE64: ${{ secrets.STORE_FILE_BASE64 }}
-            STORE_FILE: ${RUNNER_TEMP}/keystore/lbreez-release.keystore
+          STORE_FILE_BASE64: ${{ secrets.STORE_FILE_BASE64 }}
+          STORE_FILE: ${RUNNER_TEMP}/keystore/lbreez-release.keystore
         run: |
-            echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore" >> $GITHUB_ENV
-            echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore"
-            TMP_KEYSTORE_FILE_PATH=${RUNNER_TEMP}/keystore
-            mkdir -p ${TMP_KEYSTORE_FILE_PATH}
-            echo $STORE_FILE_BASE64 | base64 -do ${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore
-            echo "${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore"
+          echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore" >> $GITHUB_ENV
+          echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore"
+          TMP_KEYSTORE_FILE_PATH=${RUNNER_TEMP}/keystore
+          mkdir -p ${TMP_KEYSTORE_FILE_PATH}
+          echo $STORE_FILE_BASE64 | base64 -do ${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore
+          echo "${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore"
 
       - name: Install rust
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
@@ -264,7 +264,7 @@ jobs:
           CONFIG_FILE: ${{ secrets.CONFIG_FILE }}
         run: echo "$CONFIG_FILE" > ./lbreez/config.json
 
-      - name: 🚀 Build Release apk
+      - name: 🚀 Build Release APK
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -272,29 +272,56 @@ jobs:
         working-directory: lbreez
         run: flutter build apk --target=lib/main/main.dart --release --split-debug-info=./obsfucated/debug --obfuscate --no-pub --split-per-abi --dart-define-from-file=config.json
 
-      - name: 🗃️ Compress build folder (APK)
+      - name: 🚀 Build Release App Bundle
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        working-directory: lbreez
+        run: flutter build appbundle --target=lib/main/main.dart --release --split-debug-info=./obsfucated/debug --obfuscate --no-pub --dart-define-from-file=config.json
+
+      - name: 🗃️ Compress APK build folder
         if: github.event_name == 'release'
         uses: TheDoctor0/zip-release@master
         with:
-          filename: build.zip
+          filename: apk-build.zip
           directory: lbreez/build/app/outputs/flutter-apk
           type: zip
 
-      - name: 📤 Upload asset (APK)
+      - name: 🗃️ Compress Bundle build folder
+        if: github.event_name == 'release'
+        uses: TheDoctor0/zip-release@master
+        with:
+          filename: bundle-build.zip
+          directory: lbreez/build/app/outputs/bundle/release
+          type: zip
+
+      - name: 📤 Upload APK asset
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@v2
         with:
           asset_name: Android-APK.zip
-          file: lbreez/build/app/outputs/flutter-apk/build.zip
+          file: lbreez/build/app/outputs/flutter-apk/apk-build.zip
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 📤 Upload artifact (APK)
+      - name: 📤 Upload Bundle asset
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          asset_name: Android-Bundle.zip
+          file: lbreez/build/app/outputs/bundle/release/bundle-build.zip
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload artifact (APK and Bundle)
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: Android-APK
-          path: lbreez/build/app/outputs/flutter-apk/app-*.apk
+          name: Android-Builds
+          path: |
+            lbreez/build/app/outputs/flutter-apk/app-*.apk
+            lbreez/build/app/outputs/bundle/release/app-release.aab
 
       - name: Cleanup Google Application Credentials
         if: success() || failure()
