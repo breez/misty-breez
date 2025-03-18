@@ -54,7 +54,7 @@ class HomeDrawer extends StatelessWidget {
                       'assets/icons/fiat_currencies.png',
                     ),
                     DrawerItemConfig(
-                      SecurityPage.routeName,
+                      SecuritySettings.routeName,
                       texts.home_drawer_item_title_security_and_backup,
                       'assets/icons/security.png',
                     ),

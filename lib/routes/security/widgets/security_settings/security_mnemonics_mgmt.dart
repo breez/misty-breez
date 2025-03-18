@@ -5,10 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
 import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/src/breez_light_theme.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:l_breez/widgets/route.dart';
+import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
+final Logger _logger = Logger('SecurityMnemonicsManagement');
+
+/// Widget for managing mnemonic backup phrase verification and display
 class SecurityMnemonicsManagement extends StatefulWidget {
+  /// Creates a security mnemonics management widget
   const SecurityMnemonicsManagement({super.key});
 
   @override
@@ -16,12 +21,14 @@ class SecurityMnemonicsManagement extends StatefulWidget {
 }
 
 class _SecurityMnemonicsManagementState extends State<SecurityMnemonicsManagement> {
+  /// Future that resolves to whether mnemonic verification is complete
   late Future<bool> _isVerificationCompleteFuture;
 
   @override
   void initState() {
     super.initState();
     _isVerificationCompleteFuture = MnemonicVerificationStatusPreferences.isVerificationComplete();
+    _logger.fine('Initialized mnemonics management');
   }
 
   @override
@@ -33,10 +40,12 @@ class _SecurityMnemonicsManagementState extends State<SecurityMnemonicsManagemen
       future: _isVerificationCompleteFuture,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (!snapshot.hasData) {
+          _logger.fine('Waiting for verification status data');
           return Container(color: breezLightTheme.canvasColor);
         }
 
         final bool isVerified = snapshot.data ?? false;
+        _logger.fine('Mnemonic verification status: ${isVerified ? 'verified' : 'not verified'}');
 
         return BlocBuilder<SecurityCubit, SecurityState>(
           builder: (BuildContext context, SecurityState securityState) {
@@ -55,36 +64,48 @@ class _SecurityMnemonicsManagementState extends State<SecurityMnemonicsManagemen
                 color: Colors.white,
                 size: 30.0,
               ),
-              onTap: () async {
-                // TODO(erdemyerebasmaz): Handle the case accountMnemonic is null as restoreMnemonic is now nullable
-                await ServiceInjector().credentialsManager.restoreMnemonic().then(
-                  (String? accountMnemonic) async {
-                    if (context.mounted) {
-                      if (!isVerified) {
-                        Navigator.pushNamed(
-                          context,
-                          MnemonicsConfirmationPage.routeName,
-                          arguments: accountMnemonic,
-                        );
-                      } else {
-                        Navigator.push(
-                          context,
-                          FadeInRoute<void>(
-                            builder: (BuildContext context) => MnemonicsPage(
-                              mnemonics: accountMnemonic!,
-                              viewMode: true,
-                            ),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                );
-              },
+              onTap: () => _handleMnemonicsTap(context, isVerified),
             );
           },
         );
       },
     );
+  }
+
+  /// Handles tap on the mnemonics tile
+  Future<void> _handleMnemonicsTap(BuildContext context, bool isVerified) async {
+    _logger.info('Handling mnemonics tap, verified: $isVerified');
+
+    try {
+      final String? accountMnemonic = await ServiceInjector().credentialsManager.restoreMnemonic();
+
+      if (!context.mounted || accountMnemonic == null) {
+        _logger.warning('Context no longer mounted or mnemonic is null');
+        return;
+      }
+
+      if (!isVerified) {
+        _logger.info('Navigating to mnemonic confirmation page');
+        Navigator.pushNamed(
+          context,
+          MnemonicsConfirmationPage.routeName,
+          arguments: accountMnemonic,
+        );
+      } else {
+        _logger.info('Navigating to mnemonics view page');
+        Navigator.push(
+          context,
+          FadeInRoute<void>(
+            builder: (BuildContext context) => MnemonicsPage(
+              mnemonics: accountMnemonic,
+              viewMode: true,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      _logger.severe('Error restoring mnemonic: $e');
+      // Could show an error dialog here
+    }
   }
 }

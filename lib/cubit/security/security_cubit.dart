@@ -6,8 +6,8 @@ import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:keychain/keychain.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth/local_auth.dart' as l_auth;
+import 'package:local_auth_android/local_auth_android.dart' as l_auth_android;
 import 'package:local_auth_darwin/types/auth_messages_ios.dart';
 import 'package:logging/logging.dart';
 
@@ -16,157 +16,288 @@ export 'security_state.dart';
 
 final Logger _logger = Logger('SecurityCubit');
 
-const String pinCodeKey = 'pinCode';
+/// Key used to store PIN code in secure storage
+const String _pinCodeKeyName = 'pinCode';
 
+/// Manages app security features including PIN protection, biometric authentication,
+/// automatic locking, and mnemonic verification status.
 class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityState> {
-  final KeyChain keyChain;
+  /// Secure storage for sensitive data like PIN code
+  final KeyChain _keyChain;
 
-  final LocalAuthentication _auth = LocalAuthentication();
-  Timer? _autoLock;
+  /// Authentication service for biometric verification
+  final l_auth.LocalAuthentication _auth = l_auth.LocalAuthentication();
 
-  SecurityCubit(this.keyChain) : super(const SecurityState.initial()) {
+  /// Timer for automatic locking when app goes to background
+  Timer? _autoLockTimer;
+
+  /// Creates a SecurityCubit instance and initializes security state
+  ///
+  /// [_keyChain] Secure storage implementation for sensitive data
+  SecurityCubit(this._keyChain) : super(const SecurityState.initial()) {
     hydrate();
-    _loadVerificationStatus();
-    FGBGEvents.instance.stream.listen((FGBGType event) {
-      final Duration lockInterval = state.lockInterval;
-      if (event == FGBGType.foreground) {
-        _autoLock?.cancel();
-        _autoLock = null;
-      } else {
-        if (state.pinStatus == PinStatus.enabled) {
-          _autoLock = Timer(lockInterval, () {
-            _setLockState(LockState.locked);
-            _autoLock = null;
-          });
-        }
+    _initializeSecurityState();
+  }
+
+  /// Initializes the security state by loading verification status and setting up
+  /// background lock listeners
+  Future<void> _initializeSecurityState() async {
+    await _loadMnemonicVerificationStatus();
+    _setupBackgroundLockListener();
+  }
+
+  /// Sets up the app background/foreground listener to manage auto-locking
+  void _setupBackgroundLockListener() {
+    FGBGEvents.instance.stream.listen(_handleAppStateChange);
+  }
+
+  /// Handles app state changes between foreground and background
+  ///
+  /// [event] The foreground/background state change event
+  void _handleAppStateChange(FGBGType event) {
+    if (event == FGBGType.foreground) {
+      _cancelAutoLockTimer();
+    } else {
+      _startAutoLockTimerIfNeeded();
+    }
+  }
+
+  /// Cancels any active auto-lock timer
+  void _cancelAutoLockTimer() {
+    _autoLockTimer?.cancel();
+    _autoLockTimer = null;
+  }
+
+  /// Starts the auto-lock timer if PIN protection is enabled
+  void _startAutoLockTimerIfNeeded() {
+    if (state.pinStatus == PinStatus.enabled) {
+      _autoLockTimer = Timer(state.autoLockTimeout, () {
+        _updateLockState(LockState.locked);
+        _autoLockTimer = null;
+        _logger.info('App automatically locked due to inactivity');
+      });
+    }
+  }
+
+  /// Creates or updates the PIN for app security
+  ///
+  /// [pin] The new PIN code to set
+  ///
+  /// Throws [Exception] if the PIN cannot be stored securely
+  Future<void> createOrUpdatePin(String pin) async {
+    try {
+      await _keyChain.write(_pinCodeKeyName, pin);
+      emit(state.copyWith(pinStatus: PinStatus.enabled));
+      _logger.info('PIN code has been updated');
+    } catch (e) {
+      _logger.severe('Failed to save PIN code: $e');
+      throw Exception('Failed to save PIN code: $e');
+    }
+  }
+
+  /// Validates if the provided PIN matches the stored PIN
+  ///
+  /// [pin] The PIN code to validate
+  ///
+  /// Returns true if the PIN is valid, false otherwise
+  ///
+  /// Throws [Exception] if the PIN is not found in secure storage
+  Future<bool> validatePin(String pin) async {
+    try {
+      final String? storedPin = await _keyChain.read(_pinCodeKeyName);
+      if (storedPin == null) {
+        _logger.warning('PIN not found in secure storage. Disabling PIN.');
+        await disablePin();
+        throw Exception('PIN not found in secure storage. Disabling PIN.');
       }
-    });
+
+      final bool isValid = storedPin == pin;
+      if (isValid) {
+        _updateLockState(LockState.unlocked);
+      }
+
+      return isValid;
+    } catch (e) {
+      _logger.severe('Error validating PIN: $e');
+      rethrow;
+    }
   }
 
-  Future<void> setPin(String pin) async {
-    await keyChain.write(pinCodeKey, pin);
-    emit(state.copyWith(pinStatus: PinStatus.enabled));
+  /// Disables PIN protection by removing the stored PIN
+  Future<void> disablePin() async {
+    try {
+      emit(state.copyWith(pinStatus: PinStatus.disabled));
+      await _keyChain.delete(_pinCodeKeyName);
+      _updateLockState(LockState.unlocked);
+      _logger.info('PIN protection disabled');
+    } catch (e) {
+      _logger.severe('Failed to disable PIN: $e');
+      throw Exception('Failed to disable PIN: $e');
+    }
   }
 
-  Future<bool> testPin(String pin) async {
-    final String? storedPin = await keyChain.read(pinCodeKey);
-    if (storedPin == null) {
-      _logger.warning('PIN not found in storage but state indicates enabled');
-      // Update both states and persist immediately
-      await clearPin(); // Use existing method to ensure proper cleanup
-      return true;
+  /// Updates the auto-lock timeout interval
+  ///
+  /// [autoLockTimeout] The new timeout duration
+  Future<void> updateAutoLockTimeout(Duration autoLockTimeout) async {
+    emit(state.copyWith(autoLockTimeout: autoLockTimeout));
+    _updateLockState(LockState.unlocked);
+    _logger.info('Auto-lock timeout updated to ${autoLockTimeout.inSeconds} seconds');
+  }
+
+  /// Disables biometric authentication
+  Future<void> disableBiometricAuth() async {
+    emit(state.copyWith(biometricType: BiometricType.none));
+    _updateLockState(LockState.unlocked);
+    _logger.info('Biometric authentication disabled');
+  }
+
+  /// Enables biometric authentication if supported by the device
+  Future<void> enableBiometricAuth() async {
+    final BiometricType detectedType = await detectBiometricType();
+    emit(state.copyWith(biometricType: detectedType));
+    _updateLockState(LockState.unlocked);
+
+    if (detectedType != BiometricType.none) {
+      _logger.info('Biometric authentication enabled: ${detectedType.name}');
+    } else {
+      _logger.warning('No biometric capabilities detected on device');
+    }
+  }
+
+  /// Detects what type of biometric authentication is available on the device
+  ///
+  /// Returns the detected [BiometricType]
+  Future<BiometricType> detectBiometricType() async {
+    try {
+      final List<l_auth.BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
+      _logger.info('Available biometrics: $availableBiometrics');
+
+      if (availableBiometrics.contains(l_auth.BiometricType.face)) {
+        return defaultTargetPlatform == TargetPlatform.iOS ? BiometricType.faceId : BiometricType.face;
+      }
+
+      if (availableBiometrics.contains(l_auth.BiometricType.fingerprint)) {
+        return defaultTargetPlatform == TargetPlatform.iOS
+            ? BiometricType.touchId
+            : BiometricType.fingerprint;
+      }
+
+      final bool otherBiometrics = await _auth.isDeviceSupported();
+      return otherBiometrics ? BiometricType.other : BiometricType.none;
+    } catch (e) {
+      _logger.severe('Error detecting biometric type: $e');
+      return BiometricType.none;
+    }
+  }
+
+  /// Attempts to authenticate the user using device biometrics
+  ///
+  /// [localizedReason] Reason for authentication displayed to user
+  ///
+  /// Returns true if authentication succeeded, false otherwise
+  Future<bool> authenticateWithBiometrics(String localizedReason) async {
+    final BiometricType detectedType = await detectBiometricType();
+    if (detectedType == BiometricType.none) {
+      _logger.warning('Attempted biometric authentication when not available');
+      return false;
     }
 
-    // Actual PIN comparison
-    final bool matches = storedPin == pin;
-    _logger.fine('PIN verification result: $matches');
-    return matches;
-  }
-
-  Future<void> clearPin() async {
-    emit(state.copyWith(pinStatus: PinStatus.disabled));
-    await keyChain.delete(pinCodeKey);
-    _setLockState(LockState.unlocked);
-  }
-
-  Future<void> setLockInterval(Duration lockInterval) async {
-    emit(
-      state.copyWith(
-        lockInterval: lockInterval,
-      ),
-    );
-    _setLockState(LockState.unlocked);
-  }
-
-  Future<void> clearLocalAuthentication() async {
-    emit(
-      state.copyWith(
-        localAuthenticationOption: LocalAuthenticationOption.none,
-      ),
-    );
-    _setLockState(LockState.unlocked);
-  }
-
-  Future<void> enableLocalAuthentication() async {
-    emit(
-      state.copyWith(
-        localAuthenticationOption: await localAuthenticationOption(),
-      ),
-    );
-    _setLockState(LockState.unlocked);
-  }
-
-  Future<LocalAuthenticationOption> localAuthenticationOption() async {
-    final List<BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
-    if (availableBiometrics.contains(BiometricType.face)) {
-      return defaultTargetPlatform == TargetPlatform.iOS
-          ? LocalAuthenticationOption.faceId
-          : LocalAuthenticationOption.face;
-    }
-    if (availableBiometrics.contains(BiometricType.fingerprint)) {
-      return defaultTargetPlatform == TargetPlatform.iOS
-          ? LocalAuthenticationOption.touchId
-          : LocalAuthenticationOption.fingerprint;
-    }
-    final bool otherBiometrics = await _auth.isDeviceSupported();
-    return otherBiometrics ? LocalAuthenticationOption.other : LocalAuthenticationOption.none;
-  }
-
-  Future<bool> localAuthentication(String localizedReason) async {
     try {
       final bool authenticated = await _auth.authenticate(
-        options: const AuthenticationOptions(
+        localizedReason: localizedReason,
+        options: const l_auth.AuthenticationOptions(
           biometricOnly: true,
           useErrorDialogs: false,
         ),
-        localizedReason: localizedReason,
-        authMessages: const <AuthMessages>[
-          AndroidAuthMessages(),
+        authMessages: const <l_auth_android.AuthMessages>[
+          l_auth_android.AndroidAuthMessages(),
           IOSAuthMessages(),
         ],
       );
-      _setLockState(authenticated ? LockState.unlocked : LockState.locked);
+
+      _updateLockState(authenticated ? LockState.unlocked : LockState.locked);
+      _logger.info('Biometric authentication ${authenticated ? 'succeeded' : 'failed'}');
       return authenticated;
     } on PlatformException catch (error) {
       if (error.code == 'LockedOut' || error.code == 'PermanentlyLockedOut') {
+        _logger.warning('Biometric authentication locked out: ${error.message}');
         throw error.message!;
       }
-      _logger.severe('Error Code: ${error.code} - Message: ${error.message}', error);
+
+      _logger.severe('Biometric error: ${error.code} - ${error.message}', error);
       await _auth.stopAuthentication();
-      _setLockState(LockState.locked);
+      _updateLockState(LockState.locked);
+      return false;
+    } catch (e) {
+      _logger.severe('Unexpected error during biometric authentication: $e');
+      _updateLockState(LockState.locked);
       return false;
     }
   }
 
-  void _setLockState(LockState lockState) {
-    emit(state.copyWith(lockState: lockState));
+  /// Updates the app lock state
+  ///
+  /// [lockState] The new lock state to set
+  void _updateLockState(LockState lockState) {
+    if (state.lockState != lockState) {
+      emit(state.copyWith(lockState: lockState));
+      _logger.fine('Lock state updated to: ${lockState.name}');
+    }
   }
 
-  Future<void> _loadVerificationStatus() async {
-    final bool isVerified = await MnemonicVerificationStatusPreferences.isVerificationComplete();
-    emit(
-      state.copyWith(
-        verificationStatus: isVerified ? VerificationStatus.verified : VerificationStatus.unverified,
-      ),
-    );
+  /// Loads the mnemonic verification status from preferences
+  Future<void> _loadMnemonicVerificationStatus() async {
+    try {
+      final bool isVerified = await MnemonicVerificationStatusPreferences.isVerificationComplete();
+      emit(
+        state.copyWith(
+          mnemonicStatus: isVerified ? MnemonicStatus.verified : MnemonicStatus.unverified,
+        ),
+      );
+      _logger.info('Mnemonic verification status loaded: ${isVerified ? 'verified' : 'unverified'}');
+    } catch (e) {
+      _logger.severe('Error loading mnemonic verification status: $e');
+      // Keep default unverified status on error
+    }
   }
 
-  Future<void> verifyMnemonic() async {
-    await MnemonicVerificationStatusPreferences.setVerificationComplete(true);
-    await _loadVerificationStatus();
+  /// Marks the mnemonic as verified by the user
+  Future<void> completeMnemonicVerification() async {
+    try {
+      await MnemonicVerificationStatusPreferences.setVerificationComplete(true);
+      await _loadMnemonicVerificationStatus();
+      _logger.info('Mnemonic verification completed');
+    } catch (e) {
+      _logger.severe('Error completing mnemonic verification: $e');
+      throw Exception('Failed to save mnemonic verification status: $e');
+    }
   }
 
   @override
   SecurityState? fromJson(Map<String, dynamic> json) {
-    final SecurityState state = SecurityState.fromJson(json);
-    _setLockState(state.pinStatus == PinStatus.enabled ? LockState.locked : LockState.unlocked);
-    return state;
+    try {
+      final SecurityState restoredState = SecurityState.fromJson(json);
+
+      // Update lock state based on PIN status
+      _updateLockState(restoredState.pinStatus == PinStatus.enabled ? LockState.locked : LockState.unlocked);
+
+      _logger.info('Security state restored from storage');
+      return restoredState;
+    } catch (e) {
+      _logger.severe('Error restoring security state from storage: $e');
+      return const SecurityState.initial();
+    }
   }
 
   @override
   Map<String, dynamic>? toJson(SecurityState state) {
     return state.toJson();
   }
-}
 
-class SecurityStorageException implements Exception {}
+  @override
+  Future<void> close() {
+    _cancelAutoLockTimer();
+    return super.close();
+  }
+}

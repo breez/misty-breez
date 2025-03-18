@@ -147,10 +147,10 @@ Route<dynamic>? onGenerateRoute({
                     builder: (BuildContext _) => const FiatCurrencySettings(),
                     settings: settings,
                   );
-                case SecurityPage.routeName:
+                case SecuritySettings.routeName:
                   return FadeInRoute<void>(
-                    builder: (BuildContext _) => const SecuredPage<SecurityPage>(
-                      securedWidget: SecurityPage(),
+                    builder: (BuildContext _) => const SecuredPage<SecuritySettings>(
+                      securedWidget: SecuritySettings(),
                     ),
                     settings: settings,
                   );
