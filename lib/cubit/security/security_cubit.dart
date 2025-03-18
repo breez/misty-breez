@@ -51,15 +51,21 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   Future<bool> testPin(String pin) async {
     final String? storedPin = await keyChain.read(pinCodeKey);
     if (storedPin == null) {
-      _setLockState(LockState.locked);
-      throw SecurityStorageException();
+      _logger.warning('PIN not found in storage but state indicates enabled');
+      // Update both states and persist immediately
+      await clearPin(); // Use existing method to ensure proper cleanup
+      return true;
     }
-    return storedPin == pin;
+
+    // Actual PIN comparison
+    final bool matches = storedPin == pin;
+    _logger.fine('PIN verification result: $matches');
+    return matches;
   }
 
   Future<void> clearPin() async {
-    await keyChain.delete(pinCodeKey);
     emit(state.copyWith(pinStatus: PinStatus.disabled));
+    await keyChain.delete(pinCodeKey);
     _setLockState(LockState.unlocked);
   }
 
