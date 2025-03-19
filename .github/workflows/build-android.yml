@@ -264,13 +264,36 @@ jobs:
           CONFIG_FILE: ${{ secrets.CONFIG_FILE }}
         run: echo "$CONFIG_FILE" > ./lbreez/config.json
 
+      - name: Get Version from pubspec.yaml
+        working-directory: lbreez
+        run: |
+          VERSION=$(awk -F ': ' '/^version:/ {print $2}' pubspec.yaml)
+          VERSION_BASE=${VERSION%%+*}
+          BUILD_NUMBER=$(($GITHUB_RUN_NUMBER + 1000))
+
+          echo "VERSION_BASE=$VERSION_BASE"
+          echo "BUILD_NUMBER=$BUILD_NUMBER"
+
+          echo "VERSION_BASE=$VERSION_BASE" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+
       - name: 🚀 Build Release APK
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         working-directory: lbreez
-        run: flutter build apk --target=lib/main/main.dart --release --split-debug-info=./obsfucated/debug --obfuscate --no-pub --split-per-abi --dart-define-from-file=config.json
+        run: |
+          flutter build apk \
+          --build-name="$VERSION_BASE" \
+          --build-number="$BUILD_NUMBER" \
+          --target=lib/main/main.dart \
+          --release \
+          --split-debug-info="./obfuscated/debug" \
+          --obfuscate \
+          --no-pub \
+          --split-per-abi \
+          --dart-define-from-file=config.json
 
       - name: 🚀 Build Release App Bundle
         env:
@@ -278,7 +301,16 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         working-directory: lbreez
-        run: flutter build appbundle --target=lib/main/main.dart --release --split-debug-info=./obsfucated/debug --obfuscate --no-pub --dart-define-from-file=config.json
+        run: |
+          flutter build appbundle \
+          --build-name="$VERSION_BASE" \
+          --build-number="$BUILD_NUMBER" \
+          --target="lib/main/main.dart" \
+          --release \
+          --split-debug-info="./obfuscated/debug" \
+          --obfuscate \
+          --no-pub \
+          --dart-define-from-file="config.json"
 
       - name: 🗃️ Compress APK build folder
         if: github.event_name == 'release'
