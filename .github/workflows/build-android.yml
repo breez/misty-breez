@@ -314,14 +314,19 @@ jobs:
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 📤 Upload artifact (APK and Bundle)
+      - name: 📤 Upload APK artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: Android-Builds
-          path: |
-            lbreez/build/app/outputs/flutter-apk/app-*.apk
-            lbreez/build/app/outputs/bundle/release/app-release.aab
+          name: Android-APK
+          path: lbreez/build/app/outputs/flutter-apk/app-*.apk
+
+      - name: 📤 Upload Bundle artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-Bundle
+          path: lbreez/build/app/outputs/bundle/release/app-release.aab
 
       - name: Cleanup Google Application Credentials
         if: success() || failure()
