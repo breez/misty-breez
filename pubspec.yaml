@@ -100,13 +100,13 @@ dependencies:
   intl: <0.20.0 # timeago ^3.7.0 requires intl >=0.18.0 <0.20.0.
   # Doesn't support: Linux Mac
   local_auth: ^2.3.0
-  local_auth_android: ^1.0.46
+  local_auth_android: ^1.0.48
   local_auth_darwin: ^1.4.3
   logging: ^1.3.0
   lottie: ^3.3.1
   mockito: ^5.4.5
   # Doesn't support: Linux Windows
-  mobile_scanner: ^6.0.6
+  mobile_scanner: ^6.0.7
   nested: any
   package_info_plus: ^8.3.0
   path: ^1.9.1
