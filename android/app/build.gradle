@@ -27,7 +27,7 @@ if (flutterVersionName == null) {
 
 def dartDefines = [:]
 if (project.hasProperty('dart-defines')) {
-    // Decode dart-defines, which are comma-separated and encoded in Base64, and store them in a variable.
+    // Decode dart-defines (comma-separated, Base64-encoded) and store them
     dartDefines = dartDefines + project.property('dart-defines')
             .split(',')
             .collectEntries { entry ->
@@ -37,15 +37,13 @@ if (project.hasProperty('dart-defines')) {
 }
 
 def envVariables = [
-        API_KEY: project.hasProperty('API_KEY')
-                ? API_KEY
-                : "${dartDefines.API_KEY}",
+        API_KEY: project.hasProperty('API_KEY') ? API_KEY : "${dartDefines.API_KEY}"
 ]
 
 android {
     namespace = "com.breez.liquid.l_breez"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -62,22 +60,16 @@ android {
 
     defaultConfig {
         applicationId = "com.breez.liquid.l_breez"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion = 24
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
 
-    // Creates a variable called keystorePropertiesFile, and initializes it to the
-    // keystore.properties file.
+    // Load keystore properties
     def keystorePropertiesFile = rootProject.file("keystore.properties")
-
-    // Initializes a new Properties() object called keystoreProperties.
     def keystoreProperties = new Properties()
 
-    // Loads the keystore.properties file into the keystoreProperties object.
     if (keystorePropertiesFile.exists()) {
         keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
     }
@@ -106,7 +98,7 @@ android {
                 String storeFilePath = System.getenv("STORE_FILE")
                 println("storeFilePath: " + storeFilePath)
                 if (storeFilePath != null) {
-                    println("using key properties from environment")
+                    println("Using key properties from environment")
                     keyAlias = System.getenv("KEY_ALIAS")
                     keyPassword = System.getenv("KEY_PASSWORD")
                     storeFile = file(storeFilePath)
@@ -132,13 +124,7 @@ android {
             signingConfig = signingConfigs.release
             manifestPlaceholders = [appName: "Misty Breez"]
             resValue "string", "breezApiKey", envVariables.API_KEY
-            // Enables code shrinking, obfuscation, and optimization for only
-            // your project's release build type. Make sure to use a build
-            // variant with `debuggable false`.
             minifyEnabled = true
-
-            // Enables resource shrinking, which is performed by the
-            // Android Gradle plugin.
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
