@@ -13,9 +13,6 @@ dependencies:
 
   breez_sdk_liquid:
     path: ../breez_sdk_liquid
-  breez_liquid:
-    git:
-      url: https://github.com/breez/breez-sdk-liquid-dart
   flutter_breez_liquid:
     git:
       url: https://github.com/breez/breez-sdk-liquid-flutter

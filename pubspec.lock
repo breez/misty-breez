@@ -131,7 +131,7 @@ packages:
     source: hosted
     version: "2.1.2"
   breez_liquid:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "../breez-sdk-liquid/packages/dart"
       relative: true
