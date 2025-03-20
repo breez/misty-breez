@@ -11,7 +11,7 @@
 		<key>com.breez.misty</key>
 		<string>Misty Breez Dist Profile</string>
 		<key>com.breez.misty.NotificationService</key>
-		<string>misty breez notification extension profile</string>
+		<string>Misty Breez Notification Service</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>Apple Distribution</string>
