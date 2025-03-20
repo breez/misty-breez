@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:breez_liquid/breez_liquid.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter/foundation.dart';
