@@ -268,8 +268,8 @@ jobs:
         working-directory: lbreez
         run: |
           VERSION=$(awk -F ': ' '/^version:/ {print $2}' pubspec.yaml)
-          VERSION_BASE=${VERSION%%+*}
-          BUILD_NUMBER=$(($GITHUB_RUN_NUMBER + 1000))
+          VERSION_BASE=${VERSION%%+*}          
+          BUILD_NUMBER=$(date -u +%s)
 
           echo "VERSION_BASE=$VERSION_BASE"
           echo "BUILD_NUMBER=$BUILD_NUMBER"
