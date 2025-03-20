@@ -1,4 +1,4 @@
-package com.breez.liquid.l_breez.utils
+package com.breez.misty.utils
 
 import android.content.Context
 import android.util.Base64

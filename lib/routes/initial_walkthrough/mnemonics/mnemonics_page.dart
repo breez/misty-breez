@@ -2,9 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/widgets/back_button.dart' as back_button;
+import 'package:misty_breez/widgets/widgets.dart';
 
 class MnemonicsPage extends StatefulWidget {
   final String mnemonics;

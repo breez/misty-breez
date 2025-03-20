@@ -8,9 +8,9 @@
 	<string>app-store</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>com.breez.liquid.lBreez</key>
+		<key>com.breez.misty</key>
 		<string>Misty Breez Dist Profile</string>
-		<key>com.breez.liquid.lBreez.NotificationService</key>
+		<key>com.breez.misty.NotificationService</key>
 		<string>misty breez notification extension profile</string>
 	</dict>
 	<key>signingCertificate</key>

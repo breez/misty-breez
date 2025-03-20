@@ -1,4 +1,4 @@
-package com.breez.liquid.l_breez
+package com.breez.misty
 
 import android.content.SharedPreferences
 import breez_sdk_liquid.ConnectRequest
@@ -8,7 +8,7 @@ import breez_sdk_liquid.defaultConfig
 import breez_sdk_liquid_notification.ForegroundService
 import breez_sdk_liquid_notification.NotificationHelper.Companion.registerNotificationChannels
 import com.breez.breez_sdk_liquid.SdkLogInitializer
-import com.breez.liquid.l_breez.utils.FlutterSecuredStorageHelper.Companion.readSecuredValue
+import com.breez.misty.utils.FlutterSecuredStorageHelper.Companion.readSecuredValue
 import io.flutter.util.PathUtils
 import org.tinylog.kotlin.Logger
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/security/models/action_key.dart';
-import 'package:l_breez/routes/security/models/auth_result.dart';
-import 'package:l_breez/routes/security/widgets/digit_masked.dart';
-import 'package:l_breez/routes/security/widgets/num_pad.dart';
-import 'package:l_breez/routes/security/widgets/shake_controller.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/routes/security/models/action_key.dart';
+import 'package:misty_breez/routes/security/models/auth_result.dart';
+import 'package:misty_breez/routes/security/widgets/digit_masked.dart';
+import 'package:misty_breez/routes/security/widgets/num_pad.dart';
+import 'package:misty_breez/routes/security/widgets/shake_controller.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('PinCodeWidget');

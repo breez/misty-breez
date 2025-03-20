@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:l_breez/models/currency.dart';
+import 'package:misty_breez/models/currency.dart';
 
 class SatAmountFormFieldFormatter extends TextInputFormatter {
   final RegExp _pattern = RegExp(r'[^\d*]');

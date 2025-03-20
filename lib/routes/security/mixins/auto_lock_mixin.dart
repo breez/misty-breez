@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/cubit.dart' as cubit;
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/cubit/cubit.dart' as cubit;
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('AutoLockMixin');

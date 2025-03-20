@@ -1,7 +1,7 @@
 import UserNotifications
 import XCGLogger
 
-let accessGroup = "group.F7R2LZH3W5.com.breez.liquid.lBreez"
+let accessGroup = "group.F7R2LZH3W5.com.breez.misty"
 
 class NotificationService: SDKNotificationService {
     fileprivate let TAG = "NotificationService"

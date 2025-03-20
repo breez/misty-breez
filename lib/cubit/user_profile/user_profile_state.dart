@@ -1,4 +1,4 @@
-import 'package:l_breez/models/user_profile.dart';
+import 'package:misty_breez/models/user_profile.dart';
 
 class UserProfileState {
   final UserProfileSettings profileSettings;

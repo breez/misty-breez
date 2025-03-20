@@ -67,7 +67,7 @@ dart pub global activate flutterfire_cli
 
 From Flutter project directory, run the following command to start the app configuration workflow:
 ```
-flutterfire configure -p breez-technology -o lib/firebase/firebase_options.dart --platforms="android,ios" -a com.breez.liquid.l_breez -y
+flutterfire configure -p breez-technology -o lib/firebase/firebase_options.dart --platforms="android,ios" -a com.breez.misty -y
 ```
 
 **Android**

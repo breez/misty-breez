@@ -7,8 +7,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/src/theme.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/theme/src/theme.dart';
 
 class LnUrlPaymentLimits extends StatelessWidget {
   final LightningPaymentLimitsResponse? limitsResponse;

@@ -41,7 +41,7 @@ def envVariables = [
 ]
 
 android {
-    namespace = "com.breez.liquid.l_breez"
+    namespace = "com.breez.misty"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -59,7 +59,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.breez.liquid.l_breez"
+        applicationId = "com.breez.misty"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()

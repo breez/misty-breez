@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/routes.dart';
+import 'package:misty_breez/routes/routes.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('HandleLNURL');

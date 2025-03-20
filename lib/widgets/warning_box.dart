@@ -1,6 +1,6 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme.dart';
+import 'package:misty_breez/theme/theme.dart';
 
 class WarningBox extends StatelessWidget {
   final EdgeInsets boxPadding;

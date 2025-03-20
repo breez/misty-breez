@@ -30,10 +30,10 @@ jobs:
     runs-on: macOS-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: 🏗️ Check-out l-breez repository
+      - name: 🏗️ Check-out misty-breez repository
         uses: actions/checkout@v4
         with: 
-          path: 'lbreez'
+          path: 'misty_breez'
 
       - name: 🏗️ Setup breez-sdk-liquid repository
         uses: actions/checkout@v4
@@ -57,13 +57,13 @@ jobs:
           cache: true
 
       - name: 📦 Install Flutter dependencies
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutter pub get
 
       - name: 🔍 Perform static analysis
-        working-directory: lbreez
+        working-directory: misty_breez
         run: dart analyze --fatal-infos
 
       - name: Check Formatting
-        working-directory: lbreez
+        working-directory: misty_breez
         run: dart format -o none --set-exit-if-changed -l 110 .

@@ -6,9 +6,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:l_breez/handlers/handlers.dart';
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/handlers/handlers.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 class Home extends StatefulWidget {
   static const String routeName = '/';

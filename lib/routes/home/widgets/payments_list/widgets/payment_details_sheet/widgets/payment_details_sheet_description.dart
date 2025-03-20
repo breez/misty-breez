@@ -4,8 +4,8 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/utils/extensions/payment_title_extension.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/utils/extensions/payment_title_extension.dart';
 
 class PaymentDetailsSheetDescription extends StatelessWidget {
   final PaymentData paymentData;
