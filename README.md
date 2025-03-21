@@ -20,13 +20,8 @@ Misty Breez is a mobile app built with Flutter that serves as a reference implem
 
 ## Installation 
 
-#### Android 
-
-[Latest APK](https://github.com/breez/misty-breez/releases/tag/v0.1.0-alpha)
-
-#### iOS
-
-[TestFlight](https://testflight.apple.com/join/z8ZN1V6c)
+| [![Google Play](https://github.com/breez/misty-breez/blob/main/.github/assets/images/google-play.svg)](https://play.google.com/store/apps/details?id=com.breez.misty) | [![TestFlight](https://github.com/breez/misty-breez/blob/main/.github/assets/images/app-store.svg)](https://testflight.apple.com/join/nEegHvBX) |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 
 ## For Developers
 
