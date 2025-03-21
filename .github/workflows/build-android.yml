@@ -303,12 +303,9 @@ jobs:
         working-directory: misty_breez
         run: |
           flutter build appbundle \
-          --build-name="$VERSION_BASE" \
           --build-number="$BUILD_NUMBER" \
           --target="lib/main/main.dart" \
           --release \
-          --split-debug-info="./obfuscated/debug" \
-          --obfuscate \
           --no-pub \
           --dart-define-from-file="config.json"
 
