@@ -22,10 +22,11 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         const SizedBox(height: 8.0),
         ListTile(
           leading: const BottomActionItemImage(
-            iconAssetPath: 'assets/icons/ln_address.png',
+            iconAssetPath: 'assets/icons/lightning.png',
           ),
-          title: Text(
-            texts.bottom_action_bar_ln_address,
+          title: const Text(
+            // TODO(erdemyerebasmaz): Add message to Breez-Translations
+            'Receive with Lightning',
             style: bottomSheetTextStyle,
           ),
           onTap: () {
