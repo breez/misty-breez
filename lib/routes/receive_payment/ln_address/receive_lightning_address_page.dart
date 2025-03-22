@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +36,15 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
             builder: (BuildContext context, PaymentLimitsState limitsState) {
               final bool hasError = lnAddressState.hasError || limitsState.hasError;
 
-              return SingleButtonBottomBar(
-                stickToBottom: true,
-                text: hasError ? texts.invoice_ln_address_action_retry : texts.qr_code_dialog_action_close,
-                onPressed: hasError
-                    ? () => _onRetryPressed(lnAddressState, limitsState)
-                    : () => Navigator.of(context).pop(),
+              return Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: hasError ? texts.invoice_ln_address_action_retry : texts.qr_code_dialog_action_close,
+                  onPressed: hasError
+                      ? () => _onRetryPressed(lnAddressState, limitsState)
+                      : () => Navigator.of(context).pop(),
+                ),
               );
             },
           ),
@@ -57,7 +61,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
     if (lnAddressState.hasError) {
       return LnAddressErrorView(
         title: texts.lightning_address_service_error_title,
-        error: lnAddressState.error!,
+        error: lnAddressState.error ?? '',
       );
     }
 
@@ -108,10 +112,18 @@ class LnAddressErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
-    return ScrollableErrorMessageWidget(
-      showIcon: true,
-      title: title,
-      message: ExceptionHandler.extractMessage(error, texts),
+
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: ScrollableErrorMessageWidget(
+            showIcon: true,
+            title: title,
+            message: ExceptionHandler.extractMessage(error, texts),
+          ),
+        ),
+        const SpecifyAmountButton(),
+      ],
     );
   }
 }
@@ -131,25 +143,83 @@ class LnAddressSuccessView extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 32.0, bottom: 40.0),
+      padding: const EdgeInsets.only(top: 16.0),
       child: SingleChildScrollView(
-        child: Container(
-          decoration: ShapeDecoration(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12),
+        child: Column(
+          children: <Widget>[
+            Container(
+              decoration: ShapeDecoration(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
+                ),
+                color: themeData.customData.surfaceBgColor,
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+              child: Column(
+                children: <Widget>[
+                  DestinationWidget(
+                    destination: lnAddressState.lnurl,
+                    lnAddress: lnAddressState.lnAddress,
+                    paymentMethod: texts.receive_payment_method_lightning_address,
+                    infoWidget: const PaymentLimitsMessageBox(),
+                  ),
+                ],
               ),
             ),
-            color: themeData.customData.surfaceBgColor,
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
-          child: SingleChildScrollView(
-            child: DestinationWidget(
-              destination: lnAddressState.lnurl,
-              lnAddress: lnAddressState.lnAddress,
-              paymentMethod: texts.receive_payment_method_lightning_address,
-              infoWidget: const PaymentLimitsMessageBox(),
+            const SpecifyAmountButton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Button to navigate to the Lightning payment page for specifying an amount
+class SpecifyAmountButton extends StatelessWidget {
+  const SpecifyAmountButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //final BreezTranslations texts = context.texts();
+    final MinFontSize minFont = MinFontSize(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: 48.0,
+          minWidth: 138.0,
+        ),
+        child: Tooltip(
+          // TODO(erdemyerebasmaz): Add messageto Breez-Translations
+          message: 'Specify amount for invoice',
+          child: OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Colors.white),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
+            icon: const Icon(
+              Icons.edit_note,
+              size: 20.0,
+            ),
+            label: AutoSizeText(
+              // TODO(erdemyerebasmaz): Add messageto Breez-Translations
+              'Specify Amount',
+              style: balanceFiatConversionTextStyle,
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
+            ),
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                ReceivePaymentPage.routeName,
+                arguments: ReceiveLightningPaymentPage.pageIndex,
+              );
+            },
           ),
         ),
       ),
