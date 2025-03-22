@@ -29,7 +29,7 @@ class PaymentLimitsMessageBox extends StatelessWidget {
           final ThemeData themeData = Theme.of(context);
 
           return Padding(
-            padding: const EdgeInsets.only(top: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Center(
               child: Loader(
                 color: themeData.primaryColor.withValues(alpha: .5),
