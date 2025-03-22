@@ -64,7 +64,8 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       case ReceiveLightningPaymentPage.pageIndex:
         return texts.invoice_title;
       case ReceiveLightningAddressPage.pageIndex:
-        return texts.invoice_ln_address_title;
+        // TODO(erdemyerebasmaz): Add message to Breez-Translations
+        return 'Receive with Lightning';
       case ReceiveBitcoinAddressPaymentPage.pageIndex:
         return texts.invoice_btc_address_title;
       default:
