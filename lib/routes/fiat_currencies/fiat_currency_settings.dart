@@ -5,11 +5,11 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/back_button.dart' as back_button;
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/widgets/back_button.dart' as back_button;
+import 'package:misty_breez/widgets/widgets.dart';
 
 class FiatCurrencySettings extends StatefulWidget {
   static const String routeName = '/fiat_currency';

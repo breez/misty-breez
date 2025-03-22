@@ -1,6 +1,6 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/models/asset_extension.dart';
-import 'package:l_breez/utils/date/breez_date_utils.dart';
+import 'package:misty_breez/models/asset_extension.dart';
+import 'package:misty_breez/utils/date/breez_date_utils.dart';
 
 // TODO(erdemyerebasmaz): Ensure that any changes to [PaymentDetails] are reflected here on each extension.
 extension PaymentDetailsMapExtension on PaymentDetails {

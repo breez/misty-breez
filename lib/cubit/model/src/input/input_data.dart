@@ -1,4 +1,4 @@
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 class InputData {
   final String data;

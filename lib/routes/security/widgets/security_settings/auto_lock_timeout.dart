@@ -3,8 +3,8 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/security/services/auth_service.dart';
-import 'package:l_breez/theme/theme.dart';
+import 'package:misty_breez/routes/security/services/auth_service.dart';
+import 'package:misty_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('SecurityInterval');

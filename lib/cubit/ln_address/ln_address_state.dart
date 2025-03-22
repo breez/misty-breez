@@ -1,4 +1,4 @@
-import 'package:l_breez/cubit/ln_address/models/ln_address_update_status.dart';
+import 'package:misty_breez/cubit/ln_address/models/ln_address_update_status.dart';
 
 /// Status of Lightning Address operations
 enum LnAddressStatus {

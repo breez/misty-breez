@@ -1,10 +1,10 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/app/app.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/theme/theme.dart';
+import 'package:misty_breez/app/app.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/theme/theme.dart';
 import 'package:nested/nested.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:theme_provider/theme_provider.dart';

@@ -1,4 +1,4 @@
-package com.breez.liquid.l_breez
+package com.breez.misty
 
 import android.content.Context
 import io.flutter.util.PathUtils

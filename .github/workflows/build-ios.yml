@@ -89,17 +89,17 @@ jobs:
       BUILD_CONFIGURATION: Release
       TESTFLIGHT_USERNAME: ${{ secrets.TESTFLIGHT_USERNAME }}
       TESTFLIGHT_PASSWORD: ${{ secrets.TESTFLIGHT_PASSWORD }}
-      IOS_VERSION_STRING: 0.1.0
+      IOS_VERSION_STRING: 0.1.1
       DISTRIBUTION_CERT: ${{ secrets.DISTRIBUTION_CERT }}
       P12_BASE64: ${{ secrets.P12_BASE64 }}
       P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
       GOOGLE_SERVICES_IOS: ${{ secrets.GOOGLE_SERVICES_IOS }}
       FIREBASE_PROJECT: breez-technology
-      FIREBASE_ANDROID_PACKAGE_NAME: com.breez.liquid.l_breez
-      FIREBASE_IOS_BUNDLE_ID: com.breez.liquid.lBreez
+      FIREBASE_ANDROID_PACKAGE_NAME: com.breez.misty
+      FIREBASE_IOS_BUNDLE_ID: com.breez.misty
       # A bug causes 'flutterfire configure' to require app id's for non-selected platforms on CI workflows https://github.com/invertase/flutterfire_cli/issues/233
       # If the app id does not exists on project, 'flutterfire configure' automatically create an app with that app id, that is why an existing app id is used here.
-      FIREBASE_PLACEHOLDER_APP_ID: com.breez.liquid.lBreez
+      FIREBASE_PLACEHOLDER_APP_ID: com.breez.misty
       GOOGLE_APPLICATION_CREDENTIALS_BASE64: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BASE64 }}
     steps:
       - name: Disk Cleanup
@@ -119,14 +119,14 @@ jobs:
           df -hI
           echo "::endgroup::"
 
-      - name: 🏗️ Check-out l-breez repository
+      - name: 🏗️ Check-out misty-breez repository
         uses: actions/checkout@v4
         with:
-          path: 'lbreez'
+          path: 'misty_breez'
 
       - name: Set Liquid SDK plugin version
         if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
-        working-directory: lbreez
+        working-directory: misty_breez
         run: |
           mv pubspec_overrides.yaml.workflow pubspec_overrides.yaml
           sed -i.bak -e 's/ref:.*/ref: ${{ needs.setup.outputs.liquid-sdk-plugin-version }}/' pubspec_overrides.yaml
@@ -175,15 +175,15 @@ jobs:
         run: sudo npm i -g firebase-tools
 
       - name: Decode Google Application Credentials
-        working-directory: lbreez
+        working-directory: misty_breez
         run: base64 --decode <<< $GOOGLE_APPLICATION_CREDENTIALS_BASE64 > google-application-credentials.json
 
       - name: Set up FlutterFire
-        working-directory: lbreez
+        working-directory: misty_breez
         run: dart pub global activate flutterfire_cli
 
       - name: Configure Firebase
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutterfire configure -p $FIREBASE_PROJECT -o lib/firebase/firebase_options.dart --platforms="android,ios" -a $FIREBASE_ANDROID_PACKAGE_NAME -i $FIREBASE_IOS_BUNDLE_ID -m $FIREBASE_PLACEHOLDER_APP_ID -w $FIREBASE_PLACEHOLDER_APP_ID -x $FIREBASE_PLACEHOLDER_APP_ID --service-account=google-application-credentials.json -y
 
       - name: 🔐 Install Keychain keys
@@ -205,7 +205,7 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k ci $KEYCHAIN_PATH > /dev/null
 
       - name: 🏗️ Copy Firebase configuration file
-        working-directory: lbreez
+        working-directory: misty_breez
         run: echo "$GOOGLE_SERVICES_IOS" > ios/Runner/GoogleService-Info.plist
 
       - name: 🏗️ Setup breez-sdk-liquid repository
@@ -257,21 +257,21 @@ jobs:
         run: just gen
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutter precache
 
       - name: 📦 Install Flutter dependencies
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutter pub get
 
       - name: 🔍 Perform static analysis
-        working-directory: lbreez
+        working-directory: misty_breez
         run: dart analyze --fatal-infos
 
       - name: ⚙️ Setup compile-time variables
         env:
           CONFIG_FILE: ${{ secrets.CONFIG_FILE }}
-        run: echo "$CONFIG_FILE" > ./lbreez/config.json
+        run: echo "$CONFIG_FILE" > ./misty_breez/config.json
 
       - name: 📝 Install the Provisioning Profile
         run: |
@@ -346,15 +346,15 @@ jobs:
           echo "Provisioning profiles installed successfully."
 
       - name: 🚀 Build app
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutter build ios --target=lib/main/main.dart --release --split-debug-info=./obsfucated/debug --obfuscate --no-config-only --no-pub --no-codesign --dart-define-from-file=config.json
 
       - name: 📦 Resolve Swift package dependencies
-        working-directory: lbreez
+        working-directory: misty_breez
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme ${{ env.SCHEME }} -configuration ${{ env.BUILD_CONFIGURATION }}
 
       - name: 🔨 Build application and generate xcarchive file
-        working-directory: lbreez
+        working-directory: misty_breez
         run: |
           buildNumber=$(($GITHUB_RUN_NUMBER + 6000)).1
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" ios/Runner/Info.plist
@@ -362,7 +362,7 @@ jobs:
           xcodebuild -workspace ios/Runner.xcworkspace -scheme ${{ env.SCHEME }} -configuration ${{ env.BUILD_CONFIGURATION }} -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive clean archive
 
       - name: 📤 Export the archive to an ipa file
-        working-directory: lbreez
+        working-directory: misty_breez
         run: xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
       - name: 🗃️ Compress build folder
@@ -370,7 +370,7 @@ jobs:
         uses: TheDoctor0/zip-release@master
         with:
           filename: build.zip
-          directory: lbreez/build/ios/iphoneos
+          directory: misty_breez/build/ios/iphoneos
           type: zip
 
       - name: 📤 Upload release
@@ -378,7 +378,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           asset_name: release-iOS.zip
-          file: lbreez/build/ios/iphoneos/build.zip
+          file: misty_breez/build/ios/iphoneos/build.zip
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -387,17 +387,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-iOS
-          path: lbreez/build/ios/iphoneos
+          path: misty_breez/build/ios/iphoneos
 
       - name: 📱 Publish to TestFlight
         run: |
           altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
-          ipa="$PWD/lbreez/build-output/ios/l_breez.ipa"
+          ipa="$PWD/misty_breez/build-output/ios/misty_breez.ipa"
           "$altool" --upload-app --type ios --file "$ipa" --username $TESTFLIGHT_USERNAME --password $TESTFLIGHT_PASSWORD
 
       - name: Cleanup Google Application Credentials
         if: success() || failure()
         run: |
-          if [ -d "lbreez" ] && [ -f "lbreez/google-application-credentials.json" ]; then
-            rm lbreez/google-application-credentials.json
+          if [ -d "misty_breez" ] && [ -f "misty_breez/google-application-credentials.json" ]; then
+            rm misty_breez/google-application-credentials.json
           fi

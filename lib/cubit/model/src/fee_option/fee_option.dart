@@ -1,6 +1,6 @@
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/models/sdk_formatted_string_extensions.dart';
+import 'package:misty_breez/models/sdk_formatted_string_extensions.dart';
 
 enum ProcessingSpeed {
   economy(Duration(minutes: 60)),

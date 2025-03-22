@@ -1,5 +1,5 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 typedef TypeCheck = bool Function(InputType);
 

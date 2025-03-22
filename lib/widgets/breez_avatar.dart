@@ -6,8 +6,8 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/theme/theme.dart';
 
 class BreezAvatar extends StatelessWidget {
   final String? avatarURL;

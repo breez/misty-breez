@@ -9,10 +9,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as dart_image;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/a11y/min_font_size.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/a11y/min_font_size.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('BreezAvatarDialog');

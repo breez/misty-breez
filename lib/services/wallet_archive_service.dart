@@ -17,10 +17,10 @@ class WalletArchiveService {
   WalletArchiveService._();
 
   /// Default name for logs archive file
-  static const String _logsArchiveFilename = 'l-breez.logs.zip';
+  static const String _logsArchiveFilename = 'misty-breez.logs.zip';
 
   /// Default name for keys archive file
-  static const String _keysArchiveFilename = 'l-breez.keys.zip';
+  static const String _keysArchiveFilename = 'misty-breez.keys.zip';
 
   /// Gets the current AppConfig instance
   static Future<AppConfig> _getAppConfig() async {

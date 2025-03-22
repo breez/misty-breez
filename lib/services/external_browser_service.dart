@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

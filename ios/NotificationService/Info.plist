@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>lnurl_pay_metadata_plain_text</key>
-	<string>Pay with Misty Breez</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
@@ -11,7 +11,7 @@
 		<key>NSExtensionPrincipalClass</key>
 		<string>$(PRODUCT_MODULE_NAME).NotificationService</string>
 	</dict>
-    <key>FirebaseAppDelegateProxyEnabled</key>
-    <false/>
+	<key>lnurl_pay_metadata_plain_text</key>
+	<string>Pay with Misty Breez</string>
 </dict>
 </plist>

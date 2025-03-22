@@ -1,9 +1,9 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/utils/payments/payment_validator.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/utils/payments/payment_validator.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('WithdrawFundsAmountTextFormField');

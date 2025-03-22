@@ -1,6 +1,6 @@
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 import 'package:service_injector/service_injector.dart';
 
 class LnAddressCubitFactory {

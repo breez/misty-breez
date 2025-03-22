@@ -1,4 +1,4 @@
-package com.breez.liquid.l_breez
+package com.breez.misty
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import breez_sdk_liquid_notification.Constants
 import breez_sdk_liquid_notification.Message
 import breez_sdk_liquid_notification.MessagingService
-import com.breez.liquid.l_breez.BreezLogger.Companion.configureLogger
+import com.breez.misty.BreezLogger.Companion.configureLogger
 import com.google.android.gms.common.util.PlatformVersion.isAtLeastLollipop
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

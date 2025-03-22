@@ -4,8 +4,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 /// Bottom sheet to update a Lightning Address username.
 class UpdateLnAddressUsernameBottomSheet extends StatefulWidget {

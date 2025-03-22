@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/utils.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 class FiatBalanceText extends StatelessWidget {
   final bool hiddenBalance;

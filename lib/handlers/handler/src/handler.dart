@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:l_breez/handlers/handlers.dart';
+import 'package:misty_breez/handlers/handlers.dart';
 
 abstract class Handler {
   HandlerContextProvider<StatefulWidget>? contextProvider;

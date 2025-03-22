@@ -2,8 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/utils/a11y/min_font_size.dart';
+import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/a11y/min_font_size.dart';
 
 class MnemonicItem extends StatelessWidget {
   final String mnemonic;

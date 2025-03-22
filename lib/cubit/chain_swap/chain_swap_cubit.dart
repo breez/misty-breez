@@ -2,8 +2,8 @@ import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/utils/exceptions/exception_handler.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/utils/exceptions/exception_handler.dart';
 import 'package:logging/logging.dart';
 
 export 'chain_swap_state.dart';

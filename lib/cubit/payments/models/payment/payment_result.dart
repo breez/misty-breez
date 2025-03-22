@@ -2,7 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/utils/utils.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 class PaymentResult {
   final Payment? paymentInfo;

@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 class DefaultProfile {
   final String color;
