@@ -204,7 +204,6 @@ class LnUrlRegistrationManager {
     }
 
     final String? username = await usernameResolver.resolveUsername(
-      isNewRegistration: false, // Ownership transfer preserves existing username
       recoveredLightningAddress: recoveredLightningAddress,
       baseUsername: baseUsername,
     );
@@ -243,7 +242,6 @@ class LnUrlRegistrationManager {
     }
 
     final String? username = await usernameResolver.resolveUsername(
-      isNewRegistration: false,
       recoveredLightningAddress: recoveredLightningAddress,
       baseUsername: effectiveBaseUsername,
     );
@@ -263,7 +261,6 @@ class LnUrlRegistrationManager {
     String? recoveredLightningAddress,
   }) async {
     final String? username = await usernameResolver.resolveUsername(
-      isNewRegistration: true,
       recoveredLightningAddress: recoveredLightningAddress,
       baseUsername: baseUsername,
     );
