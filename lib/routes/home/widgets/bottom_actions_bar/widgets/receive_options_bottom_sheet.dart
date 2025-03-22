@@ -44,28 +44,6 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         ),
         ListTile(
           leading: const BottomActionItemImage(
-            iconAssetPath: 'assets/icons/paste.png',
-          ),
-          title: Text(
-            texts.bottom_action_bar_receive_invoice,
-            style: bottomSheetTextStyle,
-          ),
-          onTap: () {
-            final NavigatorState navigatorState = Navigator.of(context);
-            navigatorState.pop();
-            navigatorState.pushNamed(
-              ReceivePaymentPage.routeName,
-              arguments: ReceiveLightningPaymentPage.pageIndex,
-            );
-          },
-        ),
-        Divider(
-          height: 0.0,
-          color: Colors.white.withValues(alpha: .2),
-          indent: 72.0,
-        ),
-        ListTile(
-          leading: const BottomActionItemImage(
             iconAssetPath: 'assets/icons/bitcoin.png',
           ),
           title: Text(
