@@ -59,6 +59,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
       return LnAddressErrorView(
         title: texts.lightning_address_service_error_title,
         error: lnAddressState.error!,
+        showSpecifyAmountButton: true,
       );
     }
 
@@ -99,20 +100,34 @@ class LnAddressLoadingView extends StatelessWidget {
 class LnAddressErrorView extends StatelessWidget {
   final String title;
   final Object error;
+  final bool showSpecifyAmountButton;
 
   const LnAddressErrorView({
     required this.title,
     required this.error,
+    this.showSpecifyAmountButton = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
-    return ScrollableErrorMessageWidget(
-      showIcon: true,
-      title: title,
-      message: ExceptionHandler.extractMessage(error, texts),
+
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: ScrollableErrorMessageWidget(
+            showIcon: true,
+            title: title,
+            message: ExceptionHandler.extractMessage(error, texts),
+          ),
+        ),
+        if (showSpecifyAmountButton)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 40.0, left: 16.0, right: 16.0),
+            child: SpecifyAmountButton(),
+          ),
+      ],
     );
   }
 }
