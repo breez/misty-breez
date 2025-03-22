@@ -34,7 +34,8 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       appBar: AppBar(
         leading: const back_button.BackButton(),
         title: Text(_getTitle()),
-        actions: widget.initialPageIndex == ReceiveLightningPaymentPage.pageIndex
+        actions: widget.initialPageIndex == ReceiveLightningPaymentPage.pageIndex ||
+                widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex
             ? <Widget>[
                 IconButton(
                   alignment: Alignment.center,
@@ -62,7 +63,6 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     final BreezTranslations texts = context.texts();
     switch (widget.initialPageIndex) {
       case ReceiveLightningPaymentPage.pageIndex:
-        return texts.invoice_title;
       case ReceiveLightningAddressPage.pageIndex:
         // TODO(erdemyerebasmaz): Add message to Breez-Translations
         return 'Receive with Lightning';
