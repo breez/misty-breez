@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:breez_liquid/breez_liquid.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:l_breez/models/asset_extension.dart';
 import 'package:logging/logging.dart';
 

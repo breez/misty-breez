@@ -17,9 +17,6 @@ dependencies:
     path: ../breez_sdk_liquid
   credentials_manager:
     path: ../credentials_manager
-  breez_liquid:
-    git:
-      url: https://github.com/breez/breez-sdk-liquid-dart
   flutter_breez_liquid:
     git:
       url: https://github.com/breez/breez-sdk-liquid-flutter
