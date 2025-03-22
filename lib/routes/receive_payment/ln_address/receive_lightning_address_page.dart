@@ -1,9 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l_breez/cubit/cubit.dart';
-import 'package:l_breez/routes/receive_payment/widgets/widgets.dart';
+import 'package:l_breez/routes/routes.dart';
 import 'package:l_breez/theme/theme.dart';
 import 'package:l_breez/utils/utils.dart';
 import 'package:l_breez/widgets/widgets.dart';
@@ -144,13 +145,67 @@ class LnAddressSuccessView extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
           child: SingleChildScrollView(
-            child: DestinationWidget(
-              destination: lnAddressState.lnurl,
-              lnAddress: lnAddressState.lnAddress,
-              paymentMethod: texts.receive_payment_method_lightning_address,
-              infoWidget: const PaymentLimitsMessageBox(),
+            child: Column(
+              children: <Widget>[
+                DestinationWidget(
+                  destination: lnAddressState.lnurl,
+                  lnAddress: lnAddressState.lnAddress,
+                  paymentMethod: texts.receive_payment_method_lightning_address,
+                  infoWidget: const PaymentLimitsMessageBox(),
+                ),
+                const SizedBox(height: 24.0),
+                const SpecifyAmountButton(),
+              ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Button to navigate to the Lightning payment page for specifying an amount
+class SpecifyAmountButton extends StatelessWidget {
+  const SpecifyAmountButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //final BreezTranslations texts = context.texts();
+    final MinFontSize minFont = MinFontSize(context);
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 48.0,
+        minWidth: 138.0,
+      ),
+      child: Tooltip(
+        // TODO(erdemyerebasmaz): Add messageto Breez-Translations
+        message: 'Specify amount for invoice',
+        child: OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Colors.white),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          icon: const Icon(
+            Icons.edit_note,
+            size: 20.0,
+          ),
+          label: AutoSizeText(
+            // TODO(erdemyerebasmaz): Add messageto Breez-Translations
+            'Specify Amount',
+            style: balanceFiatConversionTextStyle,
+            maxLines: 1,
+            minFontSize: minFont.minFontSize,
+            stepGranularity: 0.1,
+          ),
+          onPressed: () {
+            Navigator.of(context).pushNamed(
+              ReceivePaymentPage.routeName,
+              arguments: ReceiveLightningPaymentPage.pageIndex,
+            );
+          },
         ),
       ),
     );
