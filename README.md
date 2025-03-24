@@ -17,6 +17,7 @@ Misty Breez is the simplest self-custodial app for sending and receiving Lightni
 - [x] **Receiving payments** via various protocols such as: Bolt11, LNURL-Withdraw, LNURL-Pay, Lightning address, BTC address
 - [x] A built-in, customizable user@breez.fun Lightning address
 - [x] Receive payments even when the app is offline (requires notifications)
+- [x] No channel management 
 - [x] Self-custodial: keys are only held by users
 - [x] Free open-source software (ofc!)
 
