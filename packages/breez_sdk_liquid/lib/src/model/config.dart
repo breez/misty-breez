@@ -61,7 +61,7 @@ class AppConfig {
       path = workingDir.path;
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       final Directory? sharedDirectory = await AppGroupDirectory().getAppGroupDirectory(
-        'group.F7R2LZH3W5.com.breez.liquid.lBreez',
+        'group.F7R2LZH3W5.com.breez.misty',
       );
       if (sharedDirectory == null) {
         throw Exception('Could not get shared directory');

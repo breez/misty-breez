@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:keychain/keychain.dart';
-import 'package:l_breez/cubit/cubit.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 import 'package:local_auth/local_auth.dart' as l_auth;
 import 'package:local_auth_android/local_auth_android.dart' as l_auth_android;
 import 'package:local_auth_darwin/types/auth_messages_ios.dart';

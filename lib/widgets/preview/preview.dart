@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 export 'fill_view_port_column_scroll_view.dart';
 

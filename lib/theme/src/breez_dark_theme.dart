@@ -1,7 +1,7 @@
 // Color(0xFF121212) values are tbd
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:l_breez/theme/theme.dart';
+import 'package:misty_breez/theme/theme.dart';
 
 final ThemeData breezDarkTheme = ThemeData(
   useMaterial3: false,

@@ -87,11 +87,11 @@ jobs:
     runs-on: macOS-latest
     env:
       FIREBASE_PROJECT: breez-technology
-      FIREBASE_ANDROID_PACKAGE_NAME: com.breez.liquid.l_breez
-      FIREBASE_IOS_BUNDLE_ID: com.breez.liquid.lBreez
+      FIREBASE_ANDROID_PACKAGE_NAME: com.breez.misty
+      FIREBASE_IOS_BUNDLE_ID: com.breez.misty
       # A bug causes 'flutterfire configure' to require app id's for non-selected platforms on CI workflows https://github.com/invertase/flutterfire_cli/issues/233
       # If the app id does not exists on project, 'flutterfire configure' automatically create an app with that app id, that is why an existing app id is used here.
-      FIREBASE_PLACEHOLDER_APP_ID: com.breez.liquid.lBreez
+      FIREBASE_PLACEHOLDER_APP_ID: com.breez.misty
       GOOGLE_APPLICATION_CREDENTIALS_BASE64: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BASE64 }}
     steps:
       - name: Disk Cleanup
@@ -110,14 +110,14 @@ jobs:
           df -hI
           echo "::endgroup::"
 
-      - name: 🏗️ Check-out l-breez repository
+      - name: 🏗️ Check-out misty-breez repository
         uses: actions/checkout@v4
         with:
-          path: 'lbreez'
+          path: 'misty_breez'
 
       - name: Set Liquid SDK plugin version
         if: ${{ needs.setup.outputs.use-published-plugins == 'true' }}
-        working-directory: lbreez
+        working-directory: misty_breez
         run: |
           mv pubspec_overrides.yaml.workflow pubspec_overrides.yaml
           sed -i.bak -e 's/ref:.*/ref: ${{ needs.setup.outputs.liquid-sdk-plugin-version }}/' pubspec_overrides.yaml
@@ -126,14 +126,14 @@ jobs:
       - name: Decode Keystore
         env:
           STORE_FILE_BASE64: ${{ secrets.STORE_FILE_BASE64 }}
-          STORE_FILE: ${RUNNER_TEMP}/keystore/lbreez-release.keystore
+          STORE_FILE: ${RUNNER_TEMP}/keystore/misty_breez-release.keystore
         run: |
-          echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore" >> $GITHUB_ENV
-          echo "STORE_FILE=${RUNNER_TEMP}/keystore/lbreez-release.keystore"
+          echo "STORE_FILE=${RUNNER_TEMP}/keystore/misty_breez-release.keystore" >> $GITHUB_ENV
+          echo "STORE_FILE=${RUNNER_TEMP}/keystore/misty_breez-release.keystore"
           TMP_KEYSTORE_FILE_PATH=${RUNNER_TEMP}/keystore
           mkdir -p ${TMP_KEYSTORE_FILE_PATH}
-          echo $STORE_FILE_BASE64 | base64 -do ${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore
-          echo "${TMP_KEYSTORE_FILE_PATH}/lbreez-release.keystore"
+          echo $STORE_FILE_BASE64 | base64 -do ${TMP_KEYSTORE_FILE_PATH}/misty_breez-release.keystore
+          echo "${TMP_KEYSTORE_FILE_PATH}/misty_breez-release.keystore"
 
       - name: Install rust
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
@@ -175,15 +175,15 @@ jobs:
         run: sudo npm i -g firebase-tools
 
       - name: Decode Google Application Credentials
-        working-directory: lbreez
+        working-directory: misty_breez
         run: base64 --decode <<< $GOOGLE_APPLICATION_CREDENTIALS_BASE64 > google-application-credentials.json
 
       - name: Set up FlutterFire
-        working-directory: lbreez
+        working-directory: misty_breez
         run: dart pub global activate flutterfire_cli
 
       - name: Configure Firebase
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutterfire configure -p $FIREBASE_PROJECT -o lib/firebase/firebase_options.dart --platforms="android,ios" -a $FIREBASE_ANDROID_PACKAGE_NAME -i $FIREBASE_IOS_BUNDLE_ID -m $FIREBASE_PLACEHOLDER_APP_ID -w $FIREBASE_PLACEHOLDER_APP_ID -x $FIREBASE_PLACEHOLDER_APP_ID --service-account=google-application-credentials.json -y
 
       - name: 🏗️ Android cache
@@ -194,7 +194,7 @@ jobs:
           key: debug.keystore
 
       - name: 🏗️ Copy Firebase configuration file
-        working-directory: lbreez
+        working-directory: misty_breez
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: echo "$GOOGLE_SERVICES" > android/app/google-services.json
@@ -248,24 +248,24 @@ jobs:
         run: just gen false
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutter precache
 
       - name: 📦 Install Flutter dependencies
-        working-directory: lbreez
+        working-directory: misty_breez
         run: flutter pub get
 
       - name: 🔍 Perform static analysis
-        working-directory: lbreez
+        working-directory: misty_breez
         run: dart analyze --fatal-infos
 
       - name: ⚙️ Setup compile-time variables
         env:
           CONFIG_FILE: ${{ secrets.CONFIG_FILE }}
-        run: echo "$CONFIG_FILE" > ./lbreez/config.json
+        run: echo "$CONFIG_FILE" > ./misty_breez/config.json
 
       - name: Get Version from pubspec.yaml
-        working-directory: lbreez
+        working-directory: misty_breez
         run: |
           VERSION=$(awk -F ': ' '/^version:/ {print $2}' pubspec.yaml)
           VERSION_BASE=${VERSION%%+*}          
@@ -282,7 +282,7 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        working-directory: lbreez
+        working-directory: misty_breez
         run: |
           flutter build apk \
           --build-name="$VERSION_BASE" \
@@ -300,15 +300,12 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        working-directory: lbreez
+        working-directory: misty_breez
         run: |
           flutter build appbundle \
-          --build-name="$VERSION_BASE" \
           --build-number="$BUILD_NUMBER" \
           --target="lib/main/main.dart" \
           --release \
-          --split-debug-info="./obfuscated/debug" \
-          --obfuscate \
           --no-pub \
           --dart-define-from-file="config.json"
 
@@ -317,7 +314,7 @@ jobs:
         uses: TheDoctor0/zip-release@master
         with:
           filename: apk-build.zip
-          directory: lbreez/build/app/outputs/flutter-apk
+          directory: misty_breez/build/app/outputs/flutter-apk
           type: zip
 
       - name: 🗃️ Compress Bundle build folder
@@ -325,7 +322,7 @@ jobs:
         uses: TheDoctor0/zip-release@master
         with:
           filename: bundle-build.zip
-          directory: lbreez/build/app/outputs/bundle/release
+          directory: misty_breez/build/app/outputs/bundle/release
           type: zip
 
       - name: 📤 Upload APK asset
@@ -333,7 +330,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           asset_name: Android-APK.zip
-          file: lbreez/build/app/outputs/flutter-apk/apk-build.zip
+          file: misty_breez/build/app/outputs/flutter-apk/apk-build.zip
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -342,7 +339,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           asset_name: Android-Bundle.zip
-          file: lbreez/build/app/outputs/bundle/release/bundle-build.zip
+          file: misty_breez/build/app/outputs/bundle/release/bundle-build.zip
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -351,18 +348,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Android-APK
-          path: lbreez/build/app/outputs/flutter-apk/app-*.apk
+          path: misty_breez/build/app/outputs/flutter-apk/app-*.apk
 
       - name: 📤 Upload Bundle artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
         with:
           name: Android-Bundle
-          path: lbreez/build/app/outputs/bundle/release/app-release.aab
+          path: misty_breez/build/app/outputs/bundle/release/app-release.aab
 
       - name: Cleanup Google Application Credentials
         if: success() || failure()
         run: |
-          if [ -d "lbreez" ] && [ -f "lbreez/google-application-credentials.json" ]; then
-            rm lbreez/google-application-credentials.json
+          if [ -d "misty_breez" ] && [ -f "misty_breez/google-application-credentials.json" ]; then
+            rm misty_breez/google-application-credentials.json
           fi

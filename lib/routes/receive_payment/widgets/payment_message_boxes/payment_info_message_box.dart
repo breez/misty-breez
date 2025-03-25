@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 class PaymentInfoMessageBox extends StatelessWidget {
   final String message;

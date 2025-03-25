@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:l_breez/routes/routes.dart';
-import 'package:l_breez/theme/theme.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/theme/theme.dart';
 
 class SplashPage extends StatefulWidget {
   static const String routeName = 'splash';

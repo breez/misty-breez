@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:l_breez/routes/routes.dart';
+import 'package:misty_breez/routes/routes.dart';
 
 const double kMaxExtent = 200.0;
 const double kMinExtent = 70.0;

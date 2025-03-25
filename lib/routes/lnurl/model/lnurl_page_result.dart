@@ -1,6 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:l_breez/utils/utils.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 class LNURLPageResult {
   final LnUrlProtocol? protocol;

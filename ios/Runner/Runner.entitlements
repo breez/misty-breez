@@ -12,7 +12,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.F7R2LZH3W5.com.breez.liquid.lBreez</string>
+		<string>group.F7R2LZH3W5.com.breez.misty</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>

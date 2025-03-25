@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/src/theme.dart';
-import 'package:l_breez/utils/utils.dart';
+import 'package:misty_breez/theme/src/theme.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final AutoSizeGroup textGroup = AutoSizeGroup();
 

@@ -1,8 +1,8 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:l_breez/theme/theme.dart';
-import 'package:l_breez/widgets/widgets.dart';
+import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 AlertDialog createAnimatedLoaderDialog(
   BuildContext context,

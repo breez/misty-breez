@@ -47,8 +47,8 @@ class DeepLinkClient {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://breez.page.link',
       link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
-      androidParameters: const AndroidParameters(packageName: 'com.breez.liquid.l_breez'),
-      iosParameters: const IOSParameters(bundleId: 'com.breez.liquid.lBreez'),
+      androidParameters: const AndroidParameters(packageName: 'com.breez.misty'),
+      iosParameters: const IOSParameters(bundleId: 'com.breez.misty'),
     );
     final ShortDynamicLink shortLink = await _dynamicLinks!.buildShortLink(parameters);
 
