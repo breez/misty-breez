@@ -356,7 +356,7 @@ class PaymentInfoPasteButton extends StatelessWidget {
             ),
           ),
           icon: const Icon(
-            IconData(0xe90b, fontFamily: 'icomoon'),
+            Icons.paste,
             size: 20.0,
           ),
           label: AutoSizeText(
