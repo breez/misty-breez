@@ -163,7 +163,7 @@ jobs:
 
       - name: Set up just
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@v3
 
       - name: Set up Melos
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
