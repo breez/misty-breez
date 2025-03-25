@@ -248,9 +248,12 @@ class _DevelopersViewState extends State<DevelopersView> {
   /// Builds the information card showing wallet and SDK details
   Widget _buildInfoCard() {
     final ThemeData themeData = Theme.of(context);
-    final WalletInfo? walletInfo = context.select<AccountCubit, WalletInfo?>(
-      (AccountCubit cubit) => cubit.state.walletInfo,
+    final AccountState accountState = context.select<AccountCubit, AccountState>(
+      (AccountCubit cubit) => cubit.state,
     );
+    final WalletInfo? walletInfo = accountState.walletInfo;
+    final BlockchainInfo? blockchainInfo = accountState.blockchainInfo;
+
     return Card(
       color: themeData.customData.surfaceBgColor,
       margin: const EdgeInsets.all(16),
@@ -291,8 +294,12 @@ class _DevelopersViewState extends State<DevelopersView> {
                       (AssetBalance assetBalance) => assetBalance.name,
                     ).toList()}',
               ),
-              _buildActionButtons(),
             ],
+            if (blockchainInfo != null) ...<Widget>[
+              StatusItem(label: 'Liquid Tip', value: '${blockchainInfo.liquidTip}'),
+              StatusItem(label: 'Bitcoin Tip', value: '${blockchainInfo.bitcoinTip}'),
+            ],
+            _buildActionButtons(),
           ].expand((Widget widget) sync* {
             yield widget;
             yield const Divider(
