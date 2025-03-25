@@ -52,9 +52,6 @@ dependencies:
   another_flushbar: ^1.12.30
   archive: ^4.0.4
   auto_size_text: ^3.0.0
-  breez_liquid:
-    git:
-      url: https://github.com/breez/breez-sdk-liquid-dart
   flutter_breez_liquid:
     git:
       url: https://github.com/breez/breez-sdk-liquid-flutter
