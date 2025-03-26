@@ -20,7 +20,12 @@ class SenderAmount extends StatelessWidget {
 
     return ListTile(
       title: AutoSizeText(
-        texts.sweep_all_coins_label_send,
+        // TODO(erdemyerebasmaz): Add message to Breez-Translations
+        'To send:',
+        style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+          fontSize: 18.0,
+          color: Colors.white,
+        ),
         maxLines: 1,
         minFontSize: minFont.minFontSize,
         stepGranularity: 0.1,
@@ -38,7 +43,10 @@ class SenderAmount extends StatelessWidget {
                     BitcoinCurrency.sat.format(amountSat),
                     fiatConversion.format(amountSat),
                   ),
-            style: TextStyle(color: themeData.colorScheme.error),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(
+              fontSize: 18.0,
+              color: themeData.colorScheme.error,
+            ),
             maxLines: 1,
             minFontSize: minFont.minFontSize,
             stepGranularity: 0.1,

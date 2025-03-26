@@ -19,7 +19,10 @@ class BoltzServiceFee extends StatelessWidget {
     return ListTile(
       title: AutoSizeText(
         texts.reverse_swap_confirmation_boltz_fee,
-        style: TextStyle(color: Colors.white.withValues(alpha: .4)),
+        style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+          fontSize: 18.0,
+          color: Colors.white.withValues(alpha: .4),
+        ),
         maxLines: 1,
         minFontSize: minFontSize.minFontSize,
         stepGranularity: 0.1,
@@ -28,7 +31,10 @@ class BoltzServiceFee extends StatelessWidget {
         texts.reverse_swap_confirmation_boltz_fee_value(
           BitcoinCurrency.sat.format(boltzServiceFee),
         ),
-        style: TextStyle(color: themeData.colorScheme.error.withValues(alpha: .4)),
+        style: themeData.primaryTextTheme.displaySmall!.copyWith(
+          fontSize: 18.0,
+          color: themeData.colorScheme.error.withValues(alpha: .4),
+        ),
         maxLines: 1,
         minFontSize: minFontSize.minFontSize,
         stepGranularity: 0.1,
