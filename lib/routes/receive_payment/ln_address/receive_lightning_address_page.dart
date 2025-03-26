@@ -193,7 +193,7 @@ class SpecifyAmountButton extends StatelessWidget {
           minWidth: 138.0,
         ),
         child: Tooltip(
-          // TODO(erdemyerebasmaz): Add messageto Breez-Translations
+          // TODO(erdemyerebasmaz): Add message to Breez-Translations
           message: 'Specify amount for invoice',
           child: OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
@@ -207,7 +207,7 @@ class SpecifyAmountButton extends StatelessWidget {
               size: 20.0,
             ),
             label: AutoSizeText(
-              // TODO(erdemyerebasmaz): Add messageto Breez-Translations
+              // TODO(erdemyerebasmaz): Add message to Breez-Translations
               'Specify Amount',
               style: balanceFiatConversionTextStyle,
               maxLines: 1,

@@ -4,13 +4,13 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
 /// Logger for the EnterPaymentInfoPage.
@@ -113,20 +113,20 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
               ),
               prefixIcon: const SizedBox.shrink(),
               contentPadding: EdgeInsets.zero,
-              labelText: texts.enter_payment_info_page_label,
+              hintText: 'Invoice | Lightning Address | BTC Address | LNURL',
+              hintStyle: FieldTextStyle.labelStyle.copyWith(fontSize: 14.3),
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              helper: Text(
+                // TODO(erdemyerebasmaz): Add messages to Breez-Translations
+                'Paste or scan payee information.',
+                style: FieldTextStyle.labelStyle.copyWith(
+                  fontSize: 13.0,
+                ),
+              ),
             ),
             style: FieldTextStyle.textStyle,
             validator: (String? value) => _errorMessage.isNotEmpty ? _errorMessage : null,
             onFieldSubmitted: _validateAndPasteValue,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              texts.enter_payment_info_page_label_expanded,
-              style: FieldTextStyle.labelStyle.copyWith(
-                fontSize: 13.0,
-              ),
-            ),
           ),
         ],
       ),
