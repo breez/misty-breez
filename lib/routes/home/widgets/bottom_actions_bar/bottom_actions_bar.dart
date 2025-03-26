@@ -54,26 +54,14 @@ class SendOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
     final BreezTranslations texts = context.texts();
 
     return BottomActionItem(
-      onPress: () => showModalBottomSheet(
-        context: context,
-        backgroundColor: themeData.customData.paymentListBgColor,
-        builder: (BuildContext context) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
-                  systemNavigationBarColor: Theme.of(context).canvasColor,
-                ),
-            child: SafeArea(
-              child: SendOptionsBottomSheet(
-                firstPaymentItemKey: firstPaymentItemKey,
-              ),
-            ),
-          );
-        },
-      ),
+      onPress: () {
+        Navigator.of(context).pushNamed(
+          EnterPaymentInfoPage.routeName,
+        );
+      },
       group: actionsGroup,
       text: texts.bottom_action_bar_send,
       iconAssetPath: 'assets/icons/send-action.png',
