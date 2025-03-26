@@ -22,10 +22,11 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
         const SizedBox(height: 8.0),
         ListTile(
           leading: const BottomActionItemImage(
-            iconAssetPath: 'assets/icons/ln_address.png',
+            iconAssetPath: 'assets/icons/lightning.png',
           ),
-          title: Text(
-            texts.bottom_action_bar_ln_address,
+          title: const Text(
+            // TODO(erdemyerebasmaz): Add message to Breez-Translations
+            'Receive with Lightning',
             style: bottomSheetTextStyle,
           ),
           onTap: () {
@@ -34,28 +35,6 @@ class ReceiveOptionsBottomSheet extends StatelessWidget {
             navigatorState.pushNamed(
               ReceivePaymentPage.routeName,
               arguments: ReceiveLightningAddressPage.pageIndex,
-            );
-          },
-        ),
-        Divider(
-          height: 0.0,
-          color: Colors.white.withValues(alpha: .2),
-          indent: 72.0,
-        ),
-        ListTile(
-          leading: const BottomActionItemImage(
-            iconAssetPath: 'assets/icons/paste.png',
-          ),
-          title: Text(
-            texts.bottom_action_bar_receive_invoice,
-            style: bottomSheetTextStyle,
-          ),
-          onTap: () {
-            final NavigatorState navigatorState = Navigator.of(context);
-            navigatorState.pop();
-            navigatorState.pushNamed(
-              ReceivePaymentPage.routeName,
-              arguments: ReceiveLightningPaymentPage.pageIndex,
             );
           },
         ),
