@@ -31,7 +31,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
       ),
       child: AlertDialog(
         titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-        title: Text(texts.alpha_warning_title),
+        title: Text(texts.beta_warning_title),
         contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -42,7 +42,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
           TextButton(
             onPressed: () => exit(0),
             child: Text(
-              texts.alpha_warning_action_exit,
+              texts.beta_warning_action_exit,
               style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
@@ -57,7 +57,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
               }
             }),
             child: Text(
-              texts.alpha_warning_action_continue,
+              texts.beta_warning_action_continue,
               style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
@@ -74,7 +74,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: Text(
-          texts.alpha_warning_message,
+          texts.beta_warning_message,
           style: themeData.primaryTextTheme.displaySmall!.copyWith(
             fontSize: 16,
           ),
@@ -99,7 +99,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
               ),
             ),
             Text(
-              texts.alpha_warning_understand,
+              texts.beta_warning_understand,
               style: themeData.primaryTextTheme.displaySmall!.copyWith(
                 fontSize: 16,
               ),
@@ -112,7 +112,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
           child: Text(
-            texts.alpha_warning_understand_confirmation,
+            texts.beta_warning_understand_confirmation,
             style: themeData.primaryTextTheme.displaySmall!
                 .copyWith(
                   fontSize: 16,
