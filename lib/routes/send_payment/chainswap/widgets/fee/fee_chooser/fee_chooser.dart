@@ -26,7 +26,7 @@ class _FeeChooserState extends State<FeeChooser> {
     final FeeOption selectedFeeOption = widget.feeOptions.elementAt(widget.selectedFeeIndex);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 40.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -36,12 +36,15 @@ class _FeeChooserState extends State<FeeChooser> {
             selectedFeeIndex: widget.selectedFeeIndex,
             onSelect: (int index) => widget.onSelect(index),
           ),
-          const SizedBox(height: 12.0),
+          const SizedBox(height: 8.0),
           ProcessingSpeedWaitTime(
             selectedFeeOption.processingSpeed.waitingTime,
           ),
-          const SizedBox(height: 36.0),
-          FeeBreakdown(feeOption: selectedFeeOption, refundAmountSat: widget.amountSat),
+          const SizedBox(height: 8.0 + 16.0),
+          FeeBreakdown(
+            feeOption: selectedFeeOption,
+            refundAmountSat: widget.amountSat,
+          ),
         ],
       ),
     );

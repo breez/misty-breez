@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:misty_breez/theme/theme.dart';
 
 class FeeOptionButton extends StatelessWidget {
   final int index;
@@ -32,7 +33,11 @@ class FeeOptionButton extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: isSelected ? themeData.colorScheme.onSurface : themeData.canvasColor,
+          color: !isAffordable
+              ? themeData.disabledColor
+              : isSelected
+                  ? themeData.primaryColor
+                  : themeData.customData.surfaceBgColor,
           border: border,
         ),
         child: TextButton(
@@ -40,11 +45,12 @@ class FeeOptionButton extends StatelessWidget {
           child: Text(
             text.toUpperCase(),
             style: themeData.textTheme.labelLarge!.copyWith(
+              fontSize: 16.0,
               color: !isAffordable
-                  ? themeData.primaryColor.withValues(alpha: .4)
+                  ? Colors.white.withValues(alpha: .4)
                   : isSelected
-                      ? themeData.canvasColor
-                      : themeData.colorScheme.onSurface,
+                      ? Colors.white
+                      : Colors.white,
             ),
           ),
         ),

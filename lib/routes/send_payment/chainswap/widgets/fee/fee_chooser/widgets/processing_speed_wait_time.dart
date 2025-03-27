@@ -1,6 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:misty_breez/theme/theme.dart';
 
 class ProcessingSpeedWaitTime extends StatelessWidget {
   final Duration waitingTime;
@@ -13,7 +14,6 @@ class ProcessingSpeedWaitTime extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
-    final ThemeData themeData = Theme.of(context);
 
     final int hours = waitingTime.inHours;
 
@@ -36,9 +36,7 @@ class ProcessingSpeedWaitTime extends StatelessWidget {
 
     return Text(
       message,
-      style: themeData.textTheme.labelLarge!.copyWith(
-        color: themeData.colorScheme.onSurface.withValues(alpha: .4),
-      ),
+      style: FieldTextStyle.labelStyle.copyWith(fontSize: 13.0),
     );
   }
 }
