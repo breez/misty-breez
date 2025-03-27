@@ -2,9 +2,8 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
 extension ConfigCopyWith on Config {
   Config copyWith({
-    String? liquidElectrumUrl,
-    String? bitcoinElectrumUrl,
-    String? mempoolspaceUrl,
+    BlockchainExplorer? liquidExplorer,
+    BlockchainExplorer? bitcoinExplorer,
     String? workingDir,
     LiquidNetwork? network,
     BigInt? paymentTimeoutSec,
@@ -16,9 +15,8 @@ extension ConfigCopyWith on Config {
     List<AssetMetadata>? assetMetadata,
   }) {
     return Config(
-      liquidElectrumUrl: liquidElectrumUrl ?? this.liquidElectrumUrl,
-      bitcoinElectrumUrl: bitcoinElectrumUrl ?? this.bitcoinElectrumUrl,
-      mempoolspaceUrl: mempoolspaceUrl ?? this.mempoolspaceUrl,
+      liquidExplorer: liquidExplorer ?? this.liquidExplorer,
+      bitcoinExplorer: bitcoinExplorer ?? this.bitcoinExplorer,
       workingDir: workingDir ?? this.workingDir,
       network: network ?? this.network,
       paymentTimeoutSec: paymentTimeoutSec ?? this.paymentTimeoutSec,
