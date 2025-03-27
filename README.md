@@ -30,6 +30,8 @@ Misty Breez is the simplest self-custodial app for sending and receiving Lightni
 - [ ] Receive to a BTC address w/o specifying an amount
 - [ ] A consolidated Receive UI
 - [ ] Reduce the minimum payment in Lightning to 17 sats
+- [ ] Receive using Bolt12
+- [ ] Generate BIP353 address 
 
 ## For Developers
 
