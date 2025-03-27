@@ -25,6 +25,12 @@ Misty Breez is the simplest self-custodial app for sending and receiving Lightni
 
 [![Google Play](https://github.com/breez/misty-breez/blob/main/.github/assets/images/google-play.svg)](https://play.google.com/store/apps/details?id=com.breez.misty)   [![TestFlight](https://github.com/breez/misty-breez/blob/main/.github/assets/images/app-store.svg)](https://testflight.apple.com/join/nEegHvBX) 
 
+## Coming Soon
+
+- [ ] Receive to a BTC address w/o specifying an amount
+- [ ] A consolidated Receive UI
+- [ ] Reduce the minimum payment in Lightning to 17 sats
+
 ## For Developers
 
 **Build the lightning_tookit plugin**
