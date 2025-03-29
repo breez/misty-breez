@@ -42,7 +42,17 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const back_button.BackButton(),
+        leading: back_button.BackButton(
+          onPressed: () {
+            if (currentPageIndex == ReceiveLightningPaymentPage.pageIndex &&
+                notificationStatus != PermissionStatus.granted) {
+              // Pop to Home page, bypassing LN Address page if notification permissions are disabled
+              Navigator.of(context).pushReplacementNamed(Home.routeName);
+              return;
+            }
+            Navigator.of(context).pop();
+          },
+        ),
         title: Text(_getTitle(currentPageIndex)),
         actions: isLightningPage
             ? <Widget>[
