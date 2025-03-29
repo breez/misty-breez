@@ -75,6 +75,14 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
             return const CenteredLoader();
           }
 
+          final bool hasNotificationPermission = context.select<PermissionsCubit, bool>(
+            (PermissionsCubit cubit) => cubit.state.hasNotificationPermission,
+          );
+
+          final bool hasLnAddressStateError = context.select<LnAddressCubit, bool>(
+            (LnAddressCubit cubit) => cubit.state.hasError,
+          );
+
           return prepareResponseFuture == null
               ? Padding(
                   padding: const EdgeInsets.only(top: 32, bottom: 40.0),
@@ -82,7 +90,10 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                     child: Column(
                       children: <Widget>[
                         _buildForm(lightningPaymentLimits),
-                        _buildNotificationWarningBox(),
+                        _buildLnAddressWarnings(
+                          hasNotificationPermission: hasNotificationPermission,
+                          hasLnAddressStateError: hasLnAddressStateError,
+                        ),
                       ],
                     ),
                   ),
@@ -357,14 +368,25 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     );
   }
 
-  Widget _buildNotificationWarningBox() {
+  Widget _buildLnAddressWarnings({
+    required bool hasNotificationPermission,
+    required bool hasLnAddressStateError,
+  }) {
     final int? initialPageIndex = ModalRoute.of(context)?.settings.arguments as int?;
 
-    // Only show this on the invoice page if we wanted to navigate to LN Address
-    // and don't have permissions
-    if (initialPageIndex == ReceiveLightningAddressPage.pageIndex) {
+    // Only process LN Address warnings if we got redirected from LN Address page
+    if (initialPageIndex != ReceiveLightningAddressPage.pageIndex) {
+      return const SizedBox.shrink();
+    }
+
+    if (!hasNotificationPermission) {
       return const NotificationPermissionWarningBox();
     }
+
+    if (hasLnAddressStateError) {
+      return const LnAddressErrorWarningBox();
+    }
+
     return const SizedBox.shrink();
   }
 }

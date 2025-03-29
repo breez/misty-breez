@@ -28,15 +28,27 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     final PermissionStatus notificationStatus = context.select<PermissionsCubit, PermissionStatus>(
       (PermissionsCubit cubit) => cubit.state.notificationStatus,
     );
-    final int currentPageIndex = _getEffectivePageIndex(notificationStatus);
+    final bool hasNotificationPermission = notificationStatus == PermissionStatus.granted;
+
+    final bool hasLnAddressStateError = context.select<LnAddressCubit, bool>(
+      (LnAddressCubit cubit) => cubit.state.hasError,
+    );
+
+    final int currentPageIndex = _getEffectivePageIndex(
+      hasNotificationPermission: hasNotificationPermission,
+      hasLnAddressStateError: hasLnAddressStateError,
+    );
+
+    final bool isLNPaymentPage = currentPageIndex == ReceiveLightningPaymentPage.pageIndex;
 
     return Scaffold(
       appBar: AppBar(
         leading: back_button.BackButton(
           onPressed: () {
-            if (currentPageIndex == ReceiveLightningPaymentPage.pageIndex &&
-                notificationStatus != PermissionStatus.granted) {
-              // Pop to Home page, bypassing LN Address page if notification permissions are disabled
+            if (isLNPaymentPage && (!hasNotificationPermission || hasLnAddressStateError)) {
+              // Pop to Home page, bypassing LN Address page if
+              // - notification permissions are disabled
+              // - LnAddressState has errors
               Navigator.of(context).pushReplacementNamed(Home.routeName);
               return;
             }
@@ -81,14 +93,21 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       case ReceiveBitcoinAddressPaymentPage.pageIndex:
         return texts.invoice_btc_address_title;
       default:
-        return texts.invoice_lightning_title;
+        // TODO(erdemyerebasmaz): Add message to Breez-Translations
+        return 'Receive with Lightning';
     }
   }
 
-  int _getEffectivePageIndex(PermissionStatus notificationStatus) {
-    // Redirect to Invoice page if LN Address page is opened without notification permissions
-    if (widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex &&
-        notificationStatus != PermissionStatus.granted) {
+  // Redirect to Invoice page if LN Address page is opened
+  // - without notification permissions
+  // - when LN Address state had errors
+  int _getEffectivePageIndex({
+    required bool hasNotificationPermission,
+    required bool hasLnAddressStateError,
+  }) {
+    final bool isLNAddressPage = widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex;
+
+    if (isLNAddressPage && (!hasNotificationPermission || hasLnAddressStateError)) {
       return ReceiveLightningPaymentPage.pageIndex;
     }
 
