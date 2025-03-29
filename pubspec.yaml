@@ -50,7 +50,7 @@ dependencies:
     path: packages/service_injector
 
   another_flushbar: ^1.12.30
-  archive: ^4.0.4
+  archive: ^4.0.5
   auto_size_text: ^3.0.0
   flutter_breez_liquid:
     git:
@@ -88,7 +88,7 @@ dependencies:
   hex: ^0.2.0
   http: ^1.3.0
   hydrated_bloc: ^10.0.0
-  image: ^4.5.3
+  image: ^4.5.4
   # Doesn't support: Linux Mac Windows
   image_cropper: ^9.0.0
   # Doesn't support: Linux Mac Windows
@@ -109,11 +109,12 @@ dependencies:
   path: ^1.9.1
   path_provider: ^2.1.5
   path_provider_platform_interface: ^2.1.2
+  permission_handler: ^11.4.0
   plugin_platform_interface: ^2.1.8
   qr_flutter: ^4.1.0
   rxdart: ^0.28.0
   share_plus: ^10.1.4
-  shared_preferences: ^2.5.2
+  shared_preferences: ^2.5.3
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
   shimmer: ^3.0.0
   synchronized: ^3.3.1
