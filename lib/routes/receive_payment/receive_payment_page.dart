@@ -28,7 +28,16 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     final PermissionStatus notificationStatus = context.select<PermissionsCubit, PermissionStatus>(
       (PermissionsCubit cubit) => cubit.state.notificationStatus,
     );
-    final int currentPageIndex = _getEffectivePageIndex(notificationStatus);
+    final bool hasNotificationPermission = notificationStatus == PermissionStatus.granted;
+
+    final bool hasLnAddressStateError = context.select<LnAddressCubit, bool>(
+      (LnAddressCubit cubit) => cubit.state.hasError,
+    );
+
+    final int currentPageIndex = _getEffectivePageIndex(
+      hasNotificationPermission: hasNotificationPermission,
+      hasLnAddressStateError: hasLnAddressStateError,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -85,18 +94,16 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     }
   }
 
-  int _getEffectivePageIndex(PermissionStatus notificationStatus) {
-    // Redirect to Invoice page if LN Address page is opened without notification permissions
-    if (widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex &&
-        notificationStatus != PermissionStatus.granted) {
-      return ReceiveLightningPaymentPage.pageIndex;
-    }
+  // Redirect to Invoice page if LN Address page is opened
+  // - without notification permissions
+  // - when LN Address state had errors
+  int _getEffectivePageIndex({
+    required bool hasNotificationPermission,
+    required bool hasLnAddressStateError,
+  }) {
+    final bool isLNAddressPage = widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex;
 
-    final bool hasLnAddressStateError = context.select<LnAddressCubit, bool>(
-      (LnAddressCubit cubit) => cubit.state.hasError,
-    );
-
-    if (!hasLnAddressStateError) {
+    if (isLNAddressPage && (!hasNotificationPermission || hasLnAddressStateError)) {
       return ReceiveLightningPaymentPage.pageIndex;
     }
 
