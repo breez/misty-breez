@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +60,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
     if (lnAddressState.hasError) {
       return LnAddressErrorView(
         title: texts.lightning_address_service_error_title,
-        error: lnAddressState.error ?? '',
+        error: lnAddressState.error!,
       );
     }
 
@@ -122,7 +121,6 @@ class LnAddressErrorView extends StatelessWidget {
             message: ExceptionHandler.extractMessage(error, texts),
           ),
         ),
-        const SpecifyAmountButton(),
       ],
     );
   }
@@ -168,59 +166,7 @@ class LnAddressSuccessView extends StatelessWidget {
                 ],
               ),
             ),
-            const SpecifyAmountButton(),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Button to navigate to the Lightning payment page for specifying an amount
-class SpecifyAmountButton extends StatelessWidget {
-  const SpecifyAmountButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    //final BreezTranslations texts = context.texts();
-    final MinFontSize minFont = MinFontSize(context);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 48.0,
-          minWidth: 138.0,
-        ),
-        child: Tooltip(
-          // TODO(erdemyerebasmaz): Add message to Breez-Translations
-          message: 'Specify amount for invoice',
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.white),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            icon: const Icon(
-              Icons.edit_note,
-              size: 20.0,
-            ),
-            label: AutoSizeText(
-              // TODO(erdemyerebasmaz): Add message to Breez-Translations
-              'Specify Amount',
-              style: balanceFiatConversionTextStyle,
-              maxLines: 1,
-              minFontSize: minFont.minFontSize,
-              stepGranularity: 0.1,
-            ),
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                ReceivePaymentPage.routeName,
-                arguments: ReceiveLightningPaymentPage.pageIndex,
-              );
-            },
-          ),
         ),
       ),
     );
