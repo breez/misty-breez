@@ -92,7 +92,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                     ),
                   ),
                 )
-              : _buildQRCode();
+              : _buildInvoiceQRCode();
         },
       ),
       bottomNavigationBar: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
@@ -236,7 +236,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     );
   }
 
-  Widget _buildQRCode() {
+  Widget _buildInvoiceQRCode() {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
