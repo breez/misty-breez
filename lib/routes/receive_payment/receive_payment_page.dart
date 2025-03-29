@@ -92,6 +92,14 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       return ReceiveLightningPaymentPage.pageIndex;
     }
 
+    final bool hasLnAddressStateError = context.select<LnAddressCubit, bool>(
+      (LnAddressCubit cubit) => cubit.state.hasError,
+    );
+
+    if (!hasLnAddressStateError) {
+      return ReceiveLightningPaymentPage.pageIndex;
+    }
+
     return widget.initialPageIndex;
   }
 }
