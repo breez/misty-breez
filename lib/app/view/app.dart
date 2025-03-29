@@ -66,6 +66,9 @@ class App extends StatelessWidget {
         BlocProvider<ChainSwapCubit>(
           create: (BuildContext context) => ChainSwapCubit(injector.breezSdkLiquid),
         ),
+        BlocProvider<PermissionsCubit>(
+          create: (BuildContext context) => PermissionsCubit(),
+        ),
       ],
       child: const AppView(),
     );
