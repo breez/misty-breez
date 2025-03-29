@@ -30,12 +30,31 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
+    final PermissionStatus notificationStatus = context.select<PermissionsCubit, PermissionStatus>(
+      (PermissionsCubit cubit) => cubit.state.notificationStatus,
+    );
+    final int currentPageIndex = _getEffectivePageIndex(notificationStatus);
+
+    final bool isLightningPage = <int>[
+      ReceiveLightningPaymentPage.pageIndex,
+      ReceiveLightningAddressPage.pageIndex,
+    ].contains(currentPageIndex);
+
     return Scaffold(
       appBar: AppBar(
-        leading: const back_button.BackButton(),
-        title: Text(_getTitle()),
-        actions: widget.initialPageIndex == ReceiveLightningPaymentPage.pageIndex ||
-                widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex
+        leading: back_button.BackButton(
+          onPressed: () {
+            if (currentPageIndex == ReceiveLightningPaymentPage.pageIndex &&
+                notificationStatus != PermissionStatus.granted) {
+              // Pop to Home page, bypassing LN Address page if notification permissions are disabled
+              Navigator.of(context).pushReplacementNamed(Home.routeName);
+              return;
+            }
+            Navigator.of(context).pop();
+          },
+        ),
+        title: Text(_getTitle(currentPageIndex)),
+        actions: isLightningPage
             ? <Widget>[
                 IconButton(
                   alignment: Alignment.center,
@@ -54,14 +73,14 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: pages.elementAt(widget.initialPageIndex),
+        child: pages.elementAt(currentPageIndex),
       ),
     );
   }
 
-  String _getTitle() {
+  String _getTitle(int pageIndex) {
     final BreezTranslations texts = context.texts();
-    switch (widget.initialPageIndex) {
+    switch (pageIndex) {
       case ReceiveLightningPaymentPage.pageIndex:
       case ReceiveLightningAddressPage.pageIndex:
         // TODO(erdemyerebasmaz): Add message to Breez-Translations
@@ -71,6 +90,16 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       default:
         return texts.invoice_lightning_title;
     }
+  }
+
+  int _getEffectivePageIndex(PermissionStatus notificationStatus) {
+    // Redirect to Invoice page if LN Address page is opened without notification permissions
+    if (widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex &&
+        notificationStatus != PermissionStatus.granted) {
+      return ReceiveLightningPaymentPage.pageIndex;
+    }
+
+    return widget.initialPageIndex;
   }
 
   void _scanBarcode() {

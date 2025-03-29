@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/src/theme.dart';
@@ -12,7 +13,6 @@ import 'package:misty_breez/theme/src/theme_extensions.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('ReceiveLightningPaymentPage');
 
@@ -84,7 +84,12 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
               ? Padding(
                   padding: const EdgeInsets.only(top: 32, bottom: 40.0),
                   child: SingleChildScrollView(
-                    child: _buildForm(lightningPaymentLimits),
+                    child: Column(
+                      children: <Widget>[
+                        _buildForm(lightningPaymentLimits),
+                        _buildNotificationWarningBox(),
+                      ],
+                    ),
                   ),
                 )
               : _buildQRCode();
@@ -363,5 +368,16 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
       lightningPaymentLimits,
       balance,
     );
+  }
+
+  Widget _buildNotificationWarningBox() {
+    final int? initialPageIndex = ModalRoute.of(context)?.settings.arguments as int?;
+
+    // Only show this on the invoice page if we wanted to navigate to LN Address
+    // and don't have permissions
+    if (initialPageIndex == ReceiveLightningAddressPage.pageIndex) {
+      return const NotificationPermissionWarningBox();
+    }
+    return const SizedBox.shrink();
   }
 }
