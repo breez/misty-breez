@@ -179,20 +179,12 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (BuildContext context, CurrencyState currencyState) {
           if (_isLoading) {
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
+            return const CenteredLoader();
           }
 
           if (_lightningLimits == null) {
             if (errorMessage.isEmpty) {
-              return Center(
-                child: Loader(
-                  color: themeData.primaryColor.withValues(alpha: .5),
-                ),
-              );
+              return const CenteredLoader();
             }
             return ScrollableErrorMessageWidget(
               title: texts.payment_limits_generic_error_title,

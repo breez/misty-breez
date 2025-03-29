@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/src/theme.dart';
@@ -15,7 +16,6 @@ import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/exceptions/exception_handler.dart';
 import 'package:misty_breez/utils/payments/payment_validator.dart';
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:logging/logging.dart';
 
 export 'widgets/widgets.dart';
 
@@ -149,20 +149,12 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (BuildContext context, CurrencyState currencyState) {
           if (_isLoading) {
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
+            return const CenteredLoader();
           }
 
           if (_lightningLimits == null) {
             if (errorMessage.isEmpty) {
-              return Center(
-                child: Loader(
-                  color: themeData.primaryColor.withValues(alpha: .5),
-                ),
-              );
+              return const CenteredLoader();
             }
             return ScrollableErrorMessageWidget(
               title: texts.payment_limits_generic_error_title,

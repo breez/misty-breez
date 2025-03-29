@@ -226,11 +226,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (BuildContext context, CurrencyState currencyState) {
           if (_isLoading) {
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
+            return const CenteredLoader();
           }
 
           final Map<String, dynamic> metadataMap = <String, dynamic>{
@@ -244,11 +240,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
           if (_lightningLimits == null) {
             if (errorMessage.isEmpty) {
-              return Center(
-                child: Loader(
-                  color: themeData.primaryColor.withValues(alpha: .5),
-                ),
-              );
+              return const CenteredLoader();
             }
             return ScrollableErrorMessageWidget(
               title: texts.payment_limits_generic_error_title,

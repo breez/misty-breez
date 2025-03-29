@@ -133,11 +133,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (BuildContext context, CurrencyState currencyState) {
           if (_isLoading) {
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
+            return const CenteredLoader();
           }
 
           return Padding(

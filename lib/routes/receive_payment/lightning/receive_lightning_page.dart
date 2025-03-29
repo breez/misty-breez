@@ -58,7 +58,6 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
-    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -73,11 +72,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
           }
           final LightningPaymentLimitsResponse? lightningPaymentLimits = snapshot.lightningPaymentLimits;
           if (lightningPaymentLimits == null) {
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
+            return const CenteredLoader();
           }
 
           return prepareResponseFuture == null
@@ -294,20 +289,12 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                 );
               }
 
-              return Center(
-                child: Loader(
-                  color: themeData.primaryColor.withValues(alpha: .5),
-                ),
-              );
+              return const CenteredLoader();
             },
           );
         }
 
-        return Center(
-          child: Loader(
-            color: themeData.primaryColor.withValues(alpha: .5),
-          ),
-        );
+        return const CenteredLoader();
       },
     );
   }

@@ -34,7 +34,6 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
   @override
   Widget build(BuildContext context) {
     final BreezTranslations texts = context.texts();
-    final ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -56,21 +55,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
           }
           final OnchainPaymentLimitsResponse? onchainPaymentLimits = snapshot.onchainPaymentLimits;
           if (onchainPaymentLimits == null) {
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
-          }
-
-          if (snapshot.onchainPaymentLimits == null) {
-            final ThemeData themeData = Theme.of(context);
-
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
+            return const CenteredLoader();
           }
 
           final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();

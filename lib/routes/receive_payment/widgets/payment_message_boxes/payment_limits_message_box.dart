@@ -26,13 +26,7 @@ class PaymentLimitsMessageBox extends StatelessWidget {
           );
         }
         if (snapshot.lightningPaymentLimits == null) {
-          final ThemeData themeData = Theme.of(context);
-
-          return Center(
-            child: Loader(
-              color: themeData.primaryColor.withValues(alpha: .5),
-            ),
-          );
+          return const CenteredLoader();
         }
 
         final Limits receivePaymentLimits = snapshot.lightningPaymentLimits!.receive;

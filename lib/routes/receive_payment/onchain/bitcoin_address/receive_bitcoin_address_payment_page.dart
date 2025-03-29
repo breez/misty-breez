@@ -67,13 +67,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
           }
           final OnchainPaymentLimitsResponse? onchainPaymentLimits = snapshot.onchainPaymentLimits;
           if (onchainPaymentLimits == null) {
-            final ThemeData themeData = Theme.of(context);
-
-            return Center(
-              child: Loader(
-                color: themeData.primaryColor.withValues(alpha: .5),
-              ),
-            );
+            return const CenteredLoader();
           }
 
           return prepareResponseFuture == null
@@ -201,20 +195,12 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                 );
               }
 
-              return Center(
-                child: Loader(
-                  color: themeData.primaryColor.withValues(alpha: .5),
-                ),
-              );
+              return const CenteredLoader();
             },
           );
         }
 
-        return Center(
-          child: Loader(
-            color: themeData.primaryColor.withValues(alpha: .5),
-          ),
-        );
+        return const CenteredLoader();
       },
     );
   }

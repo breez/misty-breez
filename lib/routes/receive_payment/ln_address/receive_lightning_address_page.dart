@@ -54,7 +54,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
 
   Widget _getLnAddressContent(LnAddressState lnAddressState, BreezTranslations texts) {
     if (lnAddressState.isLoading) {
-      return const LnAddressLoadingView();
+      return const CenteredLoader();
     }
 
     if (lnAddressState.hasError) {

@@ -40,7 +40,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
             future: artificialWait(),
             builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
-                return const Center(child: Loader(color: Colors.white));
+                return const CenteredLoader(color: Colors.white);
               }
 
               return DragAndDropLists(
