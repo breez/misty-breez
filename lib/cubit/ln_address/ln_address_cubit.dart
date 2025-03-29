@@ -1,8 +1,8 @@
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 export 'factories/factories.dart';
 export 'ln_address_state.dart';
@@ -64,13 +64,13 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       );
 
       emit(
-        state.copyWith(
+        LnAddressState(
           status: LnAddressStatus.success,
           lnurl: response.lnurl,
           lnAddress: response.lightningAddress,
           updateStatus: registrationType == RegistrationType.update
               ? const LnAddressUpdateStatus(status: UpdateStatus.success)
-              : null,
+              : state.updateStatus,
         ),
       );
     } catch (e, stackTrace) {
