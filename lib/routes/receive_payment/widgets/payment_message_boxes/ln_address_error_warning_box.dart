@@ -18,10 +18,6 @@ class LnAddressErrorWarningBox extends StatelessWidget {
 
     return BlocBuilder<LnAddressCubit, LnAddressState>(
       builder: (BuildContext context, LnAddressState state) {
-        if (state.isLoading) {
-          return const CenteredLoader();
-        }
-
         if (!state.hasError) {
           // Redirect to Lightning Address Page after LnAddressState error is resolved
           Future<void>.microtask(() {
@@ -49,30 +45,32 @@ class LnAddressErrorWarningBox extends StatelessWidget {
               boxPadding: EdgeInsets.zero,
               backgroundColor: themeData.colorScheme.error.withValues(alpha: .1),
               contentPadding: const EdgeInsets.all(16.0),
-              child: RichText(
-                text: TextSpan(
-                  text: texts.lightning_address_service_error_title,
-                  style: themeData.textTheme.titleLarge?.copyWith(
-                    color: themeData.colorScheme.error,
-                  ),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text: '\n\n$errorMessage',
-                      style: themeData.textTheme.bodyLarge?.copyWith(
-                        color: themeData.colorScheme.error.withValues(alpha: .8),
+              child: (state.isLoading)
+                  ? const CenteredLoader()
+                  : RichText(
+                      text: TextSpan(
+                        text: texts.lightning_address_service_error_title,
+                        style: themeData.textTheme.titleLarge?.copyWith(
+                          color: themeData.colorScheme.error,
+                        ),
+                        children: <InlineSpan>[
+                          TextSpan(
+                            text: '\n\n$errorMessage',
+                            style: themeData.textTheme.bodyLarge?.copyWith(
+                              color: themeData.colorScheme.error.withValues(alpha: .8),
+                            ),
+                          ),
+                          TextSpan(
+                            text: '\n\nTap here to retry',
+                            style: themeData.textTheme.titleLarge?.copyWith(
+                              color: themeData.colorScheme.error.withValues(alpha: .7),
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                    TextSpan(
-                      text: '\n\nTap here to retry',
-                      style: themeData.textTheme.titleLarge?.copyWith(
-                        color: themeData.colorScheme.error.withValues(alpha: .7),
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              ),
             ),
           ),
         );
