@@ -39,13 +39,16 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       hasLnAddressStateError: hasLnAddressStateError,
     );
 
+    final bool isLNPaymentPage = currentPageIndex == ReceiveLightningPaymentPage.pageIndex;
+
     return Scaffold(
       appBar: AppBar(
         leading: back_button.BackButton(
           onPressed: () {
-            if (currentPageIndex == ReceiveLightningPaymentPage.pageIndex &&
-                notificationStatus != PermissionStatus.granted) {
-              // Pop to Home page, bypassing LN Address page if notification permissions are disabled
+            if (isLNPaymentPage && (!hasNotificationPermission || hasLnAddressStateError)) {
+              // Pop to Home page, bypassing LN Address page if
+              // - notification permissions are disabled
+              // - LnAddressState has errors
               Navigator.of(context).pushReplacementNamed(Home.routeName);
               return;
             }
