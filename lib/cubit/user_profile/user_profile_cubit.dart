@@ -94,7 +94,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     return path.join(profileImagesDir.path, fileName);
   }
 
-  Future<void> updateProfile({
+  void updateProfileSettings({
     String? name,
     String? color,
     String? animal,
@@ -102,19 +102,20 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     bool? hideBalance,
     AppMode? appMode,
     bool? expandPreferences,
-  }) async {
-    _logger.info('updateProfile');
-    UserProfileSettings profile = state.profileSettings;
-    profile = profile.copyWith(
-      name: name ?? profile.name,
-      color: color ?? profile.color,
-      animal: animal ?? profile.animal,
-      image: image ?? profile.image,
-      hideBalance: hideBalance ?? profile.hideBalance,
-      appMode: appMode ?? profile.appMode,
-      expandPreferences: expandPreferences ?? profile.expandPreferences,
+  }) {
+    emit(
+      state.copyWith(
+        profileSettings: state.profileSettings.copyWith(
+          name: name,
+          color: color,
+          animal: animal,
+          image: image,
+          hideBalance: hideBalance,
+          appMode: appMode,
+          expandPreferences: expandPreferences,
+        ),
+      ),
     );
-    emit(state.copyWith(profileSettings: profile));
   }
 
   @override
