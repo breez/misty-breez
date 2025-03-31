@@ -25,40 +25,52 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     this._breezPreferences,
   ) : super(UserProfileState.initial()) {
     hydrate();
-    UserProfileState profile = state;
-    _logger.info('State: ${profile.profileSettings.toJson()}');
-    final UserProfileSettings settings = profile.profileSettings;
-    if (settings.color == null || settings.animal == null || settings.name == null) {
+
+    _initializeProfile();
+  }
+  void _initializeProfile() {
+    if (_isProfileIncomplete) {
       _logger.info('Profile is missing fields, generating new random ones…');
-      final DefaultProfile defaultProfile = generateDefaultProfile();
-      final String color = settings.color ?? defaultProfile.color;
-      final String animal = settings.animal ?? defaultProfile.animal;
-      final String name = settings.name ?? DefaultProfile(color, animal).buildName(getSystemLocale());
-      profile = profile.copyWith(
-        profileSettings: settings.copyWith(
-          color: color,
-          animal: animal,
-          name: name,
-        ),
-      );
+      _generateAndSetDefaultProfile();
     }
+
+    _ensureDefaultProfileNameIsSet();
+  }
+
+  bool get _isProfileIncomplete {
+    final UserProfileSettings settings = state.profileSettings;
+    return settings.color == null || settings.animal == null || settings.name == null;
+  }
+
+  void _generateAndSetDefaultProfile() {
+    final DefaultProfile defaultProfile = generateDefaultProfile();
+    final UserProfileSettings currentSettings = state.profileSettings;
+
+    emit(
+      state.copyWith(
+        profileSettings: currentSettings.copyWith(
+          color: currentSettings.color ?? defaultProfile.color,
+          animal: currentSettings.animal ?? defaultProfile.animal,
+          name: currentSettings.name ?? defaultProfile.buildName(getSystemLocale()),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _ensureDefaultProfileNameIsSet() async {
+    if (await _breezPreferences.defaultProfileName != null) {
+      return;
+    }
+
+    final DefaultProfile defaultProfile = DefaultProfile(
+      state.profileSettings.color!,
+      state.profileSettings.animal!,
+    );
 
     /// Default Profile name is used on LN Address Cubit when registering an LN Address for the first time,
     /// It uses English locale by default not to risk l10n introducing special characters.
-    final String defaultProfileName = DefaultProfile(
-      profile.profileSettings.color!,
-      profile.profileSettings.animal!,
-    ).buildName(const Locale('en', ''));
-    _setDefaultProfileName(defaultProfileName);
-
-    emit(profile);
-  }
-
-  Future<void> _setDefaultProfileName(String name) async {
-    final String? defaultProfileName = await _breezPreferences.defaultProfileName;
-    if (defaultProfileName == null) {
-      await _breezPreferences.setDefaultProfileName(name);
-    }
+    final String defaultProfileName = defaultProfile.buildName(const Locale('en', ''));
+    await _breezPreferences.setDefaultProfileName(defaultProfileName);
   }
 
   Future<String> saveProfileImage(Uint8List bytes) async {
