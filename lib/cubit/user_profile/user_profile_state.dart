@@ -10,4 +10,16 @@ class UserProfileState {
   UserProfileState copyWith({UserProfileSettings? profileSettings}) {
     return UserProfileState(profileSettings: profileSettings ?? this.profileSettings);
   }
+
+  factory UserProfileState.fromJson(Map<String, dynamic> json) {
+    return UserProfileState(
+      profileSettings: UserProfileSettings.fromJson(json['profileSettings']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'profileSettings': profileSettings.toJson(),
+    };
+  }
 }

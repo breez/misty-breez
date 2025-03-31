@@ -7,9 +7,9 @@ import 'dart:ui';
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/user_profile.dart';
-import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -107,11 +107,11 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
 
   @override
   UserProfileState fromJson(Map<String, dynamic> json) {
-    return UserProfileState(profileSettings: UserProfileSettings.fromJson(json));
+    return UserProfileState.fromJson(json);
   }
 
   @override
   Map<String, dynamic> toJson(UserProfileState state) {
-    return state.profileSettings.toJson();
+    return state.toJson();
   }
 }
