@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' as io;
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -77,7 +76,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     try {
       _logger.info('Saving profile image, size: ${bytes.length} bytes');
       final String profileImageFilePath = await _createProfileImageFilePath();
-      await io.File(profileImageFilePath).writeAsBytes(bytes, flush: true);
+      await File(profileImageFilePath).writeAsBytes(bytes, flush: true);
       await UserProfileImageCache().cacheProfileImage(bytes);
       return path.basename(profileImageFilePath);
     } catch (e) {
@@ -87,8 +86,8 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   }
 
   Future<String> _createProfileImageFilePath() async {
-    final io.Directory directory = await getApplicationDocumentsDirectory();
-    final io.Directory profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final Directory profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
     await profileImagesDir.create(recursive: true);
     final String fileName = 'profile-${DateTime.now().millisecondsSinceEpoch}.png';
     return path.join(profileImagesDir.path, fileName);
