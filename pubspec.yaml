@@ -73,8 +73,8 @@ dependencies:
   email_validator: ^3.0.0
   extended_image: ^10.0.0
   ffi: ^2.1.4
-  firebase_core: ^3.12.1
-  firebase_messaging: ^15.2.4
+  firebase_core: ^3.13.0
+  firebase_messaging: ^15.2.5
   flutter_bloc: ^9.1.0
   flutter_cache_manager: ^3.4.1
   flutter_fgbg: ^0.7.1
