@@ -1,11 +1,11 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/routes/security/models/auth_result.dart';
 import 'package:misty_breez/routes/security/services/auth_service.dart';
 import 'package:misty_breez/routes/security/widgets/pin_code.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
-import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('ChangePinPage');
 
@@ -52,7 +52,7 @@ class _ChangePinPageState extends State<ChangePinPage> {
       body: PinCode(
         label: _getLabelText(),
         validatePin: (String pin) => _handlePinEntry(pin),
-        logoAsset: 'assets/images/liquid-logo-color.svg',
+        logoAsset: 'assets/images/breez-logo.svg',
       ),
     );
   }
