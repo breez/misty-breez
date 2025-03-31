@@ -13,7 +13,7 @@ class UserProfileState {
 
   factory UserProfileState.fromJson(Map<String, dynamic> json) {
     return UserProfileState(
-      profileSettings: UserProfileSettings.fromJson(json['profileSettings']),
+      profileSettings: UserProfileSettings.fromJson(json['profileSettings'] as Map<String, dynamic>),
     );
   }
 

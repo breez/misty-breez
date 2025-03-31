@@ -23,122 +23,126 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AccountCubit, AccountState>(
       builder: (BuildContext context, AccountState accountState) {
-        return BlocBuilder<PaymentsCubit, PaymentsState>(
-          builder: (BuildContext context, PaymentsState paymentsState) {
-            final List<PaymentData> nonFilteredPayments = paymentsState.payments;
-            final PaymentFilters paymentFilters = paymentsState.paymentFilters;
-            final List<PaymentData> filteredPayments = paymentsState.filteredPayments;
+        return BlocBuilder<UserProfileCubit, UserProfileState>(
+          builder: (BuildContext context, UserProfileState profileState) {
+            return BlocBuilder<PaymentsCubit, PaymentsState>(
+              builder: (BuildContext context, PaymentsState paymentsState) {
+                final List<PaymentData> nonFilteredPayments = paymentsState.payments;
+                final PaymentFilters paymentFilters = paymentsState.paymentFilters;
+                final List<PaymentData> filteredPayments = paymentsState.filteredPayments;
 
-            final List<Widget> slivers = <Widget>[];
+                final List<Widget> slivers = <Widget>[];
 
-            slivers.add(
-              const SliverPersistentHeader(
-                delegate: WalletDashboardHeaderDelegate(),
-                pinned: true,
-              ),
-            );
+                slivers.add(
+                  const SliverPersistentHeader(
+                    delegate: WalletDashboardHeaderDelegate(),
+                    pinned: true,
+                  ),
+                );
 
-            final bool showPaymentsList = filteredPayments.isNotEmpty;
-            final bool hasTypeFilter = paymentFilters.filters != PaymentType.values;
-            final int? startDate = paymentFilters.fromTimestamp;
-            final int? endDate = paymentFilters.toTimestamp;
-            final bool hasDateFilter = startDate != null && endDate != null;
-            if (showPaymentsList || hasTypeFilter) {
-              slivers.add(
-                PaymentsFilterSliver(
-                  maxSize: _kFilterMaxSize,
-                  scrollController: scrollController,
-                  hasFilter: hasTypeFilter || hasDateFilter,
-                ),
-              );
-            }
-
-            if (hasDateFilter) {
-              slivers.add(
-                HeaderFilterChip(
-                  _kFilterMaxSize,
-                  DateTime.fromMillisecondsSinceEpoch(startDate),
-                  DateTime.fromMillisecondsSinceEpoch(endDate),
-                ),
-              );
-            }
-
-            if (showPaymentsList) {
-              slivers.add(
-                PaymentsList(
-                  paymentsList: filteredPayments,
-                  paymentItemHeight: _kPaymentListItemHeight,
-                  firstPaymentItemKey: firstPaymentItemKey,
-                ),
-              );
-              slivers.add(
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: FixedSliverDelegate(
-                    _bottomPlaceholderSpace(
-                      context,
-                      paymentFilters.hasDateFilters,
-                      nonFilteredPayments.isEmpty ? _kPlaceholderListItemCount : filteredPayments.length,
+                final bool showPaymentsList = filteredPayments.isNotEmpty;
+                final bool hasTypeFilter = paymentFilters.filters != PaymentType.values;
+                final int? startDate = paymentFilters.fromTimestamp;
+                final int? endDate = paymentFilters.toTimestamp;
+                final bool hasDateFilter = startDate != null && endDate != null;
+                if (showPaymentsList || hasTypeFilter) {
+                  slivers.add(
+                    PaymentsFilterSliver(
+                      maxSize: _kFilterMaxSize,
+                      scrollController: scrollController,
+                      hasFilter: hasTypeFilter || hasDateFilter,
                     ),
-                    child: const SizedBox.expand(),
-                  ),
-                ),
-              );
-            } else if (accountState.isRestoring && nonFilteredPayments.isEmpty) {
-              slivers.add(
-                SliverFixedExtentList(
-                  itemExtent: _kPaymentListItemHeight + 8.0,
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) => const PlaceholderPaymentItem(),
-                    childCount: _kPlaceholderListItemCount,
-                  ),
-                ),
-              );
-              slivers.add(
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: FixedSliverDelegate(
-                    _bottomPlaceholderSpace(
-                      context,
-                      paymentFilters.hasDateFilters,
-                      nonFilteredPayments.isEmpty ? _kPlaceholderListItemCount : filteredPayments.length,
-                    ),
-                    child: const SizedBox.expand(),
-                  ),
-                ),
-              );
-            } else {
-              slivers.add(
-                SliverPersistentHeader(
-                  delegate: FixedSliverDelegate(
-                    250.0,
-                    builder: (BuildContext context, double shrinkedHeight, bool overlapContent) {
-                      return const Padding(
-                        padding: EdgeInsets.fromLTRB(40.0, 120.0, 40.0, 0.0),
-                        child: StatusText(),
-                      );
-                    },
-                  ),
-                ),
-              );
-            }
+                  );
+                }
 
-            return Container(
-              color: Theme.of(context).customData.dashboardBgColor,
-              child: Stack(
-                key: const Key('account_sliver'),
-                fit: StackFit.expand,
-                children: <Widget>[
-                  if (!showPaymentsList &&
-                      !(accountState.isRestoring && nonFilteredPayments.isEmpty)) ...<Widget>[
-                    CustomPaint(painter: BubblePainter(context)),
-                  ],
-                  CustomScrollView(
-                    controller: scrollController,
-                    slivers: slivers,
+                if (hasDateFilter) {
+                  slivers.add(
+                    HeaderFilterChip(
+                      _kFilterMaxSize,
+                      DateTime.fromMillisecondsSinceEpoch(startDate),
+                      DateTime.fromMillisecondsSinceEpoch(endDate),
+                    ),
+                  );
+                }
+
+                if (showPaymentsList) {
+                  slivers.add(
+                    PaymentsList(
+                      paymentsList: filteredPayments,
+                      paymentItemHeight: _kPaymentListItemHeight,
+                      firstPaymentItemKey: firstPaymentItemKey,
+                    ),
+                  );
+                  slivers.add(
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: FixedSliverDelegate(
+                        _bottomPlaceholderSpace(
+                          context,
+                          paymentFilters.hasDateFilters,
+                          nonFilteredPayments.isEmpty ? _kPlaceholderListItemCount : filteredPayments.length,
+                        ),
+                        child: const SizedBox.expand(),
+                      ),
+                    ),
+                  );
+                } else if (accountState.isRestoring && nonFilteredPayments.isEmpty) {
+                  slivers.add(
+                    SliverFixedExtentList(
+                      itemExtent: _kPaymentListItemHeight + 8.0,
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) => const PlaceholderPaymentItem(),
+                        childCount: _kPlaceholderListItemCount,
+                      ),
+                    ),
+                  );
+                  slivers.add(
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: FixedSliverDelegate(
+                        _bottomPlaceholderSpace(
+                          context,
+                          paymentFilters.hasDateFilters,
+                          nonFilteredPayments.isEmpty ? _kPlaceholderListItemCount : filteredPayments.length,
+                        ),
+                        child: const SizedBox.expand(),
+                      ),
+                    ),
+                  );
+                } else {
+                  slivers.add(
+                    SliverPersistentHeader(
+                      delegate: FixedSliverDelegate(
+                        250.0,
+                        builder: (BuildContext context, double shrinkedHeight, bool overlapContent) {
+                          return const Padding(
+                            padding: EdgeInsets.fromLTRB(40.0, 120.0, 40.0, 0.0),
+                            child: StatusText(),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }
+
+                return Container(
+                  color: Theme.of(context).customData.dashboardBgColor,
+                  child: Stack(
+                    key: const Key('account_sliver'),
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      if (!showPaymentsList &&
+                          !(accountState.isRestoring && nonFilteredPayments.isEmpty)) ...<Widget>[
+                        CustomPaint(painter: BubblePainter(context)),
+                      ],
+                      CustomScrollView(
+                        controller: scrollController,
+                        slivers: slivers,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
         );

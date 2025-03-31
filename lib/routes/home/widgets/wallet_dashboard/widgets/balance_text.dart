@@ -84,7 +84,7 @@ class _BalanceTextState extends State<BalanceText> {
     final CurrencyState currencyState = currencyCubit.state;
 
     if (widget.hiddenBalance == true) {
-      await userProfileCubit.updateProfile(hideBalance: false);
+      userProfileCubit.updateProfileSettings(hideBalance: false);
       return;
     }
     final List<BitcoinCurrency> list = BitcoinCurrency.currencies;
@@ -93,7 +93,7 @@ class _BalanceTextState extends State<BalanceText> {
     );
     final int nextCurrencyIndex = (index + 1) % list.length;
     if (nextCurrencyIndex == 1) {
-      await userProfileCubit.updateProfile(hideBalance: true);
+      userProfileCubit.updateProfileSettings(hideBalance: true);
     }
     currencyCubit.setBitcoinTicker(list[nextCurrencyIndex].tickerSymbol);
   }

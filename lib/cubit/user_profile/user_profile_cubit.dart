@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' as io;
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -25,47 +24,59 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     this._breezPreferences,
   ) : super(UserProfileState.initial()) {
     hydrate();
-    UserProfileState profile = state;
-    _logger.info('State: ${profile.profileSettings.toJson()}');
-    final UserProfileSettings settings = profile.profileSettings;
-    if (settings.color == null || settings.animal == null || settings.name == null) {
+
+    _initializeProfile();
+  }
+  void _initializeProfile() {
+    if (_isProfileIncomplete) {
       _logger.info('Profile is missing fields, generating new random ones…');
-      final DefaultProfile defaultProfile = generateDefaultProfile();
-      final String color = settings.color ?? defaultProfile.color;
-      final String animal = settings.animal ?? defaultProfile.animal;
-      final String name = settings.name ?? DefaultProfile(color, animal).buildName(getSystemLocale());
-      profile = profile.copyWith(
-        profileSettings: settings.copyWith(
-          color: color,
-          animal: animal,
-          name: name,
-        ),
-      );
+      _generateAndSetDefaultProfile();
     }
+
+    _ensureDefaultProfileNameIsSet();
+  }
+
+  bool get _isProfileIncomplete {
+    final UserProfileSettings settings = state.profileSettings;
+    return settings.color == null || settings.animal == null || settings.name == null;
+  }
+
+  void _generateAndSetDefaultProfile() {
+    final DefaultProfile defaultProfile = generateDefaultProfile();
+    final UserProfileSettings currentSettings = state.profileSettings;
+
+    emit(
+      state.copyWith(
+        profileSettings: currentSettings.copyWith(
+          color: currentSettings.color ?? defaultProfile.color,
+          animal: currentSettings.animal ?? defaultProfile.animal,
+          name: currentSettings.name ?? defaultProfile.buildName(getSystemLocale()),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _ensureDefaultProfileNameIsSet() async {
+    if (await _breezPreferences.defaultProfileName != null) {
+      return;
+    }
+
+    final DefaultProfile defaultProfile = DefaultProfile(
+      state.profileSettings.color!,
+      state.profileSettings.animal!,
+    );
 
     /// Default Profile name is used on LN Address Cubit when registering an LN Address for the first time,
     /// It uses English locale by default not to risk l10n introducing special characters.
-    final String defaultProfileName = DefaultProfile(
-      profile.profileSettings.color!,
-      profile.profileSettings.animal!,
-    ).buildName(const Locale('en', ''));
-    _setDefaultProfileName(defaultProfileName);
-
-    emit(profile);
-  }
-
-  Future<void> _setDefaultProfileName(String name) async {
-    final String? defaultProfileName = await _breezPreferences.defaultProfileName;
-    if (defaultProfileName == null) {
-      await _breezPreferences.setDefaultProfileName(name);
-    }
+    final String defaultProfileName = defaultProfile.buildName(const Locale('en', ''));
+    await _breezPreferences.setDefaultProfileName(defaultProfileName);
   }
 
   Future<String> saveProfileImage(Uint8List bytes) async {
     try {
       _logger.info('Saving profile image, size: ${bytes.length} bytes');
       final String profileImageFilePath = await _createProfileImageFilePath();
-      await io.File(profileImageFilePath).writeAsBytes(bytes, flush: true);
+      await File(profileImageFilePath).writeAsBytes(bytes, flush: true);
       await UserProfileImageCache().cacheProfileImage(bytes);
       return path.basename(profileImageFilePath);
     } catch (e) {
@@ -75,14 +86,14 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   }
 
   Future<String> _createProfileImageFilePath() async {
-    final io.Directory directory = await getApplicationDocumentsDirectory();
-    final io.Directory profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final Directory profileImagesDir = Directory(path.join(directory.path, profileImagesDirName));
     await profileImagesDir.create(recursive: true);
     final String fileName = 'profile-${DateTime.now().millisecondsSinceEpoch}.png';
     return path.join(profileImagesDir.path, fileName);
   }
 
-  Future<void> updateProfile({
+  void updateProfileSettings({
     String? name,
     String? color,
     String? animal,
@@ -90,19 +101,20 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     bool? hideBalance,
     AppMode? appMode,
     bool? expandPreferences,
-  }) async {
-    _logger.info('updateProfile');
-    UserProfileSettings profile = state.profileSettings;
-    profile = profile.copyWith(
-      name: name ?? profile.name,
-      color: color ?? profile.color,
-      animal: animal ?? profile.animal,
-      image: image ?? profile.image,
-      hideBalance: hideBalance ?? profile.hideBalance,
-      appMode: appMode ?? profile.appMode,
-      expandPreferences: expandPreferences ?? profile.expandPreferences,
+  }) {
+    emit(
+      state.copyWith(
+        profileSettings: state.profileSettings.copyWith(
+          name: name,
+          color: color,
+          animal: animal,
+          image: image,
+          hideBalance: hideBalance,
+          appMode: appMode,
+          expandPreferences: expandPreferences,
+        ),
+      ),
     );
-    emit(state.copyWith(profileSettings: profile));
   }
 
   @override

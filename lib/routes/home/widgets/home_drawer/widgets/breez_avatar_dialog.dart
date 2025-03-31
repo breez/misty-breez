@@ -9,11 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as dart_image;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/a11y/min_font_size.dart';
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:logging/logging.dart';
 
 final Logger _logger = Logger('BreezAvatarDialog');
 
@@ -144,14 +144,14 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
       final String? userName = nameInputController.text.isNotEmpty
           ? nameInputController.text
           : userProfileCubit.state.profileSettings.name;
-      await userProfileCubit.updateProfile(name: userName);
+      userProfileCubit.updateProfileSettings(name: userName);
       await saveProfileImage();
       setState(() {
         isUploading = false;
       });
       navigator.pop();
     } catch (e) {
-      await userProfileCubit.updateProfile(name: userProfileCubit.state.profileSettings.name);
+      userProfileCubit.updateProfileSettings(name: userProfileCubit.state.profileSettings.name);
       setState(() {
         isUploading = false;
         pickedImage = null;
@@ -224,9 +224,9 @@ class BreezAvatarDialogState extends State<BreezAvatarDialog> {
     _logger.info('saveProfileImage ${pickedImage?.path} $randomAvatarPath');
     if (pickedImage != null) {
       final String profileImageFilePath = await userProfileCubit.saveProfileImage(await scaleAndFormatPNG());
-      await userProfileCubit.updateProfile(image: profileImageFilePath);
+      userProfileCubit.updateProfileSettings(image: profileImageFilePath);
     } else if (randomAvatarPath != null) {
-      await userProfileCubit.updateProfile(image: randomAvatarPath);
+      userProfileCubit.updateProfileSettings(image: randomAvatarPath);
     }
   }
 
