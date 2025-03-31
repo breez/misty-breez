@@ -37,13 +37,11 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage> {
           body: SafeArea(
             child: Column(
               children: <Widget>[
-                Spacer(flex: 12),
+                Spacer(flex: 3),
                 AnimatedLogo(),
-                Spacer(),
-                TaglineText(),
-                Spacer(flex: 12),
+                Spacer(flex: 3),
                 InitialWalkthroughActions(),
-                Spacer(flex: 4),
+                Spacer(),
                 NavigationDrawerFooter(),
               ],
             ),

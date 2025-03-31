@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:misty_breez/routes/initial_walkthrough/widgets/tagline_text.dart';
 
 class AnimatedLogo extends StatefulWidget {
   const AnimatedLogo({super.key});
@@ -42,14 +43,25 @@ class _AnimatedLogoState extends State<AnimatedLogo> with SingleTickerProviderSt
     return AnimatedBuilder(
       animation: _animation,
       builder: (BuildContext context, Widget? child) {
-        final String frame = _animation.value.toString().padLeft(2, '0');
-        return SizedBox(
-          height: screenSize.height * 0.19,
-          child: Image.asset(
-            'assets/animations/welcome/frame_${frame}_delay-0.04s.png',
-            gaplessPlayback: true,
-            fit: BoxFit.cover,
-          ),
+        final int currentFrame = _animation.value;
+        final String frame = currentFrame.toString().padLeft(2, '0');
+
+        return Column(
+          children: <Widget>[
+            SizedBox(
+              height: screenSize.height * 0.19,
+              child: Image.asset(
+                'assets/animations/welcome/frame_${frame}_delay-0.04s.png',
+                gaplessPlayback: true,
+                fit: BoxFit.cover,
+              ),
+            ),
+            AnimatedOpacity(
+              opacity: currentFrame >= 44 ? _controller.value : 0.0,
+              duration: const Duration(milliseconds: 400),
+              child: const TaglineText(),
+            ),
+          ],
         );
       },
     );
