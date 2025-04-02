@@ -1,11 +1,15 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class RestoreButton extends StatelessWidget {
-  const RestoreButton({super.key});
+  final AutoSizeGroup autoSizeGroup;
+
+  const RestoreButton({required this.autoSizeGroup, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +38,16 @@ class RestoreButton extends StatelessWidget {
           button: true,
           // TODO(erdemyerebasmaz): Add message to Breez-Translations
           label: 'Restore using mnemonics',
-          child: Text(
+          child: AutoSizeText(
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
             'RESTORE',
             style: themeData.textTheme.labelLarge?.copyWith(
               color: Colors.white,
             ),
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: autoSizeGroup,
+            maxLines: 1,
           ),
         ),
       ),
