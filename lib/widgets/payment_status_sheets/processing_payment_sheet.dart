@@ -61,6 +61,8 @@ class ProcessingPaymentSheet extends StatefulWidget {
 }
 
 class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
+  static const Duration timeoutDuration = Duration(seconds: 30);
+
   bool _showPaymentSent = false;
 
   @override
@@ -110,9 +112,9 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       payResult.payment.destination,
       paymentType: PaymentType.send,
     );
-    final Future<void> timeoutFuture = Future<void>.delayed(const Duration(seconds: 10));
 
-    // Wait at least 10 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
+    // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
+    final Future<void> timeoutFuture = Future<void>.delayed(timeoutDuration);
     Future.any(<Future<bool>>[
       paymentSuccessFuture.then((_) => true),
       timeoutFuture.then((_) => false),
@@ -211,7 +213,10 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       color: themeData.customData.paymentListBgColorLight,
       child: _showPaymentSent
           ? const PaymentSentContent()
-          : ProcessingPaymentContent(isBroadcast: widget.isBroadcast),
+          : ProcessingPaymentContent(
+              isBroadcast: widget.isBroadcast,
+              onClose: _closeSheetOnCompletion,
+            ),
     );
   }
 }
