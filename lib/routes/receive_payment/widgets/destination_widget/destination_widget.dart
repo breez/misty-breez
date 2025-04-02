@@ -4,11 +4,11 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/utils/exceptions/exception_handler.dart';
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:logging/logging.dart';
 
 export 'widgets/widgets.dart';
 
@@ -38,6 +38,8 @@ class DestinationWidget extends StatefulWidget {
 
 class _DestinationWidgetState extends State<DestinationWidget> {
   StreamSubscription<PaymentData?>? _receivedPaymentSubscription;
+  StreamSubscription<void>? _trackPaymentEventsSubscription;
+  Timer? _delayedTrackingTimer;
 
   @override
   void initState() {
@@ -46,7 +48,14 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       // Ignore new payments for a duration upon generating LN Address.
       // This delay is added to avoid popping the page before user gets the chance to copy,
       // share or get their LN address scanned.
-      Future<void>.delayed(const Duration(milliseconds: 1600), () => _trackNewPayments());
+      _delayedTrackingTimer = Timer(
+        const Duration(milliseconds: 1600),
+        () {
+          if (mounted) {
+            _trackNewPayments();
+          }
+        },
+      );
     }
   }
 
@@ -57,7 +66,14 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
     // initial widget setup.
     if (!(widget.lnAddress != null && widget.lnAddress!.isNotEmpty)) {
-      _trackPaymentEvents(getUpdatedDestination(oldWidget));
+      final String? updatedDestination = getUpdatedDestination(oldWidget);
+      if (updatedDestination != null) {
+        // Cancel existing tracking before starting a new one
+        _trackPaymentEventsSubscription?.cancel();
+        _trackPaymentEventsSubscription = null;
+
+        _trackPaymentEvents(updatedDestination);
+      }
     }
   }
 
@@ -79,6 +95,8 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void dispose() {
     _receivedPaymentSubscription?.cancel();
+    _trackPaymentEventsSubscription?.cancel();
+    _delayedTrackingTimer?.cancel();
     super.dispose();
   }
 
@@ -117,10 +135,16 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   void _trackPaymentEvents(String? destination) {
     final InputCubit inputCubit = context.read<InputCubit>();
-    inputCubit
-        .trackPaymentEvents(destination, paymentType: PaymentType.receive)
-        .then((_) => _onPaymentFinished(true))
-        .catchError((Object e) => _onTrackPaymentError(e));
+    _trackPaymentEventsSubscription = inputCubit
+        .trackPaymentEvents(
+          destination,
+          paymentType: PaymentType.receive,
+        )
+        .asStream()
+        .listen(
+          (_) => _onPaymentFinished(true),
+          onError: (Object e) => _onTrackPaymentError(e),
+        );
   }
 
   void _onTrackPaymentError(Object e) {
