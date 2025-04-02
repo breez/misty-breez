@@ -1,16 +1,14 @@
-import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 
 class ReceivePaymentPage extends StatefulWidget {
   static const String routeName = '/receive_payment';
-  final int initialPageIndex;
 
-  const ReceivePaymentPage({required this.initialPageIndex, super.key});
+  const ReceivePaymentPage({super.key});
 
   @override
   State<ReceivePaymentPage> createState() => _ReceivePaymentPageState();
@@ -23,40 +21,43 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     ReceiveBitcoinAddressPaymentPage(),
   ];
 
+  bool _hasNotificationPermission = false;
+  bool _hasLnAddressStateError = false;
+
+  int _currentPageIndex = ReceiveLightningAddressPage.pageIndex;
+  bool _showInvoicePage = false;
+
   @override
   Widget build(BuildContext context) {
     final PermissionStatus notificationStatus = context.select<PermissionsCubit, PermissionStatus>(
       (PermissionsCubit cubit) => cubit.state.notificationStatus,
     );
-    final bool hasNotificationPermission = notificationStatus == PermissionStatus.granted;
-
-    final bool hasLnAddressStateError = context.select<LnAddressCubit, bool>(
+    _hasNotificationPermission = notificationStatus == PermissionStatus.granted;
+    _hasLnAddressStateError = context.select<LnAddressCubit, bool>(
       (LnAddressCubit cubit) => cubit.state.hasError,
     );
 
-    final int currentPageIndex = _getEffectivePageIndex(
-      hasNotificationPermission: hasNotificationPermission,
-      hasLnAddressStateError: hasLnAddressStateError,
-    );
-
-    final bool isLNPaymentPage = currentPageIndex == ReceiveLightningPaymentPage.pageIndex;
+    _updatePageIndex();
 
     return Scaffold(
       appBar: AppBar(
         leading: back_button.BackButton(
           onPressed: () {
-            if (isLNPaymentPage && (!hasNotificationPermission || hasLnAddressStateError)) {
-              // Pop to Home page, bypassing LN Address page if
-              // - notification permissions are disabled
-              // - LnAddressState has errors
-              Navigator.of(context).pushReplacementNamed(Home.routeName);
+            final bool canReturnToLNAddressPage = (_hasNotificationPermission && !_hasLnAddressStateError);
+            if (_showInvoicePage && canReturnToLNAddressPage) {
+              setState(() {
+                _showInvoicePage = false;
+              });
               return;
             }
-            Navigator.of(context).pop();
+            Navigator.of(context).pushReplacementNamed(Home.routeName);
           },
         ),
-        title: Text(_getTitle(currentPageIndex)),
-        actions: currentPageIndex == ReceiveLightningAddressPage.pageIndex
+        title: PaymentMethodDropdown(
+          currentPaymentMethod: _currentPaymentMethod,
+          onPaymentMethodChanged: _onPaymentMethodChanged,
+        ),
+        actions: _currentPageIndex == ReceiveLightningAddressPage.pageIndex
             ? <Widget>[
                 IconButton(
                   alignment: Alignment.center,
@@ -67,10 +68,9 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
                   // TODO(erdemyerebasmaz): Add message to Breez-Translations
                   tooltip: 'Specify amount for invoice',
                   onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      ReceivePaymentPage.routeName,
-                      arguments: ReceiveLightningPaymentPage.pageIndex,
-                    );
+                    setState(() {
+                      _showInvoicePage = true;
+                    });
                   },
                 ),
               ]
@@ -78,39 +78,64 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: pages.elementAt(currentPageIndex),
+        child: pages.elementAt(_currentPageIndex),
       ),
     );
   }
 
-  String _getTitle(int pageIndex) {
-    final BreezTranslations texts = context.texts();
-    switch (pageIndex) {
-      case ReceiveLightningPaymentPage.pageIndex:
-      case ReceiveLightningAddressPage.pageIndex:
-        // TODO(erdemyerebasmaz): Add message to Breez-Translations
-        return 'Receive with Lightning';
-      case ReceiveBitcoinAddressPaymentPage.pageIndex:
-        return texts.invoice_btc_address_title;
-      default:
-        // TODO(erdemyerebasmaz): Add message to Breez-Translations
-        return 'Receive with Lightning';
+  void _updatePageIndex() {
+    final int effectivePageIndex = _getEffectivePageIndex();
+
+    if (effectivePageIndex != _currentPageIndex) {
+      setState(() {
+        _currentPageIndex = effectivePageIndex;
+      });
     }
   }
 
-  // Redirect to Invoice page if LN Address page is opened
-  // - without notification permissions
-  // - when LN Address state had errors
-  int _getEffectivePageIndex({
-    required bool hasNotificationPermission,
-    required bool hasLnAddressStateError,
-  }) {
-    final bool isLNAddressPage = widget.initialPageIndex == ReceiveLightningAddressPage.pageIndex;
+  int _getEffectivePageIndex() {
+    if (_currentPaymentMethod == PaymentMethod.bitcoinAddress) {
+      return ReceiveBitcoinAddressPaymentPage.pageIndex;
+    }
 
-    if (isLNAddressPage && (!hasNotificationPermission || hasLnAddressStateError)) {
+    // Redirect to Invoice page if LN Address page is opened
+    // - without notification permissions
+    // - when LN Address state had errors
+    final bool shouldRedirect = !_hasNotificationPermission || _hasLnAddressStateError;
+    if (_showInvoicePage || _currentPaymentMethod == PaymentMethod.lightning && shouldRedirect) {
       return ReceiveLightningPaymentPage.pageIndex;
     }
 
-    return widget.initialPageIndex;
+    return ReceiveLightningAddressPage.pageIndex;
+  }
+
+  PaymentMethod get _currentPaymentMethod {
+    return _currentPageIndex == ReceiveBitcoinAddressPaymentPage.pageIndex
+        ? PaymentMethod.bitcoinAddress
+        : PaymentMethod.lightning;
+  }
+
+  Future<void> _onPaymentMethodChanged(PaymentMethod newMethod) async {
+    if (newMethod == PaymentMethod.liquidAddress || newMethod == _currentPaymentMethod) {
+      return;
+    }
+    Future<void>.microtask(() async {
+      setState(() {
+        _showInvoicePage = false;
+        _currentPageIndex = _getPageIndexForPaymentMethod(newMethod);
+      });
+    });
+  }
+
+  // Get the appropriate page index for a payment method
+  int _getPageIndexForPaymentMethod(PaymentMethod method) {
+    switch (method) {
+      case PaymentMethod.bitcoinAddress:
+        return ReceiveBitcoinAddressPaymentPage.pageIndex;
+      case PaymentMethod.lightning:
+        return ReceiveLightningAddressPage.pageIndex;
+      case PaymentMethod.liquidAddress:
+        return ReceiveBitcoinAddressPaymentPage.pageIndex; // Fallback
+    }
   }
 }

@@ -372,13 +372,6 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     required bool hasNotificationPermission,
     required bool hasLnAddressStateError,
   }) {
-    final int? initialPageIndex = ModalRoute.of(context)?.settings.arguments as int?;
-
-    // Only process LN Address warnings if we got redirected from LN Address page
-    if (initialPageIndex != ReceiveLightningAddressPage.pageIndex) {
-      return const SizedBox.shrink();
-    }
-
     if (!hasNotificationPermission) {
       return const NotificationPermissionWarningBox();
     }

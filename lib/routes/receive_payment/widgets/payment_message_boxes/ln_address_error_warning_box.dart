@@ -24,7 +24,6 @@ class LnAddressErrorWarningBox extends StatelessWidget {
             if (context.mounted) {
               Navigator.of(context).pushReplacementNamed(
                 ReceivePaymentPage.routeName,
-                arguments: ReceiveLightningAddressPage.pageIndex,
               );
             }
           });
