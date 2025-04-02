@@ -49,17 +49,11 @@ class LnAddressErrorWarningBox extends StatelessWidget {
                   ? const CenteredLoader()
                   : RichText(
                       text: TextSpan(
-                        text: texts.lightning_address_service_error_title,
-                        style: themeData.textTheme.titleLarge?.copyWith(
+                        text: errorMessage,
+                        style: themeData.textTheme.bodyLarge?.copyWith(
                           color: themeData.colorScheme.error,
                         ),
                         children: <InlineSpan>[
-                          TextSpan(
-                            text: '\n\n$errorMessage',
-                            style: themeData.textTheme.bodyLarge?.copyWith(
-                              color: themeData.colorScheme.error.withValues(alpha: .8),
-                            ),
-                          ),
                           TextSpan(
                             text: '\n\nTap here to retry',
                             style: themeData.textTheme.titleLarge?.copyWith(

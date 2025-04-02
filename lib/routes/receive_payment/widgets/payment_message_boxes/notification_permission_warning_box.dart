@@ -31,8 +31,8 @@ class NotificationPermissionWarningBox extends StatelessWidget {
 
         _logger.info('No notification permission, showing warning box');
         // TODO(erdemyerebasmaz): Add message to Breez-Translations
-        final String warningMessage = 'Your Lightning Address is disabled because '
-            "Misty Breez doesn't have notification permissions.";
+        final String warningMessage = 'Your Lightning address is disabled because '
+            'notifications are not allowed in this app';
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 32.0),
@@ -59,8 +59,8 @@ class NotificationPermissionWarningBox extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text:
-                          ' to enable them${state.hasNotificationPermissionPermanentlyDenied ? ' in settings.' : '.'}',
+                      text: ' to enable them'
+                          '${state.hasNotificationPermissionPermanentlyDenied ? ' in settings.' : '.'}',
                     ),
                   ],
                 ),
