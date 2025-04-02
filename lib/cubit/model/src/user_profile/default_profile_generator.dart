@@ -71,3 +71,15 @@ DefaultProfile generateEnglishDefaultProfile(String colorKey, String animalKey) 
     animal.name(enTexts),
   );
 }
+
+/// Verifies if a profile name is in English
+bool isProfileNameInEnglish(String profileName) {
+  final List<String> parts = profileName.split(' ');
+  if (parts.length != 2) {
+    return false;
+  }
+
+  final BreezTranslationsEn enTexts = BreezTranslationsEn();
+  return ProfileColor.values.any((ProfileColor c) => c.name(enTexts) == parts[0]) &&
+      ProfileAnimal.values.any((ProfileAnimal a) => a.name(enTexts) == parts[1]);
+}
