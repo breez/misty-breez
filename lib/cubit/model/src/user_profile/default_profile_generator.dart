@@ -37,8 +37,8 @@ class DefaultProfile {
   }
 }
 
-DefaultProfile generateDefaultProfile() {
-  final BreezTranslations texts = getSystemAppLocalizations();
+DefaultProfile generateDefaultProfile({BreezTranslations? locale}) {
+  final BreezTranslations texts = locale ?? getSystemAppLocalizations();
   final Random random = Random();
 
   const List<ProfileColor> colors = ProfileColor.values;
