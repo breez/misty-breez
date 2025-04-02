@@ -1,5 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:misty_breez/cubit/cubit.dart';
@@ -30,7 +31,12 @@ class LnAddressErrorWarningBox extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        final String errorMessage = ExceptionHandler.extractMessage(state.error!, texts);
+        String errorMessage = ExceptionHandler.extractMessage(state.error!, texts);
+        if (defaultTargetPlatform == TargetPlatform.android &&
+            errorMessage.toString().contains('SERVICE_NOT_AVAILABLE')) {
+          errorMessage = 'Unable to connect to messaging services. '
+              'Please check your internet connection and ensure Google services are available on your device.';
+        }
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 32.0),
