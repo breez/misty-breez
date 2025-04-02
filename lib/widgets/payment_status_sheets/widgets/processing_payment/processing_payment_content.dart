@@ -2,10 +2,10 @@ import 'package:archive/archive.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:misty_breez/theme/theme.dart';
-import 'package:misty_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:lottie/lottie.dart';
+import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 /// A widget that displays a payment processing animation and status message.
 ///
@@ -13,18 +13,31 @@ import 'package:lottie/lottie.dart';
 /// an animated loader and appropriate text to inform the user of ongoing operations.
 class ProcessingPaymentContent extends StatelessWidget {
   final bool isBroadcast;
+  final VoidCallback? onClose;
 
   /// Creates a processing payment content widget.
-  const ProcessingPaymentContent({required this.isBroadcast, super.key});
+  const ProcessingPaymentContent({required this.isBroadcast, this.onClose, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
       children: <Widget>[
-        PaymentProcessingTitle(isBroadcast: isBroadcast),
-        PaymentProcessingLoadingMessage(isBroadcast: isBroadcast),
-        const PaymentProcessingAnimation(),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            PaymentProcessingTitle(isBroadcast: isBroadcast),
+            PaymentProcessingLoadingMessage(isBroadcast: isBroadcast),
+            const PaymentProcessingAnimation(),
+          ],
+        ),
+        Positioned(
+          top: MediaQuery.of(context).viewInsets.top + 40.0,
+          right: 16.0,
+          child: CloseButton(
+            color: Colors.white,
+            onPressed: onClose,
+          ),
+        ),
       ],
     );
   }
