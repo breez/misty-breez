@@ -1,13 +1,17 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class RegisterButton extends StatelessWidget {
-  const RegisterButton({super.key});
+  final AutoSizeGroup autoSizeGroup;
+
+  const RegisterButton({required this.autoSizeGroup, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +41,13 @@ class RegisterButton extends StatelessWidget {
           button: true,
           // TODO(erdemyerebasmaz): Add message to Breez-Translations
           label: 'Start using Breez',
-          child: Text(
+          child: AutoSizeText(
             texts.initial_walk_through_lets_breeze,
             style: themeData.textTheme.labelLarge,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: autoSizeGroup,
+            maxLines: 1,
           ),
         ),
       ),
