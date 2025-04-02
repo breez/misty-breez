@@ -41,7 +41,6 @@ class BottomActionsBar extends StatelessWidget {
               onPress: () {
                 Navigator.of(context).pushNamed(
                   ReceivePaymentPage.routeName,
-                  arguments: ReceiveLightningAddressPage.pageIndex,
                 );
               },
               group: actionsGroup,
