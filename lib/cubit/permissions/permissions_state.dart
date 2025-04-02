@@ -37,5 +37,6 @@ class PermissionsState {
 
   /// Whether notification permissions are permanently denied
   bool get hasNotificationPermissionPermanentlyDenied =>
-      notificationStatus == PermissionStatus.permanentlyDenied;
+      notificationStatus == PermissionStatus.permanentlyDenied ||
+      notificationStatus == PermissionStatus.denied;
 }
