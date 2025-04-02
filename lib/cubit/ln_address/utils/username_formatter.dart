@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/services.dart';
 
 /// A formatter for validating and formatting usernames in text input fields.
@@ -78,6 +79,9 @@ class UsernameFormatter {
     try {
       // Create a sanitized version following username rules
       String sanitized = rawUsername.trim();
+
+      // Remove diacritics
+      sanitized = removeDiacritics(sanitized);
 
       // Remove leading and trailing dots
       sanitized = _removeLeadingTrailingDots(sanitized);
