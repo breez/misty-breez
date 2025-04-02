@@ -88,54 +88,6 @@ class UsernameResolver {
     return baseUsername;
   }
 
-  /// Priority 4: Format and use the user's profile name
-  ///
-  /// @return The formatted profile name or null if not available
-  Future<String> _tryResolveFromProfileName() async {
-    try {
-      final String? defaultProfileName = await breezPreferences.defaultProfileName;
-      if (defaultProfileName?.isEmpty ?? true) {
-        throw const FormatException('No default profile name available');
-      }
-
-      final List<String> parts = defaultProfileName!.split(' ');
-      if (parts.length < 2) {
-        await breezPreferences.removeDefaultProfileName();
-        throw FormatException('Invalid profile name format: $defaultProfileName.');
-      }
-
-      /// Hacky fix: Convert non-english default profiles saved on secure storage
-      /// for existing users that has faced issues during registration due to l10n on App Store release
-      final bool isAnimalFirst = <String>['es', 'fr', 'it', 'pt'].contains(getSystemLocale().languageCode);
-      final String colorKey = isAnimalFirst ? parts[1] : parts[0];
-      final String animalKey = isAnimalFirst ? parts[0] : parts[1];
-
-      final DefaultProfile englishProfile = generateEnglishDefaultProfile(colorKey, animalKey);
-      final String englishName = englishProfile.buildName(const Locale('en', ''));
-      await breezPreferences.setDefaultProfileName(englishName);
-
-      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(englishName);
-      _logger.info('Using English-formatted profile name: $formattedUsername');
-      return formattedUsername;
-    } catch (e) {
-      if (e is FormatException) {
-        _logger.warning('Error formatting profile name', e);
-      } else {
-        _logger.warning('Unexpected error: $e');
-      }
-
-      /// Create a new English default profile from scratch in case of an error
-      /// This generates a new default profile that is different from the user's current profile name.
-      final DefaultProfile englishProfile = generateDefaultProfile(locale: BreezTranslationsEn());
-      final String englishName = englishProfile.buildName((const Locale('en', '')));
-      await breezPreferences.setDefaultProfileName(englishName);
-
-      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(englishName);
-      _logger.info('Using English-formatted profile name: $formattedUsername');
-      return formattedUsername;
-    }
-  }
-
   /// Priority 3: Retrieve previously stored username
   ///
   /// @return The stored username or null if not available
@@ -153,5 +105,60 @@ class UsernameResolver {
       _logger.warning('Error retrieving stored username', e);
       return null;
     }
+  }
+
+  /// Priority 4: Format and use the user's profile name
+  ///
+  /// @return The formatted profile name or null if not available
+  Future<String> _tryResolveFromProfileName() async {
+    try {
+      String? defaultProfileName = await breezPreferences.defaultProfileName;
+      if (defaultProfileName?.isEmpty ?? true) {
+        throw const FormatException('No default profile name available');
+      }
+
+      final List<String> parts = defaultProfileName!.split(' ');
+      if (parts.length < 2) {
+        await breezPreferences.removeDefaultProfileName();
+        throw FormatException('Invalid profile name format: $defaultProfileName.');
+      }
+
+      /// Backwards compatibility: Fix non-English default profile names stored in secure storage
+      if (!isProfileNameInEnglish(defaultProfileName)) {
+        defaultProfileName = await _translateProfileNameToEn(parts);
+        await breezPreferences.setDefaultProfileName(defaultProfileName);
+      }
+
+      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(defaultProfileName);
+      _logger.info('Using English-formatted profile name: $formattedUsername');
+      return formattedUsername;
+    } catch (e) {
+      _logger.warning(e is FormatException ? 'Error formatting profile name' : 'Unexpected error: $e');
+
+      /// Create a new English default profile from scratch in case of an error
+      /// This generates a new default profile that is different from the user's current profile name.
+      return await _createAndSaveNewProfileName();
+    }
+  }
+
+  /// Converts a non-English profile name to English format
+  /// Handles backward compatibility for different language formats
+  Future<String> _translateProfileNameToEn(List<String> parts) async {
+    final bool isAnimalFirst = <String>['es', 'fr', 'it', 'pt'].contains(getSystemLocale().languageCode);
+    final String colorKey = isAnimalFirst ? parts[1] : parts[0];
+    final String animalKey = isAnimalFirst ? parts[0] : parts[1];
+
+    final DefaultProfile englishProfile = generateEnglishDefaultProfile(colorKey, animalKey);
+    return englishProfile.buildName(const Locale('en', ''));
+  }
+
+  Future<String> _createAndSaveNewProfileName() async {
+    final DefaultProfile englishProfile = generateDefaultProfile(locale: BreezTranslationsEn());
+    final String defaultProfileName = englishProfile.buildName(const Locale('en', ''));
+    await breezPreferences.setDefaultProfileName(defaultProfileName);
+
+    final String formattedUsername = UsernameFormatter.formatDefaultProfileName(defaultProfileName);
+    _logger.info('Using English-formatted profile name: $formattedUsername');
+    return formattedUsername;
   }
 }
