@@ -147,7 +147,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                     padding: const EdgeInsets.only(bottom: 32),
                     child: LnPaymentHeader(
                       payeeName: '',
-                      totalAmount: amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
+                      totalAmount: amountSat! + (_prepareResponse?.feesSat?.toInt() ?? 0),
                       errorMessage: errorMessage,
                     ),
                   ),
@@ -170,10 +170,10 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                           amountSat: amountSat!,
                           hasError: errorMessage.isNotEmpty,
                         ),
-                        if (_prepareResponse != null && _prepareResponse!.feesSat.toInt() != 0) ...<Widget>[
+                        if (_prepareResponse != null && _prepareResponse!.feesSat?.toInt() != 0) ...<Widget>[
                           LnPaymentFee(
                             isCalculatingFees: _isCalculatingFees,
-                            feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                            feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat?.toInt() : null,
                           ),
                         ],
                         if (widget.lnInvoice.description != null &&

@@ -206,7 +206,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                         padding: const EdgeInsets.only(bottom: 32),
                         child: LnPaymentHeader(
                           payeeName: widget.lnOfferPaymentArguments.lnOffer.issuer ?? '',
-                          totalAmount: widget.amountSat! + (_prepareResponse?.feesSat.toInt() ?? 0),
+                          totalAmount: widget.amountSat! + (_prepareResponse?.feesSat?.toInt() ?? 0),
                           errorMessage: errorMessage,
                         ),
                       ),
@@ -375,12 +375,13 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                               ),
                             ),
                           ],
-                          if (_prepareResponse != null && _prepareResponse!.feesSat.toInt() != 0) ...<Widget>[
+                          if (_prepareResponse != null &&
+                              _prepareResponse!.feesSat?.toInt() != 0) ...<Widget>[
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: LnPaymentFee(
                                 isCalculatingFees: _isCalculatingFees,
-                                feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat.toInt() : null,
+                                feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat?.toInt() : null,
                               ),
                             ),
                           ],
