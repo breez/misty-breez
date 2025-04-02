@@ -1,6 +1,8 @@
 import 'package:breez_preferences/breez_preferences.dart';
-import 'package:misty_breez/cubit/cubit.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 final Logger _logger = Logger('UsernameResolver');
 
@@ -96,8 +98,23 @@ class UsernameResolver {
         return null;
       }
 
-      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(defaultProfileName!);
-      _logger.info('Using formatted profile name: $formattedUsername');
+      final List<String> parts = defaultProfileName!.split(' ');
+      if (parts.length < 2) {
+        _logger.warning('Invalid profile name format: $defaultProfileName. Removing default profile name.');
+        await breezPreferences.removeDefaultProfileName();
+        return null;
+      }
+
+      final bool isAnimalFirst = <String>['es', 'fr', 'it', 'pt'].contains(getSystemLocale().languageCode);
+      final String colorKey = isAnimalFirst ? parts[1] : parts[0];
+      final String animalKey = isAnimalFirst ? parts[0] : parts[1];
+
+      final DefaultProfile englishProfile = generateEnglishDefaultProfile(colorKey, animalKey);
+      final String englishName = englishProfile.buildName(const Locale('en', ''));
+      await breezPreferences.setDefaultProfileName(englishName);
+
+      final String formattedUsername = UsernameFormatter.formatDefaultProfileName(englishName);
+      _logger.info('Using English-formatted profile name: $formattedUsername');
       return formattedUsername;
     } catch (e) {
       _logger.warning('Error formatting profile name', e);

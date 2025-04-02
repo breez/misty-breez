@@ -55,6 +55,15 @@ class BreezPreferences {
     }
   }
 
+  Future<void> removeDefaultProfileName() async {
+    _logger.info('Removing Default Profile Name');
+    final SharedPreferences prefs = await _preferences;
+    await prefs.remove(_kDefaultProfileName);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.remove(_kDefaultProfileName);
+    }
+  }
+
   // Webhook URL
   Future<String?> get webhookUrl async {
     final SharedPreferences prefs = await _preferences;
