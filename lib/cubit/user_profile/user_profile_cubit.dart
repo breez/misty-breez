@@ -61,14 +61,14 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
       return;
     }
 
-    final DefaultProfile defaultProfile = DefaultProfile(
+    final DefaultProfile defaultProfileEn = generateEnglishDefaultProfile(
       state.profileSettings.color!,
       state.profileSettings.animal!,
     );
 
     /// Default Profile name is used on LN Address Cubit when registering an LN Address for the first time,
     /// It uses English locale by default not to risk l10n introducing special characters.
-    final String defaultProfileName = defaultProfile.buildName(const Locale('en', ''));
+    final String defaultProfileName = defaultProfileEn.buildName(const Locale('en', ''));
     await _breezPreferences.setDefaultProfileName(defaultProfileName);
   }
 

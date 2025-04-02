@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:breez_translations/generated/breez_translations_en.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
 class DefaultProfile {
@@ -49,5 +50,24 @@ DefaultProfile generateDefaultProfile() {
   return DefaultProfile(
     randomColor.name(texts),
     randomAnimal.name(texts),
+  );
+}
+
+DefaultProfile generateEnglishDefaultProfile(String colorKey, String animalKey) {
+  final BreezTranslations enTexts = BreezTranslationsEn();
+
+  final ProfileColor color = ProfileColor.values.firstWhere(
+    (ProfileColor c) => c.name(getSystemAppLocalizations()) == colorKey,
+    orElse: () => ProfileColor.values.first,
+  );
+
+  final ProfileAnimal animal = ProfileAnimal.values.firstWhere(
+    (ProfileAnimal a) => a.name(getSystemAppLocalizations()) == animalKey,
+    orElse: () => ProfileAnimal.values.first,
+  );
+
+  return DefaultProfile(
+    color.name(enTexts),
+    animal.name(enTexts),
   );
 }
