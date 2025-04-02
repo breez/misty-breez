@@ -57,6 +57,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
           currentPaymentMethod: _currentPaymentMethod,
           onPaymentMethodChanged: _onPaymentMethodChanged,
         ),
+        centerTitle: true,
         actions: _currentPageIndex == ReceiveLightningAddressPage.pageIndex
             ? <Widget>[
                 IconButton(
