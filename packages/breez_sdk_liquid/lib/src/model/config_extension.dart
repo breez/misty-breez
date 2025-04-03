@@ -13,6 +13,7 @@ extension ConfigCopyWith on Config {
     List<ExternalInputParser>? externalInputParsers,
     String? syncServiceUrl,
     List<AssetMetadata>? assetMetadata,
+    String? sideswapApiKey,
   }) {
     return Config(
       liquidExplorer: liquidExplorer ?? this.liquidExplorer,
@@ -26,6 +27,7 @@ extension ConfigCopyWith on Config {
       syncServiceUrl: syncServiceUrl ?? this.syncServiceUrl,
       useDefaultExternalInputParsers: true,
       assetMetadata: assetMetadata ?? this.assetMetadata,
+      sideswapApiKey: sideswapApiKey ?? this.sideswapApiKey,
     );
   }
 }
