@@ -25,8 +25,13 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   ) : super(UserProfileState.initial()) {
     hydrate();
 
+    _logger.info('UserProfileState after hydration: ${state.toJson()}');
+
     _initializeProfile();
+
+    _logger.info('UserProfileState after initialization: ${state.toJson()}');
   }
+
   void _initializeProfile() {
     if (_isProfileIncomplete) {
       _logger.info('Profile is missing fields, generating new random ones…');
@@ -38,6 +43,8 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
 
   bool get _isProfileIncomplete {
     final UserProfileSettings settings = state.profileSettings;
+    _logger
+        .info('Profile check - color: ${settings.color}, animal: ${settings.animal}, name: ${settings.name}');
     return settings.color == null || settings.animal == null || settings.name == null;
   }
 
@@ -118,12 +125,20 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   }
 
   @override
-  UserProfileState fromJson(Map<String, dynamic> json) {
-    return UserProfileState.fromJson(json);
+  UserProfileState? fromJson(Map<String, dynamic> json) {
+    try {
+      _logger.info('Deserializing state from JSON: $json');
+      return UserProfileState.fromJson(json);
+    } catch (e) {
+      _logger.severe('Error deserializing state: $e');
+      return null; // This will trigger the initial state to be used
+    }
   }
 
   @override
   Map<String, dynamic> toJson(UserProfileState state) {
-    return state.toJson();
+    final Map<String, dynamic> json = state.toJson();
+    _logger.info('Serializing state to JSON: $json');
+    return json;
   }
 }
