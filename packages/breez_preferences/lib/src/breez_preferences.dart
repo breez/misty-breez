@@ -9,6 +9,8 @@ final Logger _logger = Logger('BreezPreferences');
 class BreezPreferences {
   // Preference Keys
   static const String _kBugReportBehavior = 'bug_report_behavior';
+  static const String _kDefaultdefaultProfileColor = 'default_profile_color';
+  static const String _kDefaultdefaultProfileAnimal = 'default_profile_animal';
   static const String _kDefaultProfileName = 'default_profile_name';
   static const String _kWebhookUrl = 'webhook_url';
   static const String _kLnUrlWebhookRegistered = 'lnurl_webhook_registered';
@@ -34,6 +36,42 @@ class BreezPreferences {
     await prefs.setInt(_kBugReportBehavior, behavior.index);
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       await SharedPreferenceAppGroup.setInt(_kBugReportBehavior, behavior.index);
+    }
+  }
+
+  // Default Profile Color
+  Future<String?> get defaultProfileColor async {
+    final SharedPreferences prefs = await _preferences;
+    final String? defaultProfileColor = prefs.getString(_kDefaultdefaultProfileColor);
+
+    _logger.info('Fetched Default Profile Color: $defaultProfileColor');
+    return defaultProfileColor;
+  }
+
+  Future<void> setDefaultProfileColor(String defaultProfileColor) async {
+    _logger.info('Setting Default Profile Color: $defaultProfileColor');
+    final SharedPreferences prefs = await _preferences;
+    await prefs.setString(_kDefaultdefaultProfileColor, defaultProfileColor);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setString(_kDefaultdefaultProfileColor, defaultProfileColor);
+    }
+  }
+
+  // Default Profile Animal
+  Future<String?> get defaultProfileAnimal async {
+    final SharedPreferences prefs = await _preferences;
+    final String? defaultProfileAnimal = prefs.getString(_kDefaultdefaultProfileAnimal);
+
+    _logger.info('Fetched Default Profile Animal: $defaultProfileAnimal');
+    return defaultProfileAnimal;
+  }
+
+  Future<void> setDefaultProfileAnimal(String defaultProfileAnimal) async {
+    _logger.info('Setting Default Profile Animal: $defaultProfileAnimal');
+    final SharedPreferences prefs = await _preferences;
+    await prefs.setString(_kDefaultdefaultProfileAnimal, defaultProfileAnimal);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setString(_kDefaultdefaultProfileAnimal, defaultProfileAnimal);
     }
   }
 
