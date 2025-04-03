@@ -34,11 +34,17 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
 
   void _initializeProfile() {
     if (_isProfileIncomplete) {
-      _logger.info('Profile is missing fields, generating new random ones…');
-      _generateAndSetDefaultProfile();
+      _logger.info('Profile is missing fields. Attempting to restore profile from preferences.');
+      _tryRestoreProfileFromPreferences().then((bool restored) {
+        if (!restored) {
+          _logger.info('Failed to restore profile from preferences. Generating a new profile.');
+          _generateAndSetDefaultProfile();
+        }
+        _ensureDefaultProfileNameIsSet();
+      });
+    } else {
+      _ensureDefaultProfileNameIsSet();
     }
-
-    _ensureDefaultProfileNameIsSet();
   }
 
   bool get _isProfileIncomplete {
@@ -48,19 +54,73 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     return settings.color == null || settings.animal == null || settings.name == null;
   }
 
+  Future<bool> _tryRestoreProfileFromPreferences() async {
+    try {
+      final String? name = await _breezPreferences.defaultProfileName;
+      final String? color = await _breezPreferences.defaultProfileColor;
+      final String? animal = await _breezPreferences.defaultProfileAnimal;
+
+      _logger.info('Trying to restore from preferences - name: $name, color: $color, animal: $animal');
+
+      if (name != null && color != null && animal != null) {
+        emit(
+          state.copyWith(
+            profileSettings: state.profileSettings.copyWith(
+              name: name,
+              color: color,
+              animal: animal,
+            ),
+          ),
+        );
+        return true;
+      }
+      return false;
+    } catch (e) {
+      _logger.warning('Error restoring profile from preferences: $e');
+      return false;
+    }
+  }
+
   void _generateAndSetDefaultProfile() {
     final DefaultProfile defaultProfile = generateDefaultProfile();
     final UserProfileSettings currentSettings = state.profileSettings;
 
+    final String newColor = currentSettings.color ?? defaultProfile.color;
+    final String newAnimal = currentSettings.animal ?? defaultProfile.animal;
+    final String newName = currentSettings.name ?? defaultProfile.buildName(getSystemLocale());
+
+    _logger.info('Setting default profile - color: $newColor, animal: $newAnimal, name: $newName');
+    _storeProfileInPreferences(
+      name: newName,
+      color: newColor,
+      animal: newAnimal,
+    );
+
     emit(
       state.copyWith(
         profileSettings: currentSettings.copyWith(
-          color: currentSettings.color ?? defaultProfile.color,
-          animal: currentSettings.animal ?? defaultProfile.animal,
-          name: currentSettings.name ?? defaultProfile.buildName(getSystemLocale()),
+          color: newColor,
+          animal: newAnimal,
+          name: newName,
         ),
       ),
     );
+  }
+
+  Future<void> _storeProfileInPreferences({
+    String? name,
+    String? color,
+    String? animal,
+  }) async {
+    if (name != null) {
+      await _breezPreferences.setDefaultProfileName(name);
+    }
+    if (color != null) {
+      await _breezPreferences.setDefaultProfileColor(color);
+    }
+    if (animal != null) {
+      await _breezPreferences.setDefaultProfileAnimal(animal);
+    }
   }
 
   Future<void> _ensureDefaultProfileNameIsSet() async {
