@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/services/services.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 Future<dynamic> showRedeemingFundsSheet(
   BuildContext context, {
@@ -174,7 +174,7 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
   }
 
   Future<LNURLPageResult> _lnurlWithdraw() async {
-    final LnUrlCubit lnurlCubit = context.read<LnUrlCubit>();
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
     _logger.info(
       'LNURL withdraw of ${widget.amountSats} sats where '
       'min is ${widget.requestData.minWithdrawable.toInt() ~/ 1000} sats '
@@ -186,7 +186,7 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
         data: widget.requestData,
         description: widget.requestData.defaultDescription,
       );
-      final LnUrlWithdrawResult result = await lnurlCubit.lnurlWithdraw(req: req);
+      final LnUrlWithdrawResult result = await lnUrlService.lnurlWithdraw(req: req);
       return _handleLnUrlWithdrawResult(result);
     } catch (e) {
       _logger.warning('Error withdrawing LNURL payment', e);
