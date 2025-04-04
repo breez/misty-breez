@@ -10,12 +10,14 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/services/lnurl_service.dart';
 import 'package:misty_breez/theme/src/theme.dart';
 import 'package:misty_breez/theme/src/theme_extensions.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/exceptions/exception_handler.dart';
 import 'package:misty_breez/utils/payments/payment_validator.dart';
 import 'package:misty_breez/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 export 'widgets/widgets.dart';
 
@@ -450,12 +452,12 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
   void _validateLnUrlWithdraw(int amount, bool outgoing) {
     final AccountState accountState = context.read<AccountCubit>().state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
-    final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(
-      BigInt.from(amount),
-      outgoing,
-      _lightningLimits!,
-      balance,
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+    return lnUrlService.validateLnUrlPayment(
+      amount: BigInt.from(amount),
+      outgoing: outgoing,
+      lightningLimits: _lightningLimits!,
+      balance: balance,
     );
   }
 }

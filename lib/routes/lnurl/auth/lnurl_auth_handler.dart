@@ -1,12 +1,12 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/routes/routes.dart';
-import 'package:misty_breez/widgets/widgets.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/services/services.dart';
+import 'package:misty_breez/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 export 'login_text.dart';
 
@@ -24,8 +24,8 @@ Future<LNURLPageResult?> handleAuthRequest(
         final TransparentPageRoute<void> loaderRoute = createLoaderRoute(context);
         navigator.push(loaderRoute);
         try {
-          final LnUrlCubit lnurlCubit = context.read<LnUrlCubit>();
-          final LnUrlCallbackStatus resp = await lnurlCubit.lnurlAuth(reqData: reqData);
+          final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+          final LnUrlCallbackStatus resp = await lnUrlService.lnurlAuth(reqData: reqData);
           if (resp is LnUrlCallbackStatus_Ok) {
             _logger.info('LNURL auth success');
             return const LNURLPageResult(protocol: LnUrlProtocol.auth);
