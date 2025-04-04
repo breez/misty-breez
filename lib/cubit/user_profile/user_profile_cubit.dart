@@ -251,6 +251,16 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     /// It uses English locale by default not to risk l10n introducing special characters.
     final String defaultProfileName = defaultProfileEn.buildName(const Locale('en', ''));
     await _breezPreferences.setDefaultProfileName(defaultProfileName);
+    if (state.profileSettings.name == null) {
+      emit(
+        state.copyWith(
+          profileSettings: state.profileSettings.copyWith(
+            name: defaultProfileName,
+          ),
+        ),
+      );
+      _saveProfileName(defaultProfileName);
+    }
   }
 
   Future<String> saveProfileImage(Uint8List bytes) async {
