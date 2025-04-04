@@ -35,99 +35,173 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     _logger.info('UserProfileState after initialization: ${state.toJson()}');
   }
 
-  void _initializeProfile() {
-    if (_isProfileIncomplete) {
-      _logger.info('Profile is missing fields. Attempting to restore profile from preferences.');
-      _tryRestoreProfileFromPreferences().then((bool restored) {
-        if (!restored) {
-          _logger.info('Failed to restore profile from preferences. Generating a new profile.');
-          _generateAndSetDefaultProfile();
-        }
-        _ensureDefaultProfileNameIsSet();
-      });
-    } else {
-      _ensureDefaultProfileNameIsSet();
+  void _initializeProfile() async {
+    _logger.info('Initializing profile with current state: ${state.toJson()}');
+
+    final bool nameRestored = await _restoreProfileName();
+    if (!nameRestored) {
+      _logger.info('Profile name is still missing after restoration attempts.');
+    }
+
+    final bool colorAnimalRestored = await _restoreProfileColorAndAnimal();
+    if (!colorAnimalRestored) {
+      _logger.info('Still missing color or animal. Generating defaults.');
+      _generateDefaultColorAnimal();
+    }
+
+    await _ensureDefaultProfileNameIsSet();
+
+    _logger.info('Profile initialized: ${state.toJson()}');
+  }
+
+  Future<bool> _restoreProfileName() async {
+    if (state.profileSettings.name != null) {
+      return true;
+    }
+    if (await _tryRestoreProfileNameFromCache()) {
+      return true;
+    }
+    return await _tryRestoreProfileNameFromPreferences();
+  }
+
+  Future<bool> _restoreProfileColorAndAnimal() async {
+    if (state.profileSettings.color != null && state.profileSettings.animal != null) {
+      return true;
+    }
+    return await _tryRestoreProfileColorsFromPreferences();
+  }
+
+  Future<bool> _tryRestoreProfileNameFromCache() async {
+    try {
+      final String? cachedName = await _profileNameCache.getProfileName(
+        fileName: profileNameFileName,
+      );
+      if (cachedName == null) {
+        _logger.info('No cached profile name found.');
+        return false;
+      }
+      _logger.info('Found cached profile name: $cachedName');
+      emit(
+        state.copyWith(
+          profileSettings: state.profileSettings.copyWith(
+            name: cachedName,
+          ),
+        ),
+      );
+      return true;
+    } catch (e) {
+      _logger.warning('Error restoring profile name from cache: $e');
+      return false;
     }
   }
 
-  bool get _isProfileIncomplete {
-    final UserProfileSettings settings = state.profileSettings;
-    _logger
-        .info('Profile check - color: ${settings.color}, animal: ${settings.animal}, name: ${settings.name}');
-    return settings.color == null || settings.animal == null || settings.name == null;
-  }
-
-  Future<bool> _tryRestoreProfileFromPreferences() async {
+  Future<bool> _tryRestoreProfileNameFromPreferences() async {
     try {
       final String? name = await _breezPreferences.defaultProfileName;
-      final String? color = await _breezPreferences.defaultProfileColor;
-      final String? animal = await _breezPreferences.defaultProfileAnimal;
 
-      _logger.info('Trying to restore from preferences - name: $name, color: $color, animal: $animal');
+      if (name == null) {
+        // Try to construct name from color and animal if available
+        final String? color = await _breezPreferences.defaultProfileColor;
+        final String? animal = await _breezPreferences.defaultProfileAnimal;
 
-      final String? resolvedName = _resolveName(name, color, animal);
-      if (resolvedName == null) {
-        return false;
-      }
+        if (color != null && animal != null) {
+          final String generatedName = DefaultProfile(color, animal).buildName(getSystemLocale());
+          emit(
+            state.copyWith(
+              profileSettings: state.profileSettings.copyWith(
+                name: generatedName,
+              ),
+            ),
+          );
+          return true;
+        }
 
-      final ({String animal, String color})? components = _resolveColorAndAnimal(
-        resolvedName,
-        color,
-        animal,
-      );
-      if (components == null) {
         return false;
       }
 
       emit(
         state.copyWith(
           profileSettings: state.profileSettings.copyWith(
-            name: resolvedName,
-            color: components.color,
-            animal: components.animal,
+            name: name,
           ),
         ),
       );
-
       return true;
     } catch (e) {
-      _logger.warning('Error restoring profile from preferences: $e');
+      _logger.warning('Error restoring profile name from preferences: $e');
       return false;
     }
   }
 
-  String? _resolveName(
-    String? name,
-    String? color,
-    String? animal,
-  ) {
-    if (name != null) {
-      return name;
+  Future<bool> _tryRestoreProfileColorsFromPreferences() async {
+    try {
+      final String? color = await _breezPreferences.defaultProfileColor;
+      final String? animal = await _breezPreferences.defaultProfileAnimal;
+
+      final UserProfileSettings currentSettings = state.profileSettings;
+      UserProfileSettings updatedSettings = currentSettings;
+      bool anyFieldRestored = false;
+
+      if (currentSettings.color == null && color != null) {
+        updatedSettings = updatedSettings.copyWith(color: color);
+        anyFieldRestored = true;
+      }
+
+      if (currentSettings.animal == null && animal != null) {
+        updatedSettings = updatedSettings.copyWith(animal: animal);
+        anyFieldRestored = true;
+      }
+
+      // If we still have missing fields and have a name, try to extract missing fields
+      if ((currentSettings.color == null || currentSettings.animal == null) && currentSettings.name != null) {
+        final Map<String, String>? extracted = _extractColorAndAnimalFromName(currentSettings.name!);
+        if (extracted != null) {
+          // Apply extracted values only for missing fields
+          if (currentSettings.color == null && extracted['color'] != null) {
+            updatedSettings = updatedSettings.copyWith(color: extracted['color']);
+            anyFieldRestored = true;
+          }
+
+          if (currentSettings.animal == null && extracted['animal'] != null) {
+            updatedSettings = updatedSettings.copyWith(animal: extracted['animal']);
+            anyFieldRestored = true;
+          }
+        }
+      }
+
+      // Apply updates if any field was restored
+      if (anyFieldRestored) {
+        emit(state.copyWith(profileSettings: updatedSettings));
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      _logger.warning('Error restoring profile colors from preferences: $e');
+      return false;
     }
-    if (color != null && animal != null) {
-      _logger.info('Name is missing. Generating from color and animal.');
-      return DefaultProfile(color, animal).buildName(getSystemLocale());
-    }
-    return null;
   }
 
-  ({String color, String animal})? _resolveColorAndAnimal(
-    String name,
-    String? color,
-    String? animal,
-  ) {
-    if (color != null && animal != null) {
-      return (color: color, animal: animal);
-    }
+  void _generateDefaultColorAnimal() {
+    final DefaultProfile defaultProfile = generateDefaultProfile();
+    final UserProfileSettings currentSettings = state.profileSettings;
 
-    final Map<String, String>? extracted = _extractColorAndAnimalFromName(name);
-    if (extracted == null) {
-      return null;
-    }
+    final String newColor = currentSettings.color ?? defaultProfile.color;
+    final String newAnimal = currentSettings.animal ?? defaultProfile.animal;
 
-    return (
-      color: color ?? extracted['color']!,
-      animal: animal ?? extracted['animal']!,
+    _logger.info('Setting default color/animal - color: $newColor, animal: $newAnimal');
+    _storeProfileInPreferences(
+      color: newColor,
+      animal: newAnimal,
+    );
+
+    emit(
+      state.copyWith(
+        profileSettings: currentSettings.copyWith(
+          color: newColor,
+          animal: newAnimal,
+        ),
+      ),
     );
   }
 
@@ -145,32 +219,6 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
       'color': parts[isColorFirst ? 0 : 1],
       'animal': parts[isColorFirst ? 1 : 0],
     };
-  }
-
-  void _generateAndSetDefaultProfile() {
-    final DefaultProfile defaultProfile = generateDefaultProfile();
-    final UserProfileSettings currentSettings = state.profileSettings;
-
-    final String newColor = currentSettings.color ?? defaultProfile.color;
-    final String newAnimal = currentSettings.animal ?? defaultProfile.animal;
-    final String newName = currentSettings.name ?? defaultProfile.buildName(getSystemLocale());
-
-    _logger.info('Setting default profile - color: $newColor, animal: $newAnimal, name: $newName');
-    _storeProfileInPreferences(
-      name: newName,
-      color: newColor,
-      animal: newAnimal,
-    );
-
-    emit(
-      state.copyWith(
-        profileSettings: currentSettings.copyWith(
-          color: newColor,
-          animal: newAnimal,
-          name: newName,
-        ),
-      ),
-    );
   }
 
   Future<void> _storeProfileInPreferences({
