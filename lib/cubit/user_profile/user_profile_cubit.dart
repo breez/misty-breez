@@ -62,23 +62,86 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
 
       _logger.info('Trying to restore from preferences - name: $name, color: $color, animal: $animal');
 
-      if (name != null && color != null && animal != null) {
-        emit(
-          state.copyWith(
-            profileSettings: state.profileSettings.copyWith(
-              name: name,
-              color: color,
-              animal: animal,
-            ),
-          ),
-        );
-        return true;
+      final String? resolvedName = _resolveName(name, color, animal);
+      if (resolvedName == null) {
+        return false;
       }
-      return false;
+
+      final ({String animal, String color})? components = _resolveColorAndAnimal(
+        resolvedName,
+        color,
+        animal,
+      );
+      if (components == null) {
+        return false;
+      }
+
+      emit(
+        state.copyWith(
+          profileSettings: state.profileSettings.copyWith(
+            name: resolvedName,
+            color: components.color,
+            animal: components.animal,
+          ),
+        ),
+      );
+
+      return true;
     } catch (e) {
       _logger.warning('Error restoring profile from preferences: $e');
       return false;
     }
+  }
+
+  String? _resolveName(
+    String? name,
+    String? color,
+    String? animal,
+  ) {
+    if (name != null) {
+      return name;
+    }
+    if (color != null && animal != null) {
+      _logger.info('Name is missing. Generating from color and animal.');
+      return DefaultProfile(color, animal).buildName(getSystemLocale());
+    }
+    return null;
+  }
+
+  ({String color, String animal})? _resolveColorAndAnimal(
+    String name,
+    String? color,
+    String? animal,
+  ) {
+    if (color != null && animal != null) {
+      return (color: color, animal: animal);
+    }
+
+    final Map<String, String>? extracted = _extractColorAndAnimalFromName(name);
+    if (extracted == null) {
+      return null;
+    }
+
+    return (
+      color: color ?? extracted['color']!,
+      animal: animal ?? extracted['animal']!,
+    );
+  }
+
+  /// Extracts color and animal from a profile name string
+  /// Returns a map with 'color' and 'animal' keys, or null if extraction fails
+  Map<String, String>? _extractColorAndAnimalFromName(String name) {
+    final List<String> parts = name.split(' ');
+    if (parts.length < 2) {
+      _logger.info('Could not extract color and animal: Default profile name has fewer than 2 parts');
+      return null;
+    }
+
+    final bool isColorFirst = isProfileNameInEnglish(name);
+    return <String, String>{
+      'color': parts[isColorFirst ? 0 : 1],
+      'animal': parts[isColorFirst ? 1 : 0],
+    };
   }
 
   void _generateAndSetDefaultProfile() {
