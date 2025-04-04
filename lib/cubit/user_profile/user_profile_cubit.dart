@@ -13,12 +13,15 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 export 'user_profile_image_cache.dart';
+export 'user_profile_name_cache.dart';
 export 'user_profile_state.dart';
 
 final Logger _logger = Logger('UserProfileCubit');
 
 class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserProfileState> {
   final BreezPreferences _breezPreferences;
+  final UserProfileNameCache _profileNameCache = UserProfileNameCache();
+  final UserProfileImageCache _profileImageCache = UserProfileImageCache();
 
   UserProfileCubit(
     this._breezPreferences,
@@ -207,7 +210,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
       _logger.info('Saving profile image, size: ${bytes.length} bytes');
       final String profileImageFilePath = await _createProfileImageFilePath();
       await File(profileImageFilePath).writeAsBytes(bytes, flush: true);
-      await UserProfileImageCache().cacheProfileImage(bytes);
+      await _profileImageCache.cacheProfileImage(bytes);
       return path.basename(profileImageFilePath);
     } catch (e) {
       _logger.warning('Error saving profile image: $e');
@@ -223,6 +226,25 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     return path.join(profileImagesDir.path, fileName);
   }
 
+  Future<void> _saveProfileName(String profileName) async {
+    try {
+      _logger.info('Saving profile name: $profileName');
+      final String profileNameFilePath = await _createProfileNameFilePath();
+      await File(profileNameFilePath).writeAsString(profileName, flush: true);
+      await _profileNameCache.cacheProfileName(profileName);
+    } catch (e) {
+      _logger.warning('Error saving profile name: $e');
+      rethrow;
+    }
+  }
+
+  Future<String> _createProfileNameFilePath() async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final Directory profileNameDir = Directory(path.join(directory.path, profileNameDirName));
+    await profileNameDir.create(recursive: true);
+    return path.join(profileNameDir.path, profileNameFileName);
+  }
+
   void updateProfileSettings({
     String? name,
     String? color,
@@ -232,19 +254,19 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
     AppMode? appMode,
     bool? expandPreferences,
   }) {
-    emit(
-      state.copyWith(
-        profileSettings: state.profileSettings.copyWith(
-          name: name,
-          color: color,
-          animal: animal,
-          image: image,
-          hideBalance: hideBalance,
-          appMode: appMode,
-          expandPreferences: expandPreferences,
-        ),
-      ),
+    final UserProfileSettings newSettings = state.profileSettings.copyWith(
+      name: name,
+      color: color,
+      animal: animal,
+      image: image,
+      hideBalance: hideBalance,
+      appMode: appMode,
+      expandPreferences: expandPreferences,
     );
+    emit(state.copyWith(profileSettings: newSettings));
+    if (name != null) {
+      _saveProfileName(name);
+    }
   }
 
   @override
