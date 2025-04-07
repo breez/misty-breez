@@ -98,4 +98,7 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin<CurrencyStat
   Map<String, dynamic> toJson(CurrencyState state) {
     return state.toJson();
   }
+
+  @override
+  String get storagePrefix => 'currency_cubit';
 }

@@ -296,6 +296,9 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   }
 
   @override
+  String get storagePrefix => 'security_cubit';
+
+  @override
   Future<void> close() {
     _cancelAutoLockTimer();
     return super.close();

@@ -137,4 +137,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   Map<String, dynamic>? toJson(PaymentsState state) {
     return state.toJson();
   }
+
+  @override
+  String get storagePrefix => 'payments_cubit';
 }

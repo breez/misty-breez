@@ -52,6 +52,9 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
     return state.toJson();
   }
 
+  @override
+  String get storagePrefix => 'account_cubit';
+
   void setIsRestoring(bool isRestoring) {
     emit(state.copyWith(isRestoring: isRestoring));
   }

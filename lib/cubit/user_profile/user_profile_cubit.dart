@@ -126,4 +126,7 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   Map<String, dynamic> toJson(UserProfileState state) {
     return state.toJson();
   }
+
+  @override
+  String get storagePrefix => 'user_profile_cubit';
 }
