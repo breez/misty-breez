@@ -84,27 +84,40 @@ extension WalletInfoFromJson on WalletInfo {
       return null;
     }
 
-    if (json['balanceSat'] == null ||
-        json['pendingSendSat'] == null ||
-        json['pendingReceiveSat'] == null ||
-        json['fingerprint'] == null ||
-        json['pubkey'] == null) {
-      _logger.warning('WalletInfo has missing fields on AccountState JSON.');
+    try {
+      final dynamic balanceSatValue = json['balanceSat'];
+      final dynamic pendingSendSatValue = json['pendingSendSat'];
+      final dynamic pendingReceiveSatValue = json['pendingReceiveSat'];
+
+      // Handle both integer and string formats
+      final BigInt balanceSat = balanceSatValue is String
+          ? BigInt.parse(balanceSatValue)
+          : BigInt.from(balanceSatValue as int? ?? 0);
+
+      final BigInt pendingSendSat = pendingSendSatValue is String
+          ? BigInt.parse(pendingSendSatValue)
+          : BigInt.from(pendingSendSatValue as int? ?? 0);
+
+      final BigInt pendingReceiveSat = pendingReceiveSatValue is String
+          ? BigInt.parse(pendingReceiveSatValue)
+          : BigInt.from(pendingReceiveSatValue as int? ?? 0);
+
+      return WalletInfo(
+        balanceSat: balanceSat,
+        pendingSendSat: pendingSendSat,
+        pendingReceiveSat: pendingReceiveSat,
+        fingerprint: json['fingerprint'] as String? ?? '',
+        pubkey: json['pubkey'] as String? ?? '',
+        assetBalances: json['assetBalances'] != null
+            ? (json['assetBalances'] as List<dynamic>)
+                .map((dynamic json) => AssetBalanceFromJson.fromJson(json))
+                .toList()
+            : <AssetBalance>[],
+      );
+    } catch (e, stack) {
+      _logger.severe('Error parsing WalletInfo from JSON: $e\n$stack');
       return null;
     }
-
-    return WalletInfo(
-      balanceSat: BigInt.parse(json['balanceSat'] as String),
-      pendingSendSat: BigInt.parse(json['pendingSendSat'] as String),
-      pendingReceiveSat: BigInt.parse(json['pendingReceiveSat'] as String),
-      fingerprint: json['fingerprint'] as String,
-      pubkey: json['pubkey'] as String,
-      assetBalances: json['assetBalances'] != null
-          ? (json['assetBalances'] as List<dynamic>)
-              .map((dynamic json) => AssetBalanceFromJson.fromJson(json))
-              .toList()
-          : <AssetBalance>[],
-    );
   }
 }
 
@@ -124,14 +137,24 @@ extension BlockchainInfoFromJson on BlockchainInfo {
       return null;
     }
 
-    if (json['liquidTip'] == null || json['bitcoinTip'] == null) {
-      _logger.warning('BlockchainInfo has missing fields on AccountState JSON.');
+    try {
+      final dynamic liquidTipValue = json['liquidTip'];
+      final dynamic bitcoinTipValue = json['bitcoinTip'];
+
+      // Handle both integer and string formats
+      final int liquidTip =
+          liquidTipValue is String ? int.parse(liquidTipValue) : (liquidTipValue as int? ?? 0);
+
+      final int bitcoinTip =
+          bitcoinTipValue is String ? int.parse(bitcoinTipValue) : (bitcoinTipValue as int? ?? 0);
+
+      return BlockchainInfo(
+        liquidTip: liquidTip,
+        bitcoinTip: bitcoinTip,
+      );
+    } catch (e, stack) {
+      _logger.severe('Error parsing BlockchainInfo from JSON: $e\n$stack');
       return null;
     }
-
-    return BlockchainInfo(
-      liquidTip: int.parse(json['liquidTip'] as String),
-      bitcoinTip: int.parse(json['bitcoinTip'] as String),
-    );
   }
 }

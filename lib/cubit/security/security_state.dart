@@ -166,33 +166,83 @@ class SecurityState {
   /// [json] Map containing security state data
   factory SecurityState.fromJson(Map<String, dynamic> json) {
     try {
-      return SecurityState(
-        pinStatus: _parseEnum<PinStatus>(
-          value: json['pinStatus'],
+      PinStatus pinStatus;
+      final dynamic pinStatusValue = json['pinStatus'];
+      if (pinStatusValue is String) {
+        pinStatus = _parseEnum(
+          value: pinStatusValue,
           enumValues: PinStatus.values,
           defaultValue: PinStatus.initial,
-        ),
-        autoLockTimeout: Duration(
-          seconds: json['autoLockTimeout'] ?? _kDefaultLockTimeout,
-        ),
-        biometricType: _parseEnum<BiometricType>(
-          value: json['biometricType'],
+        );
+      } else if (pinStatusValue is int && pinStatusValue >= 0 && pinStatusValue < PinStatus.values.length) {
+        pinStatus = PinStatus.values[pinStatusValue];
+      } else {
+        pinStatus = PinStatus.initial;
+      }
+
+      int timeoutSeconds;
+      final dynamic timeoutValue = json['autoLockTimeout'];
+      if (timeoutValue is int) {
+        timeoutSeconds = timeoutValue;
+      } else if (timeoutValue is String) {
+        timeoutSeconds = int.tryParse(timeoutValue) ?? _kDefaultLockTimeout;
+      } else {
+        timeoutSeconds = _kDefaultLockTimeout;
+      }
+
+      BiometricType biometricType;
+      final dynamic bioTypeValue = json['biometricType'];
+      if (bioTypeValue is String) {
+        biometricType = _parseEnum(
+          value: bioTypeValue,
           enumValues: BiometricType.values,
           defaultValue: BiometricType.none,
-        ),
-        lockState: _parseEnum<LockState>(
-          value: json['lockState'],
+        );
+      } else if (bioTypeValue is int && bioTypeValue >= 0 && bioTypeValue < BiometricType.values.length) {
+        biometricType = BiometricType.values[bioTypeValue];
+      } else {
+        biometricType = BiometricType.none;
+      }
+
+      LockState lockState;
+      final dynamic lockStateValue = json['lockState'];
+      if (lockStateValue is String) {
+        lockState = _parseEnum(
+          value: lockStateValue,
           enumValues: LockState.values,
-          defaultValue: LockState.unlocked,
-        ),
-        mnemonicStatus: _parseEnum<MnemonicStatus>(
-          value: json['mnemonicStatus'],
+          defaultValue: LockState.initial,
+        );
+      } else if (lockStateValue is int && lockStateValue >= 0 && lockStateValue < LockState.values.length) {
+        lockState = LockState.values[lockStateValue];
+      } else {
+        lockState = LockState.initial;
+      }
+
+      MnemonicStatus mnemonicStatus;
+      final dynamic mnemonicStatusValue = json['mnemonicStatus'];
+      if (mnemonicStatusValue is String) {
+        mnemonicStatus = _parseEnum(
+          value: mnemonicStatusValue,
           enumValues: MnemonicStatus.values,
-          defaultValue: MnemonicStatus.initial,
-        ),
+          defaultValue: MnemonicStatus.unverified,
+        );
+      } else if (mnemonicStatusValue is int &&
+          mnemonicStatusValue >= 0 &&
+          mnemonicStatusValue < MnemonicStatus.values.length) {
+        mnemonicStatus = MnemonicStatus.values[mnemonicStatusValue];
+      } else {
+        mnemonicStatus = MnemonicStatus.unverified;
+      }
+
+      return SecurityState(
+        pinStatus: pinStatus,
+        autoLockTimeout: Duration(seconds: timeoutSeconds),
+        biometricType: biometricType,
+        lockState: lockState,
+        mnemonicStatus: mnemonicStatus,
       );
-    } catch (e) {
-      _logger.severe('Error parsing SecurityState from JSON: $e');
+    } catch (e, stack) {
+      _logger.severe('Error parsing SecurityState from JSON: $e\n$stack');
       return const SecurityState.initial();
     }
   }

@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
+
+final Logger _logger = Logger('PaymentData');
 
 // TODO(erdemyerebasmaz): Liquid - Remove if having PaymentData is not necessary with Liquid SDK
 /// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
@@ -73,20 +76,63 @@ class PaymentData {
   }
 
   factory PaymentData.fromJson(Map<String, dynamic> json) {
-    return PaymentData(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      destination: json['destination'],
-      txId: json['txId'],
-      unblindingData: json['unblindingData'],
-      paymentTime: DateTime.parse(json['paymentTime']),
-      amountSat: json['amountSat'],
-      feeSat: json['feeSat'],
-      paymentType: PaymentType.values.byName(json['paymentType']),
-      status: PaymentState.values.byName(json['status']),
-      details: PaymentDetailsFromJson.fromJson(json['details']),
-    );
+    try {
+      PaymentType paymentType;
+      final dynamic paymentTypeValue = json['paymentType'];
+      if (paymentTypeValue is String) {
+        final String enumValue =
+            paymentTypeValue.contains('.') ? paymentTypeValue.split('.').last : paymentTypeValue;
+
+        try {
+          paymentType = PaymentType.values.firstWhere(
+            (PaymentType type) => type.name == enumValue,
+            orElse: () => PaymentType.send,
+          );
+        } catch (_) {
+          paymentType = PaymentType.send;
+        }
+      } else {
+        paymentType = PaymentType.send;
+      }
+
+      PaymentState status;
+      final dynamic statusValue = json['status'];
+      if (statusValue is String) {
+        final String enumValue = statusValue.contains('.') ? statusValue.split('.').last : statusValue;
+
+        try {
+          status = PaymentState.values.firstWhere(
+            (PaymentState state) => state.name == enumValue,
+            orElse: () => PaymentState.pending,
+          );
+        } catch (_) {
+          status = PaymentState.pending;
+        }
+      } else {
+        status = PaymentState.pending;
+      }
+
+      return PaymentData(
+        id: json['id'] as String? ?? '',
+        title: json['title'] as String? ?? '',
+        description: json['description'] as String? ?? '',
+        destination: json['destination'] as String? ?? '',
+        txId: json['txId'] as String? ?? '',
+        unblindingData: json['unblindingData'] as String? ?? '',
+        paymentTime:
+            json['paymentTime'] != null ? DateTime.parse(json['paymentTime'] as String) : DateTime.now(),
+        amountSat: json['amountSat'] as int? ?? 0,
+        feeSat: json['feeSat'] as int? ?? 0,
+        paymentType: paymentType,
+        status: status,
+        details: PaymentDetailsFromJson.fromJson(
+          json['details'] != null ? json['details'] as Map<String, dynamic> : <String, dynamic>{},
+        ),
+      );
+    } catch (e) {
+      _logger.warning('Error deserializing PaymentData: $e');
+      throw FormatException('Failed to parse PaymentData: $e');
+    }
   }
 
   @override
