@@ -1,4 +1,7 @@
+import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
+
+final Logger _logger = Logger('UserProfileState');
 
 class UserProfileState {
   final UserProfileSettings profileSettings;
@@ -12,9 +15,19 @@ class UserProfileState {
   }
 
   factory UserProfileState.fromJson(Map<String, dynamic> json) {
-    return UserProfileState(
-      profileSettings: UserProfileSettings.fromJson(json['profileSettings'] as Map<String, dynamic>),
-    );
+    try {
+      final dynamic profileSettingsJson = json['profileSettings'];
+      if (profileSettingsJson == null) {
+        return UserProfileState.initial();
+      }
+
+      return UserProfileState(
+        profileSettings: UserProfileSettings.fromJson(profileSettingsJson as Map<String, dynamic>),
+      );
+    } catch (e) {
+      _logger.warning('Error deserializing UserProfileState: $e');
+      return UserProfileState.initial();
+    }
   }
 
   Map<String, dynamic> toJson() {

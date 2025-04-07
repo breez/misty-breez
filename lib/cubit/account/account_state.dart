@@ -53,10 +53,10 @@ class AccountState {
 
   factory AccountState.fromJson(Map<String, dynamic> json) {
     return AccountState(
-      isRestoring: json['isRestoring'] ?? false,
+      isRestoring: json['isRestoring'] as bool? ?? false,
       didCompleteInitialSync: false,
-      walletInfo: WalletInfoFromJson.fromJson(json['walletInfo']),
-      blockchainInfo: BlockchainInfoFromJson.fromJson(json['blockchainInfo']),
+      walletInfo: WalletInfoFromJson.fromJson(json['walletInfo'] as Map<String, dynamic>?),
+      blockchainInfo: BlockchainInfoFromJson.fromJson(json['blockchainInfo'] as Map<String, dynamic>?),
     );
   }
 

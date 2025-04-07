@@ -83,8 +83,10 @@ class PaymentFilters implements Exception {
   }
 
   Map<String, dynamic> toJson() {
+    final List<String>? filtersJson = filters?.map((PaymentType type) => type.name).toList();
+
     return <String, dynamic>{
-      'filters': filters.toString(),
+      'filters': filtersJson,
       'fromTimestamp': fromTimestamp,
       'toTimestamp': toTimestamp,
       'assetTicker': assetTicker,
