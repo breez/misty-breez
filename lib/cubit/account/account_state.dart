@@ -43,7 +43,7 @@ class AccountState {
 
   bool get hasBalance => walletInfo != null && walletInfo!.balanceSat > BigInt.zero;
 
-  Map<String, dynamic>? toJson() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'isRestoring': isRestoring,
       'walletInfo': walletInfo?.toJson(),

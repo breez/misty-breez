@@ -129,13 +129,33 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }
 
   @override
-  PaymentsState? fromJson(Map<String, dynamic> json) {
-    return PaymentsState.fromJson(json);
+  PaymentsState? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      _logger.severe('No stored data found.');
+      return null;
+    }
+
+    try {
+      final PaymentsState result = PaymentsState.fromJson(json);
+      _logger.fine('Successfully hydrated with $result');
+      return result;
+    } catch (e, stackTrace) {
+      _logger.severe('Error hydrating: $e');
+      _logger.fine('Stack trace: $stackTrace');
+      return PaymentsState.initial();
+    }
   }
 
   @override
   Map<String, dynamic>? toJson(PaymentsState state) {
-    return state.toJson();
+    try {
+      final Map<String, dynamic> result = state.toJson();
+      _logger.fine('Serialized: $result');
+      return result;
+    } catch (e) {
+      _logger.severe('Error serializing: $e');
+      return null;
+    }
   }
 
   @override

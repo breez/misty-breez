@@ -16,6 +16,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
     this.breezSdkLiquid,
   ) : super(AccountState.initial()) {
     hydrate();
+
     _listenAccountChanges();
     _listenInitialSyncEvent();
   }
@@ -43,13 +44,33 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
   }
 
   @override
-  AccountState? fromJson(Map<String, dynamic> json) {
-    return AccountState.fromJson(json);
+  AccountState? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      _logger.severe('No stored data found.');
+      return null;
+    }
+
+    try {
+      final AccountState result = AccountState.fromJson(json);
+      _logger.fine('Successfully hydrated with $result');
+      return result;
+    } catch (e, stackTrace) {
+      _logger.severe('Error hydrating: $e');
+      _logger.fine('Stack trace: $stackTrace');
+      return AccountState.initial();
+    }
   }
 
   @override
   Map<String, dynamic>? toJson(AccountState state) {
-    return state.toJson();
+    try {
+      final Map<String, dynamic> result = state.toJson();
+      _logger.fine('Serialized: $result');
+      return result;
+    } catch (e) {
+      _logger.severe('Error serializing: $e');
+      return null;
+    }
   }
 
   @override

@@ -66,7 +66,7 @@ class PaymentsState {
     ).toList();
   }
 
-  Map<String, dynamic>? toJson() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'payments': payments.map((PaymentData payment) => payment.toJson()).toList(),
       'paymentFilters': paymentFilters.toJson(),
