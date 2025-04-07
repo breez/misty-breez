@@ -40,7 +40,6 @@ class SendChainSwapButton extends StatelessWidget {
       await showProcessingPaymentSheet(
         context,
         promptError: true,
-        popToHomeOnCompletion: true,
         paymentFunc: () async => await chainSwapCubit.payOnchain(req: req),
       );
     } catch (e) {

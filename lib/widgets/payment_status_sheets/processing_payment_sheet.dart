@@ -16,7 +16,7 @@ Future<dynamic> showProcessingPaymentSheet(
   BuildContext context, {
   required Future<dynamic> Function() paymentFunc,
   bool promptError = false,
-  bool popToHomeOnCompletion = false,
+  bool popToHomeOnCompletion = true,
   bool isLnPayment = false,
   bool isLnUrlPayment = false,
   bool isBroadcast = false,
