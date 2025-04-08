@@ -85,6 +85,20 @@ extension WalletInfoFromJson on WalletInfo {
       return null;
     }
 
+    final List<String> requiredFields = <String>[
+      'balanceSat',
+      'pendingSendSat',
+      'pendingReceiveSat',
+      'fingerprint',
+      'pubkey',
+      'assetBalances',
+    ];
+    final List<String> missingFields = requiredFields.where((String field) => json[field] == null).toList();
+    if (missingFields.isNotEmpty) {
+      _logger.warning('WalletInfo missing required fields: ${missingFields.join(', ')}');
+      return null;
+    }
+
     try {
       return WalletInfo(
         balanceSat: JsonParsingUtils.parseToBigInt(json['balanceSat'], fieldName: 'balanceSat'),
@@ -119,6 +133,13 @@ extension BlockchainInfoFromJson on BlockchainInfo {
   static BlockchainInfo? fromJson(Map<String, dynamic>? json) {
     if (json == null) {
       _logger.info('blockchainInfo is missing from AccountState JSON.');
+      return null;
+    }
+
+    final List<String> requiredFields = <String>['liquidTip', 'bitcoinTip'];
+    final List<String> missingFields = requiredFields.where((String field) => json[field] == null).toList();
+    if (missingFields.isNotEmpty) {
+      _logger.warning('BlockchainInfo missing required fields: ${missingFields.join(', ')}');
       return null;
     }
 
