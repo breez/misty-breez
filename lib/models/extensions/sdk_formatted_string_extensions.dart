@@ -1,5 +1,6 @@
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/models.dart';
 
 extension RefundableSwapFormatter on RefundableSwap {
@@ -94,5 +95,35 @@ extension RefundRequestFormatted on RefundRequest {
       'swapAddress: $swapAddress, '
       'refundAddress: $refundAddress, '
       'feeRateSatPerVbyte: $feeRateSatPerVbyte'
+      ')';
+}
+
+extension SendDestinationFormatter on SendDestination {
+  String toFormattedString() {
+    return switch (this) {
+      SendDestination_LiquidAddress(
+        addressData: final LiquidAddressData addressData,
+        bip353Address: final String? bip353Address
+      ) =>
+        'Liquid Address: ${addressData.address}${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
+      SendDestination_Bolt11(
+        invoice: final LNInvoice invoice,
+        bip353Address: final String? bip353Address,
+      ) =>
+        'BOLT11 Invoice: ${invoice.toFormattedString()}${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
+      SendDestination_Bolt12(
+        offer: final LNOffer offer,
+        receiverAmountSat: final BigInt receiverAmountSat,
+        bip353Address: final String? bip353Address
+      ) =>
+        'BOLT12 Offer: ${offer.toFormattedString()}, Amount: $receiverAmountSat sats${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
+    };
+  }
+}
+
+extension PrepareSendResponseFormatter on PrepareSendResponse {
+  String toFormattedString() => 'PrepareSendResponse('
+      'destination: $destination, '
+      'feesSat: $feesSat'
       ')';
 }

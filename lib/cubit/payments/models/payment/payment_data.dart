@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/models/models.dart';
-import 'package:misty_breez/utils/utils.dart';
 
 // TODO(erdemyerebasmaz): Liquid - Remove if having PaymentData is not necessary with Liquid SDK
 /// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or

@@ -113,7 +113,7 @@ class InputHandler extends Handler {
   }
 
   Future<dynamic> handleLnInvoice(BuildContext context, LNInvoice lnInvoice) async {
-    _logger.info('handle LnInvoice $lnInvoice');
+    _logger.info('handle LnInvoice ${lnInvoice.toFormattedString()}');
     final NavigatorState navigator = Navigator.of(context);
     final PrepareSendResponse? prepareResponse = await navigator.pushNamed<PrepareSendResponse?>(
       LnPaymentPage.routeName,
