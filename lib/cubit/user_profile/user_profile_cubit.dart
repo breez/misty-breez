@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
@@ -148,5 +149,5 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   }
 
   @override
-  String get storagePrefix => 'XWa';
+  String get storagePrefix => defaultTargetPlatform == TargetPlatform.iOS ? 'XWa' : 'UserProfileCubit';
 }

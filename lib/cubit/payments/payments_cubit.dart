@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
@@ -159,5 +160,5 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }
 
   @override
-  String get storagePrefix => 'IWa';
+  String get storagePrefix => defaultTargetPlatform == TargetPlatform.iOS ? 'IWa' : 'PaymentsCubit';
 }

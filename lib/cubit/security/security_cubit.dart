@@ -310,7 +310,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   }
 
   @override
-  String get storagePrefix => 'SWa';
+  String get storagePrefix => defaultTargetPlatform == TargetPlatform.iOS ? 'SWa' : 'SecurityCubit';
 
   @override
   Future<void> close() {

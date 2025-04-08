@@ -1,4 +1,5 @@
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
@@ -74,7 +75,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
   }
 
   @override
-  String get storagePrefix => 'lVa';
+  String get storagePrefix => defaultTargetPlatform == TargetPlatform.iOS ? 'lVa' : 'AccountCubit';
 
   void setIsRestoring(bool isRestoring) {
     emit(state.copyWith(isRestoring: isRestoring));
