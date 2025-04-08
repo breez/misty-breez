@@ -1,6 +1,6 @@
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/models/payment_details_extension.dart';
+import 'package:misty_breez/models/models.dart';
 
 extension RefundableSwapFormatter on RefundableSwap {
   String toFormattedString() => 'RefundableSwap('

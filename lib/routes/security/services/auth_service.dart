@@ -2,9 +2,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/routes/security/models/auth_result.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/routes/routes.dart';
 
 final Logger _logger = Logger('AuthService');
 

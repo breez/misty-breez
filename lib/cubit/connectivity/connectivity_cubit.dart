@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 export 'connectivity_state.dart';
 

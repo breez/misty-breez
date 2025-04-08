@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:misty_breez/routes/initial_walkthrough/widgets/tagline_text.dart';
+import 'package:misty_breez/routes/routes.dart';
 
 class AnimatedLogo extends StatefulWidget {
   const AnimatedLogo({super.key});

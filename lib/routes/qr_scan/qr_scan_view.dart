@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:misty_breez/routes/routes.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/routes/routes.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 final Logger _logger = Logger('QRScan');

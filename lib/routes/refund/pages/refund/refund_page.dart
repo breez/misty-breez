@@ -2,14 +2,14 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/sdk_formatted_string_extensions.dart';
+import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:logging/logging.dart';
 
 export 'widgets/widgets.dart';
 

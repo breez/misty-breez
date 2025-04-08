@@ -1,7 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:misty_breez/services/network/ln_payment_validator_service.dart';
+import 'package:misty_breez/services/services.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 class PaymentDetailsSheetPreimage extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/payment_details_extension.dart';
+import 'package:misty_breez/models/models.dart';
 
 class PaymentsState {
   final List<PaymentData> payments;

@@ -1,6 +1,6 @@
 import 'package:breez_preferences/breez_preferences.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 final Logger _logger = Logger('LnUrlRegistrationManager');
 final RegExp _usernameRegex = RegExp(r'^([^@]+)');

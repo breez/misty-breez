@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/theme/theme.dart';
-import 'package:misty_breez/utils/a11y/min_font_size.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 final Logger _logger = Logger('BreezAvatarDialog');

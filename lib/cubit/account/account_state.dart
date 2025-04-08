@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
-import 'package:misty_breez/models/asset_extension.dart';
+import 'package:misty_breez/models/models.dart';
 
 final Logger _logger = Logger('AccountState');
 

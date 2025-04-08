@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 final Logger _logger = Logger('LnUrlPayService');
 

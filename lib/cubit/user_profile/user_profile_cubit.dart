@@ -8,7 +8,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/user_profile.dart';
+import 'package:misty_breez/models/models.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 

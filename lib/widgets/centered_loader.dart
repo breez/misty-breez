@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:misty_breez/widgets/loader.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 class CenteredLoader extends StatelessWidget {
   final Color? color;

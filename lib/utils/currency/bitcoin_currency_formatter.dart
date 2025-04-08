@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
-import 'package:misty_breez/models/currency.dart';
-import 'package:misty_breez/utils/utils.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('BitcoinCurrencyFormatter');
 

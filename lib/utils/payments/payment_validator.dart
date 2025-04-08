@@ -1,8 +1,8 @@
 import 'package:breez_translations/generated/breez_translations.dart';
-import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/currency.dart';
-import 'package:misty_breez/utils/utils.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('PaymentValidator');
 
