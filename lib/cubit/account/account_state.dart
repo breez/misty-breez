@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('AccountState');
 
@@ -85,27 +86,11 @@ extension WalletInfoFromJson on WalletInfo {
     }
 
     try {
-      final dynamic balanceSatValue = json['balanceSat'];
-      final dynamic pendingSendSatValue = json['pendingSendSat'];
-      final dynamic pendingReceiveSatValue = json['pendingReceiveSat'];
-
-      // Handle both integer and string formats
-      final BigInt balanceSat = balanceSatValue is String
-          ? BigInt.parse(balanceSatValue)
-          : BigInt.from(balanceSatValue as int? ?? 0);
-
-      final BigInt pendingSendSat = pendingSendSatValue is String
-          ? BigInt.parse(pendingSendSatValue)
-          : BigInt.from(pendingSendSatValue as int? ?? 0);
-
-      final BigInt pendingReceiveSat = pendingReceiveSatValue is String
-          ? BigInt.parse(pendingReceiveSatValue)
-          : BigInt.from(pendingReceiveSatValue as int? ?? 0);
-
       return WalletInfo(
-        balanceSat: balanceSat,
-        pendingSendSat: pendingSendSat,
-        pendingReceiveSat: pendingReceiveSat,
+        balanceSat: JsonParsingUtils.parseToBigInt(json['balanceSat'], fieldName: 'balanceSat'),
+        pendingSendSat: JsonParsingUtils.parseToBigInt(json['pendingSendSat'], fieldName: 'pendingSendSat'),
+        pendingReceiveSat:
+            JsonParsingUtils.parseToBigInt(json['pendingReceiveSat'], fieldName: 'pendingReceiveSat'),
         fingerprint: json['fingerprint'] as String? ?? '',
         pubkey: json['pubkey'] as String? ?? '',
         assetBalances: json['assetBalances'] != null
@@ -138,19 +123,9 @@ extension BlockchainInfoFromJson on BlockchainInfo {
     }
 
     try {
-      final dynamic liquidTipValue = json['liquidTip'];
-      final dynamic bitcoinTipValue = json['bitcoinTip'];
-
-      // Handle both integer and string formats
-      final int liquidTip =
-          liquidTipValue is String ? int.parse(liquidTipValue) : (liquidTipValue as int? ?? 0);
-
-      final int bitcoinTip =
-          bitcoinTipValue is String ? int.parse(bitcoinTipValue) : (bitcoinTipValue as int? ?? 0);
-
       return BlockchainInfo(
-        liquidTip: liquidTip,
-        bitcoinTip: bitcoinTip,
+        liquidTip: JsonParsingUtils.parseToInt(json['liquidTip'], fieldName: 'liquidTip'),
+        bitcoinTip: JsonParsingUtils.parseToInt(json['bitcoinTip'], fieldName: 'bitcoinTip'),
       );
     } catch (e, stack) {
       _logger.severe('Error parsing BlockchainInfo from JSON: $e\n$stack');
