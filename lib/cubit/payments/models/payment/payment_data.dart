@@ -102,7 +102,7 @@ class PaymentData {
         paymentType: paymentType,
         status: status,
         details: PaymentDetailsFromJson.fromJson(
-          json['details'] != null ? json['details'] as Map<String, dynamic> : <String, dynamic>{},
+          json['details'] as Map<String, dynamic>? ?? <String, dynamic>{},
         ),
       );
     } catch (e) {
@@ -175,15 +175,14 @@ class _PaymentDataFactory {
   _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
-    final String bip353Address = _payment.details.map(
-          lightning: (PaymentDetails_Lightning details) => details.bip353Address,
-          liquid: (PaymentDetails_Liquid details) => details.bip353Address,
-          orElse: () => null,
-        ) ??
-        '';
+    final String? bip353Address = _payment.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.bip353Address,
+      liquid: (PaymentDetails_Liquid details) => details.bip353Address,
+      orElse: () => null,
+    );
 
-    if (bip353Address.isNotEmpty) {
-      return bip353Address;
+    if (bip353Address?.isNotEmpty == true) {
+      return bip353Address!;
     }
 
     final LnUrlInfo? lnurlInfo = _payment.details.map(
@@ -192,21 +191,17 @@ class _PaymentDataFactory {
       orElse: () => null,
     );
 
-    String? lnUrlTitle;
     if (lnurlInfo != null) {
       final Map<String, dynamic> metadataMap = getLnurlPayMetadata(_payment.details);
-
-      lnUrlTitle = lnurlInfo.lnAddress?.isNotEmpty == true
+      final String? lnUrlTitle = lnurlInfo.lnAddress?.isNotEmpty == true
           ? lnurlInfo.lnAddress
-          : metadataMap.isNotEmpty
-              ? metadataMap['text/identifier'] ?? metadataMap['text/email']
-              : lnurlInfo.lnurlPayDomain?.isNotEmpty == true
-                  ? lnurlInfo.lnurlPayDomain
-                  : null;
-    }
+          : metadataMap['text/identifier'] ??
+              metadataMap['text/email'] ??
+              (lnurlInfo.lnurlPayDomain?.isNotEmpty == true ? lnurlInfo.lnurlPayDomain : null);
 
-    if (lnUrlTitle != null && lnUrlTitle.isNotEmpty) {
-      return lnUrlTitle;
+      if (lnUrlTitle != null && lnUrlTitle.isNotEmpty) {
+        return lnUrlTitle;
+      }
     }
 
     final String description = _description();
@@ -218,8 +213,7 @@ class _PaymentDataFactory {
   }
 
   String _description() {
-    final String? description = _getDescriptionFromDetails();
-    return _getLnurlDescription() ?? description ?? '';
+    return _getLnurlDescription() ?? _getDescriptionFromDetails() ?? '';
   }
 
   String? _getDescriptionFromDetails() {
@@ -247,14 +241,14 @@ Map<String, dynamic> getLnurlPayMetadata(PaymentDetails details) {
     orElse: () => null,
   );
 
+  return _parseLnurlPayMetadata(lnurlPayMetadata);
+}
+
+Map<String, dynamic> _parseLnurlPayMetadata(String? lnurlPayMetadata) {
   if (lnurlPayMetadata == null) {
     return <String, dynamic>{};
   }
 
-  return _parseLnurlPayMetadata(lnurlPayMetadata);
-}
-
-Map<String, dynamic> _parseLnurlPayMetadata(String lnurlPayMetadata) {
   try {
     final dynamic decoded = json.decode(lnurlPayMetadata);
     if (decoded is! List) {
@@ -264,8 +258,8 @@ Map<String, dynamic> _parseLnurlPayMetadata(String lnurlPayMetadata) {
     return Map<String, dynamic>.fromEntries(
       decoded
           .whereType<List<dynamic>>()
-          .where((dynamic item) => item.length == 2 && item[0] is String)
-          .map((dynamic item) => MapEntry<String, dynamic>(item[0] as String, item[1])),
+          .where((List<dynamic> item) => item.length == 2 && item[0] is String)
+          .map((List<dynamic> item) => MapEntry<String, dynamic>(item[0] as String, item[1])),
     );
   } catch (_) {
     return <String, dynamic>{};
