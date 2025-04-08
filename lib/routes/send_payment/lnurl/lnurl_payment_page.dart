@@ -9,10 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/services/lnurl_service.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:service_injector/service_injector.dart';
 
 export 'widgets/widgets.dart';
@@ -166,7 +168,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
   Future<void> _prepareLnUrlPayment(int amountSat) async {
     final BreezTranslations texts = context.texts();
-    final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
     try {
       setState(() {
         _isCalculatingFees = true;
@@ -184,7 +186,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         amount: payAmount,
         validateSuccessActionUrl: false,
       );
-      final PrepareLnUrlPayResponse response = await lnUrlCubit.prepareLnurlPay(req: req);
+      final PrepareLnUrlPayResponse response = await lnUrlService.prepareLnurlPay(req: req);
       setState(() {
         _prepareResponse = response;
       });
@@ -615,12 +617,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final AccountCubit accountCubit = context.read<AccountCubit>();
     final AccountState accountState = accountCubit.state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
-    final LnUrlCubit lnUrlCubit = context.read<LnUrlCubit>();
-    return lnUrlCubit.validateLnUrlPayment(
-      BigInt.from(amount),
-      outgoing,
-      _lightningLimits!,
-      balance,
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+    return lnUrlService.validateLnUrlPayment(
+      amount: BigInt.from(amount),
+      outgoing: outgoing,
+      lightningLimits: _lightningLimits!,
+      balance: balance,
     );
   }
 

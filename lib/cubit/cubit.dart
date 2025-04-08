@@ -9,7 +9,6 @@ export 'csv_exporter.dart';
 export 'currency/currency_cubit.dart';
 export 'input/input_cubit.dart';
 export 'ln_address/ln_address_cubit.dart';
-export 'lnurl/lnurl_cubit.dart';
 export 'model/models.dart';
 export 'payment_limits/payment_limits_cubit.dart';
 export 'payments/payments_cubit.dart';
