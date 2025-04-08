@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/models/payment_method_extension.dart';
+import 'package:misty_breez/models/models.dart';
 
 class PaymentMethodDropdown extends StatelessWidget {
   final PaymentMethod currentPaymentMethod;

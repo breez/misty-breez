@@ -5,7 +5,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:misty_breez/theme/theme.dart';
-import 'package:misty_breez/utils/constants/wordlist.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 class RestoreForm extends StatefulWidget {
   final GlobalKey formKey;

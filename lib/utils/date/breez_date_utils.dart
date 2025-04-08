@@ -2,8 +2,8 @@ import 'dart:io' show Platform;
 
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:intl/intl.dart';
-import 'package:misty_breez/utils/constants/app_constants.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 final Logger _logger = Logger('BreezDateUtils');

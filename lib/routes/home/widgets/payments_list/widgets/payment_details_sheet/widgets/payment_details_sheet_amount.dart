@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/currency.dart';
+import 'package:misty_breez/models/models.dart';
 
 class PaymentDetailsSheetAmount extends StatelessWidget {
   final PaymentData paymentData;

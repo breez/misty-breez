@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/routes/security/models/auth_result.dart';
-import 'package:misty_breez/routes/security/services/auth_service.dart';
-import 'package:misty_breez/routes/security/widgets/pin_code.dart';
+import 'package:misty_breez/routes/routes.dart';
 
 final Logger _logger = Logger('SecuredPage');
 

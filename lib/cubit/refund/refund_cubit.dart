@@ -4,10 +4,10 @@ import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/sdk_formatted_string_extensions.dart';
-import 'package:misty_breez/utils/utils.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 export 'refund_state.dart';
 

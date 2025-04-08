@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:logging/logging.dart';
 import 'package:service_injector/service_injector.dart';
 
 final Logger _logger = Logger('AccountRequiredActionsIndicator');

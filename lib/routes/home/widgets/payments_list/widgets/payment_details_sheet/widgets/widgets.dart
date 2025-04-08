@@ -1,10 +1,12 @@
 export 'payment_details_sheet_amount.dart';
+export 'payment_details_sheet_bip_353_address.dart';
 export 'payment_details_sheet_content_title.dart';
 export 'payment_details_sheet_date.dart';
 export 'payment_details_sheet_description.dart';
 export 'payment_details_sheet_destination_pubkey.dart';
 export 'payment_details_sheet_expiry.dart';
 export 'payment_details_sheet_fee.dart';
+export 'payment_details_sheet_header.dart';
 export 'payment_details_sheet_invoice.dart';
 export 'payment_details_sheet_lnurl_ln_address.dart';
 export 'payment_details_sheet_lnurl_pay_comment.dart';

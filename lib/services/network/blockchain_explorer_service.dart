@@ -1,4 +1,4 @@
-import 'package:misty_breez/utils/constants/app_constants.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 /// Utility service for constructing blockchain explorer URLs
 class BlockchainExplorerService {

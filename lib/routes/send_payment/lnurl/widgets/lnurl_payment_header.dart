@@ -4,7 +4,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/theme/src/theme.dart';
+import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 
 class LnPaymentHeader extends StatefulWidget {

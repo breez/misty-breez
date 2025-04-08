@@ -1,8 +1,7 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:misty_breez/routes/security/widgets/security_settings/security_mnemonics_mgmt.dart';
-import 'package:misty_breez/routes/security/widgets/security_settings/security_pin_mgmt.dart';
+import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 
 /// A screen for managing security settings

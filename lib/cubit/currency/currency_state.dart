@@ -1,5 +1,5 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/models/currency.dart';
+import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/utils/utils.dart';
 
 class CurrencyState {

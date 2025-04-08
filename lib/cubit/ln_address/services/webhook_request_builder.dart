@@ -1,5 +1,5 @@
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 
 final Logger _logger = Logger('WebhookRequestBuilder');
 

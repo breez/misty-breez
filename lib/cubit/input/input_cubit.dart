@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:lightning_links/lightning_links.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 import 'package:rxdart/rxdart.dart';
 
 export 'input_state.dart';

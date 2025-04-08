@@ -10,12 +10,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:flutter_svg/svg.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 // ignore: uri_does_not_exist
 import 'package:misty_breez/firebase/firebase_options.dart';
 import 'package:misty_breez/main/bootstrap_error_page.dart';
-import 'package:misty_breez/utils/date/breez_date_utils.dart';
-import 'package:logging/logging.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';

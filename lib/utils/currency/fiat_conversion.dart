@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:intl/intl.dart';
-import 'package:misty_breez/utils/utils.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('FiatConversion');
 

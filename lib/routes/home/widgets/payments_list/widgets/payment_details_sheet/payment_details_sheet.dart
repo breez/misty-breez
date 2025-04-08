@@ -2,13 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/payment_details_extension.dart';
-import 'package:misty_breez/routes/home/widgets/payments_list/widgets/payment_details_sheet/widgets/payment_details_sheet_bip_353_address.dart';
-import 'package:misty_breez/routes/home/widgets/payments_list/widgets/payment_details_sheet/widgets/payment_details_sheet_header.dart';
-import 'package:misty_breez/routes/home/widgets/widgets.dart';
-import 'package:misty_breez/theme/theme.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/theme/theme.dart';
 
 export 'widgets/widgets.dart';
 

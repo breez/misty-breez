@@ -2,9 +2,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:misty_breez/routes/security/models/auth_result.dart';
-import 'package:misty_breez/routes/security/services/auth_service.dart';
-import 'package:misty_breez/routes/security/widgets/pin_code.dart';
+import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 
 final Logger _logger = Logger('ChangePinPage');
