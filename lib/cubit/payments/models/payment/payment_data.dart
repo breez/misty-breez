@@ -4,12 +4,11 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('PaymentData');
 
-// TODO(erdemyerebasmaz): Liquid - Remove if having PaymentData is not necessary with Liquid SDK
-/// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
-/// info to avoid conflicts and make it easier to differentiate when reading the code.
+/// Holds formatted payment data for UI display
 class PaymentData {
   final String id;
   final String title;
@@ -77,40 +76,17 @@ class PaymentData {
 
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     try {
-      PaymentType paymentType;
-      final dynamic paymentTypeValue = json['paymentType'];
-      if (paymentTypeValue is String) {
-        final String enumValue =
-            paymentTypeValue.contains('.') ? paymentTypeValue.split('.').last : paymentTypeValue;
+      final PaymentType paymentType = parseEnum(
+        value: json['paymentType'],
+        enumValues: PaymentType.values,
+        defaultValue: PaymentType.send,
+      );
 
-        try {
-          paymentType = PaymentType.values.firstWhere(
-            (PaymentType type) => type.name == enumValue,
-            orElse: () => PaymentType.send,
-          );
-        } catch (_) {
-          paymentType = PaymentType.send;
-        }
-      } else {
-        paymentType = PaymentType.send;
-      }
-
-      PaymentState status;
-      final dynamic statusValue = json['status'];
-      if (statusValue is String) {
-        final String enumValue = statusValue.contains('.') ? statusValue.split('.').last : statusValue;
-
-        try {
-          status = PaymentState.values.firstWhere(
-            (PaymentState state) => state.name == enumValue,
-            orElse: () => PaymentState.pending,
-          );
-        } catch (_) {
-          status = PaymentState.pending;
-        }
-      } else {
-        status = PaymentState.pending;
-      }
+      final PaymentState status = parseEnum(
+        value: json['status'],
+        enumValues: PaymentState.values,
+        defaultValue: PaymentState.pending,
+      );
 
       return PaymentData(
         id: json['id'] as String? ?? '',
