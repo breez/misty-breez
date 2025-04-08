@@ -74,7 +74,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
   }
 
   @override
-  String get storagePrefix => 'account_cubit';
+  String get storagePrefix => 'lVa';
 
   void setIsRestoring(bool isRestoring) {
     emit(state.copyWith(isRestoring: isRestoring));

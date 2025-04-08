@@ -9,20 +9,8 @@ import 'package:path_provider/path_provider.dart';
 final Logger _logger = Logger('HydratedBlocStorage');
 
 class _HydratedBlocStorageConfig {
-  /// Default box name used for storage
-  static const String boxName = 'hydrated_box';
-
   /// Default storage directory name
   static const String storageDirectoryName = 'bloc_storage';
-
-  /// Mapping from obfuscated keys to readable keys
-  static const Map<String, String> keyMappings = <String, String>{
-    'IWa': 'payments_cubit',
-    'SWa': 'security_cubit',
-    'XWa': 'user_profile_cubit',
-    'lVa': 'account_cubit',
-    'xVa': 'currency_cubit',
-  };
 
   /// Storage path instance for the application
   static String? _storagePath;
@@ -37,17 +25,13 @@ class _HydratedBlocStorageConfig {
   }
 }
 
-/// Service responsible for initializing HydratedBloc storage with
-/// support for migrations.
+/// Service responsible for initializing HydratedBloc storage
 class HydratedBlocStorage {
   /// Initializes HydratedBloc storage
   Future<void> initialize() async {
     final String storagePath = await _HydratedBlocStorageConfig.storagePath;
 
-    // Initialize Hive for migration
-    Hive.init(storagePath);
-
-    await _HydratedBlocMigrator().migrate();
+    await _StorageDebugger().debugStorage();
 
     // Initialize HydratedBloc storage
     HydratedBloc.storage = await HydratedStorage.build(
@@ -55,81 +39,6 @@ class HydratedBlocStorage {
     );
 
     _logger.config('HydratedBloc storage initialized at: $storagePath');
-  }
-}
-
-/// Internal class for handling HydratedBloc storage migrations
-class _HydratedBlocMigrator {
-  /// Migrate data from old keys to new keys
-  Future<void> migrate() async {
-    final String storagePath = await _HydratedBlocStorageConfig.storagePath;
-    final Box<dynamic> box = await Hive.openBox(_HydratedBlocStorageConfig.boxName, path: storagePath);
-
-    try {
-      if (await _shouldSkipMigration(box)) {
-        return;
-      }
-
-      _logger.config('Starting HydratedBloc storage migration...');
-
-      /// Debug storage state before migration begins for comparison
-      await _StorageDebugger().debugStorage();
-
-      await _performMigrationAndLogResults(box);
-    } catch (e) {
-      _logger.warning('Error during migration: $e');
-    } finally {
-      await box.close();
-    }
-  }
-
-  /// Check if migration should be skipped
-  Future<bool> _shouldSkipMigration(Box<dynamic> box) async {
-    final Iterable<dynamic> allKeys = box.keys;
-
-    if (allKeys.isEmpty) {
-      _logger.config('No keys found for migration');
-      return true;
-    }
-
-    return false;
-  }
-
-  /// Perform the migration and log the results immediately
-  Future<void> _performMigrationAndLogResults(Box<dynamic> box) async {
-    int migratedCount = 0;
-
-    for (final dynamic entry in _HydratedBlocStorageConfig.keyMappings.entries) {
-      final dynamic oldKey = entry.key;
-      final dynamic newKey = entry.value;
-
-      if (await _migrateKeyIfExists(box, oldKey, newKey)) {
-        migratedCount++;
-      }
-    }
-    await _logMigrationResults(migratedCount);
-  }
-
-  /// Migrate a single key if it exists in the box
-  Future<bool> _migrateKeyIfExists(Box<dynamic> box, dynamic oldKey, dynamic newKey) async {
-    if (box.containsKey(oldKey)) {
-      final dynamic data = box.get(oldKey);
-      await box.put(newKey, data);
-      await box.delete(oldKey);
-      return true;
-    }
-
-    return false;
-  }
-
-  /// Log migration results and debug storage if needed
-  Future<void> _logMigrationResults(int migratedCount) async {
-    if (migratedCount > 0) {
-      _logger.config('Migration complete: $migratedCount items migrated');
-      await _StorageDebugger().debugStorage();
-    } else {
-      _logger.config('No items were migrated');
-    }
   }
 }
 

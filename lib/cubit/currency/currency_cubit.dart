@@ -124,5 +124,5 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin<CurrencyStat
   }
 
   @override
-  String get storagePrefix => 'currency_cubit';
+  String get storagePrefix => 'xVa';
 }

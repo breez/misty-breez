@@ -148,5 +148,5 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   }
 
   @override
-  String get storagePrefix => 'user_profile_cubit';
+  String get storagePrefix => 'XWa';
 }

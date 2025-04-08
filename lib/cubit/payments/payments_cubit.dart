@@ -159,5 +159,5 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }
 
   @override
-  String get storagePrefix => 'payments_cubit';
+  String get storagePrefix => 'IWa';
 }

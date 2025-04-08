@@ -310,7 +310,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   }
 
   @override
-  String get storagePrefix => 'security_cubit';
+  String get storagePrefix => 'SWa';
 
   @override
   Future<void> close() {
