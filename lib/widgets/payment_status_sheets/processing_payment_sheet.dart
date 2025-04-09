@@ -48,7 +48,7 @@ class ProcessingPaymentSheet extends StatefulWidget {
   const ProcessingPaymentSheet({
     required this.paymentFunc,
     this.promptError = false,
-    this.popToHomeOnCompletion = false,
+    this.popToHomeOnCompletion = true,
     this.isLnPayment = false,
     this.isLnUrlPayment = false,
     this.isBroadcast = false,
