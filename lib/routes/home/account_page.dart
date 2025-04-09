@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
@@ -41,7 +40,7 @@ class AccountPage extends StatelessWidget {
                 );
 
                 final bool showPaymentsList = filteredPayments.isNotEmpty;
-                final bool hasTypeFilter = paymentFilters.filters != PaymentType.values;
+                final bool hasTypeFilter = paymentFilters.hasTypeFilters;
                 final int? startDate = paymentFilters.fromTimestamp;
                 final int? endDate = paymentFilters.toTimestamp;
                 final bool hasDateFilter = startDate != null && endDate != null;

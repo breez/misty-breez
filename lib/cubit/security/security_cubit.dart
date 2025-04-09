@@ -36,6 +36,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   /// [_keyChain] Secure storage implementation for sensitive data
   SecurityCubit(this._keyChain) : super(const SecurityState.initial()) {
     hydrate();
+
     _initializeSecurityState();
   }
 
@@ -275,25 +276,41 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   }
 
   @override
-  SecurityState? fromJson(Map<String, dynamic> json) {
+  SecurityState? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      _logger.severe('No stored data found.');
+      return null;
+    }
+
     try {
-      final SecurityState restoredState = SecurityState.fromJson(json);
+      final SecurityState result = SecurityState.fromJson(json);
+      _logger.fine('Successfully hydrated with $result');
 
       // Update lock state based on PIN status
-      _updateLockState(restoredState.pinStatus == PinStatus.enabled ? LockState.locked : LockState.unlocked);
+      _updateLockState(result.pinStatus == PinStatus.enabled ? LockState.locked : LockState.unlocked);
 
-      _logger.info('Security state restored from storage');
-      return restoredState;
-    } catch (e) {
-      _logger.severe('Error restoring security state from storage: $e');
+      return result;
+    } catch (e, stackTrace) {
+      _logger.severe('Error hydrating: $e');
+      _logger.fine('Stack trace: $stackTrace');
       return const SecurityState.initial();
     }
   }
 
   @override
   Map<String, dynamic>? toJson(SecurityState state) {
-    return state.toJson();
+    try {
+      final Map<String, dynamic> result = state.toJson();
+      _logger.fine('Serialized: $result');
+      return result;
+    } catch (e) {
+      _logger.severe('Error serializing: $e');
+      return null;
+    }
   }
+
+  @override
+  String get storagePrefix => defaultTargetPlatform == TargetPlatform.iOS ? 'SWa' : 'SecurityCubit';
 
   @override
   Future<void> close() {

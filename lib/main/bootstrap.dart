@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:breez_logger/breez_logger.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,15 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:flutter_svg/svg.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 // ignore: uri_does_not_exist
 import 'package:misty_breez/firebase/firebase_options.dart';
-import 'package:misty_breez/main/bootstrap_error_page.dart';
+import 'package:misty_breez/main/main.dart';
 import 'package:misty_breez/utils/utils.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:shared_preference_app_group/shared_preference_app_group.dart';
 
@@ -58,10 +54,8 @@ Future<void> bootstrap(AppBuilder builder) async {
       );
     }
 
-    final Directory appDir = await getApplicationDocumentsDirectory();
-    HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: HydratedStorageDirectory(p.join(appDir.path, 'bloc_storage')),
-    );
+    await HydratedBlocStorage().initialize();
+
     final SdkConnectivityCubit sdkConnectivityCubit = SdkConnectivityCubit(
       breezSdkLiquid: injector.breezSdkLiquid,
       credentialsManager: injector.credentialsManager,

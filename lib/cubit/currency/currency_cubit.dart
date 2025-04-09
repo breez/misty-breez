@@ -1,17 +1,22 @@
 import 'dart:async';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
 export 'currency_state.dart';
+
+final Logger _logger = Logger('CurrencyCubit');
 
 class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin<CurrencyState> {
   final BreezSDKLiquid breezSdkLiquid;
 
   CurrencyCubit(this.breezSdkLiquid) : super(CurrencyState.initial()) {
     hydrate();
+
     _initializeCurrencyCubit();
   }
 
@@ -90,12 +95,35 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin<CurrencyStat
   }
 
   @override
-  CurrencyState fromJson(Map<String, dynamic> json) {
-    return CurrencyState.fromJson(json);
+  CurrencyState? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      _logger.severe('No stored data found.');
+      return null;
+    }
+
+    try {
+      final CurrencyState result = CurrencyState.fromJson(json);
+      _logger.fine('Successfully hydrated with $result');
+      return result;
+    } catch (e, stackTrace) {
+      _logger.severe('Error hydrating: $e');
+      _logger.fine('Stack trace: $stackTrace');
+      return CurrencyState.initial();
+    }
   }
 
   @override
-  Map<String, dynamic> toJson(CurrencyState state) {
-    return state.toJson();
+  Map<String, dynamic>? toJson(CurrencyState state) {
+    try {
+      final Map<String, dynamic> result = state.toJson();
+      _logger.fine('Serialized: $result');
+      return result;
+    } catch (e) {
+      _logger.severe('Error serializing: $e');
+      return null;
+    }
   }
+
+  @override
+  String get storagePrefix => defaultTargetPlatform == TargetPlatform.iOS ? 'xVa' : 'CurrencyCubit';
 }

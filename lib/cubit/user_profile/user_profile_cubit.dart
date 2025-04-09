@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
@@ -118,12 +119,35 @@ class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserPr
   }
 
   @override
-  UserProfileState fromJson(Map<String, dynamic> json) {
-    return UserProfileState.fromJson(json);
+  UserProfileState? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      _logger.severe('No stored data found.');
+      return null;
+    }
+
+    try {
+      final UserProfileState result = UserProfileState.fromJson(json);
+      _logger.fine('Successfully hydrated with $result');
+      return result;
+    } catch (e, stackTrace) {
+      _logger.severe('Error hydrating: $e');
+      _logger.fine('Stack trace: $stackTrace');
+      return UserProfileState.initial();
+    }
   }
 
   @override
-  Map<String, dynamic> toJson(UserProfileState state) {
-    return state.toJson();
+  Map<String, dynamic>? toJson(UserProfileState state) {
+    try {
+      final Map<String, dynamic> result = state.toJson();
+      _logger.fine('Serialized: $result');
+      return result;
+    } catch (e) {
+      _logger.severe('Error serializing: $e');
+      return null;
+    }
   }
+
+  @override
+  String get storagePrefix => defaultTargetPlatform == TargetPlatform.iOS ? 'XWa' : 'UserProfileCubit';
 }

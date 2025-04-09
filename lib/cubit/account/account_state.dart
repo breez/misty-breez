@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('AccountState');
 
@@ -43,7 +44,7 @@ class AccountState {
 
   bool get hasBalance => walletInfo != null && walletInfo!.balanceSat > BigInt.zero;
 
-  Map<String, dynamic>? toJson() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'isRestoring': isRestoring,
       'walletInfo': walletInfo?.toJson(),
@@ -53,10 +54,10 @@ class AccountState {
 
   factory AccountState.fromJson(Map<String, dynamic> json) {
     return AccountState(
-      isRestoring: json['isRestoring'] ?? false,
+      isRestoring: json['isRestoring'] as bool? ?? false,
       didCompleteInitialSync: false,
-      walletInfo: WalletInfoFromJson.fromJson(json['walletInfo']),
-      blockchainInfo: BlockchainInfoFromJson.fromJson(json['blockchainInfo']),
+      walletInfo: WalletInfoFromJson.fromJson(json['walletInfo'] as Map<String, dynamic>?),
+      blockchainInfo: BlockchainInfoFromJson.fromJson(json['blockchainInfo'] as Map<String, dynamic>?),
     );
   }
 
@@ -84,27 +85,38 @@ extension WalletInfoFromJson on WalletInfo {
       return null;
     }
 
-    if (json['balanceSat'] == null ||
-        json['pendingSendSat'] == null ||
-        json['pendingReceiveSat'] == null ||
-        json['fingerprint'] == null ||
-        json['pubkey'] == null) {
-      _logger.warning('WalletInfo has missing fields on AccountState JSON.');
+    final List<String> requiredFields = <String>[
+      'balanceSat',
+      'pendingSendSat',
+      'pendingReceiveSat',
+      'fingerprint',
+      'pubkey',
+      'assetBalances',
+    ];
+    final List<String> missingFields = requiredFields.where((String field) => json[field] == null).toList();
+    if (missingFields.isNotEmpty) {
+      _logger.warning('WalletInfo missing required fields: ${missingFields.join(', ')}');
       return null;
     }
 
-    return WalletInfo(
-      balanceSat: BigInt.parse(json['balanceSat'] as String),
-      pendingSendSat: BigInt.parse(json['pendingSendSat'] as String),
-      pendingReceiveSat: BigInt.parse(json['pendingReceiveSat'] as String),
-      fingerprint: json['fingerprint'] as String,
-      pubkey: json['pubkey'] as String,
-      assetBalances: json['assetBalances'] != null
-          ? (json['assetBalances'] as List<dynamic>)
-              .map((dynamic json) => AssetBalanceFromJson.fromJson(json))
-              .toList()
-          : <AssetBalance>[],
-    );
+    try {
+      return WalletInfo(
+        balanceSat: JsonParsingUtils.parseToBigInt(json['balanceSat'], fieldName: 'balanceSat'),
+        pendingSendSat: JsonParsingUtils.parseToBigInt(json['pendingSendSat'], fieldName: 'pendingSendSat'),
+        pendingReceiveSat:
+            JsonParsingUtils.parseToBigInt(json['pendingReceiveSat'], fieldName: 'pendingReceiveSat'),
+        fingerprint: json['fingerprint'] as String? ?? '',
+        pubkey: json['pubkey'] as String? ?? '',
+        assetBalances: json['assetBalances'] != null
+            ? (json['assetBalances'] as List<dynamic>)
+                .map((dynamic json) => AssetBalanceFromJson.fromJson(json))
+                .toList()
+            : <AssetBalance>[],
+      );
+    } catch (e, stack) {
+      _logger.severe('Error parsing WalletInfo from JSON: $e\n$stack');
+      return null;
+    }
   }
 }
 
@@ -124,14 +136,21 @@ extension BlockchainInfoFromJson on BlockchainInfo {
       return null;
     }
 
-    if (json['liquidTip'] == null || json['bitcoinTip'] == null) {
-      _logger.warning('BlockchainInfo has missing fields on AccountState JSON.');
+    final List<String> requiredFields = <String>['liquidTip', 'bitcoinTip'];
+    final List<String> missingFields = requiredFields.where((String field) => json[field] == null).toList();
+    if (missingFields.isNotEmpty) {
+      _logger.warning('BlockchainInfo missing required fields: ${missingFields.join(', ')}');
       return null;
     }
 
-    return BlockchainInfo(
-      liquidTip: int.parse(json['liquidTip'] as String),
-      bitcoinTip: int.parse(json['bitcoinTip'] as String),
-    );
+    try {
+      return BlockchainInfo(
+        liquidTip: JsonParsingUtils.parseToInt(json['liquidTip'], fieldName: 'liquidTip'),
+        bitcoinTip: JsonParsingUtils.parseToInt(json['bitcoinTip'], fieldName: 'bitcoinTip'),
+      );
+    } catch (e, stack) {
+      _logger.severe('Error parsing BlockchainInfo from JSON: $e\n$stack');
+      return null;
+    }
   }
 }

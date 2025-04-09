@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('SecurityState');
 
@@ -166,59 +167,46 @@ class SecurityState {
   /// [json] Map containing security state data
   factory SecurityState.fromJson(Map<String, dynamic> json) {
     try {
+      final PinStatus pinStatus = parseEnum(
+        value: json['pinStatus'],
+        enumValues: PinStatus.values,
+        defaultValue: PinStatus.initial,
+      );
+
+      final int timeoutSeconds = json['autoLockTimeout'] is int
+          ? json['autoLockTimeout'] as int
+          : json['autoLockTimeout'] is String
+              ? int.tryParse(json['autoLockTimeout'] as String) ?? _kDefaultLockTimeout
+              : _kDefaultLockTimeout;
+
+      final BiometricType biometricType = parseEnum(
+        value: json['biometricType'],
+        enumValues: BiometricType.values,
+        defaultValue: BiometricType.none,
+      );
+
+      final LockState lockState = parseEnum(
+        value: json['lockState'],
+        enumValues: LockState.values,
+        defaultValue: LockState.initial,
+      );
+
+      final MnemonicStatus mnemonicStatus = parseEnum(
+        value: json['mnemonicStatus'],
+        enumValues: MnemonicStatus.values,
+        defaultValue: MnemonicStatus.unverified,
+      );
+
       return SecurityState(
-        pinStatus: _parseEnum<PinStatus>(
-          value: json['pinStatus'],
-          enumValues: PinStatus.values,
-          defaultValue: PinStatus.initial,
-        ),
-        autoLockTimeout: Duration(
-          seconds: json['autoLockTimeout'] ?? _kDefaultLockTimeout,
-        ),
-        biometricType: _parseEnum<BiometricType>(
-          value: json['biometricType'],
-          enumValues: BiometricType.values,
-          defaultValue: BiometricType.none,
-        ),
-        lockState: _parseEnum<LockState>(
-          value: json['lockState'],
-          enumValues: LockState.values,
-          defaultValue: LockState.unlocked,
-        ),
-        mnemonicStatus: _parseEnum<MnemonicStatus>(
-          value: json['mnemonicStatus'],
-          enumValues: MnemonicStatus.values,
-          defaultValue: MnemonicStatus.initial,
-        ),
+        pinStatus: pinStatus,
+        autoLockTimeout: Duration(seconds: timeoutSeconds),
+        biometricType: biometricType,
+        lockState: lockState,
+        mnemonicStatus: mnemonicStatus,
       );
-    } catch (e) {
-      _logger.severe('Error parsing SecurityState from JSON: $e');
+    } catch (e, stack) {
+      _logger.severe('Error parsing SecurityState from JSON: $e\n$stack');
       return const SecurityState.initial();
-    }
-  }
-
-  /// Helper method to safely parse enum values from strings
-  ///
-  /// [value] String value to parse
-  /// [enumValues] List of possible enum values
-  /// [defaultValue] Default value to use if parsing fails
-  static T _parseEnum<T extends Enum>({
-    required String? value,
-    required List<T> enumValues,
-    required T defaultValue,
-  }) {
-    if (value == null) {
-      return defaultValue;
-    }
-
-    try {
-      return enumValues.firstWhere(
-        (T e) => e.name == value,
-        orElse: () => defaultValue,
-      );
-    } catch (_) {
-      _logger.warning('Failed to parse enum value: $value, using default: ${defaultValue.name}');
-      return defaultValue;
     }
   }
 

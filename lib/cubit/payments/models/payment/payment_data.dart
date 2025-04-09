@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 
-// TODO(erdemyerebasmaz): Liquid - Remove if having PaymentData is not necessary with Liquid SDK
-/// Hold formatted data from Payment to be displayed in the UI, using the minutiae noun instead of details or
-/// info to avoid conflicts and make it easier to differentiate when reading the code.
+final Logger _logger = Logger('PaymentData');
+
+/// Holds formatted payment data for UI display
 class PaymentData {
   final String id;
   final String title;
@@ -73,20 +75,40 @@ class PaymentData {
   }
 
   factory PaymentData.fromJson(Map<String, dynamic> json) {
-    return PaymentData(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      destination: json['destination'],
-      txId: json['txId'],
-      unblindingData: json['unblindingData'],
-      paymentTime: DateTime.parse(json['paymentTime']),
-      amountSat: json['amountSat'],
-      feeSat: json['feeSat'],
-      paymentType: PaymentType.values.byName(json['paymentType']),
-      status: PaymentState.values.byName(json['status']),
-      details: PaymentDetailsFromJson.fromJson(json['details']),
-    );
+    try {
+      final PaymentType paymentType = parseEnum(
+        value: json['paymentType'],
+        enumValues: PaymentType.values,
+        defaultValue: PaymentType.send,
+      );
+
+      final PaymentState status = parseEnum(
+        value: json['status'],
+        enumValues: PaymentState.values,
+        defaultValue: PaymentState.pending,
+      );
+
+      return PaymentData(
+        id: json['id'] as String? ?? '',
+        title: json['title'] as String? ?? '',
+        description: json['description'] as String? ?? '',
+        destination: json['destination'] as String? ?? '',
+        txId: json['txId'] as String? ?? '',
+        unblindingData: json['unblindingData'] as String? ?? '',
+        paymentTime:
+            json['paymentTime'] != null ? DateTime.parse(json['paymentTime'] as String) : DateTime.now(),
+        amountSat: json['amountSat'] as int? ?? 0,
+        feeSat: json['feeSat'] as int? ?? 0,
+        paymentType: paymentType,
+        status: status,
+        details: PaymentDetailsFromJson.fromJson(
+          json['details'] as Map<String, dynamic>? ?? <String, dynamic>{},
+        ),
+      );
+    } catch (e) {
+      _logger.warning('Error deserializing PaymentData: $e');
+      throw FormatException('Failed to parse PaymentData: $e');
+    }
   }
 
   @override
@@ -153,15 +175,14 @@ class _PaymentDataFactory {
   _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
-    final String bip353Address = _payment.details.map(
-          lightning: (PaymentDetails_Lightning details) => details.bip353Address,
-          liquid: (PaymentDetails_Liquid details) => details.bip353Address,
-          orElse: () => null,
-        ) ??
-        '';
+    final String? bip353Address = _payment.details.map(
+      lightning: (PaymentDetails_Lightning details) => details.bip353Address,
+      liquid: (PaymentDetails_Liquid details) => details.bip353Address,
+      orElse: () => null,
+    );
 
-    if (bip353Address.isNotEmpty) {
-      return bip353Address;
+    if (bip353Address?.isNotEmpty == true) {
+      return bip353Address!;
     }
 
     final LnUrlInfo? lnurlInfo = _payment.details.map(
@@ -170,21 +191,17 @@ class _PaymentDataFactory {
       orElse: () => null,
     );
 
-    String? lnUrlTitle;
     if (lnurlInfo != null) {
       final Map<String, dynamic> metadataMap = getLnurlPayMetadata(_payment.details);
-
-      lnUrlTitle = lnurlInfo.lnAddress?.isNotEmpty == true
+      final String? lnUrlTitle = lnurlInfo.lnAddress?.isNotEmpty == true
           ? lnurlInfo.lnAddress
-          : metadataMap.isNotEmpty
-              ? metadataMap['text/identifier'] ?? metadataMap['text/email']
-              : lnurlInfo.lnurlPayDomain?.isNotEmpty == true
-                  ? lnurlInfo.lnurlPayDomain
-                  : null;
-    }
+          : metadataMap['text/identifier'] ??
+              metadataMap['text/email'] ??
+              (lnurlInfo.lnurlPayDomain?.isNotEmpty == true ? lnurlInfo.lnurlPayDomain : null);
 
-    if (lnUrlTitle != null && lnUrlTitle.isNotEmpty) {
-      return lnUrlTitle;
+      if (lnUrlTitle != null && lnUrlTitle.isNotEmpty) {
+        return lnUrlTitle;
+      }
     }
 
     final String description = _description();
@@ -196,8 +213,7 @@ class _PaymentDataFactory {
   }
 
   String _description() {
-    final String? description = _getDescriptionFromDetails();
-    return _getLnurlDescription() ?? description ?? '';
+    return _getLnurlDescription() ?? _getDescriptionFromDetails() ?? '';
   }
 
   String? _getDescriptionFromDetails() {
@@ -225,14 +241,14 @@ Map<String, dynamic> getLnurlPayMetadata(PaymentDetails details) {
     orElse: () => null,
   );
 
+  return _parseLnurlPayMetadata(lnurlPayMetadata);
+}
+
+Map<String, dynamic> _parseLnurlPayMetadata(String? lnurlPayMetadata) {
   if (lnurlPayMetadata == null) {
     return <String, dynamic>{};
   }
 
-  return _parseLnurlPayMetadata(lnurlPayMetadata);
-}
-
-Map<String, dynamic> _parseLnurlPayMetadata(String lnurlPayMetadata) {
   try {
     final dynamic decoded = json.decode(lnurlPayMetadata);
     if (decoded is! List) {
@@ -242,8 +258,8 @@ Map<String, dynamic> _parseLnurlPayMetadata(String lnurlPayMetadata) {
     return Map<String, dynamic>.fromEntries(
       decoded
           .whereType<List<dynamic>>()
-          .where((dynamic item) => item.length == 2 && item[0] is String)
-          .map((dynamic item) => MapEntry<String, dynamic>(item[0] as String, item[1])),
+          .where((List<dynamic> item) => item.length == 2 && item[0] is String)
+          .map((List<dynamic> item) => MapEntry<String, dynamic>(item[0] as String, item[1])),
     );
   } catch (_) {
     return <String, dynamic>{};
