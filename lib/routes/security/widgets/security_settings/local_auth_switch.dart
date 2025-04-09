@@ -59,7 +59,7 @@ class LocalAuthSwitch extends StatelessWidget {
     if (switchEnabled) {
       _logger.info('Attempting to enable biometric authentication');
 
-      authService.authenticateWithBiometrics().then(
+      authService.authenticateWithBiometrics(updateLockStateOnFailure: false).then(
         (AuthResult authResult) {
           if (authResult.success) {
             _logger.info('Biometric authentication successful, enabling');
