@@ -22,13 +22,15 @@ class ProcessingPaymentContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            PaymentProcessingTitle(isBroadcast: isBroadcast),
-            PaymentProcessingLoadingMessage(isBroadcast: isBroadcast),
-            const PaymentProcessingAnimation(),
-          ],
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              PaymentProcessingTitle(isBroadcast: isBroadcast),
+              PaymentProcessingLoadingMessage(isBroadcast: isBroadcast),
+              const PaymentProcessingAnimation(),
+            ],
+          ),
         ),
         Positioned(
           top: MediaQuery.of(context).viewInsets.top + 40.0,
