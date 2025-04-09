@@ -1,7 +1,7 @@
 name: misty_breez
 description: "Flutter app showcasing Breez SDK - Nodeless (Liquid Implementation)."
 publish_to: 'none'
-version: 0.1.2
+version: 0.1.3
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
