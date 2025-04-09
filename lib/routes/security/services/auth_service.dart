@@ -88,10 +88,7 @@ class AuthService {
       );
     } catch (e) {
       _logger.severe('Biometric authentication error: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: _texts.lock_screen_pin_match_exception,
-      );
+      rethrow;
     }
   }
 

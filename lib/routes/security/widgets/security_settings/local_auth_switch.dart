@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 final Logger _logger = Logger('LocalAuthSwitch');
@@ -66,12 +67,16 @@ class LocalAuthSwitch extends StatelessWidget {
             authService.enableBiometricAuth();
           } else {
             _logger.warning('Biometric authentication failed, not enabling');
+            _logger.warning('Reason: ${authResult.errorMessage}');
             authService.disableBiometricAuth();
           }
         },
         onError: (Object error) {
           _logger.severe('Error during biometric authentication: $error');
           authService.disableBiometricAuth();
+          if (context.mounted) {
+            showFlushbar(context, message: ExceptionHandler.extractMessage(error, context.texts()));
+          }
         },
       );
     } else {

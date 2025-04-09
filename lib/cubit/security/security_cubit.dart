@@ -233,16 +233,16 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
 
       _logger.severe('Biometric error: ${error.code} - ${error.message}', error);
       await _auth.stopAuthentication();
-      return false;
       if (updateLockStateOnFailure) {
         _updateLockState(LockState.locked);
       }
+      throw '${error.code} - ${error.message}';
     } catch (e) {
       _logger.severe('Unexpected error during biometric authentication: $e');
       if (updateLockStateOnFailure) {
         _updateLockState(LockState.locked);
       }
-      return false;
+      rethrow;
     }
   }
 
