@@ -197,7 +197,10 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   /// [localizedReason] Reason for authentication displayed to user
   ///
   /// Returns true if authentication succeeded, false otherwise
-  Future<bool> authenticateWithBiometrics(String localizedReason) async {
+  Future<bool> authenticateWithBiometrics(
+    String localizedReason, {
+    bool updateLockStateOnFailure = true,
+  }) async {
     final BiometricType detectedType = await detectBiometricType();
     if (detectedType == BiometricType.none) {
       _logger.warning('Attempted biometric authentication when not available');
@@ -217,7 +220,9 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
         ],
       );
 
-      _updateLockState(authenticated ? LockState.unlocked : LockState.locked);
+      if (authenticated || updateLockStateOnFailure) {
+        _updateLockState(authenticated ? LockState.unlocked : LockState.locked);
+      }
       _logger.info('Biometric authentication ${authenticated ? 'succeeded' : 'failed'}');
       return authenticated;
     } on PlatformException catch (error) {
@@ -228,12 +233,16 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
 
       _logger.severe('Biometric error: ${error.code} - ${error.message}', error);
       await _auth.stopAuthentication();
-      _updateLockState(LockState.locked);
-      return false;
+      if (updateLockStateOnFailure) {
+        _updateLockState(LockState.locked);
+      }
+      throw '${error.code} - ${error.message}';
     } catch (e) {
       _logger.severe('Unexpected error during biometric authentication: $e');
-      _updateLockState(LockState.locked);
-      return false;
+      if (updateLockStateOnFailure) {
+        _updateLockState(LockState.locked);
+      }
+      rethrow;
     }
   }
 

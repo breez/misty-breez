@@ -65,12 +65,15 @@ class AuthService {
   /// Authenticates using biometrics
   ///
   /// Returns an [AuthResult] with the authentication outcome
-  Future<AuthResult> authenticateWithBiometrics() async {
+  Future<AuthResult> authenticateWithBiometrics({
+    bool updateLockStateOnFailure = true,
+  }) async {
     _logger.fine('Attempting biometric authentication');
 
     try {
       final bool isValid = await _securityCubit.authenticateWithBiometrics(
         _texts.security_and_backup_validate_biometrics_reason,
+        updateLockStateOnFailure: updateLockStateOnFailure,
       );
 
       if (isValid) {
@@ -85,10 +88,7 @@ class AuthService {
       );
     } catch (e) {
       _logger.severe('Biometric authentication error: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: _texts.lock_screen_pin_match_exception,
-      );
+      rethrow;
     }
   }
 
