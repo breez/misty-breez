@@ -288,12 +288,6 @@ class _DevelopersViewState extends State<DevelopersView> {
               if (walletInfo.pendingSendSat > BigInt.zero) ...<Widget>[
                 StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
               ],
-              StatusItem(
-                label: 'Asset Balances',
-                value: '${walletInfo.assetBalances.map(
-                      (AssetBalance assetBalance) => assetBalance.name,
-                    ).toList()}',
-              ),
             ],
             if (blockchainInfo != null) ...<Widget>[
               StatusItem(label: 'Liquid Tip', value: '${blockchainInfo.liquidTip}'),
