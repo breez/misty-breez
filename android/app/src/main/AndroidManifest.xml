@@ -30,7 +30,7 @@
         </service>
 
         <activity
-            android:name=".MainActivity"
+            android:name="io.flutter.embedding.android.FlutterFragmentActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:taskAffinity=""
