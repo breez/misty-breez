@@ -174,7 +174,7 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
   }
 
   Future<LNURLPageResult> _lnurlWithdraw() async {
-    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context, listen: false);
     _logger.info(
       'LNURL withdraw of ${widget.amountSats} sats where '
       'min is ${widget.requestData.minWithdrawable.toInt() ~/ 1000} sats '

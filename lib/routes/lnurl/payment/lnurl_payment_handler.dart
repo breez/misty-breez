@@ -31,7 +31,7 @@ Future<LNURLPageResult?> handlePayRequest(
     context,
     isLnUrlPayment: true,
     paymentFunc: () async {
-      final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+      final LnUrlService lnUrlService = Provider.of<LnUrlService>(context, listen: false);
       final LnUrlPayRequest req = LnUrlPayRequest(prepareResponse: prepareResponse);
       return await lnUrlService.lnurlPay(req: req);
     },

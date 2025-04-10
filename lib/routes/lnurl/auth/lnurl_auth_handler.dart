@@ -24,7 +24,7 @@ Future<LNURLPageResult?> handleAuthRequest(
         final TransparentPageRoute<void> loaderRoute = createLoaderRoute(context);
         navigator.push(loaderRoute);
         try {
-          final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+          final LnUrlService lnUrlService = Provider.of<LnUrlService>(context, listen: false);
           final LnUrlCallbackStatus resp = await lnUrlService.lnurlAuth(reqData: reqData);
           if (resp is LnUrlCallbackStatus_Ok) {
             _logger.info('LNURL auth success');

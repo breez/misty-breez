@@ -449,7 +449,7 @@ class LnUrlWithdrawPageState extends State<LnUrlWithdrawPage> {
   void _validateLnUrlWithdraw(int amount, bool outgoing) {
     final AccountState accountState = context.read<AccountCubit>().state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
-    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context, listen: false);
     return lnUrlService.validateLnUrlPayment(
       amount: BigInt.from(amount),
       outgoing: outgoing,

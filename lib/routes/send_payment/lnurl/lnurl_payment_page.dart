@@ -168,7 +168,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
   Future<void> _prepareLnUrlPayment(int amountSat) async {
     final BreezTranslations texts = context.texts();
-    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context, listen: false);
     try {
       setState(() {
         _isCalculatingFees = true;
@@ -617,7 +617,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final AccountCubit accountCubit = context.read<AccountCubit>();
     final AccountState accountState = accountCubit.state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
-    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context);
+    final LnUrlService lnUrlService = Provider.of<LnUrlService>(context, listen: false);
     return lnUrlService.validateLnUrlPayment(
       amount: BigInt.from(amount),
       outgoing: outgoing,
