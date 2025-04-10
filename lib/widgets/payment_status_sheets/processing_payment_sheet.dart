@@ -145,7 +145,11 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     // Close the bottom sheet after 2.25 seconds
     Future<void>.delayed(PaymentSheetTiming.popDelay, () {
       if (mounted) {
-        Navigator.of(context).pop(payResult);
+        if (payResult == null) {
+          _closeSheetOnCompletion();
+        } else {
+          Navigator.of(context).pop(payResult);
+        }
       }
     });
   }

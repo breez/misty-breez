@@ -132,12 +132,17 @@ class InputHandler extends Handler {
         return await paymentsCubit.sendPayment(prepareResponse);
       },
     ).then((dynamic result) {
-      if (result is String && context.mounted) {
-        showFlushbar(context, message: result);
-      }
       // TODO(erdemyerebasmaz): Handle SendPaymentResponse results, return a SendPaymentResult to be handled by handleResult()
       if (result is SendPaymentResponse) {
         _logger.info('SendPaymentResponse result - payment status: ${result.payment.status}');
+      }
+
+      // Navigate to home after handling the result
+      if (context.mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
+        if (result is String) {
+          showFlushbar(context, message: result);
+        }
       }
     });
   }
@@ -170,12 +175,17 @@ class InputHandler extends Handler {
         return await paymentsCubit.sendPayment(prepareResponse);
       },
     ).then((dynamic result) {
-      if (result is String && context.mounted) {
-        showFlushbar(context, message: result);
-      }
       // TODO(erdemyerebasmaz): Handle SendPaymentResponse results, return a SendPaymentResult to be handled by handleResult()
       if (result is SendPaymentResponse) {
         _logger.info('SendPaymentResponse result - payment status: ${result.payment.status}');
+      }
+
+      // Navigate to home after handling the result
+      if (context.mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
+        if (result is String) {
+          showFlushbar(context, message: result);
+        }
       }
     });
   }
