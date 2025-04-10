@@ -66,9 +66,13 @@ void handleLNURLPaymentPageResult(BuildContext context, LNURLPageResult result) 
   if (result.successAction != null) {
     // TODO(erdemyerebasmaz): Remove _handleSuccessAction or refactor it to only log success action message contents
     _handleSuccessAction(context, result.successAction!);
+    // Pop to home page
+    Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
   } else if (result.hasError) {
     _logger.info("Handle LNURL payment page result with error '${result.error}'");
-    throw Exception(result.errorMessage);
+    // Pop to home page & show error message
+    Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
+    showFlushbar(context, message: result.errorMessage);
   }
 }
 

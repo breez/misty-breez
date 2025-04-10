@@ -66,4 +66,6 @@ void handleLNURLAuthPageResult(BuildContext context, LNURLPageResult result) {
     );
     throw result.error!;
   }
+  // TODO(erdemyerebasmaz): Handle LNURLAuthPageResult
+  Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
 }

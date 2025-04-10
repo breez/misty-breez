@@ -17,6 +17,8 @@ void handleLNURLPageResult(BuildContext context, LNURLPageResult result) {
       handleLNURLAuthPageResult(context, result);
       break;
     default:
+      // Pop to Home page for unrecognized LNURLPageResult protocols
+      Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
       break;
   }
 }
