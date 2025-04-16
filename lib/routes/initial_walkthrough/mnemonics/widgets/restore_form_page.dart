@@ -4,6 +4,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
@@ -12,11 +13,13 @@ class RestoreFormPage extends StatefulWidget {
   final int lastPage;
   final VoidCallback changePage;
   final List<String> initialWords;
+  final String lastErrorMessage;
 
   const RestoreFormPage({
     required this.currentPage,
     required this.lastPage,
     required this.changePage,
+    this.lastErrorMessage = '',
     super.key,
     this.initialWords = const <String>[],
   });
@@ -46,7 +49,6 @@ class RestoreFormPageState extends State<RestoreFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
     final BreezTranslations texts = context.texts();
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,13 +60,19 @@ class RestoreFormPageState extends State<RestoreFormPage> {
           textEditingControllers: textEditingControllers,
           autoValidateMode: _autoValidateMode,
         ),
-        if (_hasError) ...<Widget>[
+        if ((_hasError || widget.lastErrorMessage.isNotEmpty) && widget.currentPage == 2) ...<Widget>[
+          // TODO(erdemyerebasmaz): Display the error message itself & add an option to share logs
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Text(
-              texts.enter_backup_phrase_error,
-              style: themeData.textTheme.headlineMedium?.copyWith(
-                fontSize: 12,
+            child: WarningBox(
+              boxPadding: EdgeInsets.zero,
+              contentPadding: const EdgeInsets.all(16),
+              backgroundColor: warningBoxColor,
+              borderColor: warningStyle.color,
+              child: Text(
+                texts.enter_backup_phrase_error,
+                style: warningStyle,
+                textAlign: TextAlign.center,
               ),
             ),
           ),
