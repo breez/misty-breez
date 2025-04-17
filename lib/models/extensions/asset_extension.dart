@@ -30,6 +30,7 @@ extension AssetInfoToJson on AssetInfo {
       'name': name,
       'ticker': ticker,
       'amount': amount.toString(),
+      'fees': fees?.toString(),
     };
   }
 }
@@ -44,6 +45,7 @@ extension AssetInfoFromJson on AssetInfo {
       name: json['name'] as String,
       ticker: json['ticker'] as String,
       amount: double.parse(json['amount'] as String),
+      fees: json['fees'] != null ? double.parse(json['fees'] as String) : null,
     );
   }
 }
