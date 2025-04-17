@@ -110,7 +110,7 @@ dependencies:
   path: ^1.9.1
   path_provider: ^2.1.5
   path_provider_platform_interface: ^2.1.2
-  permission_handler: ^11.4.0
+  permission_handler: ^12.0.0+1
   plugin_platform_interface: ^2.1.8
   provider: ^6.1.4
   qr_flutter: ^4.1.0
