@@ -35,7 +35,7 @@ Route<dynamic>? onGenerateRoute({
     case EnterMnemonicsPage.routeName:
       return FadeInRoute<String>(
         builder: (BuildContext _) => EnterMnemonicsPage(
-          initialWords: settings.arguments as List<String>? ?? <String>[],
+          arguments: settings.arguments as EnterMnemonicsPageArguments,
         ),
         settings: settings,
       );

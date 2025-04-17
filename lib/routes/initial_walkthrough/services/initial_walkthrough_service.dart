@@ -40,9 +40,9 @@ class InitialWalkthroughService {
   }
 
   /// Starts the wallet restoration process using a mnemonic seed.
-  Future<void> restoreWallet({List<String>? initialWords}) async {
+  Future<void> restoreWallet({List<String>? initialWords, String? errorMessage}) async {
     _logger.info('Restore wallet from mnemonic seed');
-    final String? mnemonic = await _getMnemonic(initialWords: initialWords);
+    final String? mnemonic = await _getMnemonic(initialWords: initialWords, errorMessage: errorMessage);
     if (mnemonic == null) {
       return;
     }
@@ -62,11 +62,14 @@ class InitialWalkthroughService {
   }
 
   /// Gets the mnemonic seed from user input.
-  Future<String?> _getMnemonic({List<String>? initialWords}) async {
+  Future<String?> _getMnemonic({List<String>? initialWords, String? errorMessage}) async {
     _logger.info('Get mnemonic, initialWords: ${initialWords?.length}');
     return Navigator.of(_context).pushNamed<String>(
       EnterMnemonicsPage.routeName,
-      arguments: initialWords,
+      arguments: EnterMnemonicsPageArguments(
+        initialWords: initialWords ?? <String>[],
+        errorMessage: errorMessage ?? '',
+      ),
     );
   }
 
@@ -113,14 +116,13 @@ class InitialWalkthroughService {
   void _handleConnectionError(Object error, String? mnemonic) {
     final bool isRestoring = mnemonic != null;
     _logger.info("Failed to ${isRestoring ? "restore" : "register"} wallet.", error);
-
+    final String errorMessage = ExceptionHandler.extractMessage(error, _context.texts());
     if (isRestoring && _context.mounted) {
-      restoreWallet(initialWords: mnemonic.split(' '));
-      return;
+      restoreWallet(initialWords: mnemonic.split(' '), errorMessage: errorMessage);
     }
 
     if (_context.mounted) {
-      showFlushbar(_context, message: ExceptionHandler.extractMessage(error, _context.texts()));
+      showFlushbar(_context, message: errorMessage);
     }
   }
 
