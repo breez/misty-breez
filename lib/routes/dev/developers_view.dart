@@ -289,7 +289,7 @@ class _DevelopersViewState extends State<DevelopersView> {
                 child: ShareablePaymentRow(
                   tilePadding: EdgeInsets.zero,
                   dividerColor: Colors.transparent,
-                  title: 'Public Key',
+                  title: 'Public Key ',
                   titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
                     fontSize: 18.0,
                     color: Colors.white,
@@ -304,7 +304,7 @@ class _DevelopersViewState extends State<DevelopersView> {
                   child: ShareablePaymentRow(
                     tilePadding: EdgeInsets.zero,
                     dividerColor: Colors.transparent,
-                    title: 'BOLT 12 Offer',
+                    title: 'BOLT 12 Offer ',
                     titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
                       fontSize: 18.0,
                       color: Colors.white,
