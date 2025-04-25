@@ -35,6 +35,7 @@ class _DevelopersViewState extends State<DevelopersView> {
 
   BugReportBehavior _bugReportBehavior = BugReportBehavior.prompt;
   String _sdkVersion = '';
+  String _bolt12Offer = '';
 
   @override
   void initState() {
@@ -53,6 +54,7 @@ class _DevelopersViewState extends State<DevelopersView> {
     await Future.wait(<Future<void>>[
       _loadSdkVersion(),
       _loadPreferences(),
+      _loadBolt12Offer(),
     ]);
   }
 
@@ -80,6 +82,24 @@ class _DevelopersViewState extends State<DevelopersView> {
       }
     } catch (e) {
       _logger.warning('Failed to load preferences: $e');
+    }
+  }
+
+  /// Loads the default BOLT12 offer
+  Future<void> _loadBolt12Offer() async {
+    try {
+      final BindingLiquidSdk sdk = ServiceInjector().breezSdkLiquid.instance!;
+      final PrepareReceiveResponse prepareResponse = await sdk.prepareReceivePayment(
+        req: const PrepareReceiveRequest(paymentMethod: PaymentMethod.bolt12Offer),
+      );
+      final ReceivePaymentResponse response =
+          await sdk.receivePayment(req: ReceivePaymentRequest(prepareResponse: prepareResponse));
+
+      if (mounted) {
+        setState(() => _bolt12Offer = response.destination);
+      }
+    } catch (e) {
+      _logger.warning('Failed to load BOLT12 offer: $e');
     }
   }
 
@@ -278,6 +298,22 @@ class _DevelopersViewState extends State<DevelopersView> {
                   shouldPop: false,
                 ),
               ),
+              if (_bolt12Offer.isNotEmpty) ...<Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ShareablePaymentRow(
+                    tilePadding: EdgeInsets.zero,
+                    dividerColor: Colors.transparent,
+                    title: 'BOLT 12 Offer',
+                    titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    sharedValue: _bolt12Offer,
+                    shouldPop: false,
+                  ),
+                ),
+              ],
               StatusItem(label: 'Fingerprint', value: walletInfo.fingerprint),
               if (walletInfo.balanceSat > BigInt.zero) ...<Widget>[
                 StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),

@@ -131,15 +131,11 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   // Get the appropriate page index for a payment method
   int _getPageIndexForPaymentMethod(PaymentMethod method) {
     switch (method) {
-      case PaymentMethod.bolt12Invoice:
-        // We should not have to handle this payment method as a user
-        // selection, it is purely the task of the Notifification Plugin
-        return ReceiveBitcoinAddressPaymentPage.pageIndex;
-      case PaymentMethod.bolt12Offer:
-        // TODO: Add a BOLT12 offer payment page to show the offer QR code
-        return ReceiveBitcoinAddressPaymentPage.pageIndex;
       case PaymentMethod.bitcoinAddress:
         return ReceiveBitcoinAddressPaymentPage.pageIndex;
+      case PaymentMethod.bolt12Offer:
+        // TODO: Add a BOLT12 offer to the Lightning address page
+        return ReceiveLightningAddressPage.pageIndex;
       case PaymentMethod.lightning:
         return ReceiveLightningAddressPage.pageIndex;
       case PaymentMethod.liquidAddress:
