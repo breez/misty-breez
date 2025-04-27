@@ -184,7 +184,17 @@ jobs:
 
       - name: Configure Firebase
         working-directory: misty_breez
-        run: flutterfire configure -p $FIREBASE_PROJECT -o lib/firebase/firebase_options.dart --platforms="android,ios" -a $FIREBASE_ANDROID_PACKAGE_NAME -i $FIREBASE_IOS_BUNDLE_ID -m $FIREBASE_PLACEHOLDER_APP_ID -w $FIREBASE_PLACEHOLDER_APP_ID -x $FIREBASE_PLACEHOLDER_APP_ID --service-account=google-application-credentials.json -y
+        run: |
+          flutterfire configure \
+          -p $FIREBASE_PROJECT \
+          -o lib/firebase/firebase_options.dart \
+          --platforms="android,ios" \
+          -a $FIREBASE_ANDROID_PACKAGE_NAME \
+          -i $FIREBASE_IOS_BUNDLE_ID \
+          -m $FIREBASE_PLACEHOLDER_APP_ID \
+          -w $FIREBASE_PLACEHOLDER_APP_ID \
+          -x $FIREBASE_PLACEHOLDER_APP_ID \
+          --service-account=google-application-credentials.json -y
 
       - name: 🏗️ Android cache
         id: android-cache
