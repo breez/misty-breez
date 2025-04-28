@@ -28,7 +28,6 @@ Misty Breez is the simplest self-custodial app for sending and receiving Lightni
 [![Google Play](.github/assets/images/google-play.svg)](https://play.google.com/store/apps/details?id=com.breez.misty)   [![TestFlight](.github/assets/images/app-store.svg)](https://testflight.apple.com/join/nEegHvBX) 
 
 ## Coming Soon
-- [ ] Improve usability w/o Google services 
 - [ ] Receive to a BTC address w/o specifying an amount
 - [ ] Receive using Bolt12
 - [ ] Generate BIP353 address
