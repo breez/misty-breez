@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 class ShareablePaymentRow extends StatelessWidget {
   final String title;
   final Widget? titleWidget;
+  final bool trimTitle;
   final String sharedValue;
   final String? urlValue;
   final bool isURL;
@@ -42,6 +43,7 @@ class ShareablePaymentRow extends StatelessWidget {
     this.labelAutoSizeGroup,
     this.valueAutoSizeGroup,
     this.shouldPop = true,
+    this.trimTitle = true,
   });
 
   @override
@@ -125,7 +127,7 @@ class ShareablePaymentRow extends StatelessWidget {
                             showFlushbar(
                               context,
                               message: texts.payment_details_dialog_copied(
-                                title.substring(0, title.length - 1),
+                                trimTitle ? title.substring(0, title.length - 1) : title,
                               ),
                               duration: const Duration(seconds: 4),
                             );

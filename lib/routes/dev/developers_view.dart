@@ -289,13 +289,14 @@ class _DevelopersViewState extends State<DevelopersView> {
                 child: ShareablePaymentRow(
                   tilePadding: EdgeInsets.zero,
                   dividerColor: Colors.transparent,
-                  title: 'Public Key ',
+                  title: 'Public Key',
                   titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
                     fontSize: 18.0,
                     color: Colors.white,
                   ),
                   sharedValue: walletInfo.pubkey,
                   shouldPop: false,
+                  trimTitle: false,
                 ),
               ),
               if (_bolt12Offer.isNotEmpty) ...<Widget>[
@@ -304,13 +305,14 @@ class _DevelopersViewState extends State<DevelopersView> {
                   child: ShareablePaymentRow(
                     tilePadding: EdgeInsets.zero,
                     dividerColor: Colors.transparent,
-                    title: 'BOLT 12 Offer ',
+                    title: 'BOLT 12 Offer',
                     titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
                       fontSize: 18.0,
                       color: Colors.white,
                     ),
                     sharedValue: _bolt12Offer,
                     shouldPop: false,
+                    trimTitle: false,
                   ),
                 ),
               ],
