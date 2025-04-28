@@ -18,7 +18,7 @@ class PaymentMethodDropdown extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     final List<PaymentMethod> allMethods = <PaymentMethod>[
-      PaymentMethod.lightning,
+      PaymentMethod.bolt11Invoice,
       PaymentMethod.bitcoinAddress,
     ];
 
@@ -39,7 +39,7 @@ class PaymentMethodDropdown extends StatelessWidget {
         }
       },
       position: PopupMenuPosition.under,
-      offset: currentPaymentMethod == PaymentMethod.lightning ? const Offset(-20, 0) : const Offset(0, 0),
+      offset: currentPaymentMethod == PaymentMethod.bolt11Invoice ? const Offset(-20, 0) : const Offset(0, 0),
       itemBuilder: (BuildContext context) {
         return allMethods
             .where((PaymentMethod method) => method != currentPaymentMethod)

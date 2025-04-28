@@ -32,7 +32,7 @@ class LnOfferPaymentPage extends StatefulWidget {
   final String? comment;
 
   static const String routeName = '/ln_offer_payment';
-  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
+  static const PaymentMethod paymentMethod = PaymentMethod.bolt11Invoice;
 
   const LnOfferPaymentPage({
     required this.lnOfferPaymentArguments,

@@ -5,6 +5,7 @@ extension PaymentMethodExtension on PaymentMethod {
     switch (this) {
       case PaymentMethod.bolt12Offer:
         return 'BOLT 12 Offer';
+      case PaymentMethod.bolt11Invoice:
       case PaymentMethod.lightning:
         return 'Lightning';
       case PaymentMethod.bitcoinAddress:
