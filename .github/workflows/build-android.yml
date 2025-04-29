@@ -34,13 +34,13 @@ jobs:
       liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
     steps:
       - name: Checkout repository
-        if:  ${{ needs.pre-setup.outputs.use-published-plugins == 'true' && needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
+        if:  ${{ inputs.use-published-plugins == 'true' && inputs.liquid-sdk-plugin-version == ''}}
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid-flutter'
 
       - name: Get the latest tag and set 'liquid-sdk-plugin-version'
-        if:  ${{ needs.pre-setup.outputs.use-published-plugins == 'true' && needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
+        if:  ${{ inputs.use-published-plugins == 'true' && inputs.liquid-sdk-plugin-version == ''}}
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "liquid-sdk-plugin-version=$latest_tag" >> "$GITHUB_OUTPUT"
