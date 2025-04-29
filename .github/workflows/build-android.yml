@@ -43,7 +43,7 @@ jobs:
         if:  ${{ needs.pre-setup.outputs.use-published-plugins == 'true' && needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo "::set-output name=liquid-sdk-plugin-version::$latest_tag"
+          echo "liquid-sdk-plugin-version=$latest_tag" >> "$GITHUB_OUTPUT"
 
       - run: echo "set pre-setup output variables"
 
