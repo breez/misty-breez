@@ -360,14 +360,14 @@ jobs:
           flutter build ios \
           --build-name="$VERSION_BASE" \
           --build-number="$BUILD_NUMBER" \
-          --target=lib/main/main.dart \
+          --target="lib/main/main.dart" \
           --release \
-          --split-debug-info=./obsfucated/debug \
+          --split-debug-info="./obfuscated/debug" \
           --obfuscate \
           --no-config-only \
           --no-pub \
           --no-codesign \
-          --dart-define-from-file=config.json
+          --dart-define-from-file="config.json"
           
 
       - name: 📦 Resolve Swift package dependencies
