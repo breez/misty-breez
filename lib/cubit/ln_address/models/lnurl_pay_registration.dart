@@ -1,41 +1,47 @@
 class RegisterLnurlPayRequest {
-  final String? username;
   final int time;
   final String webhookUrl;
+  final String? username;
+  final String? offer;
   final String signature;
 
   const RegisterLnurlPayRequest({
-    required this.username,
     required this.time,
     required this.webhookUrl,
+    required this.username,
+    required this.offer,
     required this.signature,
   });
 
   RegisterLnurlPayRequest copyWith({
-    String? username,
     int? time,
     String? webhookUrl,
+    String? username,
+    String? offer,
     String? signature,
   }) {
     return RegisterLnurlPayRequest(
-      username: username ?? this.username,
       time: time ?? this.time,
       webhookUrl: webhookUrl ?? this.webhookUrl,
+      username: username ?? this.username,
+      offer: offer ?? this.offer,
       signature: signature ?? this.signature,
     );
   }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'username': username,
       'time': time,
       'webhook_url': webhookUrl,
+      'username': username,
+      'offer': offer,
       'signature': signature,
     };
   }
 
   @override
-  String toString() => 'username=$username, time=$time, webhook_url=$webhookUrl, signature=$signature';
+  String toString() =>
+      'username=$username, time=$time, webhook_url=$webhookUrl, offer=$offer, signature=$signature';
 }
 
 class RegisterRecoverLnurlPayResponse {

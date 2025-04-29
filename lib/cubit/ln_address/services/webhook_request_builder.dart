@@ -28,17 +28,20 @@ class WebhookRequestBuilder {
   Future<RegisterLnurlPayRequest> buildRegisterRequest({
     required String webhookUrl,
     String? username,
+    String? offer,
   }) async {
     try {
       _logger.info('Building registration request for webhook: $webhookUrl');
 
       // Format the username component if provided
-      final String usernameComponent = _formatUsernameComponent(username);
+      final String usernameComponent = _formatOptionalComponent(username);
+      final String offerComponent = _formatOptionalComponent(offer);
+      final String additionalData = '$usernameComponent$offerComponent';
 
       // Build the signed request
       final SignedRequestData requestData = await _buildSignedRequestData(
         webhookUrl: webhookUrl,
-        additionalData: usernameComponent,
+        additionalData: additionalData,
       );
 
       // Create and return the final request object
@@ -47,6 +50,7 @@ class WebhookRequestBuilder {
         webhookUrl: webhookUrl,
         signature: requestData.signature,
         username: username,
+        offer: offer,
       );
 
       _logger.info('Successfully built registration request with timestamp: ${requestData.timestamp}');
@@ -91,15 +95,15 @@ class WebhookRequestBuilder {
     }
   }
 
-  /// Formats the username component for inclusion in the signed message.
+  /// Formats the optional component for inclusion in the signed message.
   ///
-  /// @param username The optional username to format
-  /// @return A formatted string with a leading hyphen if username exists, empty string otherwise
-  String _formatUsernameComponent(String? username) {
-    if (username == null || username.isEmpty) {
+  /// @param component The optional component to format
+  /// @return A formatted string with a leading hyphen if component exists, empty string otherwise
+  String _formatOptionalComponent(String? component) {
+    if (component == null || component.isEmpty) {
       return '';
     }
-    return '-$username';
+    return '-$component';
   }
 
   /// Builds the common signed request data used by all request types.
