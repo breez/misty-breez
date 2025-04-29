@@ -134,7 +134,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       case PaymentMethod.bitcoinAddress:
         return ReceiveBitcoinAddressPaymentPage.pageIndex;
       case PaymentMethod.bolt12Offer:
-        // TODO: Add a BOLT12 offer to the Lightning address page
+        // TODO(dangeross): Add a BOLT12 offer to the Lightning address page
         return ReceiveLightningAddressPage.pageIndex;
       case PaymentMethod.bolt11Invoice:
       case PaymentMethod.lightning:
