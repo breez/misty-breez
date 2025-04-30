@@ -81,6 +81,11 @@ class PaymentDetailsSheet extends StatelessWidget {
       orElse: () => '',
     );
 
+    final String btcTxId = paymentData.details.map(
+      bitcoin: (PaymentDetails_Bitcoin details) => details.claimTxId ?? details.lockupTxId ?? '',
+      orElse: () => '',
+    );
+
     final String bip353Address = paymentData.details.map(
           lightning: (PaymentDetails_Lightning details) => details.bip353Address,
           liquid: (PaymentDetails_Liquid details) => details.bip353Address,
@@ -227,6 +232,13 @@ class PaymentDetailsSheet extends StatelessWidget {
                         PaymentDetailsSheetTxId(
                           txId: paymentData.txId,
                           unblindingData: paymentData.unblindingData,
+                        ),
+                      ],
+                      if (btcTxId.isNotEmpty) ...<Widget>[
+                        PaymentDetailsSheetTxId(
+                          txId: btcTxId,
+                          unblindingData: paymentData.unblindingData,
+                          isBtcTx: true,
                         ),
                       ],
                       if (swapId.isNotEmpty) ...<Widget>[
