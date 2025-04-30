@@ -7,6 +7,9 @@ import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
+const String feeInfoUrl =
+    'https://sdk-doc-liquid.breez.technology/guide/end-user_fees.html#receiving-lightning-payments';
+
 class PaymentLimitsMessageBox extends StatelessWidget {
   const PaymentLimitsMessageBox({super.key});
 
@@ -32,7 +35,10 @@ class PaymentLimitsMessageBox extends StatelessWidget {
         final Limits receivePaymentLimits = snapshot.lightningPaymentLimits!.receive;
         final String limitsMessage = _formatLimitsMessage(context, receivePaymentLimits);
 
-        return PaymentInfoMessageBox(message: limitsMessage);
+        return PaymentInfoMessageBox(
+          message: limitsMessage,
+          linkUrl: feeInfoUrl,
+        );
       },
     );
   }
@@ -54,6 +60,8 @@ class PaymentLimitsMessageBox extends StatelessWidget {
     }
     final String minSendableFormatted = currencyState.bitcoinCurrency.format(minSendableSat);
     final String maxSendableFormatted = currencyState.bitcoinCurrency.format(maxSendableSat);
-    return texts.payment_limits_message(minSendableFormatted, maxSendableFormatted);
+    // TODO(erdemyerebasmaz): Add fee info message to Breez-Translations.
+    final String feeInfoMsg = 'Receiving funds incurs a fee as specified';
+    return '${texts.payment_limits_message(minSendableFormatted, maxSendableFormatted)} $feeInfoMsg ';
   }
 }
