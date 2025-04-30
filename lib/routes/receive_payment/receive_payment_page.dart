@@ -103,7 +103,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     // - without notification permissions
     // - when LN Address state had errors
     final bool shouldRedirect = !_hasNotificationPermission || _hasLnAddressStateError;
-    if (_showInvoicePage || _currentPaymentMethod == PaymentMethod.lightning && shouldRedirect) {
+    if (_showInvoicePage || _currentPaymentMethod == PaymentMethod.bolt11Invoice && shouldRedirect) {
       return ReceiveLightningPaymentPage.pageIndex;
     }
 
@@ -113,7 +113,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   PaymentMethod get _currentPaymentMethod {
     return _currentPageIndex == ReceiveBitcoinAddressPaymentPage.pageIndex
         ? PaymentMethod.bitcoinAddress
-        : PaymentMethod.lightning;
+        : PaymentMethod.bolt11Invoice;
   }
 
   Future<void> _onPaymentMethodChanged(PaymentMethod newMethod) async {
@@ -133,6 +133,10 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     switch (method) {
       case PaymentMethod.bitcoinAddress:
         return ReceiveBitcoinAddressPaymentPage.pageIndex;
+      case PaymentMethod.bolt12Offer:
+        // TODO(dangeross): Add a BOLT12 offer to the Lightning address page
+        return ReceiveLightningAddressPage.pageIndex;
+      case PaymentMethod.bolt11Invoice:
       case PaymentMethod.lightning:
         return ReceiveLightningAddressPage.pageIndex;
       case PaymentMethod.liquidAddress:

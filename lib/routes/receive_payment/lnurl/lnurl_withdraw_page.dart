@@ -25,7 +25,7 @@ class LnUrlWithdrawPage extends StatefulWidget {
   final LnUrlWithdrawRequestData requestData;
 
   static const String routeName = '/lnurl_withdraw';
-  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
+  static const PaymentMethod paymentMethod = PaymentMethod.bolt11Invoice;
 
   const LnUrlWithdrawPage({
     required this.onFinish,

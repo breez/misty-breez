@@ -16,7 +16,7 @@ class LnPaymentPage extends StatefulWidget {
   final LNInvoice lnInvoice;
 
   static const String routeName = '/ln_invoice_payment';
-  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
+  static const PaymentMethod paymentMethod = PaymentMethod.bolt11Invoice;
 
   const LnPaymentPage({required this.lnInvoice, super.key});
 

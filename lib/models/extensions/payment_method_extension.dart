@@ -3,6 +3,9 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 extension PaymentMethodExtension on PaymentMethod {
   String get displayName {
     switch (this) {
+      case PaymentMethod.bolt12Offer:
+        return 'BOLT 12 Offer';
+      case PaymentMethod.bolt11Invoice:
       case PaymentMethod.lightning:
         return 'Lightning';
       case PaymentMethod.bitcoinAddress:
