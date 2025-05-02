@@ -34,16 +34,16 @@ jobs:
       liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
     steps:
       - name: Checkout repository
-        if:  ${{ needs.pre-setup.outputs.use-published-plugins == 'true' && needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
+        if:  ${{ inputs.use-published-plugins == 'true' && inputs.liquid-sdk-plugin-version == ''}}
         uses: actions/checkout@v4
         with:
           repository: 'breez/breez-sdk-liquid-flutter'
 
       - name: Get the latest tag and set 'liquid-sdk-plugin-version'
-        if:  ${{ needs.pre-setup.outputs.use-published-plugins == 'true' && needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
+        if:  ${{ inputs.use-published-plugins == 'true' && inputs.liquid-sdk-plugin-version == ''}}
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo "::set-output name=liquid-sdk-plugin-version::$latest_tag"
+          echo "liquid-sdk-plugin-version=$latest_tag" >> "$GITHUB_OUTPUT"
 
       - run: echo "set pre-setup output variables"
 
@@ -184,7 +184,17 @@ jobs:
 
       - name: Configure Firebase
         working-directory: misty_breez
-        run: flutterfire configure -p $FIREBASE_PROJECT -o lib/firebase/firebase_options.dart --platforms="android,ios" -a $FIREBASE_ANDROID_PACKAGE_NAME -i $FIREBASE_IOS_BUNDLE_ID -m $FIREBASE_PLACEHOLDER_APP_ID -w $FIREBASE_PLACEHOLDER_APP_ID -x $FIREBASE_PLACEHOLDER_APP_ID --service-account=google-application-credentials.json -y
+        run: |
+          flutterfire configure \
+          -p $FIREBASE_PROJECT \
+          -o lib/firebase/firebase_options.dart \
+          --platforms="android,ios" \
+          -a $FIREBASE_ANDROID_PACKAGE_NAME \
+          -i $FIREBASE_IOS_BUNDLE_ID \
+          -m $FIREBASE_PLACEHOLDER_APP_ID \
+          -w $FIREBASE_PLACEHOLDER_APP_ID \
+          -x $FIREBASE_PLACEHOLDER_APP_ID \
+          --service-account=google-application-credentials.json -y
 
       - name: 🏗️ Android cache
         id: android-cache
@@ -277,6 +287,23 @@ jobs:
           echo "VERSION_BASE=$VERSION_BASE" >> $GITHUB_ENV
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
 
+      - name: 🚀 Build Universal APK
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        working-directory: misty_breez
+        run: |
+          flutter build apk \
+            --build-name="$VERSION_BASE" \
+            --build-number="$BUILD_NUMBER" \
+            --target="lib/main/main.dart" \
+            --release \
+            --split-debug-info="./obfuscated/debug" \
+            --obfuscate \
+            --no-pub \
+            --dart-define-from-file="config.json"
+
       - name: 🚀 Build Release APK
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
@@ -287,13 +314,13 @@ jobs:
           flutter build apk \
           --build-name="$VERSION_BASE" \
           --build-number="$BUILD_NUMBER" \
-          --target=lib/main/main.dart \
+          --target="lib/main/main.dart" \
           --release \
           --split-debug-info="./obfuscated/debug" \
           --obfuscate \
           --no-pub \
           --split-per-abi \
-          --dart-define-from-file=config.json
+          --dart-define-from-file="config.json"
 
       - name: 🚀 Build Release App Bundle
         env:
@@ -303,18 +330,58 @@ jobs:
         working-directory: misty_breez
         run: |
           flutter build appbundle \
+          --build-name="$VERSION_BASE" \
           --build-number="$BUILD_NUMBER" \
           --target="lib/main/main.dart" \
           --release \
+          --split-debug-info="./obfuscated/debug" \
+          --obfuscate \
           --no-pub \
           --dart-define-from-file="config.json"
 
-      - name: 🗃️ Compress APK build folder
+      - name: 📝 Rename APKs & App Bundle
+        working-directory: misty_breez
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.apk
+          mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.arm64-v8a.apk
+          mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.armeabi-v7a.apk
+          mv build/app/outputs/flutter-apk/app-x86_64-release.apk build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.x86_64.apk
+          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/${{ env.BUILD_NUMBER }}.aab
+
+      - name: 🗃️ Compress Universal APK
         if: github.event_name == 'release'
         uses: TheDoctor0/zip-release@master
         with:
-          filename: apk-build.zip
-          directory: misty_breez/build/app/outputs/flutter-apk
+          filename: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.apk.zip
+          directory: misty_breez/build/app/outputs/flutter-apk/
+          includes: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.apk
+          type: zip
+
+      - name: 🗃️ Compress Arm64 APK
+        if: github.event_name == 'release'
+        uses: TheDoctor0/zip-release@master
+        with:
+          filename: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.arm64-v8a.apk.zip
+          directory: misty_breez/build/app/outputs/flutter-apk/
+          includes: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.arm64-v8a.apk
+          type: zip
+
+      - name: 🗃️ Compress Armeabi APK
+        if: github.event_name == 'release'
+        uses: TheDoctor0/zip-release@master
+        with:
+          filename: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.armeabi-v7a.apk.zip
+          directory: misty_breez/build/app/outputs/flutter-apk/
+          includes: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.armeabi-v7a.apk
+          type: zip
+
+      - name: 🗃️ Compress x86_64 APK
+        if: github.event_name == 'release'
+        uses: TheDoctor0/zip-release@master
+        with:
+          filename: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.x86_64.apk.zip
+          directory: misty_breez/build/app/outputs/flutter-apk/
+          includes: Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.x86_64.apk
           type: zip
 
       - name: 🗃️ Compress Bundle build folder
@@ -325,12 +392,48 @@ jobs:
           directory: misty_breez/build/app/outputs/bundle/release
           type: zip
 
+      - name: 📤 Upload Universal APK asset
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          asset_name: Misty.Breez.${{ env.BUILD_NUMBER }}.universal.zip
+          file: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.apk.zip
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload Arm64 APK asset
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          asset_name: Misty.Breez.${{ env.BUILD_NUMBER }}.arm64-v8a.zip
+          file: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.arm64-v8a.apk.zip
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload Armeabi APK asset
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          asset_name: Misty.Breez.${{ env.BUILD_NUMBER }}.armeabi-v7a.zip
+          file: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.armeabi-v7a.apk.zip
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload x86_64 APK asset
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          asset_name: Misty.Breez.${{ env.BUILD_NUMBER }}.x86_64.zip
+          file: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.x86_64.apk.zip
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 📤 Upload APK asset
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@v2
         with:
-          asset_name: Android-APK.zip
-          file: misty_breez/build/app/outputs/flutter-apk/apk-build.zip
+          asset_name: Misty.Breez.${{ env.BUILD_NUMBER }}.apk-per-abi.zip
+          file: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.*.apk
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -338,24 +441,52 @@ jobs:
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@v2
         with:
-          asset_name: Android-Bundle.zip
+          asset_name: Misty.Breez.${{ env.BUILD_NUMBER }}.aab.zip
           file: misty_breez/build/app/outputs/bundle/release/bundle-build.zip
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload Universal APK artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Misty.Breez.${{ env.BUILD_NUMBER }}.universal
+          path: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.apk
+
+      - name: 📤 Upload Arm64 APK artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Misty.Breez.${{ env.BUILD_NUMBER }}.arm64-v8a
+          path: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.arm64-v8a.apk
+
+      - name: 📤 Upload Armeabi APK artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Misty.Breez.${{ env.BUILD_NUMBER }}.armeabi-v7a
+          path: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.armeabi-v7a.apk
+
+      - name: 📤 Upload x86_64 APK artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Misty.Breez.${{ env.BUILD_NUMBER }}.x86_64
+          path: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.x86_64.apk
 
       - name: 📤 Upload APK artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: Android-APK
-          path: misty_breez/build/app/outputs/flutter-apk/app-*.apk
+          name: Misty.Breez.${{ env.BUILD_NUMBER }}.apk-per-abi
+          path: misty_breez/build/app/outputs/flutter-apk/Misty.Breez.${{ env.BUILD_NUMBER }}.signed_by_breez.*.apk
 
       - name: 📤 Upload Bundle artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: Android-Bundle
-          path: misty_breez/build/app/outputs/bundle/release/app-release.aab
+          name: Misty.Breez.${{ env.BUILD_NUMBER }}.aab
+          path: misty_breez/build/app/outputs/bundle/release/${{ env.BUILD_NUMBER }}.aab
 
       - name: Cleanup Google Application Credentials
         if: success() || failure()
