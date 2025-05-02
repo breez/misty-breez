@@ -67,7 +67,7 @@ android {
     }
 
     // Load keystore properties
-    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystorePropertiesFile = rootProject.file("key.properties")
     def keystoreProperties = new Properties()
 
     if (keystorePropertiesFile.exists()) {

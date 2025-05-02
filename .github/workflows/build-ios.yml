@@ -183,7 +183,17 @@ jobs:
 
       - name: Configure Firebase
         working-directory: misty_breez
-        run: flutterfire configure -p $FIREBASE_PROJECT -o lib/firebase/firebase_options.dart --platforms="android,ios" -a $FIREBASE_ANDROID_PACKAGE_NAME -i $FIREBASE_IOS_BUNDLE_ID -m $FIREBASE_PLACEHOLDER_APP_ID -w $FIREBASE_PLACEHOLDER_APP_ID -x $FIREBASE_PLACEHOLDER_APP_ID --service-account=google-application-credentials.json -y
+        run: | 
+          flutterfire configure \
+          -p $FIREBASE_PROJECT \
+          -o lib/firebase/firebase_options.dart \
+          --platforms="android,ios" \
+          -a $FIREBASE_ANDROID_PACKAGE_NAME \
+          -i $FIREBASE_IOS_BUNDLE_ID \
+          -m $FIREBASE_PLACEHOLDER_APP_ID \
+          -w $FIREBASE_PLACEHOLDER_APP_ID \
+          -x $FIREBASE_PLACEHOLDER_APP_ID \
+          --service-account=google-application-credentials.json -y
 
       - name: 🔐 Install Keychain keys
         run: |
@@ -346,11 +356,28 @@ jobs:
 
       - name: 🚀 Build app
         working-directory: misty_breez
-        run: flutter build ios --target=lib/main/main.dart --release --split-debug-info=./obsfucated/debug --obfuscate --no-config-only --no-pub --no-codesign --dart-define-from-file=config.json
+        run: |
+          flutter build ios \
+          --build-name="$VERSION_BASE" \
+          --build-number="$BUILD_NUMBER" \
+          --target="lib/main/main.dart" \
+          --release \
+          --split-debug-info="./obfuscated/debug" \
+          --obfuscate \
+          --no-config-only \
+          --no-pub \
+          --no-codesign \
+          --dart-define-from-file="config.json"
+          
 
       - name: 📦 Resolve Swift package dependencies
         working-directory: misty_breez
-        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme ${{ env.SCHEME }} -configuration ${{ env.BUILD_CONFIGURATION }}
+        run: | 
+          xcodebuild \
+          -resolvePackageDependencies \
+          -workspace ios/Runner.xcworkspace \
+          -scheme ${{ env.SCHEME }} \
+          -configuration ${{ env.BUILD_CONFIGURATION }}
 
       - name: 🔨 Build application and generate xcarchive file
         working-directory: misty_breez
@@ -358,11 +385,23 @@ jobs:
           buildNumber=$(($GITHUB_RUN_NUMBER + 6000)).1
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" ios/Runner/Info.plist
           /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ env.IOS_VERSION_STRING }}" ios/Runner/Info.plist
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme ${{ env.SCHEME }} -configuration ${{ env.BUILD_CONFIGURATION }} -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive clean archive
+          xcodebuild \
+          -workspace ios/Runner.xcworkspace \
+          -scheme ${{ env.SCHEME }} \
+          -configuration ${{ env.BUILD_CONFIGURATION }} \
+          -sdk 'iphoneos' \
+          -destination 'generic/platform=iOS' \
+          -archivePath build-output/app.xcarchive \
+          clean archive
 
       - name: 📤 Export the archive to an ipa file
         working-directory: misty_breez
-        run: xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+        run: |
+          xcodebuild \
+          -exportArchive \
+          -archivePath build-output/app.xcarchive \
+          -exportPath build-output/ios \
+          -exportOptionsPlist ios/ExportOptions.plist
 
       - name: 🗃️ Compress build folder
         if: github.event_name == 'release'
@@ -392,7 +431,12 @@ jobs:
         run: |
           altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
           ipa="$PWD/misty_breez/build-output/ios/misty_breez.ipa"
-          "$altool" --upload-app --type ios --file "$ipa" --username $TESTFLIGHT_USERNAME --password $TESTFLIGHT_PASSWORD
+          "$altool" \
+          --upload-app \
+          --type ios \
+          --file "$ipa" \
+          --username $TESTFLIGHT_USERNAME \
+          --password $TESTFLIGHT_PASSWORD
 
       - name: Cleanup Google Application Credentials
         if: success() || failure()
