@@ -49,11 +49,7 @@ class PermissionsCubit extends Cubit<PermissionsState> {
 
       final PermissionStatus mappedStatus = _mapPermissionStatus(status);
 
-      emit(
-        state.copyWith(
-          notificationStatus: mappedStatus,
-        ),
-      );
+      emit(state.copyWith(notificationStatus: mappedStatus));
       _logger.info('Mapped notification permission status: $mappedStatus');
     } catch (error) {
       _logger.severe('Error checking notification permission', error);
@@ -68,11 +64,7 @@ class PermissionsCubit extends Cubit<PermissionsState> {
 
       final PermissionStatus mappedStatus = _mapPermissionStatus(status);
 
-      emit(
-        state.copyWith(
-          notificationStatus: mappedStatus,
-        ),
-      );
+      emit(state.copyWith(notificationStatus: mappedStatus));
       _logger.info('Mapped notification permission request result: $mappedStatus');
     } catch (error) {
       _logger.severe('Error requesting notification permission', error);
