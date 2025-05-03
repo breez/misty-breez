@@ -227,6 +227,7 @@ class PaymentDetailsSheet extends StatelessWidget {
                         PaymentDetailsSheetTxId(
                           txId: paymentData.txId,
                           unblindingData: paymentData.unblindingData,
+                          isBtcTx: paymentData.details is PaymentDetails_Bitcoin,
                         ),
                       ],
                       if (swapId.isNotEmpty) ...<Widget>[
