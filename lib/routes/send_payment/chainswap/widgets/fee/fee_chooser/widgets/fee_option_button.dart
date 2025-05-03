@@ -1,5 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:misty_breez/theme/theme.dart';
+
+final AutoSizeGroup autoSizeGroup = AutoSizeGroup();
 
 class FeeOptionButton extends StatelessWidget {
   final int index;
@@ -42,7 +45,7 @@ class FeeOptionButton extends StatelessWidget {
         ),
         child: TextButton(
           onPressed: isAffordable ? () => onSelect() : null,
-          child: Text(
+          child: AutoSizeText(
             text.toUpperCase(),
             style: themeData.textTheme.labelLarge!.copyWith(
               fontSize: 16.0,
@@ -52,6 +55,9 @@ class FeeOptionButton extends StatelessWidget {
                       ? Colors.white
                       : Colors.white,
             ),
+            maxLines: 1,
+            group: autoSizeGroup,
+            stepGranularity: 0.1,
           ),
         ),
       ),

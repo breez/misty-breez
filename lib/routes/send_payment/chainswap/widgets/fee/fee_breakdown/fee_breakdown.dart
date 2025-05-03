@@ -1,8 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
+
+final AutoSizeGroup feeBreakDownLabelGroup = AutoSizeGroup();
 
 class FeeBreakdown extends StatelessWidget {
   final FeeOption feeOption;

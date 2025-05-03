@@ -23,7 +23,7 @@ class RestoreButton extends StatelessWidget {
 
     return SizedBox(
       height: 48.0,
-      width: min(screenSize.width * 0.4, 168),
+      width: min(screenSize.width * 0.5, 168),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.white),

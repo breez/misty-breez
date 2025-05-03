@@ -26,7 +26,7 @@ class RegisterButton extends StatelessWidget {
 
     return SizedBox(
       height: 48.0,
-      width: min(screenSize.width * 0.4, 168),
+      width: min(screenSize.width * 0.5, 168),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: themeData.primaryColor,

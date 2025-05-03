@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/handlers/handlers.dart';
 import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 final Logger _logger = Logger('WalletConnectivityHandler');
 
@@ -88,8 +90,7 @@ class WalletConnectivityHandler extends Handler {
         style: snackBarStyle,
         textAlign: TextAlign.center,
       ),
-      mainButton: SizedBox(
-        width: 64,
+      mainButton: Expanded(
         child: StreamBuilder<SdkConnectivityState>(
           stream: context.read<SdkConnectivityCubit>().stream,
           builder: (BuildContext context, AsyncSnapshot<SdkConnectivityState> snapshot) {
@@ -117,11 +118,14 @@ class WalletConnectivityHandler extends Handler {
                   }
                 });
               },
-              child: Text(
+              child: AutoSizeText(
                 context.texts().no_connection_flushbar_action_retry,
                 style: snackBarStyle.copyWith(
                   color: themeData.colorScheme.error,
                 ),
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
             );
           },
