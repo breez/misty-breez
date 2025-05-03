@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:misty_breez/theme/theme.dart';
-import 'package:misty_breez/utils/utils.dart';
 
 final AutoSizeGroup autoSizeGroup = AutoSizeGroup();
 
@@ -58,7 +57,6 @@ class FeeOptionButton extends StatelessWidget {
             ),
             maxLines: 1,
             group: autoSizeGroup,
-            minFontSize: MinFontSize(context).minFontSize,
             stepGranularity: 0.1,
           ),
         ),
