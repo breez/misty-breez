@@ -1,8 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 class DestinationInformation extends StatefulWidget {
@@ -82,9 +84,12 @@ class DestinationInformationState extends State<DestinationInformation> {
         borderColor: Colors.transparent,
         backgroundColor: Theme.of(context).canvasColor,
         child: Center(
-          child: Text(
+          child: AutoSizeText(
             widget.lnAddress,
             style: themeData.primaryTextTheme.bodyMedium!.copyWith(fontSize: 18.0),
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
           ),
         ),
       ),
