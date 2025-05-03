@@ -8,6 +8,11 @@ import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
+const Set<String> knownPlayServiceErrors = <String>{
+  'SERVICE_NOT_AVAILABLE',
+  'MISSING_INSTANCEID_SERVICE',
+};
+
 /// Warning box for LnAddressState errors
 class LnAddressErrorWarningBox extends StatelessWidget {
   const LnAddressErrorWarningBox({super.key});
@@ -32,8 +37,10 @@ class LnAddressErrorWarningBox extends StatelessWidget {
         }
 
         String errorMessage = ExceptionHandler.extractMessage(state.error!, texts);
-        if (defaultTargetPlatform == TargetPlatform.android &&
-            errorMessage.toString().contains('SERVICE_NOT_AVAILABLE')) {
+        final bool isKnownPlayServiceError = knownPlayServiceErrors.any((String e) {
+          return errorMessage.toLowerCase().contains(e.toLowerCase());
+        });
+        if (defaultTargetPlatform == TargetPlatform.android && isKnownPlayServiceError) {
           errorMessage = 'Unable to connect to messaging services. '
               'Please check your internet connection and ensure Google services are available on your device.';
         }
