@@ -23,6 +23,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final PermissionsCubit permissionsCubit = PermissionsCubit();
+
     return MultiBlocProvider(
       providers: <SingleChildWidget>[
         BlocProvider<AccountCubit>(
@@ -51,7 +53,7 @@ class App extends StatelessWidget {
           create: (BuildContext context) => UserProfileCubit(injector.breezPreferences),
         ),
         BlocProvider<LnAddressCubit>(
-          create: (BuildContext context) => LnAddressCubitFactory.create(injector),
+          create: (BuildContext context) => LnAddressCubitFactory.create(injector, permissionsCubit),
         ),
         BlocProvider<CurrencyCubit>(
           create: (BuildContext context) => CurrencyCubit(injector.breezSdkLiquid),
@@ -66,7 +68,7 @@ class App extends StatelessWidget {
           create: (BuildContext context) => ChainSwapCubit(injector.breezSdkLiquid),
         ),
         BlocProvider<PermissionsCubit>(
-          create: (BuildContext context) => PermissionsCubit(),
+          create: (BuildContext context) => permissionsCubit,
         ),
       ],
       child: Provider<LnUrlService>(

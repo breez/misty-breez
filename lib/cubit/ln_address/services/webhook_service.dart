@@ -28,6 +28,7 @@ class WebhookService {
 
   final BreezSDKLiquid _breezSdkLiquid;
   final NotificationsClient _notificationsClient;
+  final PermissionsCubit _permissionsCubit;
 
   /// Cached notification token to avoid repeated requests.
   String? _cachedToken;
@@ -40,9 +41,10 @@ class WebhookService {
 
   /// Creates a new [WebhookService] instance.
   ///
-  /// Requires [BreezSDKLiquid] for webhook registration and
-  /// [NotificationsClient] for notification token management.
-  WebhookService(this._breezSdkLiquid, this._notificationsClient);
+  /// Requires [BreezSDKLiquid] for webhook registration,
+  /// [NotificationsClient] for notification token management and
+  /// [PermissionsCubit] for notification permission management.
+  WebhookService(this._breezSdkLiquid, this._notificationsClient, this._permissionsCubit);
 
   /// Registers a webhook with the Breez SDK.
   ///
@@ -146,6 +148,10 @@ class WebhookService {
       () => _notificationsClient.getToken(),
       operationName: 'get notification token',
     );
+
+    // Update permission status after token request
+    _logger.fine('Updating permission status after token request');
+    await _permissionsCubit.checkNotificationPermission();
 
     if (token != null) {
       // Update cache
