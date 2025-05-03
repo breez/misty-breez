@@ -1,7 +1,11 @@
+import 'dart:math';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 class PaymentMethodDropdown extends StatelessWidget {
   final PaymentMethod currentPaymentMethod;
@@ -16,6 +20,7 @@ class PaymentMethodDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
+    final Size screenSize = MediaQuery.of(context).size;
 
     final List<PaymentMethod> allMethods = <PaymentMethod>[
       PaymentMethod.lightning,
@@ -47,11 +52,20 @@ class PaymentMethodDropdown extends StatelessWidget {
           (PaymentMethod method) {
             return PopupMenuItem<PaymentMethod>(
               value: method,
-              child: Center(
-                child: Text(
+              child: Container(
+                width: min(screenSize.width * 0.5, 168),
+                constraints: const BoxConstraints(
+                  minHeight: 48,
+                  maxWidth: 180,
+                ),
+                alignment: Alignment.center,
+                child: AutoSizeText(
                   method.displayName.toUpperCase(),
                   style: themeData.appBarTheme.titleTextStyle,
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
                 ),
               ),
             );

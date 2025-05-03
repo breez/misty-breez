@@ -3,6 +3,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/utils/utils.dart';
 
 class TransactionFee extends StatelessWidget {
@@ -17,27 +18,42 @@ class TransactionFee extends StatelessWidget {
     final MinFontSize minFont = MinFontSize(context);
 
     return ListTile(
-      title: AutoSizeText(
-        texts.sweep_all_coins_label_transaction_fee,
-        style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-          fontSize: 18.0,
-          color: Colors.white.withValues(alpha: .4),
-        ),
-        maxLines: 1,
-        minFontSize: minFont.minFontSize,
-        stepGranularity: 0.1,
-      ),
-      trailing: AutoSizeText(
-        texts.sweep_all_coins_fee(
-          BitcoinCurrency.sat.format(txFeeSat),
-        ),
-        style: themeData.primaryTextTheme.displaySmall!.copyWith(
-          fontSize: 18.0,
-          color: themeData.colorScheme.error.withValues(alpha: .4),
-        ),
-        maxLines: 1,
-        minFontSize: minFont.minFontSize,
-        stepGranularity: 0.1,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          AutoSizeText(
+            texts.sweep_all_coins_label_transaction_fee,
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
+              fontSize: 18.0,
+              color: Colors.white.withValues(alpha: .4),
+            ),
+            maxLines: 1,
+            minFontSize: minFont.minFontSize,
+            stepGranularity: 0.1,
+            overflow: TextOverflow.ellipsis,
+            group: feeBreakDownLabelGroup,
+          ),
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: AutoSizeText(
+                texts.sweep_all_coins_fee(
+                  BitcoinCurrency.sat.format(txFeeSat),
+                ),
+                style: themeData.primaryTextTheme.displaySmall!.copyWith(
+                  fontSize: 18.0,
+                  color: themeData.colorScheme.error.withValues(alpha: .4),
+                ),
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                minFontSize: minFont.minFontSize,
+                stepGranularity: 0.1,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
