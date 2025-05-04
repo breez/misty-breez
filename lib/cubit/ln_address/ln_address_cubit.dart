@@ -55,12 +55,14 @@ class LnAddressCubit extends Cubit<LnAddressState> {
     try {
       pubKey = pubKey ?? await _getPubKey();
       final String webhookUrl = await registrationManager.setupWebhook(pubKey);
+      final String? offer = await _getBolt12Offer();
 
       final RegisterRecoverLnurlPayResponse response = await registrationManager.performRegistration(
         pubKey: pubKey,
         webhookUrl: webhookUrl,
         registrationType: registrationType,
         baseUsername: baseUsername,
+        offer: offer,
       );
 
       emit(
@@ -157,6 +159,23 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   void clearUpdateStatus() {
     _logger.info('Clearing LnAddressUpdateStatus');
     emit(state.clearUpdateStatus());
+  }
+
+  Future<String?> _getBolt12Offer() async {
+    try {
+      final PrepareReceiveRequest prepareRequest =
+          const PrepareReceiveRequest(paymentMethod: PaymentMethod.bolt12Offer);
+      final PrepareReceiveResponse? prepareResponse =
+          await breezSdkLiquid.instance?.prepareReceivePayment(req: prepareRequest);
+      if (prepareResponse != null) {
+        final ReceivePaymentRequest req = ReceivePaymentRequest(prepareResponse: prepareResponse);
+        final ReceivePaymentResponse? res = await breezSdkLiquid.instance?.receivePayment(req: req);
+        return res?.destination;
+      }
+    } catch (e) {
+      _logger.warning('Failed to get BOLT12 Offer', e);
+    }
+    return null;
   }
 
   /// Clears any error state
