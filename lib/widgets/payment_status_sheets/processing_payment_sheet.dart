@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/services/services.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 Future<dynamic> showProcessingPaymentSheet(
   BuildContext context, {
@@ -105,12 +105,22 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   }
 
   void _trackLnPaymentEvents(SendPaymentResponse payResult) {
-    final InputCubit inputCubit = context.read<InputCubit>();
+    final PaymentTrackingService paymentTrackingService =
+        Provider.of<PaymentTrackingService>(context, listen: false);
+    final Completer<void> paymentCompleter = Completer<void>();
 
-    final Future<void> paymentSuccessFuture = inputCubit.trackPaymentEvents(
-      payResult.payment.destination,
-      paymentType: PaymentType.send,
+    paymentTrackingService.trackOutgoingPayment(
+      destination: payResult.payment.destination,
+      onPaymentComplete: (bool success) {
+        if (success) {
+          paymentCompleter.complete();
+        } else {
+          paymentCompleter.completeError('Payment failed');
+        }
+      },
     );
+
+    final Future<void> paymentSuccessFuture = paymentCompleter.future;
 
     // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
     final Future<void> timeoutFuture = Future<void>.delayed(timeoutDuration);
