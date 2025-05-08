@@ -8,6 +8,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/models.dart';
 import 'package:rxdart/rxdart.dart';
 
 export 'models/models.dart';
@@ -102,7 +103,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
     String? description,
   }) async {
     _logger.info(
-      'receivePayment\nReceive ${prepareResponse.paymentMethod.name} payment for amount: '
+      'receivePayment\nReceive ${prepareResponse.paymentMethod.displayName} payment for amount: '
       '${prepareResponse.amount} (sats), fees: ${prepareResponse.feesSat} (sats), description: $description',
     );
     try {
