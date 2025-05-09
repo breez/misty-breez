@@ -75,16 +75,14 @@ class PaymentTrackingService {
         _logger.info('Starting delayed Lightning Address payment tracking');
 
         _lightningAddressSubscription?.cancel();
-        _lightningAddressSubscription = _filteredPaymentsStream().listen(
-          (PaymentData? payment) {
-            // Null cases are filtered out on where clause
-            final PaymentData newPayment = payment!;
+        _lightningAddressSubscription = _subscribeToStream<PaymentData>(
+          _filteredPaymentsStream(),
+          (PaymentData payment) {
             _logger.info(
-              'Lightning Address Payment Received! Id: ${newPayment.id}, Status: ${newPayment.status}',
+              'Lightning Address Payment Received! Id: ${payment.id}, Status: ${payment.status}',
             );
             _notifyPaymentReceived(true);
           },
-          onError: (Object e) => _handleTrackingError(e),
         );
       },
     );
@@ -106,16 +104,14 @@ class PaymentTrackingService {
     }
     _logger.info('Starting Bitcoin Transaction tracking for: $destination');
     _btcPaymentSubscription?.cancel();
-    _btcPaymentSubscription = _filteredPaymentsStream(isBitcoin: true).listen(
-      (PaymentData? payment) {
-        // Null cases are filtered out on where clause
-        final PaymentData newPayment = payment!;
+    _btcPaymentSubscription = _subscribeToStream<PaymentData>(
+      _filteredPaymentsStream(isBitcoin: true),
+      (PaymentData payment) {
         _logger.info(
-          'Bitcoin Payment Received! Id: ${newPayment.id}, Status: ${newPayment.status}',
+          'Bitcoin Payment Received! Id: ${payment.id}, Status: ${payment.status}',
         );
         _notifyPaymentReceived(true);
       },
-      onError: (Object e) => _handleTrackingError(e),
     );
   }
 
@@ -158,29 +154,32 @@ class PaymentTrackingService {
     _logger.info('$direction payment tracking started for: $destination');
 
     _directPaymentSubscription?.cancel();
-    _directPaymentSubscription = _breezSdkLiquid.paymentEventStream.where((PaymentEvent paymentEvent) {
-      final Payment payment = paymentEvent.payment;
-      final String newPaymentDestination = payment.destination ?? '';
-      final bool doesDestinationMatch = newPaymentDestination == destination;
-
-      /// For outgoing payments, we only consider payments that are complete,
-      /// since we're only interested in successful outgoing transactions.
-      final bool isPaymentValid = paymentType == PaymentType.receive
-          ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
-          : (payment.status == PaymentState.complete);
-
-      final bool isPaymentOfType = payment.paymentType == paymentType;
-
-      return doesDestinationMatch && isPaymentOfType && isPaymentValid;
-    }).listen(
+    final Stream<PaymentEvent> filteredPaymentEventStream = _breezSdkLiquid.paymentEventStream.where(
       (PaymentEvent paymentEvent) {
         final Payment payment = paymentEvent.payment;
+        final String newPaymentDestination = payment.destination ?? '';
+        final bool doesDestinationMatch = newPaymentDestination == destination;
+
+        /// For outgoing payments, we only consider payments that are complete,
+        /// since we're only interested in successful outgoing transactions.
+        final bool isPaymentValid = paymentType == PaymentType.receive
+            ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
+            : (payment.status == PaymentState.complete);
+
+        final bool isPaymentOfType = payment.paymentType == paymentType;
+
+        return doesDestinationMatch && isPaymentOfType && isPaymentValid;
+      },
+    );
+    _directPaymentSubscription = _subscribeToStream<PaymentEvent>(
+      filteredPaymentEventStream,
+      (PaymentEvent event) {
+        final Payment payment = event.payment;
         _logger.info(
           '$direction payment detected! Destination: ${payment.destination}, Status: ${payment.status}',
         );
         _notifyPaymentReceived(true);
       },
-      onError: (Object e) => _handleTrackingError(e),
     );
   }
 
@@ -219,6 +218,17 @@ class PaymentTrackingService {
   }
 
   /* Helper Methods */
+
+  StreamSubscription<T> _subscribeToStream<T>(
+    Stream<T> stream,
+    void Function(T data) onData, {
+    void Function(Object error)? onError,
+  }) {
+    return stream.listen(
+      onData,
+      onError: onError ?? _handleTrackingError,
+    );
+  }
 
   bool _isValidDestination(String? destination) => destination?.isNotEmpty == true;
 }
