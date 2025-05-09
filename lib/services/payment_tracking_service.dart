@@ -91,16 +91,16 @@ class PaymentTrackingService {
   }
 
   void _startLightningInvoiceTracking(String? destination) {
-    if (destination == null || destination.isEmpty) {
+    if (_isValidDestination(destination)) {
       _logger.warning('Cannot track Lightning Invoice without destination');
       return;
     }
     _logger.info('Starting Lightning Invoice tracking for: $destination');
-    _trackDirectPayment(destination, PaymentType.receive);
+    _trackDirectPayment(destination!, PaymentType.receive);
   }
 
   void _startBitcoinTransactionTracking(String? destination) {
-    if (destination == null || destination.isEmpty) {
+    if (_isValidDestination(destination)) {
       _logger.warning('Cannot track Bitcoin Transaction without destination');
       return;
     }
@@ -141,7 +141,7 @@ class PaymentTrackingService {
     required String? destination,
     required void Function(bool success) onPaymentComplete,
   }) {
-    if (destination == null || destination.isEmpty) {
+    if (_isValidDestination(destination)) {
       _logger.warning('Cannot track outgoing payment without destination');
       return;
     }
@@ -149,7 +149,7 @@ class PaymentTrackingService {
 
     _logger.info('Starting outgoing payment tracking for: $destination');
     _onPaymentReceived = onPaymentComplete;
-    _trackDirectPayment(destination, PaymentType.send);
+    _trackDirectPayment(destination!, PaymentType.send);
   }
 
   /// Track a payment directly using the SDK
@@ -217,4 +217,8 @@ class PaymentTrackingService {
     _currentDestination = null;
     _onPaymentReceived = null;
   }
+
+  /* Helper Methods */
+
+  bool _isValidDestination(String? destination) => destination?.isNotEmpty == true;
 }
