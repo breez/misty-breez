@@ -53,10 +53,14 @@ class PaymentTrackingService {
         _startLightningAddressTracking(lnAddress!);
         break;
       case PaymentTrackingType.lightningInvoice:
-        _startLightningInvoiceTracking(destination);
+        if (_isValidDestination(destination)) {
+          _startLightningInvoiceTracking(destination!);
+        }
         break;
       case PaymentTrackingType.bitcoinTransaction:
-        _startBitcoinTransactionTracking(destination);
+        if (_isValidDestination(destination)) {
+          _startBitcoinTransactionTracking(destination!);
+        }
         break;
       case PaymentTrackingType.none:
         break;
@@ -88,20 +92,12 @@ class PaymentTrackingService {
     );
   }
 
-  void _startLightningInvoiceTracking(String? destination) {
-    if (_isValidDestination(destination)) {
-      _logger.warning('Cannot track Lightning Invoice without destination');
-      return;
-    }
+  void _startLightningInvoiceTracking(String destination) {
     _logger.info('Starting Lightning Invoice tracking for: $destination');
-    _trackDirectPayment(destination!, PaymentType.receive);
+    _trackDirectPayment(destination, PaymentType.receive);
   }
 
-  void _startBitcoinTransactionTracking(String? destination) {
-    if (_isValidDestination(destination)) {
-      _logger.warning('Cannot track Bitcoin Transaction without destination');
-      return;
-    }
+  void _startBitcoinTransactionTracking(String destination) {
     _logger.info('Starting Bitcoin Transaction tracking for: $destination');
     _btcPaymentSubscription?.cancel();
     _btcPaymentSubscription = _subscribeToStream<PaymentData>(
@@ -137,8 +133,8 @@ class PaymentTrackingService {
     required String? destination,
     required void Function(bool success) onPaymentComplete,
   }) {
-    if (_isValidDestination(destination)) {
-      _logger.warning('Cannot track outgoing payment without destination');
+    if (!_isValidDestination(destination)) {
+      _logger.warning('Cannot track outgoing payment: invalid destination');
       return;
     }
     _resetTrackingState();
