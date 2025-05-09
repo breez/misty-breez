@@ -65,7 +65,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   @override
   void dispose() {
-    paymentTrackingService.stopTracking();
+    paymentTrackingService.dispose();
     super.dispose();
   }
 

@@ -38,7 +38,7 @@ class PaymentTrackingService {
     PaymentReceivedCallback? onPaymentReceived,
   }) {
     // First stop any existing tracking
-    stopTracking();
+    _resetTrackingState();
 
     _currentTrackingType =
         (lnAddress != null && lnAddress.isNotEmpty) ? PaymentTrackingType.lightningAddress : trackingType;
@@ -145,7 +145,7 @@ class PaymentTrackingService {
       _logger.warning('Cannot track outgoing payment without destination');
       return;
     }
-    stopTracking();
+    _resetTrackingState();
 
     _logger.info('Starting outgoing payment tracking for: $destination');
     _onPaymentReceived = onPaymentComplete;
@@ -194,11 +194,11 @@ class PaymentTrackingService {
   }
 
   void dispose() {
-    stopTracking();
+    _resetTrackingState();
   }
 
   /// Stop all payment tracking
-  void stopTracking() {
+  void _resetTrackingState() {
     _logger.info('Stopping all payment tracking');
 
     _lightningAddressSubscription?.cancel();
