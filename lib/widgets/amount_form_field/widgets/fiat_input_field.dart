@@ -36,7 +36,8 @@ class FiatInputField extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           decoration: InputDecoration(
-            labelText: 'Amount in sats',
+            // TODO(erdemyerebasmaz): Add message to Breez-Translations
+            labelText: 'Amount in ${fiatConversion!.currencyData.id}',
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(color: errorBorderColor),
             ),
