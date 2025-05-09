@@ -48,7 +48,7 @@ class PaymentTrackingService {
     String? lnAddress,
   }) {
     // Validate input parameters and handle early returns
-    if (!_validateTrackingParameters(trackingType, destination, lnAddress, paymentType)) {
+    if (isInvalidConfiguration(trackingType, destination, lnAddress, paymentType)) {
       return;
     }
 
@@ -57,7 +57,7 @@ class PaymentTrackingService {
     _onPaymentReceived = onPaymentComplete;
 
     // Route to appropriate tracking method based on payment type
-    if (paymentType == PaymentType.send) {
+    if (isOutgoingPayment(paymentType)) {
       _setupOutgoingPaymentTracking(destination!);
     } else {
       _setupIncomingPaymentTracking(trackingType, destination, lnAddress);
@@ -65,27 +65,24 @@ class PaymentTrackingService {
   }
 
   /// Validates tracking parameters and logs warnings for invalid configurations
-  bool _validateTrackingParameters(
+  bool isInvalidConfiguration(
     PaymentTrackingType trackingType,
     String? destination,
     String? lnAddress,
     PaymentType paymentType,
   ) {
-    // Case 1: Lightning Address tracking requires a valid Lightning Address
-    if (trackingType == PaymentTrackingType.lightningAddress) {
-      if (lnAddress == null || lnAddress.isEmpty) {
+    if (isLightningAddress(trackingType)) {
+      if (isMissingLightningAddress(lnAddress)) {
         _logger.warning('Cannot track Lightning Address payment: missing Lightning Address');
-        return false;
+        return true;
       }
-    }
-    // Case 2: All other tracking types require a valid destination
-    else if (!_isValidDestination(destination)) {
+    } else if (isMissingDestination(destination)) {
       final String direction = paymentType == PaymentType.send ? 'outgoing' : 'incoming';
-      _logger.warning('Cannot track $direction payment: invalid destination');
-      return false;
+      _logger.warning('Cannot track $direction payment: missing destination');
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   /// Sets up tracking for outgoing payments
@@ -168,7 +165,7 @@ class PaymentTrackingService {
     _logger.info('$direction payment tracking started for: $destination');
 
     final Stream<PaymentEvent> filteredPaymentEventStream = _breezSdkLiquid.paymentEventStream.where(
-      (PaymentEvent event) => _isMatchingPayment(event.payment, destination, paymentType),
+      (PaymentEvent event) => _isPaymentForDestination(event.payment, destination, paymentType),
     );
 
     _subscriptions[PaymentTrackingType.lightningInvoice] = _subscribeToStream<PaymentEvent>(
@@ -200,25 +197,20 @@ class PaymentTrackingService {
     _onPaymentReceived = null;
   }
 
-  bool _isMatchingPayment(Payment payment, String destination, PaymentType paymentType) {
-    final String paymentDestination = payment.destination ?? '';
-    final bool doesDestinationMatch = paymentDestination == destination;
+  bool _isPaymentForDestination(Payment payment, String destination, PaymentType paymentType) {
+    // Check all matching criteria
+    final bool hasMatchingDestination = (payment.destination ?? '') == destination;
+    final bool hasMatchingPaymentType = payment.paymentType == paymentType;
+    final bool hasValidStatus = isPaymentStatusValid(payment.status, paymentType);
 
-    // For outgoing payments, we only consider payments that are complete
-    final bool isPaymentValid = paymentType == PaymentType.receive
-        ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
-        : (payment.status == PaymentState.complete);
-
-    final bool isPaymentOfType = payment.paymentType == paymentType;
-
-    final bool isMatchingPayment = doesDestinationMatch && isPaymentOfType && isPaymentValid;
-    if (isMatchingPayment) {
-      final String direction = paymentType == PaymentType.receive ? 'Incoming' : 'Outgoing';
+    final bool isMatching = hasMatchingDestination && hasMatchingPaymentType && hasValidStatus;
+    if (isMatching) {
+      final String direction = isIncomingPayment(paymentType) ? 'Incoming' : 'Outgoing';
       _logger.info(
         '$direction payment detected! Destination: ${payment.destination}, Status: ${payment.status}',
       );
     }
-    return isMatchingPayment;
+    return isMatching;
   }
 
   /// Creates a filtered stream of payments
@@ -264,5 +256,19 @@ class PaymentTrackingService {
     );
   }
 
-  bool _isValidDestination(String? destination) => destination?.isNotEmpty == true;
+  /* Type Checkers */
+
+  /// Check if a payment status is valid based on payment type
+  bool isPaymentStatusValid(PaymentState status, PaymentType paymentType) {
+    // For outgoing payments, we only consider payments that are complete
+    return paymentType == PaymentType.receive
+        ? (status == PaymentState.pending || status == PaymentState.complete)
+        : (status == PaymentState.complete);
+  }
+
+  bool isIncomingPayment(PaymentType paymentType) => paymentType == PaymentType.receive;
+  bool isOutgoingPayment(PaymentType paymentType) => paymentType == PaymentType.send;
+  bool isLightningAddress(PaymentTrackingType type) => type == PaymentTrackingType.lightningAddress;
+  bool isMissingLightningAddress(String? lnAddress) => lnAddress == null || lnAddress.isEmpty;
+  bool isMissingDestination(String? destination) => destination?.isNotEmpty != true;
 }
