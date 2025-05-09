@@ -151,21 +151,7 @@ class PaymentTrackingService {
 
     _directPaymentSubscription?.cancel();
     final Stream<PaymentEvent> filteredPaymentEventStream = _breezSdkLiquid.paymentEventStream.where(
-      (PaymentEvent paymentEvent) {
-        final Payment payment = paymentEvent.payment;
-        final String newPaymentDestination = payment.destination ?? '';
-        final bool doesDestinationMatch = newPaymentDestination == destination;
-
-        /// For outgoing payments, we only consider payments that are complete,
-        /// since we're only interested in successful outgoing transactions.
-        final bool isPaymentValid = paymentType == PaymentType.receive
-            ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
-            : (payment.status == PaymentState.complete);
-
-        final bool isPaymentOfType = payment.paymentType == paymentType;
-
-        return doesDestinationMatch && isPaymentOfType && isPaymentValid;
-      },
+      (PaymentEvent event) => _isMatchingPayment(event.payment, destination, paymentType),
     );
     _directPaymentSubscription = _subscribeToStream<PaymentEvent>(
       filteredPaymentEventStream,
@@ -214,6 +200,20 @@ class PaymentTrackingService {
   }
 
   /* Helper Methods */
+
+  bool _isMatchingPayment(Payment payment, String destination, PaymentType paymentType) {
+    final String paymentDestination = payment.destination ?? '';
+    final bool doesDestinationMatch = paymentDestination == destination;
+
+    // For outgoing payments, we only consider payments that are complete
+    final bool isPaymentValid = paymentType == PaymentType.receive
+        ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
+        : (payment.status == PaymentState.complete);
+
+    final bool isPaymentOfType = payment.paymentType == paymentType;
+
+    return doesDestinationMatch && isPaymentOfType && isPaymentValid;
+  }
 
   StreamSubscription<T> _subscribeToStream<T>(
     Stream<T> stream,
