@@ -7,10 +7,12 @@ import 'package:misty_breez/cubit/cubit.dart';
 
 final Logger _logger = Logger('PaymentTrackingService');
 
+/// Types of payment tracking supported by the application
 enum PaymentTrackingType { lightningAddress, lightningInvoice, bitcoinTransaction, none }
 
-typedef PaymentReceivedCallback = void Function(bool success);
+typedef PaymentCompleteCallback = void Function(bool success);
 
+/// Service responsible for tracking payments of various types
 class PaymentTrackingService {
   final BreezSDKLiquid _breezSdkLiquid;
   final PaymentsCubit _paymentsCubit;
@@ -20,73 +22,129 @@ class PaymentTrackingService {
   String? _currentDestination;
 
   // Subscriptions
-  StreamSubscription<PaymentData?>? _lightningAddressSubscription;
-  StreamSubscription<PaymentEvent>? _directPaymentSubscription;
-  StreamSubscription<PaymentData?>? _btcPaymentSubscription;
+  final Map<PaymentTrackingType, StreamSubscription<dynamic>?> _subscriptions =
+      <PaymentTrackingType, StreamSubscription<dynamic>?>{
+    PaymentTrackingType.lightningAddress: null,
+    PaymentTrackingType.lightningInvoice: null,
+    PaymentTrackingType.bitcoinTransaction: null,
+  };
+
   Timer? _delayedTrackingTimer;
 
   // Callback to notify when payment is received
-  PaymentReceivedCallback? _onPaymentReceived;
+  PaymentCompleteCallback? _onPaymentReceived;
 
   PaymentTrackingService(this._breezSdkLiquid, this._paymentsCubit);
 
   /// Start tracking payments for the given parameters
   void startTracking({
-    required PaymentTrackingType trackingType,
+    // Common parameters
+    required PaymentType paymentType,
+    required String? destination,
+    required PaymentCompleteCallback onPaymentComplete,
+
+    // Parameters for specific payment types
+    PaymentTrackingType trackingType = PaymentTrackingType.none,
+    String? lnAddress,
+  }) {
+    // Validate input parameters and handle early returns
+    if (!_validateTrackingParameters(trackingType, destination, lnAddress, paymentType)) {
+      return;
+    }
+
+    // Reset tracking state and set callback
+    _resetTrackingState();
+    _onPaymentReceived = onPaymentComplete;
+
+    // Route to appropriate tracking method based on payment type
+    if (paymentType == PaymentType.send) {
+      _setupOutgoingPaymentTracking(destination!);
+    } else {
+      _setupIncomingPaymentTracking(trackingType, destination, lnAddress);
+    }
+  }
+
+  /// Validates tracking parameters and logs warnings for invalid configurations
+  bool _validateTrackingParameters(
+    PaymentTrackingType trackingType,
     String? destination,
     String? lnAddress,
-    PaymentReceivedCallback? onPaymentReceived,
-  }) {
-    // First stop any existing tracking
-    _resetTrackingState();
+    PaymentType paymentType,
+  ) {
+    // Case 1: Lightning Address tracking requires a valid Lightning Address
+    if (trackingType == PaymentTrackingType.lightningAddress) {
+      if (lnAddress == null || lnAddress.isEmpty) {
+        _logger.warning('Cannot track Lightning Address payment: missing Lightning Address');
+        return false;
+      }
+    }
+    // Case 2: All other tracking types require a valid destination
+    else if (!_isValidDestination(destination)) {
+      final String direction = paymentType == PaymentType.send ? 'outgoing' : 'incoming';
+      _logger.warning('Cannot track $direction payment: invalid destination');
+      return false;
+    }
 
+    return true;
+  }
+
+  /// Sets up tracking for outgoing payments
+  void _setupOutgoingPaymentTracking(String destination) {
+    _logger.info('Starting outgoing payment tracking for: $destination');
+    _trackDirectPayment(destination, PaymentType.send);
+  }
+
+  /// Sets up tracking for incoming payments based on the tracking type
+  void _setupIncomingPaymentTracking(
+    PaymentTrackingType trackingType,
+    String? destination,
+    String? lnAddress,
+  ) {
+    // Determine specific tracking type (prioritize Lightning Address if provided)
     _currentTrackingType =
         (lnAddress != null && lnAddress.isNotEmpty) ? PaymentTrackingType.lightningAddress : trackingType;
     _currentDestination = destination;
-    _onPaymentReceived = onPaymentReceived;
+    _startTrackingByType(_currentTrackingType, destination, lnAddress);
+  }
 
-    _logger
-        .info('Starting payment tracking of type: $_currentTrackingType, destination: $_currentDestination');
+  /// Start tracking based on the specific payment tracking type
+  void _startTrackingByType(
+    PaymentTrackingType trackingType,
+    String? destination,
+    String? lnAddress,
+  ) {
+    // Early return for none type
+    if (trackingType == PaymentTrackingType.none) {
+      return;
+    }
 
-    switch (_currentTrackingType) {
-      case PaymentTrackingType.lightningAddress:
-        _startLightningAddressTracking(lnAddress!);
-        break;
-      case PaymentTrackingType.lightningInvoice:
-        if (_isValidDestination(destination)) {
-          _startLightningInvoiceTracking(destination!);
-        }
-        break;
-      case PaymentTrackingType.bitcoinTransaction:
-        if (_isValidDestination(destination)) {
-          _startBitcoinTransactionTracking(destination!);
-        }
-        break;
-      case PaymentTrackingType.none:
-        break;
+    // Map of tracking functions by type
+    final Map<PaymentTrackingType, Function> trackingFunctions = <PaymentTrackingType, Function>{
+      PaymentTrackingType.lightningAddress: () => _startLightningAddressTracking(lnAddress!),
+      PaymentTrackingType.lightningInvoice: () => _startLightningInvoiceTracking(destination!),
+      PaymentTrackingType.bitcoinTransaction: () => _startBitcoinPaymentTracking(destination!),
+    };
+
+    // Execute the appropriate tracking function or log warning
+    if (trackingFunctions.containsKey(trackingType)) {
+      _logger.info(
+        'Starting payment tracking of type: $_currentTrackingType, destination: $_currentDestination',
+      );
+      trackingFunctions[trackingType]!();
+    } else {
+      _logger.warning('Unhandled payment tracking type: $trackingType');
     }
   }
 
   void _startLightningAddressTracking(String lnAddress) {
-    _logger.info('Setting up Lightning Address tracking for: $lnAddress');
-
-    // Ignore new payments for a duration upon generating LN Address.
+    _logger.info('Starting Lightning Address tracking for: $lnAddress');
+    // Add delay to avoid popping the page before user can share or copy the address
     _delayedTrackingTimer = Timer(
-      // This delay is added to avoid popping the page before user gets the chance to copy,
-      // share or get their LN address scanned.
       const Duration(milliseconds: 1600),
       () {
         _logger.info('Starting delayed Lightning Address payment tracking');
-
-        _lightningAddressSubscription?.cancel();
-        _lightningAddressSubscription = _subscribeToStream<PaymentData>(
+        _subscriptions[PaymentTrackingType.lightningAddress] = _subscribeToStream(
           _filteredPaymentsStream(),
-          (PaymentData payment) {
-            _logger.info(
-              'Lightning Address Payment Received! Id: ${payment.id}, Status: ${payment.status}',
-            );
-            _notifyPaymentReceived(true);
-          },
         );
       },
     );
@@ -97,22 +155,76 @@ class PaymentTrackingService {
     _trackDirectPayment(destination, PaymentType.receive);
   }
 
-  void _startBitcoinTransactionTracking(String destination) {
-    _logger.info('Starting Bitcoin Transaction tracking for: $destination');
-    _btcPaymentSubscription?.cancel();
-    _btcPaymentSubscription = _subscribeToStream<PaymentData>(
+  void _startBitcoinPaymentTracking(String destination) {
+    _logger.info('Starting Bitcoin Payment tracking for: $destination');
+    _subscriptions[PaymentTrackingType.bitcoinTransaction] = _subscribeToStream(
       _filteredPaymentsStream(isBitcoin: true),
-      (PaymentData payment) {
-        _logger.info(
-          'Bitcoin Payment Received! Id: ${payment.id}, Status: ${payment.status}',
-        );
-        _notifyPaymentReceived(true);
-      },
     );
   }
 
+  /// Track a payment directly using the SDK events
+  void _trackDirectPayment(String destination, PaymentType paymentType) {
+    final String direction = paymentType == PaymentType.receive ? 'Incoming' : 'Outgoing';
+    _logger.info('$direction payment tracking started for: $destination');
+
+    final Stream<PaymentEvent> filteredPaymentEventStream = _breezSdkLiquid.paymentEventStream.where(
+      (PaymentEvent event) => _isMatchingPayment(event.payment, destination, paymentType),
+    );
+
+    _subscriptions[PaymentTrackingType.lightningInvoice] = _subscribeToStream<PaymentEvent>(
+      filteredPaymentEventStream,
+    );
+  }
+
+  void dispose() {
+    _resetTrackingState();
+  }
+
+  /* Helper Methods */
+
+  /// Stop all payment tracking
+  void _resetTrackingState() {
+    _logger.info('Stopping all payment tracking');
+
+    // Cancel all subscriptions
+    _subscriptions.forEach((_, StreamSubscription<dynamic>? subscription) => subscription?.cancel());
+    _subscriptions.updateAll((_, __) => null);
+
+    // Cancel timer
+    _delayedTrackingTimer?.cancel();
+    _delayedTrackingTimer = null;
+
+    // Reset state
+    _currentTrackingType = PaymentTrackingType.none;
+    _currentDestination = null;
+    _onPaymentReceived = null;
+  }
+
+  bool _isMatchingPayment(Payment payment, String destination, PaymentType paymentType) {
+    final String paymentDestination = payment.destination ?? '';
+    final bool doesDestinationMatch = paymentDestination == destination;
+
+    // For outgoing payments, we only consider payments that are complete
+    final bool isPaymentValid = paymentType == PaymentType.receive
+        ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
+        : (payment.status == PaymentState.complete);
+
+    final bool isPaymentOfType = payment.paymentType == paymentType;
+
+    final bool isMatchingPayment = doesDestinationMatch && isPaymentOfType && isPaymentValid;
+    if (isMatchingPayment) {
+      final String direction = paymentType == PaymentType.receive ? 'Incoming' : 'Outgoing';
+      _logger.info(
+        '$direction payment detected! Destination: ${payment.destination}, Status: ${payment.status}',
+      );
+    }
+    return isMatchingPayment;
+  }
+
+  /// Creates a filtered stream of payments
   Stream<PaymentData> _filteredPaymentsStream({bool isBitcoin = false}) {
-    return _paymentsCubit.stream
+    final StreamController<PaymentData> controller = StreamController<PaymentData>();
+    _paymentsCubit.stream
         .skip(1)
         .distinct(
           (PaymentsState a, PaymentsState b) =>
@@ -126,103 +238,29 @@ class PaymentTrackingService {
               payment.status == PaymentState.pending &&
               (!isBitcoin || payment.details is PaymentDetails_Bitcoin),
         )
-        .cast<PaymentData>();
-  }
-
-  void trackOutgoingPayment({
-    required String? destination,
-    required void Function(bool success) onPaymentComplete,
-  }) {
-    if (!_isValidDestination(destination)) {
-      _logger.warning('Cannot track outgoing payment: invalid destination');
-      return;
-    }
-    _resetTrackingState();
-
-    _logger.info('Starting outgoing payment tracking for: $destination');
-    _onPaymentReceived = onPaymentComplete;
-    _trackDirectPayment(destination!, PaymentType.send);
-  }
-
-  /// Track a payment directly using the SDK
-  void _trackDirectPayment(String destination, PaymentType paymentType) {
-    final String direction = paymentType == PaymentType.receive ? 'Incoming' : 'Outgoing';
-    _logger.info('$direction payment tracking started for: $destination');
-
-    _directPaymentSubscription?.cancel();
-    final Stream<PaymentEvent> filteredPaymentEventStream = _breezSdkLiquid.paymentEventStream.where(
-      (PaymentEvent event) => _isMatchingPayment(event.payment, destination, paymentType),
-    );
-    _directPaymentSubscription = _subscribeToStream<PaymentEvent>(
-      filteredPaymentEventStream,
-      (PaymentEvent event) {
-        final Payment payment = event.payment;
+        .cast<PaymentData>()
+        .listen(
+      (PaymentData payment) {
+        final String paymentType = isBitcoin ? 'Bitcoin' : 'Lightning Address';
         _logger.info(
-          '$direction payment detected! Destination: ${payment.destination}, Status: ${payment.status}',
+          '$paymentType Payment Received! Id: ${payment.id}, Status: ${payment.status}',
         );
-        _notifyPaymentReceived(true);
+        controller.add(payment);
       },
+      onError: controller.addError,
+      onDone: controller.close,
     );
+
+    return controller.stream;
   }
 
-  void _handleTrackingError(Object error) {
-    _logger.warning('Payment tracking error', error);
-    _notifyPaymentReceived(false);
-  }
-
-  void _notifyPaymentReceived(bool success) {
-    _onPaymentReceived?.call(success);
-  }
-
-  void dispose() {
-    _resetTrackingState();
-  }
-
-  /// Stop all payment tracking
-  void _resetTrackingState() {
-    _logger.info('Stopping all payment tracking');
-
-    _lightningAddressSubscription?.cancel();
-    _lightningAddressSubscription = null;
-
-    _directPaymentSubscription?.cancel();
-    _directPaymentSubscription = null;
-
-    _btcPaymentSubscription?.cancel();
-    _btcPaymentSubscription = null;
-
-    _delayedTrackingTimer?.cancel();
-    _delayedTrackingTimer = null;
-
-    _currentTrackingType = PaymentTrackingType.none;
-    _currentDestination = null;
-    _onPaymentReceived = null;
-  }
-
-  /* Helper Methods */
-
-  bool _isMatchingPayment(Payment payment, String destination, PaymentType paymentType) {
-    final String paymentDestination = payment.destination ?? '';
-    final bool doesDestinationMatch = paymentDestination == destination;
-
-    // For outgoing payments, we only consider payments that are complete
-    final bool isPaymentValid = paymentType == PaymentType.receive
-        ? (payment.status == PaymentState.pending || payment.status == PaymentState.complete)
-        : (payment.status == PaymentState.complete);
-
-    final bool isPaymentOfType = payment.paymentType == paymentType;
-
-    return doesDestinationMatch && isPaymentOfType && isPaymentValid;
-  }
-
-  StreamSubscription<T> _subscribeToStream<T>(
-    Stream<T> stream,
-    void Function(T data) onData, {
-    void Function(Object error)? onError,
-  }) {
+  StreamSubscription<T> _subscribeToStream<T>(Stream<T> stream) {
     return stream.listen(
-      onData,
-      onError: onError ?? _handleTrackingError,
+      (_) => _onPaymentReceived?.call(true),
+      onError: (Object error) {
+        _logger.warning('Payment tracking error', error);
+        _onPaymentReceived?.call(false);
+      },
     );
   }
 

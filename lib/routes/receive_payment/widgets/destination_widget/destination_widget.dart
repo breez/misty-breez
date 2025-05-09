@@ -71,10 +71,11 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   void _setupPaymentTracking() {
     paymentTrackingService.startTracking(
-      trackingType: widget.paymentMethod.trackingType,
+      paymentType: PaymentType.receive,
       destination: widget.destination ?? widget.snapshot?.data?.destination,
+      onPaymentComplete: _onPaymentFinished,
+      trackingType: widget.paymentMethod.trackingType,
       lnAddress: widget.lnAddress,
-      onPaymentReceived: _onPaymentFinished,
     );
   }
 

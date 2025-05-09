@@ -109,7 +109,8 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
         Provider.of<PaymentTrackingService>(context, listen: false);
     final Completer<void> paymentCompleter = Completer<void>();
 
-    paymentTrackingService.trackOutgoingPayment(
+    paymentTrackingService.startTracking(
+      paymentType: PaymentType.send,
       destination: payResult.payment.destination,
       onPaymentComplete: (bool success) {
         if (success) {
