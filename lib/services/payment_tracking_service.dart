@@ -88,7 +88,7 @@ class PaymentTrackingService {
   /// Sets up tracking for outgoing payments
   void _setupOutgoingPaymentTracking(String destination) {
     _logger.info('Starting outgoing payment tracking for: $destination');
-    _trackDirectPayment(destination, PaymentType.send);
+    _trackByDestination(destination, PaymentType.send);
   }
 
   /// Sets up tracking for incoming payments based on the tracking type
@@ -149,7 +149,7 @@ class PaymentTrackingService {
 
   void _startLightningInvoiceTracking(String destination) {
     _logger.info('Starting Lightning Invoice tracking for: $destination');
-    _trackDirectPayment(destination, PaymentType.receive);
+    _trackByDestination(destination, PaymentType.receive);
   }
 
   void _startBitcoinPaymentTracking(String destination) {
@@ -159,8 +159,8 @@ class PaymentTrackingService {
     );
   }
 
-  /// Track a payment directly using the SDK events
-  void _trackDirectPayment(String destination, PaymentType paymentType) {
+  /// Subscribes to payment events for a specific destination address
+  void _trackByDestination(String destination, PaymentType paymentType) {
     final String direction = paymentType == PaymentType.receive ? 'Incoming' : 'Outgoing';
     _logger.info('$direction payment tracking started for: $destination');
 
