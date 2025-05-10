@@ -11,7 +11,7 @@ class PaymentTrackingService {
 
   // Helper components
   late final PaymentStreamFactory _streamFactory;
-  late final StreamSubscription<dynamic>? _activeSubscription;
+  StreamSubscription<dynamic>? _activeSubscription;
 
   PaymentTrackingService(this._breezSdkLiquid, this._paymentsCubit) {
     _streamFactory = PaymentStreamFactory(_breezSdkLiquid, _paymentsCubit);
