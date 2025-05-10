@@ -5,6 +5,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/services/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 final Logger _logger = Logger('PaymentStreamFactory');
 
@@ -104,22 +105,18 @@ class PaymentStreamFactory {
     required bool Function(PaymentData) filter,
     required String paymentTypeName,
   }) {
-    final StreamController<PaymentData> controller = StreamController<PaymentData>.broadcast();
-    _paymentsCubit.stream
+    return _paymentsCubit.stream
         .skip(1) // Skip initial state
         .distinct(_isDistinctPayment)
-        .map((PaymentsState state) => state.payments.isNotEmpty ? state.payments.first : null)
-        .where((PaymentData? payment) => payment != null && filter(payment))
-        .cast<PaymentData>()
-        .listen(
-      (PaymentData payment) {
+        .switchMap((PaymentsState state) {
+      final PaymentData? payment = state.payments.isNotEmpty ? state.payments.first : null;
+      if (payment != null && filter(payment)) {
         _logger.info('$paymentTypeName Payment Received! Id: ${payment.id}');
-        controller.add(payment);
-      },
-      onError: controller.addError,
-      onDone: controller.close,
-    );
-    return controller.stream;
+        return Stream<PaymentData>.value(payment);
+      } else {
+        return const Stream<PaymentData>.empty();
+      }
+    });
   }
 
   bool _isDistinctPayment(PaymentsState a, PaymentsState b) {
