@@ -19,6 +19,8 @@ class PaymentMatchers {
   static bool isValidPaymentStatus(PaymentState status, PaymentType paymentType) {
     return paymentType == PaymentType.receive
         ? (status == PaymentState.pending || status == PaymentState.complete)
+        // For outgoing payments, we only consider payments that are complete,
+        // since we're only interested in successful outgoing transactions.
         : (status == PaymentState.complete);
   }
 }
