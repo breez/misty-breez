@@ -94,7 +94,7 @@ class PaymentStreamFactory {
     );
   }
 
-  /// Creates a filtered stream of payments based on custom filter
+  /// Creates a filtered stream of payments based on provided filter
   Stream<PaymentData> _createFilteredPaymentStream({
     required bool Function(PaymentData) filter,
     required String paymentTypeName,
@@ -105,6 +105,7 @@ class PaymentStreamFactory {
         .switchMap(_filterPayment(filter, paymentTypeName));
   }
 
+  /// Considers payments distinct if either list is empty or IDs differ
   bool _isDistinctPayment(PaymentsState a, PaymentsState b) {
     if (a.payments.isEmpty || b.payments.isEmpty) {
       return true;
@@ -112,16 +113,20 @@ class PaymentStreamFactory {
     return a.payments.first.id == b.payments.first.id;
   }
 
+  /// Extracts payments that match the filter criteria and emits them as a stream
   Stream<PaymentData> Function(PaymentsState) _filterPayment(
     bool Function(PaymentData) filter,
     String paymentTypeName,
   ) {
     return (PaymentsState state) {
+      // Need null check as states with empty payment lists pass through distinct filter
       final PaymentData? payment = state.payments.isNotEmpty ? state.payments.first : null;
+
       if (payment != null && filter(payment)) {
         _logger.info('$paymentTypeName Payment Received! Id: ${payment.id}');
         return Stream<PaymentData>.value(payment);
       } else {
+        // Note: Returning empty stream filters out this payment from the result
         return const Stream<PaymentData>.empty();
       }
     };
