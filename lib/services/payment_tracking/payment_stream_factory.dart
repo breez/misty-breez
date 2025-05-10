@@ -108,15 +108,7 @@ class PaymentStreamFactory {
     return _paymentsCubit.stream
         .skip(1) // Skip initial state
         .distinct(_isDistinctPayment)
-        .switchMap((PaymentsState state) {
-      final PaymentData? payment = state.payments.isNotEmpty ? state.payments.first : null;
-      if (payment != null && filter(payment)) {
-        _logger.info('$paymentTypeName Payment Received! Id: ${payment.id}');
-        return Stream<PaymentData>.value(payment);
-      } else {
-        return const Stream<PaymentData>.empty();
-      }
-    });
+        .switchMap(_filterPayment(filter, paymentTypeName));
   }
 
   bool _isDistinctPayment(PaymentsState a, PaymentsState b) {
@@ -124,6 +116,21 @@ class PaymentStreamFactory {
       return true;
     }
     return a.payments.first.id == b.payments.first.id;
+  }
+
+  Stream<PaymentData> Function(PaymentsState) _filterPayment(
+    bool Function(PaymentData) filter,
+    String paymentTypeName,
+  ) {
+    return (PaymentsState state) {
+      final PaymentData? payment = state.payments.isNotEmpty ? state.payments.first : null;
+      if (payment != null && filter(payment)) {
+        _logger.info('$paymentTypeName Payment Received! Id: ${payment.id}');
+        return Stream<PaymentData>.value(payment);
+      } else {
+        return const Stream<PaymentData>.empty();
+      }
+    };
   }
 
   void dispose() {
