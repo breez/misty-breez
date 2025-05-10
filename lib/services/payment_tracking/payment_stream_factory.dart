@@ -119,14 +119,14 @@ class PaymentStreamFactory {
     String paymentTypeName,
   ) {
     return (PaymentsState state) {
-      // Need null check as states with empty payment lists pass through distinct filter
-      final PaymentData? payment = state.payments.isNotEmpty ? state.payments.first : null;
-
-      if (payment != null && filter(payment)) {
+      try {
+        // Find first payment matching the filter
+        final PaymentData payment = state.payments.firstWhere(filter);
         _logger.info('$paymentTypeName Payment Received! Id: ${payment.id}');
         return Stream<PaymentData>.value(payment);
-      } else {
-        // Note: Returning empty stream filters out this payment from the result
+      } catch (e) {
+        // Note: Returning empty stream effectively filters out this payment from the result.
+        // This is how switchMap filtering works, empty streams are flattened away.
         return const Stream<PaymentData>.empty();
       }
     };
