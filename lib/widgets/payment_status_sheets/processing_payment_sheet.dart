@@ -109,7 +109,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
         Provider.of<PaymentTrackingService>(context, listen: false);
     final Completer<void> paymentCompleter = Completer<void>();
 
-    paymentTrackingService.startTracking(
+    final PaymentTrackingConfig config = PaymentTrackingConfig(
       paymentType: PaymentType.send,
       destination: payResult.payment.destination,
       onPaymentComplete: (bool success) {
@@ -120,6 +120,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
         }
       },
     );
+    paymentTrackingService.startTracking(config: config);
 
     final Future<void> paymentSuccessFuture = paymentCompleter.future;
 
