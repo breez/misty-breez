@@ -61,6 +61,7 @@ class PaymentTrackingConfig {
   PaymentTrackingType get resolvedTrackingType =>
       (lnAddress?.isNotEmpty ?? false) ? PaymentTrackingType.lightningAddress : trackingType;
 
+  // Add a delay for Lightning Addresses to give the user time to copy/share their address.
   Duration get trackingDelay =>
       isLightningAddress(resolvedTrackingType) ? lnAddressTrackingDelay : Duration.zero;
 }
