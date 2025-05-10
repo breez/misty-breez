@@ -21,18 +21,12 @@ class PaymentStreamFactory {
   PaymentStreamFactory(this._breezSdkLiquid, this._paymentsCubit) {
     // Initialize cached streams
     _btcPaymentStream = _createFilteredPaymentStream(
-      filter: (PaymentData payment) =>
-          payment.paymentType == PaymentType.receive &&
-          payment.status == PaymentState.pending &&
-          payment.details is PaymentDetails_Bitcoin,
+      filter: PaymentDataFilters.isPendingIncomingBtcPayment,
       paymentTypeName: 'Bitcoin',
     );
 
     _lnAddressPaymentStream = _createFilteredPaymentStream(
-      filter: (PaymentData payment) =>
-          payment.paymentType == PaymentType.receive &&
-          payment.status == PaymentState.pending &&
-          payment.details is! PaymentDetails_Bitcoin,
+      filter: PaymentDataFilters.isPendingIncomingLnPayment,
       paymentTypeName: 'Lightning Address',
     );
   }
