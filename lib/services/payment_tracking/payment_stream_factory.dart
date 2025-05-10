@@ -46,16 +46,11 @@ class PaymentStreamFactory {
   Future<StreamSubscription<dynamic>> subscribeToStream(
     PaymentTrackingConfig config,
   ) async {
-    final Stream<dynamic> stream = _resolveStream(config);
-
-    // If there is no delay, return subscription immediately
-    if (config.trackingDelay == Duration.zero) {
-      return _createStreamSubscription(stream, config.onPaymentComplete);
-    } else {
-      // Wait for the delay duration before subscribing
+    if (config.trackingDelay != Duration.zero) {
       await Future<void>.delayed(config.trackingDelay);
-      return _createStreamSubscription(stream, config.onPaymentComplete);
     }
+    final Stream<dynamic> stream = _resolveStream(config);
+    return _createStreamSubscription(stream, config.onPaymentComplete);
   }
 
   /// Resolves the appropriate stream for the given config.
