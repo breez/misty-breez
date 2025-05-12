@@ -82,4 +82,3 @@ class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
   Duration get trackingDelay =>
       trackingType == PaymentTrackingType.lightningAddress ? lnAddressTrackingDelay : Duration.zero;
 }
-
