@@ -83,6 +83,3 @@ class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
       trackingType == PaymentTrackingType.lightningAddress ? lnAddressTrackingDelay : Duration.zero;
 }
 
-extension PaymentTypeDirection on PaymentType {
-  String get direction => this == PaymentType.send ? 'Outgoing' : 'Incoming';
-}

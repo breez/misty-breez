@@ -33,4 +33,5 @@ extension PaymentProperties on Payment {
   bool get isComplete => status == PaymentState.complete;
   bool get isBitcoinPayment => details is PaymentDetails_Bitcoin;
   bool get isLnPayment => details is! PaymentDetails_Bitcoin;
+  String get direction => paymentType == PaymentType.send ? 'Outgoing' : 'Incoming';
 }
