@@ -74,7 +74,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       paymentType: PaymentType.receive,
       destination: widget.destination ?? widget.snapshot?.data?.destination,
       onPaymentComplete: _onPaymentFinished,
-      trackingType: widget.paymentMethod.trackingType,
+      trackingType: widget.paymentMethod.getTrackingType(lnAddress: widget.lnAddress),
       lnAddress: widget.lnAddress,
     );
     paymentTrackingService.startTracking(config: config);
@@ -102,7 +102,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
             snapshot: widget.snapshot,
             destination: widget.destination,
             lnAddress: widget.lnAddress,
-            paymentMethod: widget.paymentMethod.getLocalizedName(context),
+            paymentMethod: widget.paymentMethod.getLocalizedName(context, lnAddress: widget.lnAddress),
             onLongPress: widget.onLongPress,
             infoWidget: widget.infoWidget,
           ),

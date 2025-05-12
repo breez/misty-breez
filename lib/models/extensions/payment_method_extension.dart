@@ -20,7 +20,7 @@ extension PaymentMethodExtension on PaymentMethod {
   }
 
   /// Returns the localized display name for the payment method
-  String getLocalizedName(BuildContext context) {
+  String getLocalizedName(BuildContext context, {String? lnAddress}) {
     final BreezTranslations texts = context.texts();
 
     switch (this) {
@@ -31,8 +31,9 @@ extension PaymentMethodExtension on PaymentMethod {
       case PaymentMethod.bolt11Invoice:
         return texts.receive_payment_method_lightning_invoice;
       case PaymentMethod.lightning:
-        // Check if it's a Lightning Address or general Lightning
-        return texts.receive_payment_method_lightning_invoice;
+        return lnAddress != null
+            ? texts.receive_payment_method_lightning_address
+            : texts.receive_payment_method_lightning_invoice;
       case PaymentMethod.bitcoinAddress:
         return texts.receive_payment_method_btc_address;
       case PaymentMethod.liquidAddress:
@@ -41,14 +42,15 @@ extension PaymentMethodExtension on PaymentMethod {
   }
 
   /// Returns the tracking type associated with this payment method
-  PaymentTrackingType get trackingType {
+  PaymentTrackingType getTrackingType({String? lnAddress}) {
     switch (this) {
       case PaymentMethod.bolt11Invoice:
       case PaymentMethod.bolt12Offer:
-      case PaymentMethod.lightning:
-        // For lightning payment method, we'll need additional context
-        // to determine if it's an invoice or address
         return PaymentTrackingType.lightningInvoice;
+      case PaymentMethod.lightning:
+        return lnAddress != null
+            ? PaymentTrackingType.lightningAddress
+            : PaymentTrackingType.lightningInvoice;
       case PaymentMethod.liquidAddress:
       case PaymentMethod.bitcoinAddress:
         return PaymentTrackingType.bitcoinTransaction;
