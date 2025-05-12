@@ -11,7 +11,7 @@ import 'package:misty_breez/widgets/widgets.dart';
 /// Page that displays the user's Lightning Address for receiving payments.
 class ReceiveLightningAddressPage extends StatefulWidget {
   static const String routeName = '/lightning_address';
-  static const PaymentMethod paymentMethod = PaymentMethod.bolt11Invoice;
+  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
   static const int pageIndex = 1;
 
   const ReceiveLightningAddressPage({super.key});
