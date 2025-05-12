@@ -60,6 +60,8 @@ class ProcessingPaymentSheet extends StatefulWidget {
 }
 
 class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
+  late final PaymentTrackingService paymentTrackingService;
+
   static const Duration timeoutDuration = Duration(seconds: 30);
 
   bool _showPaymentSent = false;
@@ -67,7 +69,14 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   @override
   void initState() {
     super.initState();
+    paymentTrackingService = Provider.of<PaymentTrackingService>(context, listen: false);
     _processPaymentAndClose();
+  }
+
+  @override
+  void dispose() {
+    paymentTrackingService.dispose();
+    super.dispose();
   }
 
   void _processPaymentAndClose() {
@@ -105,8 +114,6 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   }
 
   void _trackLnPaymentEvents(SendPaymentResponse payResult) {
-    final PaymentTrackingService paymentTrackingService =
-        Provider.of<PaymentTrackingService>(context, listen: false);
     final Completer<void> paymentCompleter = Completer<void>();
 
     final PaymentTrackingConfig config = PaymentTrackingConfig(
