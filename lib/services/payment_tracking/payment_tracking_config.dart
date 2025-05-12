@@ -1,7 +1,7 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
 /// Types of payment tracking supported by the application
-enum PaymentTrackingType { lightningAddress, lightningInvoice, bitcoinTransaction, none }
+enum PaymentTrackingType { bitcoinTransaction, lightningAddress, lightningInvoice, none }
 
 /// Callback signature for payment received notifications
 typedef PaymentCompleteCallback = void Function(bool success);
@@ -66,7 +66,7 @@ class SendPaymentTrackingConfig extends PaymentTrackingConfig {
   String get destination => _destination;
 
   @override
-  String get infoMessage => 'Outgoing payment to $destination';
+  String get infoMessage => 'Outgoing Invoice: $destination';
 
   @override
   String successMessage(Payment payment) {
@@ -93,27 +93,28 @@ class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
   Duration get trackingDelay =>
       trackingType == PaymentTrackingType.lightningAddress ? lnAddressTrackingDelay : Duration.zero;
 
+  bool get hasDestination => destination?.isNotEmpty == true;
+
   @override
   String get infoMessage {
-    final bool hasDestination = destination?.isNotEmpty == true;
+    final String suffix = hasDestination ? ' Invoice: $destination' : ' Payment.';
 
     return switch (trackingType) {
-      PaymentTrackingType.lightningInvoice ||
-      PaymentTrackingType.bitcoinTransaction when hasDestination =>
-        'Incoming invoice to $destination.',
-      PaymentTrackingType.lightningInvoice => 'Incoming Lightning payment.',
-      PaymentTrackingType.bitcoinTransaction => 'Incoming Bitcoin payment.',
-      PaymentTrackingType.lightningAddress => 'Incoming Lightning Address payment.',
+      PaymentTrackingType.bitcoinTransaction => 'Incoming Bitcoin $suffix',
+      PaymentTrackingType.lightningAddress => 'Incoming Lightning Address $suffix',
+      PaymentTrackingType.lightningInvoice => 'Incoming Lightning $suffix',
       _ => 'Incoming payment.',
     };
   }
 
   @override
   String successMessage(Payment payment) {
+    final String suffix = hasDestination ? ' Invoice: $destination' : ' Payment!';
+
     return switch (trackingType) {
-      PaymentTrackingType.lightningAddress => 'Received Lightning Payment!',
-      PaymentTrackingType.bitcoinTransaction => 'Received Bitcoin Payment! Destination: $destination',
-      PaymentTrackingType.lightningInvoice => 'Received Lightning Payment! Destination: $destination',
+      PaymentTrackingType.bitcoinTransaction => 'Received Bitcoin $suffix',
+      PaymentTrackingType.lightningAddress => 'Received Lightning Address $suffix',
+      PaymentTrackingType.lightningInvoice => 'Received Lightning $suffix',
       _ => '',
     };
   }
