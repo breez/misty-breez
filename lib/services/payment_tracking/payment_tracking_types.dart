@@ -39,7 +39,7 @@ abstract class PaymentTrackingConfig {
       'trackingType must not be null or "none" for incoming payments',
     );
     assert(
-      trackingType != PaymentTrackingType.lightningAddress && destination?.isNotEmpty == true,
+      trackingType == PaymentTrackingType.lightningAddress ? true : destination?.isNotEmpty == true,
       'destination must not be empty for non-ln address receive payments',
     );
     return ReceivePaymentTrackingConfig._(
