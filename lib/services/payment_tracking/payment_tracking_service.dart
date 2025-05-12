@@ -31,6 +31,7 @@ class PaymentTrackingService {
       (Payment payment) {
         _logger.info(config.successMessage(payment));
         config.onPaymentComplete(true);
+        _activeSubscription?.cancel();
       },
       onError: (Object error) {
         _logger.warning('Failed to track payment.', error);
