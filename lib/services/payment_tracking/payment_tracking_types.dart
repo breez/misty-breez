@@ -1,9 +1,6 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
-// Delay to allow user interaction before showing "Payment Received!" sheet.
-const Duration lnAddressTrackingDelay = Duration(milliseconds: 1600);
-
 /// Types of payment tracking supported by the application
 enum PaymentTrackingType { lightningAddress, lightningInvoice, bitcoinTransaction, none }
 
@@ -11,15 +8,13 @@ enum PaymentTrackingType { lightningAddress, lightningInvoice, bitcoinTransactio
 typedef PaymentCompleteCallback = void Function(bool success);
 
 /// Configuration for payment tracking
-class PaymentTrackingConfig {
+abstract class PaymentTrackingConfig {
   final PaymentCompleteCallback onPaymentComplete;
   final String? destination;
-  final PaymentTrackingType? trackingType;
 
   PaymentTrackingConfig._({
     required this.onPaymentComplete,
     this.destination,
-    this.trackingType,
   });
 
   factory PaymentTrackingConfig.send({
@@ -53,12 +48,6 @@ class PaymentTrackingConfig {
       trackingType: trackingType,
     );
   }
-
-  // LN Address is a static identifier; and if made public, anyone can send payments at any time.
-  // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
-  // before they have a chance to copy/share their address.
-  Duration get trackingDelay =>
-      trackingType == PaymentTrackingType.lightningAddress ? lnAddressTrackingDelay : Duration.zero;
 }
 
 class SendPaymentTrackingConfig extends PaymentTrackingConfig {
@@ -77,12 +66,22 @@ class SendPaymentTrackingConfig extends PaymentTrackingConfig {
 
 class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
   final PaymentType paymentType = PaymentType.receive;
+  final PaymentTrackingType trackingType;
 
   ReceivePaymentTrackingConfig._({
     required super.destination,
     required super.onPaymentComplete,
-    required PaymentTrackingType super.trackingType,
+    required this.trackingType,
   }) : super._();
+
+  // Delay to allow user interaction before showing "Payment Received!" sheet.
+  static const Duration lnAddressTrackingDelay = Duration(milliseconds: 1600);
+
+  // LN Address is a static identifier; and if made public, anyone can send payments at any time.
+  // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
+  // before they have a chance to copy/share their address.
+  Duration get trackingDelay =>
+      trackingType == PaymentTrackingType.lightningAddress ? lnAddressTrackingDelay : Duration.zero;
 }
 
 extension PaymentTypeDirection on PaymentType {
