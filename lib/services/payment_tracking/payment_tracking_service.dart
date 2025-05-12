@@ -1,20 +1,18 @@
 import 'dart:async';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/services/services.dart';
 
 /// Service responsible for tracking payments of various types
 class PaymentTrackingService {
   final BreezSDKLiquid _breezSdkLiquid;
-  final PaymentsCubit _paymentsCubit;
 
   // Helper components
   late final PaymentStreamFactory _streamFactory;
   StreamSubscription<dynamic>? _activeSubscription;
 
-  PaymentTrackingService(this._breezSdkLiquid, this._paymentsCubit) {
-    _streamFactory = PaymentStreamFactory(_breezSdkLiquid, _paymentsCubit);
+  PaymentTrackingService(this._breezSdkLiquid) {
+    _streamFactory = PaymentStreamFactory(_breezSdkLiquid);
   }
 
   /// Start tracking payments based on the provided configuration

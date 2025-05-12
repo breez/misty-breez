@@ -1,5 +1,4 @@
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/cubit/cubit.dart';
 
 /// Types of payment tracking supported by the application
 enum PaymentTrackingType { lightningAddress, lightningInvoice, bitcoinTransaction, none }
@@ -86,23 +85,4 @@ class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
 
 extension PaymentTypeDirection on PaymentType {
   String get direction => this == PaymentType.send ? 'Outgoing' : 'Incoming';
-}
-
-/// PaymentData filter utility functions
-class PaymentDataFilters {
-  /// Filter for pending incoming Bitcoin payments
-  static bool isPendingIncomingBtcPayment(PaymentData payment) =>
-      payment.isIncoming && payment.isPending && payment.isBitcoinPayment;
-
-  /// Filter for pending incoming Lightning payments
-  static bool isPendingIncomingLnPayment(PaymentData payment) =>
-      payment.isIncoming && payment.isPending && payment.isLnPayment;
-}
-
-// Extension methods for basic payment properties
-extension PaymentProperties on PaymentData {
-  bool get isIncoming => paymentType == PaymentType.receive;
-  bool get isPending => status == PaymentState.pending;
-  bool get isBitcoinPayment => details is PaymentDetails_Bitcoin;
-  bool get isLnPayment => details is! PaymentDetails_Bitcoin;
 }
