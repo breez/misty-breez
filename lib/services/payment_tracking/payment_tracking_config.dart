@@ -47,6 +47,9 @@ abstract class PaymentTrackingConfig {
       trackingType: trackingType,
     );
   }
+
+  String get infoMessage;
+  String? successMessage(Payment payment);
 }
 
 class SendPaymentTrackingConfig extends PaymentTrackingConfig {
@@ -61,6 +64,14 @@ class SendPaymentTrackingConfig extends PaymentTrackingConfig {
 
   @override
   String get destination => _destination;
+
+  @override
+  String get infoMessage => 'Outgoing payment to $destination';
+
+  @override
+  String successMessage(Payment payment) {
+    return 'Sent Payment! Destination: $destination';
+  }
 }
 
 class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
@@ -81,4 +92,29 @@ class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
   // before they have a chance to copy/share their address.
   Duration get trackingDelay =>
       trackingType == PaymentTrackingType.lightningAddress ? lnAddressTrackingDelay : Duration.zero;
+
+  @override
+  String get infoMessage {
+    final bool hasDestination = destination?.isNotEmpty == true;
+
+    return switch (trackingType) {
+      PaymentTrackingType.lightningInvoice ||
+      PaymentTrackingType.bitcoinTransaction when hasDestination =>
+        'Incoming invoice to $destination.',
+      PaymentTrackingType.lightningInvoice => 'Incoming Lightning payment.',
+      PaymentTrackingType.bitcoinTransaction => 'Incoming Bitcoin payment.',
+      PaymentTrackingType.lightningAddress => 'Incoming Lightning Address payment.',
+      _ => 'Incoming payment.',
+    };
+  }
+
+  @override
+  String successMessage(Payment payment) {
+    return switch (trackingType) {
+      PaymentTrackingType.lightningAddress => 'Received Lightning Payment!',
+      PaymentTrackingType.bitcoinTransaction => 'Received Bitcoin Payment! Destination: $destination',
+      PaymentTrackingType.lightningInvoice => 'Received Lightning Payment! Destination: $destination',
+      _ => '',
+    };
+  }
 }

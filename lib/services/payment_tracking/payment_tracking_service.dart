@@ -23,11 +23,13 @@ class PaymentTrackingService {
       await Future<void>.delayed(config.trackingDelay);
     }
 
+    _logger.info('Tracking ${config.infoMessage}');
     _activeSubscription = _breezSdkLiquid.paymentEventStream
         .where((PaymentEvent event) => event.payment.matches(config))
         .map((PaymentEvent e) => e.payment)
         .listen(
       (Payment payment) {
+        _logger.info(config.successMessage(payment));
         config.onPaymentComplete(true);
       },
       onError: (Object error) {
