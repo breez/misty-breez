@@ -31,10 +31,6 @@ class PaymentStreamFactory {
     );
   }
 
-  /// Public access to payment streams
-  Stream<PaymentData> get btcPaymentStream => _btcPaymentStream;
-  Stream<PaymentData> get lnAddressPaymentStream => _lnAddressPaymentStream;
-
   Timer? _delayedTrackingTimer;
 
   /// Subscribes to the stream based on provided config
