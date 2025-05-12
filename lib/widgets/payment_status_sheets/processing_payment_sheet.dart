@@ -116,8 +116,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   void _trackLnPaymentEvents(SendPaymentResponse payResult) {
     final Completer<void> paymentCompleter = Completer<void>();
 
-    final PaymentTrackingConfig config = PaymentTrackingConfig(
-      paymentType: PaymentType.send,
+    final PaymentTrackingConfig config = PaymentTrackingConfig.send(
       destination: payResult.payment.destination,
       onPaymentComplete: (bool success) {
         if (success) {

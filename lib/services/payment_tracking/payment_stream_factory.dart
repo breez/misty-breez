@@ -50,20 +50,18 @@ class PaymentStreamFactory {
 
   /// Resolves the appropriate stream for the given config.
   Stream<dynamic> _resolveStream(PaymentTrackingConfig config) {
-    if (isOutgoingPayment(config.paymentType)) {
-      return _createPaymentEventStream(config.destination!, config.paymentType);
-    }
-
-    switch (config.trackingType) {
-      case PaymentTrackingType.lightningAddress:
-        return _lnAddressPaymentStream;
-      case PaymentTrackingType.bitcoinTransaction:
-        return _btcPaymentStream;
-      case PaymentTrackingType.lightningInvoice:
-        return _createPaymentEventStream(config.destination!, config.paymentType);
-      case PaymentTrackingType.none:
-        throw 'Invalid tracking type';
-    }
+    return switch (config) {
+      SendPaymentTrackingConfig() => _createPaymentEventStream(config.destination, config.paymentType),
+      ReceivePaymentTrackingConfig() => switch (config.trackingType) {
+          PaymentTrackingType.lightningAddress => _lnAddressPaymentStream,
+          PaymentTrackingType.bitcoinTransaction => _btcPaymentStream,
+          PaymentTrackingType.lightningInvoice =>
+            _createPaymentEventStream(config.destination!, config.paymentType),
+          // This can't be reached as ReceivePaymentTrackingConfig is pre-validated.
+          _ => throw ArgumentError('Invalid tracking type: ${config.trackingType}')
+        },
+      _ => throw ArgumentError('Unknown config type: ${config.runtimeType}')
+    };
   }
 
   /// Creates a subscription with standardized error handling

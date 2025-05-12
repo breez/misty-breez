@@ -19,10 +19,8 @@ class PaymentTrackingService {
 
   /// Start tracking payments based on the provided configuration
   Future<void> startTracking({required PaymentTrackingConfig config}) async {
-    if (config.isValid) {
-      _resetTrackingState();
-      _activeSubscription = await _streamFactory.subscribeToStream(config);
-    }
+    _resetTrackingState();
+    _activeSubscription = await _streamFactory.subscribeToStream(config);
   }
 
   /// Clean up resources and stop tracking

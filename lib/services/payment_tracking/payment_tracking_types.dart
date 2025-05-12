@@ -12,68 +12,78 @@ typedef PaymentCompleteCallback = void Function(bool success);
 
 /// Configuration for payment tracking
 class PaymentTrackingConfig {
-  final PaymentType paymentType;
-  final String? destination;
   final PaymentCompleteCallback onPaymentComplete;
-  final PaymentTrackingType trackingType;
-  final String? lnAddress;
+  final String? destination;
+  final PaymentTrackingType? trackingType;
 
-  factory PaymentTrackingConfig({
-    required PaymentType paymentType,
-    required String? destination,
+  PaymentTrackingConfig._({
+    required this.onPaymentComplete,
+    this.destination,
+    this.trackingType,
+  });
+
+  factory PaymentTrackingConfig.send({
     required PaymentCompleteCallback onPaymentComplete,
-    PaymentTrackingType? trackingType,
-    String? lnAddress,
+    required String? destination,
   }) {
-    final PaymentTrackingType resolvedType = (lnAddress?.isNotEmpty ?? false)
-        ? PaymentTrackingType.lightningAddress
-        : (trackingType ?? PaymentTrackingType.none);
-
-    return PaymentTrackingConfig._internal(
-      paymentType: paymentType,
-      destination: destination,
+    assert(destination?.isNotEmpty == true, 'destination must not be empty for send payments');
+    return SendPaymentTrackingConfig._(
+      destination: destination!,
       onPaymentComplete: onPaymentComplete,
-      trackingType: resolvedType,
-      lnAddress: lnAddress,
     );
   }
 
-  const PaymentTrackingConfig._internal({
-    required this.paymentType,
-    required this.destination,
-    required this.onPaymentComplete,
-    required this.trackingType,
-    required this.lnAddress,
-  });
-
-  /// Check if tracking configuration is valid
-  ///
-  /// - `lnAddress` must be available to track Lightning Address payments
-  /// - `destination` must be available to track other payments
-  bool get isValid {
-    if (trackingType == PaymentTrackingType.none) {
-      return false;
-    }
-    return (isLightningAddress(trackingType) && !isMissingLightningAddress(lnAddress)) ||
-        (!isLightningAddress(trackingType) && !isMissingDestination(destination));
+  // Factory for Receive configuration
+  factory PaymentTrackingConfig.receive({
+    required PaymentTrackingType trackingType,
+    required PaymentCompleteCallback onPaymentComplete,
+    required String? destination,
+  }) {
+    assert(
+      trackingType != PaymentTrackingType.none,
+      'trackingType must not be null or "none" for incoming payments',
+    );
+    assert(
+      trackingType != PaymentTrackingType.lightningAddress && destination?.isNotEmpty == true,
+      'destination must not be empty for non-ln address receive payments',
+    );
+    return ReceivePaymentTrackingConfig._(
+      destination: destination,
+      onPaymentComplete: onPaymentComplete,
+      trackingType: trackingType,
+    );
   }
-
-  /// Returns the effective tracking type, prioritizing Lightning Address if available.
-  PaymentTrackingType get resolvedTrackingType =>
-      (lnAddress?.isNotEmpty ?? false) ? PaymentTrackingType.lightningAddress : trackingType;
 
   // LN Address is a static identifier; and if made public, anyone can send payments at any time.
   // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
   // before they have a chance to copy/share their address.
   Duration get trackingDelay =>
-      isLightningAddress(resolvedTrackingType) ? lnAddressTrackingDelay : Duration.zero;
+      trackingType == PaymentTrackingType.lightningAddress ? lnAddressTrackingDelay : Duration.zero;
 }
 
-bool isIncomingPayment(PaymentType paymentType) => paymentType == PaymentType.receive;
-bool isOutgoingPayment(PaymentType paymentType) => paymentType == PaymentType.send;
-bool isLightningAddress(PaymentTrackingType type) => type == PaymentTrackingType.lightningAddress;
-bool isMissingLightningAddress(String? lnAddress) => lnAddress == null || lnAddress.isEmpty;
-bool isMissingDestination(String? destination) => destination?.isNotEmpty != true;
+class SendPaymentTrackingConfig extends PaymentTrackingConfig {
+  final String _destination;
+  final PaymentType paymentType = PaymentType.send;
+
+  SendPaymentTrackingConfig._({
+    required String destination,
+    required super.onPaymentComplete,
+  })  : _destination = destination,
+        super._(destination: destination);
+
+  @override
+  String get destination => _destination;
+}
+
+class ReceivePaymentTrackingConfig extends PaymentTrackingConfig {
+  final PaymentType paymentType = PaymentType.receive;
+
+  ReceivePaymentTrackingConfig._({
+    required super.destination,
+    required super.onPaymentComplete,
+    required PaymentTrackingType super.trackingType,
+  }) : super._();
+}
 
 extension PaymentTypeDirection on PaymentType {
   String get direction => this == PaymentType.send ? 'Outgoing' : 'Incoming';
