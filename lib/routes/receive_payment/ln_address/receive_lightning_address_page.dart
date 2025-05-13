@@ -77,6 +77,7 @@ class LnAddressSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
     return Padding(
@@ -98,8 +99,8 @@ class LnAddressSuccessView extends StatelessWidget {
                 children: <Widget>[
                   DestinationWidget(
                     destination: lnAddressState.lnurl,
-                    paymentMethod: ReceiveLightningAddressPage.paymentMethod,
                     lnAddress: lnAddressState.lnAddress,
+                    paymentMethod: texts.receive_payment_method_lightning_address,
                     infoWidget: const PaymentLimitsMessageBox(),
                   ),
                 ],

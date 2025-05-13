@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -14,18 +13,18 @@ export 'widgets/widgets.dart';
 const Duration lnAddressTrackingDelay = Duration(milliseconds: 1600);
 
 class DestinationWidget extends StatefulWidget {
-  final PaymentMethod paymentMethod;
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
   final String? lnAddress;
+  final String? paymentMethod;
   final void Function()? onLongPress;
   final Widget? infoWidget;
 
   const DestinationWidget({
-    required this.paymentMethod,
     this.snapshot,
     this.destination,
     this.lnAddress,
+    this.paymentMethod,
     this.onLongPress,
     this.infoWidget,
     super.key,
@@ -125,7 +124,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
             snapshot: widget.snapshot,
             destination: widget.destination,
             lnAddress: widget.lnAddress,
-            paymentMethod: widget.paymentMethod.getLocalizedName(context, lnAddress: widget.lnAddress),
+            paymentMethod: widget.paymentMethod,
             onLongPress: widget.onLongPress,
             infoWidget: widget.infoWidget,
           ),
