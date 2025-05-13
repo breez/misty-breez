@@ -5,8 +5,8 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
-import 'package:misty_breez/services/services.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
@@ -60,7 +60,7 @@ class ProcessingPaymentSheet extends StatefulWidget {
 }
 
 class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
-  late final PaymentTrackingService paymentTrackingService;
+  StreamSubscription<Payment>? _paymentSubscription;
 
   static const Duration timeoutDuration = Duration(seconds: 30);
 
@@ -69,13 +69,12 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   @override
   void initState() {
     super.initState();
-    paymentTrackingService = Provider.of<PaymentTrackingService>(context, listen: false);
     _processPaymentAndClose();
   }
 
   @override
   void dispose() {
-    paymentTrackingService.dispose();
+    _paymentSubscription?.cancel();
     super.dispose();
   }
 
@@ -114,26 +113,25 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   }
 
   void _trackLnPaymentEvents(SendPaymentResponse payResult) {
-    final Completer<void> paymentCompleter = Completer<void>();
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
 
-    final PaymentTrackingConfig config = PaymentTrackingConfig.send(
-      destination: payResult.payment.destination,
+    final Completer<bool> paymentCompleter = Completer<bool>();
+    _paymentSubscription = paymentsCubit.trackPayment(
+      predicate: (Payment p) =>
+          p.status == PaymentState.complete && p.destination == payResult.payment.destination,
       onPaymentComplete: (bool success) {
         if (success) {
-          paymentCompleter.complete();
+          paymentCompleter.complete(true);
         } else {
-          paymentCompleter.completeError('Payment failed');
+          paymentCompleter.complete(false);
         }
       },
     );
-    paymentTrackingService.startTracking(config: config);
-
-    final Future<void> paymentSuccessFuture = paymentCompleter.future;
 
     // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
     final Future<void> timeoutFuture = Future<void>.delayed(timeoutDuration);
     Future.any(<Future<bool>>[
-      paymentSuccessFuture.then((_) => true),
+      paymentCompleter.future,
       timeoutFuture.then((_) => false),
     ]).then((bool paymentSucceeded) {
       if (!mounted) {

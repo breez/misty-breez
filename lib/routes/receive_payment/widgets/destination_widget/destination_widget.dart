@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/routes/routes.dart';
-import 'package:misty_breez/services/services.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 export 'widgets/widgets.dart';
+
+// Delay to allow user interaction before showing "Payment Received!" sheet.
+const Duration lnAddressTrackingDelay = Duration(milliseconds: 1600);
 
 class DestinationWidget extends StatefulWidget {
   final PaymentMethod paymentMethod;
@@ -31,12 +36,11 @@ class DestinationWidget extends StatefulWidget {
 }
 
 class _DestinationWidgetState extends State<DestinationWidget> {
-  late final PaymentTrackingService paymentTrackingService;
+  StreamSubscription<Payment>? _paymentSubscription;
 
   @override
   void initState() {
     super.initState();
-    paymentTrackingService = Provider.of<PaymentTrackingService>(context, listen: false);
     _setupPaymentTracking();
   }
 
@@ -53,6 +57,12 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     }
   }
 
+  @override
+  void dispose() {
+    _paymentSubscription?.cancel();
+    super.dispose();
+  }
+
   bool _hasUpdatedDestination(DestinationWidget oldWidget) {
     final bool hasUpdatedDestination = widget.destination != oldWidget.destination;
 
@@ -63,22 +73,37 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     return hasUpdatedDestination || hasUpdatedSnapshotDestination;
   }
 
-  @override
-  void dispose() {
-    paymentTrackingService.dispose();
-    super.dispose();
-  }
+  void _setupPaymentTracking() async {
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+    final String? destination = widget.destination ?? widget.snapshot?.data?.destination;
 
-  void _setupPaymentTracking() {
-    final PaymentTrackingConfig config = PaymentTrackingConfig.receive(
-      destination: widget.destination ?? widget.snapshot?.data?.destination,
-      onPaymentComplete: _onPaymentFinished,
-      trackingType: widget.paymentMethod.getTrackingType(lnAddress: widget.lnAddress),
+    bool Function(Payment) predicate;
+    if (widget.lnAddress != null) {
+      // LN Address is a static identifier; and if made public, anyone can send payments at any time.
+      // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
+      // before they have a chance to copy/share their address.
+      await Future<void>.delayed(lnAddressTrackingDelay);
+
+      predicate = (Payment p) =>
+          p.paymentType == PaymentType.receive &&
+          p.details is PaymentDetails_Lightning &&
+          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+    } else if (destination != null) {
+      predicate = (Payment p) =>
+          p.destination == destination &&
+          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+    } else {
+      return;
+    }
+
+    _paymentSubscription?.cancel();
+    _paymentSubscription = paymentsCubit.trackPayment(
+      predicate: predicate,
+      onPaymentComplete: _onPaymentComplete,
     );
-    paymentTrackingService.startTracking(config: config);
   }
 
-  void _onPaymentFinished(bool isSuccess) {
+  void _onPaymentComplete(bool isSuccess) {
     if (!mounted) {
       return;
     }

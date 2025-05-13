@@ -2,7 +2,6 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/services/services.dart';
 
 extension PaymentMethodExtension on PaymentMethod {
   String get displayName {
@@ -38,22 +37,6 @@ extension PaymentMethodExtension on PaymentMethod {
         return texts.receive_payment_method_btc_address;
       case PaymentMethod.liquidAddress:
         return texts.receive_payment_method_liquid_address;
-    }
-  }
-
-  /// Returns the tracking type associated with this payment method
-  PaymentTrackingType getTrackingType({String? lnAddress}) {
-    switch (this) {
-      case PaymentMethod.bolt11Invoice:
-      case PaymentMethod.bolt12Offer:
-        return PaymentTrackingType.lightningInvoice;
-      case PaymentMethod.lightning:
-        return lnAddress != null
-            ? PaymentTrackingType.lightningAddress
-            : PaymentTrackingType.lightningInvoice;
-      case PaymentMethod.liquidAddress:
-      case PaymentMethod.bitcoinAddress:
-        return PaymentTrackingType.bitcoinTransaction;
     }
   }
 }

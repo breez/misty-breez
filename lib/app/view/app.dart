@@ -71,15 +71,8 @@ class App extends StatelessWidget {
           create: (BuildContext context) => permissionsCubit,
         ),
       ],
-      child: MultiProvider(
-        providers: <SingleChildWidget>[
-          Provider<PaymentTrackingService>(
-            create: (BuildContext context) => PaymentTrackingService(injector.breezSdkLiquid),
-          ),
-          Provider<LnUrlService>(
-            create: (BuildContext context) => LnUrlService(injector.breezSdkLiquid),
-          ),
-        ],
+      child: Provider<LnUrlService>(
+        create: (BuildContext context) => LnUrlService(injector.breezSdkLiquid),
         child: const AppView(),
       ),
     );
