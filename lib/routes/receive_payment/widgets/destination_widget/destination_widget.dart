@@ -80,6 +80,22 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     return null;
   }
 
+  void _onTrackPaymentSucceed(Payment p) {
+    _logger.info(
+      'Incoming payment detected!'
+      '${p.destination?.isNotEmpty == true ? ' Destination: ${p.destination}' : ''}',
+    );
+    _onPaymentFinished(true);
+  }
+
+  void _onTrackPaymentError(Object e) {
+    _logger.warning('Failed to track incoming payments.', e);
+    if (mounted) {
+      showFlushbar(context, message: ExceptionHandler.extractMessage(e, context.texts()));
+    }
+    _onPaymentFinished(false);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -125,22 +141,6 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void dispose() {
     _trackPaymentEventsSubscription?.cancel();
     super.dispose();
-  }
-
-  void _onTrackPaymentSucceed(Payment p) {
-    _logger.info(
-      'Incoming payment detected!'
-      '${p.destination?.isNotEmpty == true ? ' Destination: ${p.destination}' : ''}',
-    );
-    _onPaymentFinished(true);
-  }
-
-  void _onTrackPaymentError(Object e) {
-    _logger.warning('Failed to track incoming payments.', e);
-    if (mounted) {
-      showFlushbar(context, message: ExceptionHandler.extractMessage(e, context.texts()));
-    }
-    _onPaymentFinished(false);
   }
 
   void _onPaymentFinished(bool isSuccess) {
