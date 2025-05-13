@@ -5,12 +5,15 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+
+final Logger _logger = Logger('ProcessingPaymentSheet');
 
 Future<dynamic> showProcessingPaymentSheet(
   BuildContext context, {
@@ -116,12 +119,23 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
 
     final Completer<bool> paymentCompleter = Completer<bool>();
+
+    final String? destination = payResult.payment.destination;
+
     _trackPaymentEventsSubscription?.cancel();
+    _logger.info('Tracking outgoing payments for destination: $destination');
     _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
-      predicate: (Payment p) =>
-          p.status == PaymentState.complete && p.destination == payResult.payment.destination,
-      onData: (_) => paymentCompleter.complete(true),
-      onError: (_) => paymentCompleter.complete(false),
+      predicate: (Payment p) => p.status == PaymentState.complete && p.destination == destination,
+      onData: (Payment p) {
+        _logger.info(
+          'Outgoing payment detected!${p.destination?.isNotEmpty == true ? 'Destination: ${p.destination}' : ''}',
+        );
+        paymentCompleter.complete(true);
+      },
+      onError: (Object e) {
+        _logger.warning('Failed to track outgoing payments.', e);
+        paymentCompleter.complete(false);
+      },
     );
 
     // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.

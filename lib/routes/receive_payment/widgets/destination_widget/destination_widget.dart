@@ -51,24 +51,27 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
       // before they have a chance to copy/share their address.
       await Future<void>.delayed(lnAddressTrackingDelay);
-
+      _logger.info('Tracking incoming payments for Lightning Address.');
       predicate = (Payment p) =>
           p.paymentType == PaymentType.receive &&
           p.details is PaymentDetails_Lightning &&
           (p.status == PaymentState.pending || p.status == PaymentState.complete);
     } else if (destination != null) {
+      _logger.info('Tracking incoming payments for destination: $destination');
       predicate = (Payment p) =>
           p.destination == destination &&
           (p.status == PaymentState.pending || p.status == PaymentState.complete);
     } else {
+      _logger.warning('Unrecognized payment method.');
       return;
     }
-
     _trackPaymentEventsSubscription?.cancel();
     _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
       predicate: predicate,
       onData: (Payment p) {
-        _logger.info('Incoming payment detected! Destination: ${p.destination}');
+        _logger.info(
+          'Incoming payment detected!${p.destination?.isNotEmpty == true ? 'Destination: ${p.destination}' : ''}',
+        );
         _onPaymentFinished(true);
       },
       onError: (Object e) => _onTrackPaymentError(e),
@@ -121,7 +124,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   }
 
   void _onTrackPaymentError(Object e) {
-    _logger.warning('Failed to track payment', e);
+    _logger.warning('Failed to track incoming payments.', e);
     if (mounted) {
       showFlushbar(context, message: ExceptionHandler.extractMessage(e, context.texts()));
     }
