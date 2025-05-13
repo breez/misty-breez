@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:provider/provider.dart';
 
 export 'widgets/widgets.dart';
 
@@ -21,13 +21,13 @@ class DestinationWidget extends StatefulWidget {
   final Widget? infoWidget;
 
   const DestinationWidget({
+    super.key,
     this.snapshot,
     this.destination,
     this.lnAddress,
     this.paymentMethod,
     this.onLongPress,
     this.infoWidget,
-    super.key,
   });
 
   @override
@@ -35,12 +35,12 @@ class DestinationWidget extends StatefulWidget {
 }
 
 class _DestinationWidgetState extends State<DestinationWidget> {
-  StreamSubscription<Payment>? _paymentSubscription;
+  StreamSubscription<Payment>? _trackPaymentEventsSubscription;
 
   @override
   void initState() {
     super.initState();
-    _setupPaymentTracking();
+    _trackPaymentEvents();
   }
 
   @override
@@ -50,31 +50,40 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
     // initial widget setup.
     if (!(widget.lnAddress != null && widget.lnAddress!.isNotEmpty)) {
-      if (_hasUpdatedDestination(oldWidget)) {
-        _setupPaymentTracking();
+      final String? updatedDestination = getUpdatedDestination(oldWidget);
+      if (updatedDestination != null) {
+        // Cancel existing tracking before starting a new one
+        _trackPaymentEventsSubscription?.cancel();
+        _trackPaymentEventsSubscription = null;
+
+        _trackPaymentEvents(destination: updatedDestination);
       }
     }
   }
 
-  @override
-  void dispose() {
-    _paymentSubscription?.cancel();
-    super.dispose();
-  }
-
-  bool _hasUpdatedDestination(DestinationWidget oldWidget) {
+  String? getUpdatedDestination(DestinationWidget oldWidget) {
     final bool hasUpdatedDestination = widget.destination != oldWidget.destination;
+    if (widget.destination != null && hasUpdatedDestination) {
+      return widget.destination!;
+    }
 
     final String? newSnapshotDestination = widget.snapshot?.data?.destination;
     final String? oldSnapshotDestination = oldWidget.snapshot?.data?.destination;
-    final bool hasUpdatedSnapshotDestination =
-        newSnapshotDestination != null && newSnapshotDestination != oldSnapshotDestination;
-    return hasUpdatedDestination || hasUpdatedSnapshotDestination;
+    if (newSnapshotDestination != null && newSnapshotDestination != oldSnapshotDestination) {
+      return newSnapshotDestination;
+    }
+
+    return null;
   }
 
-  void _setupPaymentTracking() async {
+  @override
+  void dispose() {
+    _trackPaymentEventsSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _trackPaymentEvents({String? destination}) async {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-    final String? destination = widget.destination ?? widget.snapshot?.data?.destination;
 
     bool Function(Payment) predicate;
     if (widget.lnAddress != null) {
@@ -95,14 +104,14 @@ class _DestinationWidgetState extends State<DestinationWidget> {
       return;
     }
 
-    _paymentSubscription?.cancel();
-    _paymentSubscription = paymentsCubit.trackPayment(
+    _trackPaymentEventsSubscription?.cancel();
+    _trackPaymentEventsSubscription = paymentsCubit.trackPayment(
       predicate: predicate,
-      onPaymentComplete: _onPaymentComplete,
+      onPaymentComplete: _onPaymentFinished,
     );
   }
 
-  void _onPaymentComplete(bool isSuccess) {
+  void _onPaymentFinished(bool isSuccess) {
     if (!mounted) {
       return;
     }
