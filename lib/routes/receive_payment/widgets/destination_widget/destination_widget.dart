@@ -42,6 +42,39 @@ class DestinationWidget extends StatefulWidget {
 class _DestinationWidgetState extends State<DestinationWidget> {
   StreamSubscription<Payment>? _trackPaymentEventsSubscription;
 
+  void _trackPaymentEvents({String? destination}) async {
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+
+    bool Function(Payment) predicate;
+    if (widget.lnAddress != null) {
+      // LN Address is a static identifier; and if made public, anyone can send payments at any time.
+      // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
+      // before they have a chance to copy/share their address.
+      await Future<void>.delayed(lnAddressTrackingDelay);
+
+      predicate = (Payment p) =>
+          p.paymentType == PaymentType.receive &&
+          p.details is PaymentDetails_Lightning &&
+          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+    } else if (destination != null) {
+      predicate = (Payment p) =>
+          p.destination == destination &&
+          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+    } else {
+      return;
+    }
+
+    _trackPaymentEventsSubscription?.cancel();
+    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
+      predicate: predicate,
+      onData: (Payment p) {
+        _logger.info('Incoming payment detected! Destination: ${p.destination}');
+        _onPaymentFinished(true);
+      },
+      onError: (Object e) => _onTrackPaymentError(e),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,44 +120,12 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     super.dispose();
   }
 
-  void _trackPaymentEvents({String? destination}) async {
-    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-
-    bool Function(Payment) predicate;
-    if (widget.lnAddress != null) {
-      // LN Address is a static identifier; and if made public, anyone can send payments at any time.
-      // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
-      // before they have a chance to copy/share their address.
-      await Future<void>.delayed(lnAddressTrackingDelay);
-
-      predicate = (Payment p) =>
-          p.paymentType == PaymentType.receive &&
-          p.details is PaymentDetails_Lightning &&
-          (p.status == PaymentState.pending || p.status == PaymentState.complete);
-    } else if (destination != null) {
-      predicate = (Payment p) =>
-          p.destination == destination &&
-          (p.status == PaymentState.pending || p.status == PaymentState.complete);
-    } else {
-      return;
-    }
-
-    _trackPaymentEventsSubscription?.cancel();
-    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
-      predicate: predicate,
-      onData: (Payment p) {
-        _logger.info('Incoming payment detected! Destination: ${p.destination}, Status: ${p.status}');
-        _onPaymentFinished(true);
-      },
-      onError: (Object e) => _onTrackPaymentError(e),
-    );
-  }
-
   void _onTrackPaymentError(Object e) {
     _logger.warning('Failed to track payment', e);
     if (mounted) {
       showFlushbar(context, message: ExceptionHandler.extractMessage(e, context.texts()));
     }
+    _onPaymentFinished(false);
   }
 
   void _onPaymentFinished(bool isSuccess) {
