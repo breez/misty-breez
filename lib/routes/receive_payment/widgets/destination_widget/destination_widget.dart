@@ -42,7 +42,7 @@ class DestinationWidget extends StatefulWidget {
 class _DestinationWidgetState extends State<DestinationWidget> {
   StreamSubscription<Payment>? _trackPaymentEventsSubscription;
 
-  void _trackPaymentEvents({String? destination}) async {
+  void _trackPaymentEvents({String? expectedDestination}) async {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
 
     bool Function(Payment) predicate;
@@ -56,10 +56,10 @@ class _DestinationWidgetState extends State<DestinationWidget> {
           p.paymentType == PaymentType.receive &&
           p.details is PaymentDetails_Lightning &&
           (p.status == PaymentState.pending || p.status == PaymentState.complete);
-    } else if (destination != null) {
-      _logger.info('Tracking incoming payments for destination: $destination');
+    } else if (expectedDestination != null) {
+      _logger.info('Tracking incoming payments for destination: $expectedDestination');
       predicate = (Payment p) =>
-          p.destination == destination &&
+          p.destination == expectedDestination &&
           (p.status == PaymentState.pending || p.status == PaymentState.complete);
     } else {
       _logger.warning('Unrecognized payment method.');
@@ -97,7 +97,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
         _trackPaymentEventsSubscription?.cancel();
         _trackPaymentEventsSubscription = null;
 
-        _trackPaymentEvents(destination: updatedDestination);
+        _trackPaymentEvents(expectedDestination: updatedDestination);
       }
     }
   }

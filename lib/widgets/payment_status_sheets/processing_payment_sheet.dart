@@ -120,12 +120,11 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
 
     final Completer<bool> paymentCompleter = Completer<bool>();
 
-    final String? destination = payResult.payment.destination;
-
+    final String? expectedDestination = payResult.payment.destination;
+    _logger.info('Tracking outgoing payments for destination: $expectedDestination');
     _trackPaymentEventsSubscription?.cancel();
-    _logger.info('Tracking outgoing payments for destination: $destination');
     _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
-      predicate: (Payment p) => p.status == PaymentState.complete && p.destination == destination,
+      predicate: (Payment p) => p.status == PaymentState.complete && p.destination == expectedDestination,
       onData: (Payment p) {
         _logger.info(
           'Outgoing payment detected!${p.destination?.isNotEmpty == true ? 'Destination: ${p.destination}' : ''}',
