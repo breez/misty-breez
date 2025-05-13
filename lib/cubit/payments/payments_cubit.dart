@@ -52,14 +52,14 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }
 
   StreamSubscription<Payment> trackPaymentEvents({
-    required bool Function(Payment) predicate,
+    required bool Function(Payment) paymentFilter,
     void Function(Payment)? onData,
     Function? onError,
   }) {
     return _breezSdkLiquid.paymentEventStream
         .map((PaymentEvent e) => e.payment)
         .where(
-          predicate,
+          paymentFilter,
         )
         .listen(
           (_) => onData,

@@ -42,40 +42,42 @@ class DestinationWidget extends StatefulWidget {
 class _DestinationWidgetState extends State<DestinationWidget> {
   StreamSubscription<Payment>? _trackPaymentEventsSubscription;
 
-  void _trackPaymentEvents({String? expectedDestination}) async {
+  Future<void> _trackPaymentEvents({String? expectedDestination}) async {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+    _trackPaymentEventsSubscription?.cancel();
 
-    bool Function(Payment) predicate;
+    final bool Function(Payment)? paymentFilter = await _buildPaymentFilter(expectedDestination);
+    if (paymentFilter == null) {
+      _logger.warning('Skipping tracking payment events.');
+      return;
+    }
+
+    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
+      paymentFilter: paymentFilter,
+      onData: _onTrackPaymentSucceed,
+      onError: _onTrackPaymentError,
+    );
+  }
+
+  Future<bool Function(Payment)?> _buildPaymentFilter(String? expectedDestination) async {
     if (widget.lnAddress != null) {
-      // LN Address is a static identifier; and if made public, anyone can send payments at any time.
-      // Without this delay, a new payment can interrupt the user by showing "Payment Received!" sheet
-      // before they have a chance to copy/share their address.
       await Future<void>.delayed(lnAddressTrackingDelay);
-      _logger.info('Tracking incoming payments for Lightning Address.');
-      predicate = (Payment p) =>
+      _logger.info('Tracking incoming payments to Lightning Address.');
+      return (Payment p) =>
           p.paymentType == PaymentType.receive &&
           p.details is PaymentDetails_Lightning &&
           (p.status == PaymentState.pending || p.status == PaymentState.complete);
-    } else if (expectedDestination != null) {
-      _logger.info('Tracking incoming payments for destination: $expectedDestination');
-      predicate = (Payment p) =>
+    }
+
+    if (expectedDestination != null) {
+      _logger.info('Tracking incoming payments to destination: $expectedDestination');
+      return (Payment p) =>
           p.destination == expectedDestination &&
           (p.status == PaymentState.pending || p.status == PaymentState.complete);
-    } else {
-      _logger.warning('Unrecognized payment method.');
-      return;
     }
-    _trackPaymentEventsSubscription?.cancel();
-    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
-      predicate: predicate,
-      onData: (Payment p) {
-        _logger.info(
-          'Incoming payment detected!${p.destination?.isNotEmpty == true ? 'Destination: ${p.destination}' : ''}',
-        );
-        _onPaymentFinished(true);
-      },
-      onError: (Object e) => _onTrackPaymentError(e),
-    );
+
+    _logger.warning('Missing destination or LN Address.');
+    return null;
   }
 
   @override
@@ -87,19 +89,21 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void didUpdateWidget(covariant DestinationWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // For receive payment pages other than LN Address, user input is required before creating an invoice.
-    // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
-    // initial widget setup.
-    if (!(widget.lnAddress != null && widget.lnAddress!.isNotEmpty)) {
+
+    if (_shouldTrackDestination) {
       final String? updatedDestination = getUpdatedDestination(oldWidget);
       if (updatedDestination != null) {
-        // Cancel existing tracking before starting a new one
-        _trackPaymentEventsSubscription?.cancel();
-        _trackPaymentEventsSubscription = null;
-
         _trackPaymentEvents(expectedDestination: updatedDestination);
       }
     }
+  }
+
+  // For receive payment pages other than LN Address, user input is required before creating an invoice.
+  // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
+  // initial widget setup.
+  bool get _shouldTrackDestination {
+    // LN Address is static and shouldn't restart tracking on widget updates
+    return widget.lnAddress == null || widget.lnAddress!.isEmpty;
   }
 
   String? getUpdatedDestination(DestinationWidget oldWidget) {
@@ -121,6 +125,14 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void dispose() {
     _trackPaymentEventsSubscription?.cancel();
     super.dispose();
+  }
+
+  void _onTrackPaymentSucceed(Payment p) {
+    _logger.info(
+      'Incoming payment detected!'
+      '${p.destination?.isNotEmpty == true ? ' Destination: ${p.destination}' : ''}',
+    );
+    _onPaymentFinished(true);
   }
 
   void _onTrackPaymentError(Object e) {
