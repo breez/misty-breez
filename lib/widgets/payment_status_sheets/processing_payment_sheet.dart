@@ -60,7 +60,7 @@ class ProcessingPaymentSheet extends StatefulWidget {
 }
 
 class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
-  StreamSubscription<Payment>? _paymentSubscription;
+  StreamSubscription<Payment>? _trackPaymentEventsSubscription;
 
   static const Duration timeoutDuration = Duration(seconds: 30);
 
@@ -74,7 +74,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
 
   @override
   void dispose() {
-    _paymentSubscription?.cancel();
+    _trackPaymentEventsSubscription?.cancel();
     super.dispose();
   }
 
@@ -116,7 +116,8 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
 
     final Completer<bool> paymentCompleter = Completer<bool>();
-    _paymentSubscription = paymentsCubit.trackPaymentEvents(
+    _trackPaymentEventsSubscription?.cancel();
+    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
       predicate: (Payment p) =>
           p.status == PaymentState.complete && p.destination == payResult.payment.destination,
       onData: (_) => paymentCompleter.complete(true),
