@@ -116,16 +116,11 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
 
     final Completer<bool> paymentCompleter = Completer<bool>();
-    _paymentSubscription = paymentsCubit.trackPayment(
+    _paymentSubscription = paymentsCubit.trackPaymentEvents(
       predicate: (Payment p) =>
           p.status == PaymentState.complete && p.destination == payResult.payment.destination,
-      onPaymentComplete: (bool success) {
-        if (success) {
-          paymentCompleter.complete(true);
-        } else {
-          paymentCompleter.complete(false);
-        }
-      },
+      onData: (_) => paymentCompleter.complete(true),
+      onError: (_) => paymentCompleter.complete(false),
     );
 
     // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.

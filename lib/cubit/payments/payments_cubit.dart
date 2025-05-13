@@ -51,17 +51,20 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
     ).distinct().listen((PaymentsState newState) => emit(newState));
   }
 
-  StreamSubscription<Payment> trackPayment({
+  StreamSubscription<Payment> trackPaymentEvents({
     required bool Function(Payment) predicate,
-    required void Function(bool success) onPaymentComplete,
+    void Function(Payment)? onData,
+    Function? onError,
   }) {
-    return _breezSdkLiquid.paymentEventStream.map((PaymentEvent e) => e.payment).where(predicate).listen(
-      (Payment payment) => onPaymentComplete(true),
-      onError: (Object e) {
-        _logger.warning('Failed to track payment.', e);
-        onPaymentComplete(false);
-      },
-    );
+    return _breezSdkLiquid.paymentEventStream
+        .map((PaymentEvent e) => e.payment)
+        .where(
+          predicate,
+        )
+        .listen(
+          (_) => onData,
+          onError: onError,
+        );
   }
 
   Future<PrepareSendResponse> prepareSendPayment({

@@ -1,13 +1,18 @@
 import 'dart:async';
 
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 export 'widgets/widgets.dart';
+
+final Logger _logger = Logger('DestinationWidget');
 
 // Delay to allow user interaction before showing "Payment Received!" sheet.
 const Duration lnAddressTrackingDelay = Duration(milliseconds: 1600);
@@ -105,10 +110,21 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     }
 
     _trackPaymentEventsSubscription?.cancel();
-    _trackPaymentEventsSubscription = paymentsCubit.trackPayment(
+    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
       predicate: predicate,
-      onPaymentComplete: _onPaymentFinished,
+      onData: (Payment p) {
+        _logger.info('Incoming payment detected! Destination: ${p.destination}, Status: ${p.status}');
+        _onPaymentFinished(true);
+      },
+      onError: (Object e) => _onTrackPaymentError(e),
     );
+  }
+
+  void _onTrackPaymentError(Object e) {
+    _logger.warning('Failed to track payment', e);
+    if (mounted) {
+      showFlushbar(context, message: ExceptionHandler.extractMessage(e, context.texts()));
+    }
   }
 
   void _onPaymentFinished(bool isSuccess) {
