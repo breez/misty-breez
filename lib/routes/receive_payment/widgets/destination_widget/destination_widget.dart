@@ -99,42 +99,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void initState() {
     super.initState();
-    _trackPaymentEvents();
-  }
-
-  @override
-  void didUpdateWidget(covariant DestinationWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_shouldTrackDestination) {
-      final String? updatedDestination = getUpdatedDestination(oldWidget);
-      if (updatedDestination != null) {
-        _trackPaymentEvents(expectedDestination: updatedDestination);
-      }
-    }
-  }
-
-  // For receive payment pages other than LN Address, user input is required before creating an invoice.
-  // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
-  // initial widget setup.
-  bool get _shouldTrackDestination {
-    // LN Address is static and shouldn't restart tracking on widget updates
-    return widget.lnAddress == null || widget.lnAddress!.isEmpty;
-  }
-
-  String? getUpdatedDestination(DestinationWidget oldWidget) {
-    final bool hasUpdatedDestination = widget.destination != oldWidget.destination;
-    if (widget.destination != null && hasUpdatedDestination) {
-      return widget.destination!;
-    }
-
-    final String? newSnapshotDestination = widget.snapshot?.data?.destination;
-    final String? oldSnapshotDestination = oldWidget.snapshot?.data?.destination;
-    if (newSnapshotDestination != null && newSnapshotDestination != oldSnapshotDestination) {
-      return newSnapshotDestination;
-    }
-
-    return null;
+    _trackPaymentEvents(expectedDestination: widget.destination);
   }
 
   @override
