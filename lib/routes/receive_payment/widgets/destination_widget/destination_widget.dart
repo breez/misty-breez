@@ -104,7 +104,10 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   @override
   void dispose() {
-    _trackPaymentEventsSubscription?.cancel();
+    if (_trackPaymentEventsSubscription != null) {
+      _trackPaymentEventsSubscription?.cancel();
+      _logger.info('Cancelled tracking payment events for ${widget.paymentMethod}.');
+    }
     super.dispose();
   }
 
