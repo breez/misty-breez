@@ -163,19 +163,18 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
   Future<String?> _getBolt12Offer() async {
     try {
-      final PrepareReceiveRequest prepareRequest =
-          const PrepareReceiveRequest(paymentMethod: PaymentMethod.bolt12Offer);
-      final PrepareReceiveResponse? prepareResponse =
-          await breezSdkLiquid.instance?.prepareReceivePayment(req: prepareRequest);
-      if (prepareResponse != null) {
-        final ReceivePaymentRequest req = ReceivePaymentRequest(prepareResponse: prepareResponse);
-        final ReceivePaymentResponse? res = await breezSdkLiquid.instance?.receivePayment(req: req);
-        return res?.destination;
-      }
-    } catch (e) {
-      _logger.warning('Failed to get BOLT12 Offer', e);
+      final BindingLiquidSdk sdkInstance = breezSdkLiquid.instance!;
+      const PrepareReceiveRequest prepareReq = PrepareReceiveRequest(
+        paymentMethod: PaymentMethod.bolt12Offer,
+      );
+      final PrepareReceiveResponse prepareRes = await sdkInstance.prepareReceivePayment(req: prepareReq);
+      final ReceivePaymentRequest receiveReq = ReceivePaymentRequest(prepareResponse: prepareRes);
+      final ReceivePaymentResponse receiveRes = await sdkInstance.receivePayment(req: receiveReq);
+      return receiveRes.destination;
+    } catch (e, stackTrace) {
+      _logger.warning('Failed to get BOLT12 Offer', e, stackTrace);
+      return null;
     }
-    return null;
   }
 
   /// Clears any error state

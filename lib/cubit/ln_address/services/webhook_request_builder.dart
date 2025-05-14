@@ -33,10 +33,8 @@ class WebhookRequestBuilder {
     try {
       _logger.info('Building registration request for webhook: $webhookUrl');
 
-      // Format the username component if provided
-      final String usernameComponent = _formatOptionalComponent(username);
-      final String offerComponent = _formatOptionalComponent(offer);
-      final String additionalData = '$usernameComponent$offerComponent';
+      // Format the username and offer components if provided
+      final String additionalData = _formatAdditionalData(username: username, offer: offer);
 
       // Build the signed request
       final SignedRequestData requestData = await _buildSignedRequestData(
@@ -95,7 +93,16 @@ class WebhookRequestBuilder {
     }
   }
 
-  /// Formats the optional component for inclusion in the signed message.
+  /// Formats the additional data for inclusion in the signed message.
+  ///
+  /// @param username The optional username component
+  /// @param offer The optional offer component
+  /// @return A formatted string with a leading hyphen when each component exists
+  String _formatAdditionalData({String? username, String? offer}) {
+    return '${_formatOptionalComponent(username)}${_formatOptionalComponent(offer)}';
+  }
+
+  /// Formats an optional component for inclusion in the signed message.
   ///
   /// @param component The optional component to format
   /// @return A formatted string with a leading hyphen if component exists, empty string otherwise
