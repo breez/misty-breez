@@ -62,7 +62,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
           paymentFilter,
         )
         .listen(
-          (_) => onData,
+          (Payment payment) => onData?.call(payment),
           onError: onError,
         );
   }
