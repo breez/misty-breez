@@ -14,22 +14,27 @@ export 'widgets/widgets.dart';
 
 final Logger _logger = Logger('DestinationWidget');
 
+// Delay to allow user interaction before showing "Payment Received!" sheet.
+const Duration lnAddressTrackingDelay = Duration(milliseconds: 1600);
+
 class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
   final String? lnAddress;
-  final String? paymentMethod;
+  final String? paymentLabel;
   final void Function()? onLongPress;
   final Widget? infoWidget;
+  final bool isBitcoinPayment;
 
   const DestinationWidget({
     super.key,
     this.snapshot,
     this.destination,
     this.lnAddress,
-    this.paymentMethod,
+    this.paymentLabel,
     this.onLongPress,
     this.infoWidget,
+    this.isBitcoinPayment = false,
   });
 
   @override
@@ -37,122 +42,80 @@ class DestinationWidget extends StatefulWidget {
 }
 
 class _DestinationWidgetState extends State<DestinationWidget> {
-  StreamSubscription<PaymentData?>? _receivedPaymentSubscription;
-  StreamSubscription<void>? _trackPaymentEventsSubscription;
-  Timer? _delayedTrackingTimer;
+  StreamSubscription<Payment>? _trackPaymentEventsSubscription;
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.lnAddress != null && widget.lnAddress!.isNotEmpty) {
-      // Ignore new payments for a duration upon generating LN Address.
-      // This delay is added to avoid popping the page before user gets the chance to copy,
-      // share or get their LN address scanned.
-      _delayedTrackingTimer = Timer(
-        const Duration(milliseconds: 1600),
-        () {
-          if (mounted) {
-            _trackNewPayments();
-          }
-        },
-      );
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant DestinationWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // For receive payment pages other than LN Address, user input is required before creating an invoice.
-    // Therefore, they rely on `didUpdateWidget` instead of `initState` to capture updates after
-    // initial widget setup.
-    if (!(widget.lnAddress != null && widget.lnAddress!.isNotEmpty)) {
-      final String? updatedDestination = getUpdatedDestination(oldWidget);
-      if (updatedDestination != null) {
-        // Cancel existing tracking before starting a new one
-        _trackPaymentEventsSubscription?.cancel();
-        _trackPaymentEventsSubscription = null;
-
-        _trackPaymentEvents(updatedDestination);
-      }
-    }
-  }
-
-  String? getUpdatedDestination(DestinationWidget oldWidget) {
-    final bool hasUpdatedDestination = widget.destination != oldWidget.destination;
-    if (widget.destination != null && hasUpdatedDestination) {
-      return widget.destination!;
-    }
-
-    final String? newSnapshotDestination = widget.snapshot?.data?.destination;
-    final String? oldSnapshotDestination = oldWidget.snapshot?.data?.destination;
-    if (newSnapshotDestination != null && newSnapshotDestination != oldSnapshotDestination) {
-      return newSnapshotDestination;
-    }
-
-    return null;
-  }
-
-  @override
-  void dispose() {
-    _receivedPaymentSubscription?.cancel();
-    _trackPaymentEventsSubscription?.cancel();
-    _delayedTrackingTimer?.cancel();
-    super.dispose();
-  }
-
-  void _trackNewPayments() {
-    _logger.info('Tracking new payments.');
+  Future<void> _trackPaymentEvents({String? expectedDestination}) async {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-    _receivedPaymentSubscription?.cancel();
-    _receivedPaymentSubscription = paymentsCubit.stream
-        .skip(1) // Skips the initial state
-        .distinct(
-          (PaymentsState previous, PaymentsState next) =>
-              previous.payments.first.id == next.payments.first.id,
-        )
-        .map(
-          (PaymentsState paymentState) =>
-              paymentState.payments.isNotEmpty ? paymentState.payments.first : null,
-        )
-        .where(
-          (PaymentData? payment) =>
-              payment != null &&
-              payment.paymentType == PaymentType.receive &&
-              payment.status == PaymentState.pending,
-        )
-        .listen(
-      (PaymentData? payment) {
-        // Null cases are filtered out on where clause
-        final PaymentData newPayment = payment!;
-        _logger.info(
-          'Payment Received! Id: ${newPayment.id} Destination: ${newPayment.destination}, Status: ${newPayment.status}',
-        );
-        _onPaymentFinished(true);
-      },
-      onError: (Object e) => _onTrackPaymentError(e),
+    _trackPaymentEventsSubscription?.cancel();
+
+    final bool Function(Payment)? paymentFilter = await _buildPaymentFilter(expectedDestination);
+    if (paymentFilter == null) {
+      _logger.warning('Skipping tracking payment events.');
+      return;
+    }
+
+    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
+      paymentFilter: paymentFilter,
+      onData: _onTrackPaymentSucceed,
+      onError: _onTrackPaymentError,
     );
   }
 
-  void _trackPaymentEvents(String? destination) {
-    final InputCubit inputCubit = context.read<InputCubit>();
-    _trackPaymentEventsSubscription = inputCubit
-        .trackPaymentEvents(
-          destination,
-          paymentType: PaymentType.receive,
-        )
-        .asStream()
-        .listen(
-          (_) => _onPaymentFinished(true),
-          onError: (Object e) => _onTrackPaymentError(e),
-        );
+  Future<bool Function(Payment)?> _buildPaymentFilter(String? expectedDestination) async {
+    if (widget.lnAddress != null) {
+      await Future<void>.delayed(lnAddressTrackingDelay);
+      _logger.info('Tracking incoming payments to Lightning Address.');
+      return (Payment p) =>
+          p.paymentType == PaymentType.receive &&
+          p.details is PaymentDetails_Lightning &&
+          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+    }
+
+    if (expectedDestination != null) {
+      _logger.info('Tracking incoming payments to destination: $expectedDestination');
+      // TODO(erdemyerebasmaz): Cleanup isBitcoinPayment workaround once SDK includes destination or swap ID on resulting payment.
+      // Depends on: https://github.com/breez/breez-sdk-liquid/issues/913
+      // Treat any incoming BTC payment as valid until we can match it via destination (BIP21 URI) or swap ID.
+      return (Payment p) =>
+          (widget.isBitcoinPayment
+              ? p.details is PaymentDetails_Bitcoin
+              : p.destination == expectedDestination) &&
+          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+    }
+
+    _logger.warning('Missing destination or LN Address.');
+    return null;
+  }
+
+  void _onTrackPaymentSucceed(Payment p) {
+    _logger.info(
+      'Incoming payment detected!'
+      '${p.destination?.isNotEmpty == true ? ' Destination: ${p.destination}' : ''}',
+    );
+    _onPaymentFinished(true);
   }
 
   void _onTrackPaymentError(Object e) {
-    _logger.warning('Failed to track payment', e);
+    _logger.warning('Failed to track incoming payments.', e);
     if (mounted) {
       showFlushbar(context, message: ExceptionHandler.extractMessage(e, context.texts()));
     }
     _onPaymentFinished(false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _trackPaymentEvents(expectedDestination: widget.destination);
+  }
+
+  @override
+  void dispose() {
+    if (_trackPaymentEventsSubscription != null) {
+      _trackPaymentEventsSubscription?.cancel();
+      _logger.info('Cancelled tracking payment events for ${widget.paymentLabel}.');
+    }
+    super.dispose();
   }
 
   void _onPaymentFinished(bool isSuccess) {
@@ -177,7 +140,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
             snapshot: widget.snapshot,
             destination: widget.destination,
             lnAddress: widget.lnAddress,
-            paymentMethod: widget.paymentMethod,
+            paymentLabel: widget.paymentLabel,
             onLongPress: widget.onLongPress,
             infoWidget: widget.infoWidget,
           ),

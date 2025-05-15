@@ -18,7 +18,6 @@ final Logger _logger = Logger('ReceiveLightningPaymentPage');
 
 class ReceiveLightningPaymentPage extends StatefulWidget {
   static const String routeName = '/receive_lightning';
-  static const PaymentMethod paymentMethod = PaymentMethod.bolt11Invoice;
   static const int pageIndex = 0;
 
   const ReceiveLightningPaymentPage({super.key});
@@ -291,7 +290,8 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                   child: SingleChildScrollView(
                     child: DestinationWidget(
                       snapshot: receiveSnapshot,
-                      paymentMethod: context.texts().receive_payment_method_lightning_invoice,
+                      destination: receiveSnapshot.data?.destination,
+                      paymentLabel: texts.receive_payment_method_lightning_invoice,
                       infoWidget: PaymentFeesMessageBox(
                         feesSat: prepareSnapshot.data!.feesSat.toInt(),
                       ),

@@ -3,14 +3,17 @@ import 'dart:async';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
+import 'package:provider/provider.dart';
+
+final Logger _logger = Logger('ProcessingPaymentSheet');
 
 Future<dynamic> showProcessingPaymentSheet(
   BuildContext context, {
@@ -60,6 +63,8 @@ class ProcessingPaymentSheet extends StatefulWidget {
 }
 
 class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
+  StreamSubscription<Payment>? _trackPaymentEventsSubscription;
+
   static const Duration timeoutDuration = Duration(seconds: 30);
 
   bool _showPaymentSent = false;
@@ -68,6 +73,12 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   void initState() {
     super.initState();
     _processPaymentAndClose();
+  }
+
+  @override
+  void dispose() {
+    _trackPaymentEventsSubscription?.cancel();
+    super.dispose();
   }
 
   void _processPaymentAndClose() {
@@ -105,17 +116,32 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   }
 
   void _trackLnPaymentEvents(SendPaymentResponse payResult) {
-    final InputCubit inputCubit = context.read<InputCubit>();
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+    _trackPaymentEventsSubscription?.cancel();
 
-    final Future<void> paymentSuccessFuture = inputCubit.trackPaymentEvents(
-      payResult.payment.destination,
-      paymentType: PaymentType.send,
+    final Completer<bool> paymentCompleter = Completer<bool>();
+
+    final String? expectedDestination = payResult.payment.destination;
+    _logger.info('Tracking outgoing payments for destination: $expectedDestination');
+
+    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
+      paymentFilter: (Payment p) => p.status == PaymentState.complete && p.destination == expectedDestination,
+      onData: (Payment p) {
+        _logger.info(
+          'Outgoing payment detected!${p.destination?.isNotEmpty == true ? 'Destination: ${p.destination}' : ''}',
+        );
+        paymentCompleter.complete(true);
+      },
+      onError: (Object e) {
+        _logger.warning('Failed to track outgoing payments.', e);
+        paymentCompleter.complete(false);
+      },
     );
 
     // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
     final Future<void> timeoutFuture = Future<void>.delayed(timeoutDuration);
     Future.any(<Future<bool>>[
-      paymentSuccessFuture.then((_) => true),
+      paymentCompleter.future,
       timeoutFuture.then((_) => false),
     ]).then((bool paymentSucceeded) {
       if (!mounted) {

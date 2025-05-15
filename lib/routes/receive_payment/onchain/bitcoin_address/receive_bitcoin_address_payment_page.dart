@@ -13,7 +13,6 @@ import 'package:misty_breez/widgets/widgets.dart';
 
 class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
   static const String routeName = '/receive_bitcoin_address';
-  static const PaymentMethod paymentMethod = PaymentMethod.bitcoinAddress;
   static const int pageIndex = 2;
 
   const ReceiveBitcoinAddressPaymentPage({super.key});
@@ -186,10 +185,12 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                   child: SingleChildScrollView(
                     child: DestinationWidget(
                       snapshot: receiveSnapshot,
-                      paymentMethod: context.texts().receive_payment_method_btc_address,
+                      destination: receiveSnapshot.data?.destination,
+                      paymentLabel: texts.receive_payment_method_btc_address,
                       infoWidget: PaymentFeesMessageBox(
                         feesSat: prepareSnapshot.data!.feesSat.toInt(),
                       ),
+                      isBitcoinPayment: true,
                     ),
                   ),
                 );
