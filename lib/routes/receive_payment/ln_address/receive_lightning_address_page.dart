@@ -2,7 +2,6 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
@@ -11,7 +10,6 @@ import 'package:misty_breez/widgets/widgets.dart';
 /// Page that displays the user's Lightning Address for receiving payments.
 class ReceiveLightningAddressPage extends StatefulWidget {
   static const String routeName = '/lightning_address';
-  static const PaymentMethod paymentMethod = PaymentMethod.lightning;
   static const int pageIndex = 1;
 
   const ReceiveLightningAddressPage({super.key});

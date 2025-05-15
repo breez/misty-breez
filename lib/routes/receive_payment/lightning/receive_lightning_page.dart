@@ -18,7 +18,6 @@ final Logger _logger = Logger('ReceiveLightningPaymentPage');
 
 class ReceiveLightningPaymentPage extends StatefulWidget {
   static const String routeName = '/receive_lightning';
-  static const PaymentMethod paymentMethod = PaymentMethod.bolt11Invoice;
   static const int pageIndex = 0;
 
   const ReceiveLightningPaymentPage({super.key});
