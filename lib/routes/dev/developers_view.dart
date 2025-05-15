@@ -89,14 +89,16 @@ class _DevelopersViewState extends State<DevelopersView> {
   Future<void> _loadBolt12Offer() async {
     try {
       final BindingLiquidSdk sdk = ServiceInjector().breezSdkLiquid.instance!;
-      final PrepareReceiveResponse prepareResponse = await sdk.prepareReceivePayment(
-        req: const PrepareReceiveRequest(paymentMethod: PaymentMethod.bolt12Offer),
+      const PrepareReceiveRequest prepareReq = PrepareReceiveRequest(
+        paymentMethod: PaymentMethod.bolt12Offer,
       );
-      final ReceivePaymentResponse response =
-          await sdk.receivePayment(req: ReceivePaymentRequest(prepareResponse: prepareResponse));
+      final PrepareReceiveResponse prepareRes = await sdk.prepareReceivePayment(req: prepareReq);
+      final ReceivePaymentRequest receiveReq =
+          ReceivePaymentRequest(prepareResponse: prepareRes, description: 'Pay to Misty Breez');
+      final ReceivePaymentResponse receiveRes = await sdk.receivePayment(req: receiveReq);
 
       if (mounted) {
-        setState(() => _bolt12Offer = response.destination);
+        setState(() => _bolt12Offer = receiveRes.destination);
       }
     } catch (e) {
       _logger.warning('Failed to load BOLT12 offer: $e');

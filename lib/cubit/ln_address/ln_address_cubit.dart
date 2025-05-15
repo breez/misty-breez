@@ -168,7 +168,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         paymentMethod: PaymentMethod.bolt12Offer,
       );
       final PrepareReceiveResponse prepareRes = await sdkInstance.prepareReceivePayment(req: prepareReq);
-      final ReceivePaymentRequest receiveReq = ReceivePaymentRequest(prepareResponse: prepareRes);
+      final ReceivePaymentRequest receiveReq =
+          ReceivePaymentRequest(prepareResponse: prepareRes, description: 'Pay to Misty Breez');
       final ReceivePaymentResponse receiveRes = await sdkInstance.receivePayment(req: receiveReq);
       return receiveRes.destination;
     } catch (e, stackTrace) {
