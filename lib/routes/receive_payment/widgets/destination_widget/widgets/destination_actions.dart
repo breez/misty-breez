@@ -13,13 +13,13 @@ class DestinationActions extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
   final String? lnAddress;
-  final String? paymentMethod;
+  final String? paymentLabel;
 
   const DestinationActions({
     required this.snapshot,
     required this.destination,
     this.lnAddress,
-    this.paymentMethod,
+    this.paymentLabel,
     super.key,
   });
 
@@ -38,7 +38,7 @@ class DestinationActions extends StatelessWidget {
                   child: _CopyButton(
                     destination: destination,
                     lnAddress: lnAddress,
-                    paymentMethod: paymentMethod,
+                    tooltip: paymentLabel,
                     textGroup: textGroup,
                   ),
                 ),
@@ -46,7 +46,7 @@ class DestinationActions extends StatelessWidget {
                 Expanded(
                   child: _ShareButton(
                     destination: destination,
-                    paymentMethod: paymentMethod,
+                    tooltip: paymentLabel,
                     textGroup: textGroup,
                   ),
                 ),
@@ -59,13 +59,13 @@ class DestinationActions extends StatelessWidget {
 
 class _CopyButton extends StatelessWidget {
   final String destination;
-  final String? paymentMethod;
+  final String? tooltip;
   final String? lnAddress;
   final AutoSizeGroup? textGroup;
 
   const _CopyButton({
     required this.destination,
-    this.paymentMethod,
+    this.tooltip,
     this.lnAddress,
     this.textGroup,
   });
@@ -107,10 +107,10 @@ class _CopyButton extends StatelessWidget {
                 );
             showFlushbar(
               context,
-              message: (lnAddress != null && lnAddress!.isNotEmpty) ||
-                      (paymentMethod != null && paymentMethod!.isNotEmpty)
-                  ? texts.payment_details_dialog_copied(paymentMethod!)
-                  : texts.invoice_btc_address_deposit_address_copied,
+              message:
+                  (lnAddress != null && lnAddress!.isNotEmpty) || (tooltip != null && tooltip!.isNotEmpty)
+                      ? texts.payment_details_dialog_copied(tooltip!)
+                      : texts.invoice_btc_address_deposit_address_copied,
               duration: const Duration(seconds: 3),
             );
           },
@@ -122,12 +122,12 @@ class _CopyButton extends StatelessWidget {
 
 class _ShareButton extends StatelessWidget {
   final String destination;
-  final String? paymentMethod;
+  final String? tooltip;
   final AutoSizeGroup? textGroup;
 
   const _ShareButton({
     required this.destination,
-    required this.paymentMethod,
+    required this.tooltip,
     this.textGroup,
   });
 
@@ -142,8 +142,8 @@ class _ShareButton extends StatelessWidget {
         minWidth: 138.0,
       ),
       child: Tooltip(
-        message: (paymentMethod != null && paymentMethod!.isNotEmpty)
-            ? texts.destination_action_share_payment_method_tooltip(paymentMethod!)
+        message: (tooltip != null && tooltip!.isNotEmpty)
+            ? texts.destination_action_share_payment_method_tooltip(tooltip!)
             : texts.destination_action_share_default_tooltip,
         child: OutlinedButton.icon(
           style: OutlinedButton.styleFrom(

@@ -291,7 +291,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                     child: DestinationWidget(
                       snapshot: receiveSnapshot,
                       destination: receiveSnapshot.data?.destination,
-                      paymentMethod: texts.receive_payment_method_lightning_invoice,
+                      paymentLabel: texts.receive_payment_method_lightning_invoice,
                       infoWidget: PaymentFeesMessageBox(
                         feesSat: prepareSnapshot.data!.feesSat.toInt(),
                       ),

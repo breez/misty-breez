@@ -186,7 +186,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                     child: DestinationWidget(
                       snapshot: receiveSnapshot,
                       destination: receiveSnapshot.data?.destination,
-                      paymentMethod: texts.receive_payment_method_btc_address,
+                      paymentLabel: texts.receive_payment_method_btc_address,
                       infoWidget: PaymentFeesMessageBox(
                         feesSat: prepareSnapshot.data!.feesSat.toInt(),
                       ),

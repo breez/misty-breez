@@ -10,7 +10,7 @@ class DestinationQRWidget extends StatelessWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
   final String? lnAddress;
-  final String? paymentMethod;
+  final String? paymentLabel;
   final void Function()? onLongPress;
   final Widget? infoWidget;
 
@@ -18,7 +18,7 @@ class DestinationQRWidget extends StatelessWidget {
     required this.snapshot,
     required this.destination,
     this.lnAddress,
-    this.paymentMethod,
+    this.paymentLabel,
     this.onLongPress,
     this.infoWidget,
     super.key,
@@ -50,7 +50,7 @@ class DestinationQRWidget extends StatelessWidget {
         DestinationActions(
           snapshot: snapshot,
           destination: destination,
-          paymentMethod: paymentMethod,
+          paymentLabel: paymentLabel,
           lnAddress: lnAddress,
         ),
         if (lnAddress != null && lnAddress!.isNotEmpty) ...<Widget>[

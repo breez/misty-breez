@@ -98,7 +98,7 @@ class LnAddressSuccessView extends StatelessWidget {
                   DestinationWidget(
                     destination: lnAddressState.lnurl,
                     lnAddress: lnAddressState.lnAddress,
-                    paymentMethod: texts.receive_payment_method_lightning_address,
+                    paymentLabel: texts.receive_payment_method_lightning_address,
                     infoWidget: const PaymentLimitsMessageBox(),
                   ),
                 ],

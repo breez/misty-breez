@@ -21,7 +21,7 @@ class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
   final String? lnAddress;
-  final String? paymentMethod;
+  final String? paymentLabel;
   final void Function()? onLongPress;
   final Widget? infoWidget;
 
@@ -30,7 +30,7 @@ class DestinationWidget extends StatefulWidget {
     this.snapshot,
     this.destination,
     this.lnAddress,
-    this.paymentMethod,
+    this.paymentLabel,
     this.onLongPress,
     this.infoWidget,
   });
@@ -106,7 +106,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   void dispose() {
     if (_trackPaymentEventsSubscription != null) {
       _trackPaymentEventsSubscription?.cancel();
-      _logger.info('Cancelled tracking payment events for ${widget.paymentMethod}.');
+      _logger.info('Cancelled tracking payment events for ${widget.paymentLabel}.');
     }
     super.dispose();
   }
@@ -133,7 +133,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
             snapshot: widget.snapshot,
             destination: widget.destination,
             lnAddress: widget.lnAddress,
-            paymentMethod: widget.paymentMethod,
+            paymentLabel: widget.paymentLabel,
             onLongPress: widget.onLongPress,
             infoWidget: widget.infoWidget,
           ),
