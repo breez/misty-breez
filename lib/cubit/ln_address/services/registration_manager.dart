@@ -81,6 +81,7 @@ class LnUrlRegistrationManager {
     required String registrationType,
     String? baseUsername,
     String? recoveredLightningAddress,
+    String? offer,
   }) async {
     // Initialize preference cache for this operation
     await _initPreferencesCache();
@@ -92,6 +93,7 @@ class LnUrlRegistrationManager {
             pubKey: pubKey,
             webhookUrl: webhookUrl,
             baseUsername: baseUsername,
+            offer: offer,
           );
         case RegistrationType.ownershipTransfer:
           return await _handleOwnershipTransferRegistration(
@@ -99,6 +101,7 @@ class LnUrlRegistrationManager {
             webhookUrl: webhookUrl,
             baseUsername: baseUsername,
             recoveredLightningAddress: recoveredLightningAddress,
+            offer: offer,
           );
         case RegistrationType.update:
           return await _handleUpdateRegistration(
@@ -106,6 +109,7 @@ class LnUrlRegistrationManager {
             webhookUrl: webhookUrl,
             baseUsername: baseUsername,
             recoveredLightningAddress: recoveredLightningAddress,
+            offer: offer,
           );
         case RegistrationType.newRegistration:
         default:
@@ -114,6 +118,7 @@ class LnUrlRegistrationManager {
             webhookUrl: webhookUrl,
             baseUsername: baseUsername,
             recoveredLightningAddress: recoveredLightningAddress,
+            offer: offer,
           );
       }
     } catch (e) {
@@ -148,6 +153,7 @@ class LnUrlRegistrationManager {
     required String pubKey,
     required String webhookUrl,
     String? baseUsername,
+    String? offer,
   }) async {
     try {
       final RegisterRecoverLnurlPayResponse response = await _recoverWebhook(
@@ -164,6 +170,7 @@ class LnUrlRegistrationManager {
           webhookUrl: webhookUrl,
           recoveredLightningAddress: response.lightningAddress,
           baseUsername: baseUsername,
+          offer: offer,
         );
       }
 
@@ -174,6 +181,7 @@ class LnUrlRegistrationManager {
         pubKey: pubKey,
         webhookUrl: webhookUrl,
         baseUsername: baseUsername,
+        offer: offer,
       );
     } catch (e) {
       // Only log and process specific exceptions we can handle
@@ -185,6 +193,7 @@ class LnUrlRegistrationManager {
           pubKey: pubKey,
           webhookUrl: webhookUrl,
           baseUsername: baseUsername,
+          offer: offer,
         );
       }
       // Re-throw other exceptions for handling at higher level
@@ -198,6 +207,7 @@ class LnUrlRegistrationManager {
     required String webhookUrl,
     String? baseUsername,
     String? recoveredLightningAddress,
+    String? offer,
   }) async {
     if (_logger.isLoggable(Level.INFO)) {
       _logger.info('Processing ownership transfer registration');
@@ -216,6 +226,7 @@ class LnUrlRegistrationManager {
       pubKey: pubKey,
       webhookUrl: webhookUrl,
       username: username,
+      offer: offer,
     );
   }
 
@@ -225,6 +236,7 @@ class LnUrlRegistrationManager {
     required String webhookUrl,
     String? baseUsername,
     String? recoveredLightningAddress,
+    String? offer,
   }) async {
     // Use cached values if available
     final bool isLnUrlWebhookRegistered =
@@ -238,6 +250,7 @@ class LnUrlRegistrationManager {
         pubKey: pubKey,
         webhookUrl: webhookUrl,
         baseUsername: baseUsername,
+        offer: offer,
       );
     }
 
@@ -250,6 +263,7 @@ class LnUrlRegistrationManager {
       pubKey: pubKey,
       webhookUrl: webhookUrl,
       username: username,
+      offer: offer,
     );
   }
 
@@ -259,6 +273,7 @@ class LnUrlRegistrationManager {
     required String webhookUrl,
     String? baseUsername,
     String? recoveredLightningAddress,
+    String? offer,
   }) async {
     final String? username = await usernameResolver.resolveUsername(
       recoveredLightningAddress: recoveredLightningAddress,
@@ -269,6 +284,7 @@ class LnUrlRegistrationManager {
       pubKey: pubKey,
       webhookUrl: webhookUrl,
       username: username!,
+      offer: offer,
     );
   }
 
@@ -323,10 +339,12 @@ class LnUrlRegistrationManager {
     required String pubKey,
     required String webhookUrl,
     String? username,
+    String? offer,
   }) async {
     final RegisterLnurlPayRequest request = await requestBuilder.buildRegisterRequest(
       webhookUrl: webhookUrl,
       username: username,
+      offer: offer,
     );
 
     if (_logger.isLoggable(Level.INFO)) {
@@ -356,6 +374,7 @@ class LnUrlRegistrationManager {
     required String pubKey,
     required String webhookUrl,
     required String username,
+    String? offer,
   }) async {
     final String baseUsername = username;
 
@@ -380,6 +399,7 @@ class LnUrlRegistrationManager {
           pubKey: pubKey,
           webhookUrl: webhookUrl,
           username: currentUsername,
+          offer: offer,
         );
       } on UsernameConflictException {
         if (_logger.isLoggable(Level.WARNING)) {
