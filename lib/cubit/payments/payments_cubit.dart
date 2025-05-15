@@ -53,7 +53,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
 
   StreamSubscription<Payment> trackPaymentEvents({
     required bool Function(Payment) paymentFilter,
-    void Function(Payment)? onData,
+    required void Function(Payment) onData,
     Function? onError,
   }) {
     return _breezSdkLiquid.paymentEventStream
@@ -62,7 +62,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
           paymentFilter,
         )
         .listen(
-          (Payment payment) => onData?.call(payment),
+          (Payment payment) => onData.call(payment),
           onError: onError,
         );
   }
