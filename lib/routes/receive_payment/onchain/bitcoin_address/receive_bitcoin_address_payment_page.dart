@@ -190,6 +190,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                       infoWidget: PaymentFeesMessageBox(
                         feesSat: prepareSnapshot.data!.feesSat.toInt(),
                       ),
+                      isBitcoinPayment: true,
                     ),
                   ),
                 );

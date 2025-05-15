@@ -24,6 +24,7 @@ class DestinationWidget extends StatefulWidget {
   final String? paymentLabel;
   final void Function()? onLongPress;
   final Widget? infoWidget;
+  final bool isBitcoinPayment;
 
   const DestinationWidget({
     super.key,
@@ -33,6 +34,7 @@ class DestinationWidget extends StatefulWidget {
     this.paymentLabel,
     this.onLongPress,
     this.infoWidget,
+    this.isBitcoinPayment = false,
   });
 
   @override
@@ -71,8 +73,13 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
     if (expectedDestination != null) {
       _logger.info('Tracking incoming payments to destination: $expectedDestination');
+      // TODO(erdemyerebasmaz): Cleanup isBitcoinPayment workaround once SDK includes destination or swap ID on resulting payment.
+      // Depends on: https://github.com/breez/breez-sdk-liquid/issues/913
+      // Treat any incoming BTC payment as valid until we can match it via destination (BIP21 URI) or swap ID.
       return (Payment p) =>
-          p.destination == expectedDestination &&
+          (widget.isBitcoinPayment
+              ? p.details is PaymentDetails_Bitcoin
+              : p.destination == expectedDestination) &&
           (p.status == PaymentState.pending || p.status == PaymentState.complete);
     }
 
