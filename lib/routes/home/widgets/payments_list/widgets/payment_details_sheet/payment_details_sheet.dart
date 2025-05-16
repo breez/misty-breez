@@ -81,8 +81,8 @@ class PaymentDetailsSheet extends StatelessWidget {
       orElse: () => '',
     );
 
-    final String btcTxId = paymentData.details.map(
-      bitcoin: (PaymentDetails_Bitcoin details) => details.claimTxId ?? details.lockupTxId ?? '',
+    final String claimTxId = paymentData.details.map(
+      bitcoin: (PaymentDetails_Bitcoin details) => details.claimTxId ?? '',
       orElse: () => '',
     );
 
@@ -234,9 +234,9 @@ class PaymentDetailsSheet extends StatelessWidget {
                           unblindingData: paymentData.unblindingData,
                         ),
                       ],
-                      if (btcTxId.isNotEmpty) ...<Widget>[
+                      if (claimTxId.isNotEmpty) ...<Widget>[
                         PaymentDetailsSheetTxId(
-                          txId: btcTxId,
+                          txId: claimTxId,
                           unblindingData: paymentData.unblindingData,
                           isBtcTx: true,
                         ),

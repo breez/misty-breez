@@ -25,7 +25,8 @@ class PaymentDetailsSheetTxId extends StatelessWidget {
     return ShareablePaymentRow(
       tilePadding: EdgeInsets.zero,
       dividerColor: Colors.transparent,
-      title: '${isBtcTx ? 'BTC ' : ''}${texts.payment_details_sheet_tx_id_label}',
+      // TODO(erdemyerebasmaz): Add message to Breez-Translations => payment_details_sheet_btc_tx_id_label;
+      title: isBtcTx ? 'On-chain Transaction:' : texts.payment_details_sheet_tx_id_label,
       titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
         fontSize: 18.0,
         color: Colors.white,
