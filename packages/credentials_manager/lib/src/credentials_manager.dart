@@ -89,7 +89,7 @@ class CredentialsManager {
     try {
       final Directory tempDir = await getTemporaryDirectory();
       final Directory keysDir = tempDir.createTempSync('keys');
-      final File mnemonicFile = await File('${keysDir.path}/phrase').create(recursive: true);
+      final File mnemonicFile = await File('${keysDir.path}/phrase.txt').create(recursive: true);
       final String? mnemonic = await restoreMnemonic();
       if (mnemonic != null) {
         mnemonicFile.writeAsString(mnemonic);
