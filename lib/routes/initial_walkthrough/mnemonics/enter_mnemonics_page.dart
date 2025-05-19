@@ -146,5 +146,6 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
     for (int i = 0; i < words.length; i++) {
       textEditingControllers[i].text = words[i];
     }
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 }

@@ -155,5 +155,6 @@ class RestoreFormState extends State<RestoreForm> {
     for (int i = 0; i < words.length; i++) {
       widget.textEditingControllers[i].text = words[i];
     }
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 }
