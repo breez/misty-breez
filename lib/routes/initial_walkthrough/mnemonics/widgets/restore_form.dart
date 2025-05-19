@@ -66,6 +66,7 @@ class RestoreFormState extends State<RestoreForm> {
                   labelText: '${itemIndex + 1}',
                 ),
                 style: FieldTextStyle.textStyle,
+                onChanged: _processPotentialBackupPhrase,
               ),
               autovalidateMode: _autoValidateMode,
               validator: (String? text) => _onValidate(context, text!),
@@ -130,6 +131,29 @@ class RestoreFormState extends State<RestoreForm> {
     } else {
       final List<String> suggestionList = wordlist.where((String item) => item.startsWith(pattern)).toList();
       return suggestionList.isNotEmpty ? suggestionList : List<String>.empty();
+    }
+  }
+
+  void _processPotentialBackupPhrase(String? backupPhrase) {
+    if (backupPhrase != null && backupPhrase.contains(' ')) {
+      final List<String> words = _extractWords(backupPhrase);
+      if (_isValidMnemonic(words)) {
+        _populateTextFields(words);
+      }
+    }
+  }
+
+  List<String> _extractWords(String text) {
+    return text.split(RegExp(r'\s+')).map((String word) => word.toLowerCase().trim()).toList();
+  }
+
+  bool _isValidMnemonic(List<String> words) {
+    return words.length == 12 && words.every((String word) => wordlist.contains(word));
+  }
+
+  void _populateTextFields(List<String> words) {
+    for (int i = 0; i < words.length; i++) {
+      widget.textEditingControllers[i].text = words[i];
     }
   }
 }
