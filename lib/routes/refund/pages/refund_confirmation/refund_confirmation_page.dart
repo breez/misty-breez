@@ -96,8 +96,16 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
     _fetchFeeOptionsFuture.then(
       (List<RefundFeeOption> feeOptions) {
         if (mounted) {
+          final AccountCubit accountCubit = context.read<AccountCubit>();
+          final AccountState accountState = accountCubit.state;
           setState(() {
-            affordableFees = feeOptions;
+            affordableFees = feeOptions
+                .where(
+                  (RefundFeeOption f) => f.isAffordable(
+                    balanceSat: accountState.walletInfo!.balanceSat.toInt(),
+                  ),
+                )
+                .toList();
             selectedFeeIndex = (affordableFees.length / 2).floor();
           });
         }
