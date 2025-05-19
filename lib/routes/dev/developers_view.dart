@@ -93,8 +93,10 @@ class _DevelopersViewState extends State<DevelopersView> {
         paymentMethod: PaymentMethod.bolt12Offer,
       );
       final PrepareReceiveResponse prepareRes = await sdk.prepareReceivePayment(req: prepareReq);
-      final ReceivePaymentRequest receiveReq =
-          ReceivePaymentRequest(prepareResponse: prepareRes, description: 'Pay to Misty Breez');
+      final ReceivePaymentRequest receiveReq = ReceivePaymentRequest(
+        prepareResponse: prepareRes,
+        description: PaymentConstants.bolt12OfferDescription,
+      );
       final ReceivePaymentResponse receiveRes = await sdk.receivePayment(req: receiveReq);
 
       if (mounted) {

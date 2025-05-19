@@ -33,6 +33,9 @@ class PaymentConstants {
 
   /// Bitcoin satoshis per BTC
   static const int satoshisPerBitcoin = 100000000;
+
+  /// Default description used on Bolt 12 Offers.
+  static const String bolt12OfferDescription = 'Pay to Misty Breez';
 }
 
 /// Block times for different blockchains in seconds
