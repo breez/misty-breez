@@ -85,11 +85,14 @@ class CredentialsManager {
     await keyChain.write(accountMnemonic, mnemonic);
   }
 
-  Future<List<File>> exportCredentials() async {
+  Future<List<File>> exportCredentials({String? fingerprint}) async {
     try {
       final Directory tempDir = await getTemporaryDirectory();
       final Directory keysDir = tempDir.createTempSync('keys');
-      final File mnemonicFile = await File('${keysDir.path}/phrase.txt').create(recursive: true);
+      final String fileName = fingerprint != null && fingerprint.isNotEmpty
+          ? 'misty-breez.$fingerprint.backup-phrase.txt'
+          : 'misty-breez.backup-phrase.txt';
+      final File mnemonicFile = await File('${keysDir.path}/$fileName').create(recursive: true);
       final String? mnemonic = await restoreMnemonic();
       if (mnemonic != null) {
         mnemonicFile.writeAsString(mnemonic);
