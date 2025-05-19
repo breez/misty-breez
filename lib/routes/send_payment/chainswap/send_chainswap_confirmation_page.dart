@@ -103,7 +103,6 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
                 .where(
                   (SendChainSwapFeeOption f) => f.isAffordable(
                     balanceSat: accountState.walletInfo!.balanceSat.toInt(),
-                    amountSat: widget.amountSat,
                   ),
                 )
                 .toList();
