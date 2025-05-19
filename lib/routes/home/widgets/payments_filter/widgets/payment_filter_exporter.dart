@@ -81,7 +81,11 @@ class PaymentFilterExporter extends StatelessWidget {
       if (loaderRoute.isActive) {
         navigator.removeRoute(loaderRoute);
       }
-      Share.shareXFiles(<XFile>[XFile(filePath)]);
+      final ShareParams shareParams = ShareParams(
+        title: 'Payments',
+        files: <XFile>[XFile(filePath)],
+      );
+      SharePlus.instance.share(shareParams);
     } catch (error) {
       {
         if (loaderRoute.isActive) {

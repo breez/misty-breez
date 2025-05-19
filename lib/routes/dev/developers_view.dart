@@ -142,7 +142,11 @@ class _DevelopersViewState extends State<DevelopersView> {
         fingerprint: walletInfo.fingerprint,
       );
 
-      Share.shareXFiles(<XFile>[XFile(keysZipPath)]);
+      final ShareParams shareParams = ShareParams(
+        title: 'Keys',
+        files: <XFile>[XFile(keysZipPath)],
+      );
+      SharePlus.instance.share(shareParams);
     } catch (e) {
       _logger.severe('Failed to export keys: $e');
 
@@ -160,7 +164,11 @@ class _DevelopersViewState extends State<DevelopersView> {
 
     try {
       final String zipPath = await WalletArchiveService.createLogsArchive();
-      Share.shareXFiles(<XFile>[XFile(zipPath)]);
+      final ShareParams shareParams = ShareParams(
+        title: 'Logs',
+        files: <XFile>[XFile(zipPath)],
+      );
+      SharePlus.instance.share(shareParams);
     } catch (e) {
       _logger.severe('Failed to share logs: $e');
 

@@ -136,13 +136,13 @@ packages:
       path: "../breez-sdk-liquid/packages/dart"
       relative: true
     source: path
-    version: "0.8.0"
+    version: "0.9.0"
   breez_translations:
     dependency: "direct main"
     description:
       path: "."
-      ref: a116bd9fa41695f8d0ba22347df679144fd1c5dc
-      resolved-ref: a116bd9fa41695f8d0ba22347df679144fd1c5dc
+      ref: "86d0d7e1c871a4ede69d867313d796089c956385"
+      resolved-ref: "86d0d7e1c871a4ede69d867313d796089c956385"
       url: "https://github.com/breez/Breez-Translations"
     source: git
     version: "1.0.0"
@@ -589,7 +589,7 @@ packages:
       path: "../breez-sdk-liquid/packages/flutter"
       relative: true
     source: path
-    version: "0.8.0"
+    version: "0.9.0"
   flutter_cache_manager:
     dependency: "direct main"
     description:
@@ -1186,10 +1186,10 @@ packages:
     dependency: "direct main"
     description:
       name: mobile_scanner
-      sha256: f536c5b8cadcf73d764bdce09c94744f06aa832264730f8971b21a60c5666826
+      sha256: "72f06a071aa8b14acea3ab43ea7949eefe4a2469731ae210e006ba330a033a8c"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.10"
+    version: "7.0.0"
   mockito:
     dependency: "direct main"
     description:
@@ -1466,18 +1466,18 @@ packages:
     dependency: "direct main"
     description:
       name: share_plus
-      sha256: fce43200aa03ea87b91ce4c3ac79f0cecd52e2a7a56c7a4185023c271fbfa6da
+      sha256: b2961506569e28948d75ec346c28775bb111986bb69dc6a20754a457e3d97fa0
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.4"
+    version: "11.0.0"
   share_plus_platform_interface:
     dependency: transitive
     description:
       name: share_plus_platform_interface
-      sha256: cc012a23fc2d479854e6c80150696c4a5f5bb62cb89af4de1c505cf78d0a5d0b
+      sha256: "1032d392bc5d2095a77447a805aa3f804d2ae6a4d5eef5e6ebb3bd94c1bc19ef"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "6.0.0"
   shared_preference_app_group:
     dependency: "direct main"
     description:

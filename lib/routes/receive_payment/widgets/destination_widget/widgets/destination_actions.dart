@@ -165,7 +165,11 @@ class _ShareButton extends StatelessWidget {
             stepGranularity: 0.1,
           ),
           onPressed: () {
-            Share.share(destination);
+            final ShareParams shareParams = ShareParams(
+              title: tooltip,
+              text: destination,
+            );
+            SharePlus.instance.share(shareParams);
           },
         ),
       ),
