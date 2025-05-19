@@ -18,7 +18,8 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     String title = paymentData.title;
-    if (title == texts.payment_info_title_unknown && paymentData.paymentType == PaymentType.receive) {
+    if ((title == texts.payment_info_title_unknown || paymentData.details.hasBolt12Offer) &&
+        paymentData.paymentType == PaymentType.receive) {
       final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
       final UserProfileState userProfileState = userProfileCubit.state;
       title = '${userProfileState.profileSettings.name}';

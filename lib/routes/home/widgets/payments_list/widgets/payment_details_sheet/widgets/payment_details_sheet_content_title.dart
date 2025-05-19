@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/extensions/extensions.dart';
 
 class PaymentDetailsSheetContentTitle extends StatelessWidget {
   final PaymentData paymentData;
@@ -21,7 +22,8 @@ class PaymentDetailsSheetContentTitle extends StatelessWidget {
       return Container();
     }
 
-    if (title == texts.payment_info_title_unknown && paymentData.paymentType == PaymentType.receive) {
+    if ((title == texts.payment_info_title_unknown || paymentData.details.hasBolt12Offer) &&
+        paymentData.paymentType == PaymentType.receive) {
       final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
       final UserProfileState userProfileState = userProfileCubit.state;
       title = '${userProfileState.profileSettings.name}';

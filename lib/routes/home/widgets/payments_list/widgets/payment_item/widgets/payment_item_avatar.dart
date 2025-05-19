@@ -28,7 +28,7 @@ class PaymentItemAvatar extends StatelessWidget {
       );
     } else {
       final String title = paymentData.title;
-      if (title == texts.payment_info_title_unknown) {
+      if (title == texts.payment_info_title_unknown || paymentData.details.hasBolt12Offer) {
         final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
         final UserProfileState userProfileState = userProfileCubit.state;
         final UserProfileSettings user = userProfileState.profileSettings;

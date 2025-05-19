@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 export 'factories/factories.dart';
 export 'ln_address_state.dart';
@@ -168,8 +169,10 @@ class LnAddressCubit extends Cubit<LnAddressState> {
         paymentMethod: PaymentMethod.bolt12Offer,
       );
       final PrepareReceiveResponse prepareRes = await sdkInstance.prepareReceivePayment(req: prepareReq);
-      final ReceivePaymentRequest receiveReq =
-          ReceivePaymentRequest(prepareResponse: prepareRes, description: 'Pay to Misty Breez');
+      final ReceivePaymentRequest receiveReq = ReceivePaymentRequest(
+        prepareResponse: prepareRes,
+        description: PaymentConstants.bolt12OfferDescription,
+      );
       final ReceivePaymentResponse receiveRes = await sdkInstance.receivePayment(req: receiveReq);
       return receiveRes.destination;
     } catch (e, stackTrace) {

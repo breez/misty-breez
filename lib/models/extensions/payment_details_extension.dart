@@ -504,3 +504,13 @@ extension AesSuccessActionDataFromJson on AesSuccessActionData {
     );
   }
 }
+
+extension PaymentDetailsBolt12Offer on PaymentDetails {
+  bool get hasBolt12Offer {
+    return map(
+      lightning: (PaymentDetails_Lightning details) =>
+          details.bolt12Offer != null && details.bolt12Offer!.isNotEmpty,
+      orElse: () => false,
+    );
+  }
+}
