@@ -41,9 +41,10 @@ class RestoreFormPageState extends State<RestoreFormPage> {
     super.initState();
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
-    for (int i = 0; i < widget.textEditingControllers.length && i < widget.initialWords.length; i++) {
-      widget.textEditingControllers[i].text = widget.initialWords[i];
-    }
+    MnemonicUtils.tryPopulateTextFieldsFromText(
+      widget.initialWords.join(' '),
+      widget.textEditingControllers,
+    );
   }
 
   @override

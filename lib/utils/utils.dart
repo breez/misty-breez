@@ -8,5 +8,6 @@ export 'date/breez_date_utils.dart';
 export 'enum/enum_utils.dart';
 export 'exceptions/exception_handler.dart';
 export 'json_parsing/json_parsing.dart';
+export 'mnemonic/mnemonic_utils.dart';
 export 'payments/payment_validator.dart';
 export 'ui/overlay_manager.dart';

@@ -135,26 +135,9 @@ class RestoreFormState extends State<RestoreForm> {
   }
 
   void _processPotentialBackupPhrase(String? backupPhrase) {
-    if (backupPhrase != null && backupPhrase.contains(' ')) {
-      final List<String> words = _extractWords(backupPhrase);
-      if (_isValidMnemonic(words)) {
-        _populateTextFields(words);
-      }
-    }
-  }
-
-  List<String> _extractWords(String text) {
-    return text.split(RegExp(r'\s+')).map((String word) => word.toLowerCase().trim()).toList();
-  }
-
-  bool _isValidMnemonic(List<String> words) {
-    return words.length == 12 && words.every((String word) => wordlist.contains(word));
-  }
-
-  void _populateTextFields(List<String> words) {
-    for (int i = 0; i < words.length; i++) {
-      widget.textEditingControllers[i].text = words[i];
-    }
-    FocusManager.instance.primaryFocus?.unfocus();
+    MnemonicUtils.tryPopulateTextFieldsFromText(
+      backupPhrase,
+      widget.textEditingControllers,
+    );
   }
 }
