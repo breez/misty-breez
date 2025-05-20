@@ -28,6 +28,8 @@ class LnOfferPaymentArguments {
 
 class LnOfferPaymentPage extends StatefulWidget {
   final LnOfferPaymentArguments lnOfferPaymentArguments;
+  final bool isConfirmation;
+  final bool isDrain;
   final int? amountSat;
   final String? comment;
 
@@ -36,6 +38,8 @@ class LnOfferPaymentPage extends StatefulWidget {
 
   const LnOfferPaymentPage({
     required this.lnOfferPaymentArguments,
+    this.isConfirmation = false,
+    this.isDrain = false,
     this.amountSat,
     this.comment,
     super.key,
@@ -66,7 +70,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
 
   PrepareSendResponse? _prepareResponse;
 
-  bool _useEntireBalance = false;
+  bool _isDrain = false;
 
   @override
   void initState() {
@@ -74,8 +78,8 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
     _doneAction = KeyboardDoneAction(focusNodes: <FocusNode>[_amountFocusNode]);
 
     _isFixedAmount = widget.amountSat != null;
+    _isDrain = widget.isDrain;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _updateFormFields();
       await _fetchLightningLimits();
     });
   }
@@ -112,19 +116,38 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
   }
 
   Future<void> _handleLightningPaymentLimitsResponse() async {
-    if (_isFixedAmount) {
-      final String? errorMessage = validatePayment(
-        amountSat: widget.amountSat!,
-        throwError: true,
-      );
-      if (errorMessage == null) {
-        await _prepareSendPayment(widget.amountSat!);
+    final int amountSat = widget.amountSat ?? effectiveMinSat;
+    _updateFormFields(amountSat: amountSat);
+    final String? errorMessage = validatePayment(
+      amountSat: amountSat,
+      throwError: true,
+    );
+    if (errorMessage == null && _isFixedAmount) {
+      await _prepareSendPayment(amountSat);
+      if (mounted && _isDrain) {
+        final AccountCubit accountCubit = context.read<AccountCubit>();
+        final AccountState accountState = accountCubit.state;
+        final int balance = accountState.walletInfo!.balanceSat.toInt();
+        final int feesSat = _prepareResponse?.feesSat?.toInt() ?? 0;
+
+        _updateFormFields(amountSat: balance - feesSat);
       }
     }
   }
 
-  void _updateFormFields() {
-    _descriptionController.text = widget.comment ?? '';
+  void _updateFormFields({
+    required int amountSat,
+  }) {
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
+
+    setState(() {
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        amountSat,
+        includeDisplayName: false,
+      );
+      _descriptionController.text = widget.comment ?? '';
+    });
   }
 
   Future<void> _prepareSendPayment(int amountSat) async {
@@ -139,10 +162,19 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
 
       final String destination =
           widget.lnOfferPaymentArguments.bip353Address ?? widget.lnOfferPaymentArguments.lnOffer.offer;
-      final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(
+
+      final PayAmount payAmount = _isDrain
+          ? const PayAmount_Drain()
+          : PayAmount_Bitcoin(
+              receiverAmountSat: BigInt.from(amountSat),
+            );
+
+      final PrepareSendRequest req = PrepareSendRequest(
         destination: destination,
-        amountSat: BigInt.from(amountSat),
+        amount: payAmount,
       );
+
+      final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(req: req);
       setState(() {
         _prepareResponse = response;
       });
@@ -171,11 +203,16 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
+    final String? issuer = widget.lnOfferPaymentArguments.lnOffer.issuer;
+    final bool hasIssuer = issuer != null && issuer.isNotEmpty;
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         leading: const back_button.BackButton(),
-        title: Text(texts.ln_payment_send_payment_title),
+        title: Text(
+          hasIssuer ? texts.lnurl_fetch_invoice_pay_to_payee(issuer) : texts.ln_payment_send_payment_title,
+        ),
       ),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         builder: (BuildContext context, CurrencyState currencyState) {
@@ -193,6 +230,11 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
             );
           }
 
+          final int amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
+
+          final bool offerHasDescription = widget.lnOfferPaymentArguments.lnOffer.description != null &&
+              widget.lnOfferPaymentArguments.lnOffer.description!.isNotEmpty;
+
           return Form(
             key: _formKey,
             child: Padding(
@@ -205,8 +247,8 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
                         child: LnPaymentHeader(
-                          payeeName: widget.lnOfferPaymentArguments.lnOffer.issuer ?? '',
-                          totalAmount: widget.amountSat! + (_prepareResponse?.feesSat?.toInt() ?? 0),
+                          payeeName: issuer ?? '',
+                          totalAmount: amountSat,
                           errorMessage: errorMessage,
                         ),
                       ),
@@ -226,6 +268,11 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                       ),
                       child: Column(
                         children: <Widget>[
+                          if (!_isFixedAmount && offerHasDescription) ...<Widget>[
+                            LnPaymentDescription(
+                              metadataText: widget.lnOfferPaymentArguments.lnOffer.description!,
+                            ),
+                          ],
                           if (!_isFixedAmount) ...<Widget>[
                             Column(
                               children: <Widget>[
@@ -236,7 +283,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                   bitcoinCurrency: currencyState.bitcoinCurrency,
                                   focusNode: _amountFocusNode,
                                   autofocus: _isFormEnabled && errorMessage.isEmpty,
-                                  enabled: _isFormEnabled && !_useEntireBalance,
+                                  enabled: _isFormEnabled && !_isDrain,
                                   enableInteractiveSelection: _isFormEnabled,
                                   controller: _amountController,
                                   validatorFn: (int amountSat) => validatePayment(
@@ -333,30 +380,28 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                   trailing: Padding(
                                     padding: const EdgeInsets.only(bottom: 8.0),
                                     child: Switch(
-                                      value: _useEntireBalance,
+                                      value: _isDrain,
                                       activeColor: Colors.white,
                                       activeTrackColor: themeData.primaryColor,
                                       onChanged: (bool value) async {
                                         setState(
                                           () {
                                             setState(() {
-                                              _useEntireBalance = value;
+                                              _isDrain = value;
                                             });
-                                            if (value) {
-                                              final String formattedAmount = currencyState.bitcoinCurrency
-                                                  .format(
-                                                    accountState.walletInfo!.balanceSat.toInt(),
-                                                    includeDisplayName: false,
-                                                    userInput: true,
-                                                  )
-                                                  .formatBySatAmountFormFieldFormatter();
-                                              setState(() {
-                                                _amountController.text = formattedAmount;
-                                              });
-                                              _formKey.currentState?.validate();
-                                            } else {
-                                              _amountController.text = '';
-                                            }
+                                            final String formattedAmount = currencyState.bitcoinCurrency
+                                                .format(
+                                                  value
+                                                      ? accountState.walletInfo!.balanceSat.toInt()
+                                                      : effectiveMinSat,
+                                                  includeDisplayName: false,
+                                                  userInput: true,
+                                                )
+                                                .formatBySatAmountFormFieldFormatter();
+                                            setState(() {
+                                              _amountController.text = formattedAmount;
+                                            });
+                                            _formKey.currentState?.validate();
                                           },
                                         );
                                       },
@@ -370,13 +415,10 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: LnPaymentAmount(
-                                amountSat: widget.amountSat!,
+                                amountSat: amountSat,
                                 hasError: !_isFormEnabled || errorMessage.isNotEmpty,
                               ),
                             ),
-                          ],
-                          if (_prepareResponse != null &&
-                              _prepareResponse!.feesSat?.toInt() != 0) ...<Widget>[
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: LnPaymentFee(
@@ -384,19 +426,21 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                 feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat?.toInt() : null,
                               ),
                             ),
-                          ],
-                          if (widget.lnOfferPaymentArguments.lnOffer.description != null &&
-                              widget.lnOfferPaymentArguments.lnOffer.description!.isNotEmpty) ...<Widget>[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: LnPaymentDescription(
-                                metadataText: widget.lnOfferPaymentArguments.lnOffer.description!,
+                            if (offerHasDescription) ...<Widget>[
+                              Padding(
+                                padding: _prepareResponse == null
+                                    ? EdgeInsets.zero
+                                    : const EdgeInsets.only(top: 8.0),
+                                child: LnPaymentDescription(
+                                  metadataText: widget.lnOfferPaymentArguments.lnOffer.description!,
+                                ),
                               ),
-                            ),
+                            ],
                           ],
-                          if (widget.comment?.isNotEmpty ?? false) ...<Widget>[
+                          if (widget.isConfirmation && _descriptionController.text.isNotEmpty ||
+                              !widget.isConfirmation && (widget.comment?.isNotEmpty ?? false)) ...<Widget>[
                             LnUrlPaymentComment(
-                              isConfirmation: false,
+                              isConfirmation: widget.isConfirmation,
                               enabled: _isFormEnabled,
                               descriptionController: _descriptionController,
                               descriptionFocusNode: _descriptionFocusNode,
@@ -477,7 +521,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
 
     final int effectiveMaxSat = _lightningLimits!.send.maxSat.toInt();
 
-    if (!_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
+    if (!widget.isConfirmation && !_isFixedAmount && effectiveMinSat == effectiveMaxSat) {
       final int minNetworkLimit = _lightningLimits!.send.minSat.toInt();
       final int maxNetworkLimit = _lightningLimits!.send.maxSat.toInt();
       final String minNetworkLimitFormatted = currencyState.bitcoinCurrency.format(minNetworkLimit);
@@ -540,6 +584,8 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
         builder: (_) => BlocProvider<PaymentLimitsCubit>(
           create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
           child: LnOfferPaymentPage(
+            isConfirmation: true,
+            isDrain: _isDrain,
             amountSat: amountSat,
             lnOfferPaymentArguments: widget.lnOfferPaymentArguments,
             comment: _descriptionController.text,

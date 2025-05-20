@@ -159,11 +159,13 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     final CurrencyState currencyState = currencyCubit.state;
 
-    _amountController.text = currencyState.bitcoinCurrency.format(
-      amountSat,
-      includeDisplayName: false,
-    );
-    _descriptionController.text = widget.comment ?? '';
+    setState(() {
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        amountSat,
+        includeDisplayName: false,
+      );
+      _descriptionController.text = widget.comment ?? '';
+    });
   }
 
   Future<void> _prepareLnUrlPayment(int amountSat) async {
@@ -521,29 +523,37 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                     _fetchLightningLimits();
                   },
                 )
-              : !_isFixedAmount
+              : !_isFormEnabled || _isFixedAmount && errorMessage.isNotEmpty
                   ? SingleButtonBottomBar(
                       stickToBottom: true,
-                      text: texts.lnurl_payment_page_action_next,
-                      enabled: _isFormEnabled,
-                      onPressed: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          final FocusScopeNode currentFocus = FocusScope.of(context);
-                          if (!currentFocus.hasPrimaryFocus && currentFocus.hasFocus) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          }
-                          await _openConfirmationPage();
-                        }
+                      text: texts.ln_payment_action_close,
+                      onPressed: () {
+                        Navigator.of(context).pop();
                       },
                     )
-                  : SingleButtonBottomBar(
-                      stickToBottom: true,
-                      enabled: _prepareResponse != null && errorMessage.isEmpty,
-                      text: texts.ln_payment_action_send,
-                      onPressed: () async {
-                        Navigator.pop(context, _prepareResponse);
-                      },
-                    ),
+                  : !_isFixedAmount
+                      ? SingleButtonBottomBar(
+                          stickToBottom: true,
+                          text: texts.lnurl_payment_page_action_next,
+                          enabled: _isFormEnabled,
+                          onPressed: () async {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              final FocusScopeNode currentFocus = FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus && currentFocus.hasFocus) {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              }
+                              await _openConfirmationPage();
+                            }
+                          },
+                        )
+                      : SingleButtonBottomBar(
+                          stickToBottom: true,
+                          enabled: _prepareResponse != null && errorMessage.isEmpty,
+                          text: texts.ln_payment_action_send,
+                          onPressed: () async {
+                            Navigator.pop(context, _prepareResponse);
+                          },
+                        ),
     );
   }
 
