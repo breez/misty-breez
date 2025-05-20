@@ -99,10 +99,16 @@ class LnPaymentPageState extends State<LnPaymentPage> {
         errorMessage = '';
       });
 
-      final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(
-        destination: widget.lnInvoice.bolt11,
-        amountSat: BigInt.from(amountSat),
+      final PayAmount payAmount = PayAmount_Bitcoin(
+        receiverAmountSat: BigInt.from(amountSat),
       );
+
+      final PrepareSendRequest req = PrepareSendRequest(
+        destination: widget.lnInvoice.bolt11,
+        amount: payAmount,
+      );
+
+      final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(req: req);
       setState(() {
         _prepareResponse = response;
       });

@@ -68,15 +68,10 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }
 
   Future<PrepareSendResponse> prepareSendPayment({
-    required String destination,
-    BigInt? amountSat,
+    required PrepareSendRequest req,
   }) async {
-    _logger.info('prepareSendPayment\nPreparing send payment for destination: $destination');
+    _logger.info('prepareSendPayment\nPreparing send payment for destination: ${req.destination}');
     try {
-      // TODO(erdemyerebasmaz): Handle the drain option for PrepareSendRequest
-      final PayAmount_Bitcoin? payAmount =
-          amountSat != null ? PayAmount_Bitcoin(receiverAmountSat: amountSat) : null;
-      final PrepareSendRequest req = PrepareSendRequest(destination: destination, amount: payAmount);
       return await _breezSdkLiquid.instance!.prepareSendPayment(req: req);
     } catch (e) {
       _logger.severe('prepareSendPayment\nError preparing send payment', e);

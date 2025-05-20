@@ -28,6 +28,7 @@ class LnOfferPaymentArguments {
 
 class LnOfferPaymentPage extends StatefulWidget {
   final LnOfferPaymentArguments lnOfferPaymentArguments;
+  final bool isDrain;
   final int? amountSat;
   final String? comment;
 
@@ -36,6 +37,7 @@ class LnOfferPaymentPage extends StatefulWidget {
 
   const LnOfferPaymentPage({
     required this.lnOfferPaymentArguments,
+    this.isDrain = false,
     this.amountSat,
     this.comment,
     super.key,
@@ -66,7 +68,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
 
   PrepareSendResponse? _prepareResponse;
 
-  bool _useEntireBalance = false;
+  bool _isDrain = false;
 
   @override
   void initState() {
@@ -74,6 +76,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
     _doneAction = KeyboardDoneAction(focusNodes: <FocusNode>[_amountFocusNode]);
 
     _isFixedAmount = widget.amountSat != null;
+    _isDrain = widget.isDrain;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _updateFormFields();
       await _fetchLightningLimits();
@@ -119,11 +122,29 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
       );
       if (errorMessage == null) {
         await _prepareSendPayment(widget.amountSat!);
+        if (mounted && _isDrain) {
+          final AccountCubit accountCubit = context.read<AccountCubit>();
+          final AccountState accountState = accountCubit.state;
+          final int balance = accountState.walletInfo!.balanceSat.toInt();
+          final int feesSat = _prepareResponse?.feesSat?.toInt() ?? 0;
+
+          _updateFormFields(amountSat: balance - feesSat);
+        }
       }
     }
   }
 
-  void _updateFormFields() {
+  void _updateFormFields({int? amountSat}) {
+    final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
+    final CurrencyState currencyState = currencyCubit.state;
+
+    if (amountSat != null) {
+      _amountController.text = currencyState.bitcoinCurrency.format(
+        amountSat,
+        includeDisplayName: false,
+      );
+    }
+
     _descriptionController.text = widget.comment ?? '';
   }
 
@@ -139,10 +160,19 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
 
       final String destination =
           widget.lnOfferPaymentArguments.bip353Address ?? widget.lnOfferPaymentArguments.lnOffer.offer;
-      final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(
+
+      final PayAmount payAmount = _isDrain
+          ? const PayAmount_Drain()
+          : PayAmount_Bitcoin(
+              receiverAmountSat: BigInt.from(amountSat),
+            );
+
+      final PrepareSendRequest req = PrepareSendRequest(
         destination: destination,
-        amountSat: BigInt.from(amountSat),
+        amount: payAmount,
       );
+
+      final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(req: req);
       setState(() {
         _prepareResponse = response;
       });
@@ -236,7 +266,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                   bitcoinCurrency: currencyState.bitcoinCurrency,
                                   focusNode: _amountFocusNode,
                                   autofocus: _isFormEnabled && errorMessage.isEmpty,
-                                  enabled: _isFormEnabled && !_useEntireBalance,
+                                  enabled: _isFormEnabled && !_isDrain,
                                   enableInteractiveSelection: _isFormEnabled,
                                   controller: _amountController,
                                   validatorFn: (int amountSat) => validatePayment(
@@ -333,30 +363,28 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                   trailing: Padding(
                                     padding: const EdgeInsets.only(bottom: 8.0),
                                     child: Switch(
-                                      value: _useEntireBalance,
+                                      value: _isDrain,
                                       activeColor: Colors.white,
                                       activeTrackColor: themeData.primaryColor,
                                       onChanged: (bool value) async {
                                         setState(
                                           () {
                                             setState(() {
-                                              _useEntireBalance = value;
+                                              _isDrain = value;
                                             });
-                                            if (value) {
-                                              final String formattedAmount = currencyState.bitcoinCurrency
-                                                  .format(
-                                                    accountState.walletInfo!.balanceSat.toInt(),
-                                                    includeDisplayName: false,
-                                                    userInput: true,
-                                                  )
-                                                  .formatBySatAmountFormFieldFormatter();
-                                              setState(() {
-                                                _amountController.text = formattedAmount;
-                                              });
-                                              _formKey.currentState?.validate();
-                                            } else {
-                                              _amountController.text = '';
-                                            }
+                                            final String formattedAmount = currencyState.bitcoinCurrency
+                                                .format(
+                                                  value
+                                                      ? accountState.walletInfo!.balanceSat.toInt()
+                                                      : effectiveMinSat,
+                                                  includeDisplayName: false,
+                                                  userInput: true,
+                                                )
+                                                .formatBySatAmountFormFieldFormatter();
+                                            setState(() {
+                                              _amountController.text = formattedAmount;
+                                            });
+                                            _formKey.currentState?.validate();
                                           },
                                         );
                                       },
@@ -540,6 +568,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
         builder: (_) => BlocProvider<PaymentLimitsCubit>(
           create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
           child: LnOfferPaymentPage(
+            isDrain: _isDrain,
             amountSat: amountSat,
             lnOfferPaymentArguments: widget.lnOfferPaymentArguments,
             comment: _descriptionController.text,
