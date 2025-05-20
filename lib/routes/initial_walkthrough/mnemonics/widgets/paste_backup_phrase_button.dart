@@ -20,7 +20,7 @@ class _PasteBackupPhraseButtonState extends State<PasteBackupPhraseButton> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(
-        Icons.content_paste_outlined,
+        Icons.paste,
         color: Colors.white,
         size: 20,
       ),
