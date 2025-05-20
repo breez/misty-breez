@@ -66,6 +66,7 @@ class RestoreFormState extends State<RestoreForm> {
                   labelText: '${itemIndex + 1}',
                 ),
                 style: FieldTextStyle.textStyle,
+                onChanged: _processPotentialBackupPhrase,
               ),
               autovalidateMode: _autoValidateMode,
               validator: (String? text) => _onValidate(context, text!),
@@ -131,5 +132,12 @@ class RestoreFormState extends State<RestoreForm> {
       final List<String> suggestionList = wordlist.where((String item) => item.startsWith(pattern)).toList();
       return suggestionList.isNotEmpty ? suggestionList : List<String>.empty();
     }
+  }
+
+  void _processPotentialBackupPhrase(String? backupPhrase) {
+    MnemonicUtils.tryPopulateTextFieldsFromText(
+      backupPhrase,
+      widget.textEditingControllers,
+    );
   }
 }

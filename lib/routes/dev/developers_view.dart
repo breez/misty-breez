@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:credentials_manager/credentials_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -139,16 +143,28 @@ class _DevelopersViewState extends State<DevelopersView> {
       if (walletInfo == null) {
         throw Exception('Wallet info unavailable');
       }
+      if (kDebugMode) {
+        final String keysZipPath = await WalletArchiveService.createKeysArchive(
+          fingerprint: walletInfo.fingerprint,
+        );
 
-      final String keysZipPath = await WalletArchiveService.createKeysArchive(
-        fingerprint: walletInfo.fingerprint,
-      );
+        final ShareParams shareParams = ShareParams(
+          title: 'Keys',
+          files: <XFile>[XFile(keysZipPath)],
+        );
+        SharePlus.instance.share(shareParams);
+      } else {
+        final CredentialsManager credentialsManager = ServiceInjector().credentialsManager;
+        final List<File> credentialFile = await credentialsManager.exportCredentials(
+          fingerprint: walletInfo.fingerprint,
+        );
 
-      final ShareParams shareParams = ShareParams(
-        title: 'Keys',
-        files: <XFile>[XFile(keysZipPath)],
-      );
-      SharePlus.instance.share(shareParams);
+        final ShareParams shareParams = ShareParams(
+          title: 'Keys',
+          files: <XFile>[XFile(credentialFile.first.path)],
+        );
+        SharePlus.instance.share(shareParams);
+      }
     } catch (e) {
       _logger.severe('Failed to export keys: $e');
 

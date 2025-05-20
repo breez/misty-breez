@@ -29,6 +29,9 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
   int _currentPage = 1;
   final int _lastPage = 2;
 
+  List<TextEditingController> textEditingControllers =
+      List<TextEditingController>.generate(12, (_) => TextEditingController());
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +69,11 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
               }
             },
           ),
+          actions: <Widget>[
+            PasteBackupPhraseButton(
+              textEditingControllers: textEditingControllers,
+            ),
+          ],
           title: Text(
             texts.enter_backup_phrase(
               _currentPage.toString(),
@@ -81,6 +89,7 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
               lastPage: _lastPage,
               initialWords: widget.arguments.initialWords,
               lastErrorMessage: widget.arguments.errorMessage,
+              textEditingControllers: textEditingControllers,
               changePage: () {
                 setState(() {
                   _currentPage++;

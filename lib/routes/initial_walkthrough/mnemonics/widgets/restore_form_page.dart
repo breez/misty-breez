@@ -14,11 +14,13 @@ class RestoreFormPage extends StatefulWidget {
   final VoidCallback changePage;
   final List<String> initialWords;
   final String lastErrorMessage;
+  final List<TextEditingController> textEditingControllers;
 
   const RestoreFormPage({
     required this.currentPage,
     required this.lastPage,
     required this.changePage,
+    required this.textEditingControllers,
     this.lastErrorMessage = '',
     super.key,
     this.initialWords = const <String>[],
@@ -31,9 +33,6 @@ class RestoreFormPage extends StatefulWidget {
 class RestoreFormPageState extends State<RestoreFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<TextEditingController> textEditingControllers =
-      List<TextEditingController>.generate(12, (_) => TextEditingController());
-
   late AutovalidateMode _autoValidateMode;
   late bool _hasError;
 
@@ -42,9 +41,10 @@ class RestoreFormPageState extends State<RestoreFormPage> {
     super.initState();
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
-    for (int i = 0; i < textEditingControllers.length && i < widget.initialWords.length; i++) {
-      textEditingControllers[i].text = widget.initialWords[i];
-    }
+    MnemonicUtils.tryPopulateTextFieldsFromText(
+      widget.initialWords.join(' '),
+      widget.textEditingControllers,
+    );
   }
 
   @override
@@ -57,7 +57,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
           formKey: _formKey,
           currentPage: widget.currentPage,
           lastPage: widget.lastPage,
-          textEditingControllers: textEditingControllers,
+          textEditingControllers: widget.textEditingControllers,
           autoValidateMode: _autoValidateMode,
         ),
         if ((_hasError || widget.lastErrorMessage.isNotEmpty) && widget.currentPage == 2) ...<Widget>[
@@ -103,7 +103,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
 
   Future<void> _validateMnemonics() async {
     final BreezTranslations texts = context.texts();
-    final String mnemonic = textEditingControllers
+    final String mnemonic = widget.textEditingControllers
         .map((TextEditingController controller) => controller.text.toLowerCase().trim())
         .toList()
         .join(' ');

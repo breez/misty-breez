@@ -102,7 +102,7 @@ class WalletArchiveService {
       encoder.create(zipFilePath);
 
       await Future.wait(<Future<void>>[
-        _addCredentialsToZip(encoder),
+        _addCredentialsToZip(encoder, fingerprint),
         _addStorageFileToZip(encoder, fingerprint),
       ]);
 
@@ -124,11 +124,11 @@ class WalletArchiveService {
   /// Adds credential files to the zip archive
   ///
   /// [encoder] The zip encoder to which files will be added
-  static Future<void> _addCredentialsToZip(ZipFileEncoder encoder) async {
+  static Future<void> _addCredentialsToZip(ZipFileEncoder encoder, String? fingerprint) async {
     final CredentialsManager credentialsManager = ServiceInjector().credentialsManager;
 
     try {
-      final List<File> credentialFiles = await credentialsManager.exportCredentials();
+      final List<File> credentialFiles = await credentialsManager.exportCredentials(fingerprint: fingerprint);
       _logger.info('Adding ${credentialFiles.length} credential files to zip');
 
       for (File file in credentialFiles) {
