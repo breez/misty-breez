@@ -9,20 +9,13 @@ PODS:
     - Flutter
   - Firebase/CoreOnly (11.10.0):
     - FirebaseCore (~> 11.10.0)
-  - Firebase/DynamicLinks (11.10.0):
-    - Firebase/CoreOnly
-    - FirebaseDynamicLinks (~> 11.10.0)
   - Firebase/Messaging (11.10.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 11.10.0)
-  - firebase_core (3.13.0):
+  - firebase_core (3.13.1):
     - Firebase/CoreOnly (= 11.10.0)
     - Flutter
-  - firebase_dynamic_links (6.1.5):
-    - Firebase/DynamicLinks (= 11.10.0)
-    - firebase_core
-    - Flutter
-  - firebase_messaging (15.2.5):
+  - firebase_messaging (15.2.6):
     - Firebase/Messaging (= 11.10.0)
     - firebase_core
     - Flutter
@@ -32,8 +25,6 @@ PODS:
     - GoogleUtilities/Logger (~> 8.0)
   - FirebaseCoreInternal (11.10.0):
     - "GoogleUtilities/NSData+zlib (~> 8.0)"
-  - FirebaseDynamicLinks (11.10.0):
-    - FirebaseCore (~> 11.10.0)
   - FirebaseInstallations (11.10.0):
     - FirebaseCore (~> 11.10.0)
     - GoogleUtilities/Environment (~> 8.0)
@@ -144,7 +135,6 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
-  - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_breez_liquid (from `.symlinks/plugins/flutter_breez_liquid/ios`)
@@ -172,7 +162,6 @@ SPEC REPOS:
     - Firebase
     - FirebaseCore
     - FirebaseCoreInternal
-    - FirebaseDynamicLinks
     - FirebaseInstallations
     - FirebaseMessaging
     - GoogleDataTransport
@@ -196,8 +185,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
-  firebase_dynamic_links:
-    :path: ".symlinks/plugins/firebase_dynamic_links/ios"
   firebase_messaging:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
@@ -243,12 +230,10 @@ SPEC CHECKSUMS:
   connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
   Firebase: 1fe1c0a7d9aaea32efe01fbea5f0ebd8d70e53a2
-  firebase_core: 432718558359a8c08762151b5f49bb0f093eb6e0
-  firebase_dynamic_links: f1ea6defe555a0e140f6a42cfc45b96ed8d5204d
-  firebase_messaging: 3b99522baf7480dfb4b7683d2b34e842d577c362
+  firebase_core: 3c2f323cae65c97a636a05a23b17730ef93df2cf
+  firebase_messaging: 456e01ff29a451c90097d0b45925551d5be0c143
   FirebaseCore: 8344daef5e2661eb004b177488d6f9f0f24251b7
   FirebaseCoreInternal: ef4505d2afb1d0ebbc33162cb3795382904b5679
-  FirebaseDynamicLinks: a76f75ddb0612301c34b3f598100449b41bc2669
   FirebaseInstallations: 9980995bdd06ec8081dfb6ab364162bdd64245c3
   FirebaseMessaging: 2b9f56aa4ed286e1f0ce2ee1d413aabb8f9f5cb9
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7

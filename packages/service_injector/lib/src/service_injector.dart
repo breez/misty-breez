@@ -4,7 +4,6 @@ import 'package:breez_logger/breez_logger.dart';
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:credentials_manager/credentials_manager.dart';
-import 'package:deep_link_client/deep_link_client.dart';
 import 'package:device_client/device_client.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:keychain/keychain.dart';
@@ -16,7 +15,6 @@ class ServiceInjector {
   static ServiceInjector? _injector;
 
   FirebaseNotificationsClient? _notifications;
-  DeepLinkClient? _deepLinkClient;
 
   BreezSDKLiquid? _breezSdkLiquid;
   LightningLinksService? _lightningLinksService;
@@ -37,8 +35,6 @@ class ServiceInjector {
   NotificationsClient get notifications => _notifications ??= FirebaseNotificationsClient();
 
   DeviceClient get deviceClient => _deviceClient ??= DeviceClient();
-
-  DeepLinkClient get deepLinkClient => _deepLinkClient ??= DeepLinkClient();
 
   LightningLinksService get lightningLinks => _lightningLinksService ??= LightningLinksService();
 

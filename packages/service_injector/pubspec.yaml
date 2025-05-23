@@ -11,8 +11,6 @@ dependencies:
   # Feature Packages
   breez_preferences:
       path: ../breez_preferences
-  deep_link_client:
-    path: ../deep_link_client
   device_client:
     path: ../device_client
   firebase_notifications_client:
