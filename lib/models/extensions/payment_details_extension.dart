@@ -53,6 +53,7 @@ extension PaymentDetailsToJson on PaymentDetails {
       bitcoin: (PaymentDetails_Bitcoin details) => <String, dynamic>{
         'type': 'bitcoin',
         'swapId': details.swapId,
+        'bitcoinAddress': details.bitcoinAddress,
         'description': details.description,
         'autoAcceptedFees': details.autoAcceptedFees,
         'liquidExpirationBlockheight': details.liquidExpirationBlockheight,
@@ -101,6 +102,7 @@ extension PaymentDetailsFromJson on PaymentDetails {
         return PaymentDetails.bitcoin(
           swapId: json['swapId'] as String,
           description: json['description'] as String,
+          bitcoinAddress: json['bitcoinAddress'] as String,
           autoAcceptedFees: json['autoAcceptedFees'] as bool,
           liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int?,
           bitcoinExpirationBlockheight: json['bitcoinExpirationBlockheight'] as int?,
