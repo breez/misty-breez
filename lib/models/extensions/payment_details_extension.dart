@@ -53,6 +53,7 @@ extension PaymentDetailsToJson on PaymentDetails {
       bitcoin: (PaymentDetails_Bitcoin details) => <String, dynamic>{
         'type': 'bitcoin',
         'swapId': details.swapId,
+        'bitcoinAddress': details.bitcoinAddress,
         'description': details.description,
         'autoAcceptedFees': details.autoAcceptedFees,
         'liquidExpirationBlockheight': details.liquidExpirationBlockheight,
@@ -100,6 +101,7 @@ extension PaymentDetailsFromJson on PaymentDetails {
       case 'bitcoin':
         return PaymentDetails.bitcoin(
           swapId: json['swapId'] as String,
+          bitcoinAddress: json['bitcoinAddress'] as String,
           description: json['description'] as String,
           autoAcceptedFees: json['autoAcceptedFees'] as bool,
           liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int?,
@@ -149,6 +151,7 @@ extension PaymentDetailsExtension on PaymentDetails {
               bitcoin: (PaymentDetails_Bitcoin o) {
                 final PaymentDetails_Bitcoin current = this as PaymentDetails_Bitcoin;
                 return o.swapId == current.swapId &&
+                    o.bitcoinAddress == current.bitcoinAddress &&
                     o.description == current.description &&
                     o.autoAcceptedFees == current.autoAcceptedFees &&
                     o.liquidExpirationBlockheight == current.liquidExpirationBlockheight &&
@@ -188,6 +191,7 @@ extension PaymentDetailsHashCode on PaymentDetails {
       ),
       bitcoin: (PaymentDetails_Bitcoin o) => Object.hash(
         o.swapId,
+        o.bitcoinAddress,
         o.description,
         o.autoAcceptedFees,
         o.liquidExpirationBlockheight,
@@ -272,6 +276,7 @@ extension PaymentDetailsFormatter on PaymentDetails {
       final PaymentDetails_Bitcoin details = this as PaymentDetails_Bitcoin;
       return 'PaymentDetails_Bitcoin('
           'swapId: ${details.swapId}, '
+          'bitcoinAddress: ${details.bitcoinAddress}, '
           'description: ${details.description}, '
           'autoAcceptedFees: ${details.autoAcceptedFees}, '
           'liquidExpirationBlockheight: ${details.liquidExpirationBlockheight ?? "N/A"}, '
