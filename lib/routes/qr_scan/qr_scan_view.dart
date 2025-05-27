@@ -86,7 +86,10 @@ class QRScanViewState extends State<QRScanView> {
                 Positioned(
                   right: 10,
                   top: 5,
-                  child: ImagePickerButton(cameraController: cameraController),
+                  child: ImagePickerButton(
+                    cameraController: cameraController,
+                    onDetect: onDetect,
+                  ),
                 ),
                 if (defaultTargetPlatform == TargetPlatform.iOS) ...<Widget>[
                   const Positioned(
@@ -107,8 +110,13 @@ class QRScanViewState extends State<QRScanView> {
 
 class ImagePickerButton extends StatelessWidget {
   final MobileScannerController cameraController;
+  final void Function(BarcodeCapture capture) onDetect;
 
-  const ImagePickerButton({required this.cameraController, super.key});
+  const ImagePickerButton({
+    required this.cameraController,
+    required this.onDetect,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +163,8 @@ class ImagePickerButton extends StatelessWidget {
           scaffoldMessenger.showSnackBar(
             SnackBar(content: Text(texts.qr_scan_gallery_failed)),
           );
+        } else {
+          onDetect(barcodes);
         }
       },
     );
