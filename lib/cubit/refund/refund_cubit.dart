@@ -15,6 +15,9 @@ final Logger _logger = Logger('RefundCubit');
 
 /// A class that encapsulates refund request parameters
 class RefundParams {
+  /// The refund amount
+  final int refundAmountSat;
+
   /// The swap address for the refund
   final String swapAddress;
 
@@ -22,7 +25,7 @@ class RefundParams {
   final String toAddress;
 
   /// Constructor for RefundParams
-  const RefundParams({required this.swapAddress, required this.toAddress});
+  const RefundParams({required this.refundAmountSat, required this.swapAddress, required this.toAddress});
 }
 
 /// Cubit that handles refund operations for failed or expired swaps.
@@ -119,7 +122,7 @@ class RefundCubit extends Cubit<RefundState> {
     try {
       _logger.info(
         'Fetching refund fee options for swapAddress: ${params.swapAddress}, '
-        'toAddress: ${params.toAddress}',
+        'toAddress: ${params.toAddress} for amount: ${params.refundAmountSat} sats.',
       );
 
       final RecommendedFees recommendedFees = await _fetchRecommendedFees();

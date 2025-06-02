@@ -84,13 +84,13 @@ class RefundPageState extends State<RefundPage> {
           navigator.removeRoute(loaderRoute);
         }
         final RefundParams refundParams = RefundParams(
+          refundAmountSat: widget.swapInfo.amountSat.toInt(),
           swapAddress: widget.swapInfo.swapAddress,
           toAddress: _addressController.text,
         );
         navigator.push(
           FadeInRoute<void>(
             builder: (_) => RefundConfirmationPage(
-              refundAmountSat: widget.swapInfo.amountSat.toInt(),
               refundParams: refundParams,
             ),
           ),

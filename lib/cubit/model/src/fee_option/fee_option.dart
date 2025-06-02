@@ -72,7 +72,7 @@ class RefundFeeOption extends FeeOption {
 
   @override
   bool isAffordable({required int balanceSat}) {
-    return prepareRefundResponse.isAffordable(balance: balanceSat);
+    return prepareRefundResponse.isAffordable(refundAmountSat: balanceSat);
   }
 
   @override
@@ -86,7 +86,7 @@ class RefundFeeOption extends FeeOption {
 }
 
 extension PrepareRefundResponseAffordable on PrepareRefundResponse {
-  bool isAffordable({required int balance}) {
-    return balance >= (txFeeSat).toInt();
+  bool isAffordable({required int refundAmountSat}) {
+    return refundAmountSat >= (txFeeSat).toInt();
   }
 }
