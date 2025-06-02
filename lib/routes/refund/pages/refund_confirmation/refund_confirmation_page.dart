@@ -89,7 +89,9 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
         if (mounted) {
           setState(() {
             affordableFees = feeOptions
-                .where((RefundFeeOption f) => f.isAffordable(balanceSat: widget.refundParams.refundAmountSat))
+                .where(
+                  (RefundFeeOption f) => f.isAffordable(feeCoverageSat: widget.refundParams.refundAmountSat),
+                )
                 .toList();
             selectedFeeIndex = (affordableFees.length / 2).floor();
           });

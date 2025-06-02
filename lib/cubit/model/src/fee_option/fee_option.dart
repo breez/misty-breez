@@ -28,7 +28,7 @@ abstract class FeeOption {
     }
   }
 
-  bool isAffordable({required int balanceSat});
+  bool isAffordable({required int feeCoverageSat});
 }
 
 class SendChainSwapFeeOption extends FeeOption {
@@ -41,8 +41,8 @@ class SendChainSwapFeeOption extends FeeOption {
   });
 
   @override
-  bool isAffordable({required int balanceSat}) {
-    return preparePayOnchainResponse.isAffordable(balance: balanceSat);
+  bool isAffordable({required int feeCoverageSat}) {
+    return preparePayOnchainResponse.isAffordable(balance: feeCoverageSat);
   }
 
   @override
@@ -71,8 +71,8 @@ class RefundFeeOption extends FeeOption {
   });
 
   @override
-  bool isAffordable({required int balanceSat}) {
-    return prepareRefundResponse.isAffordable(refundAmountSat: balanceSat);
+  bool isAffordable({required int feeCoverageSat}) {
+    return prepareRefundResponse.isAffordable(refundAmountSat: feeCoverageSat);
   }
 
   @override
