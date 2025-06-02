@@ -156,13 +156,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
           ? const PayAmount_Drain()
           : PayAmount_Bitcoin(receiverAmountSat: BigInt.from(amountSat));
 
-      final String comment = widget.comment ?? _descriptionController.text;
-
-      final PrepareSendRequest req = PrepareSendRequest(
-        destination: destination,
-        amount: payAmount,
-        comment: comment,
-      );
+      final PrepareSendRequest req = PrepareSendRequest(destination: destination, amount: payAmount);
 
       final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(req: req);
       setState(() {
@@ -479,7 +473,12 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
               stickToBottom: true,
               text: texts.ln_payment_action_send,
               onPressed: () async {
-                Navigator.pop(context, _prepareResponse);
+                final String comment = widget.comment ?? _descriptionController.text;
+                final SendPaymentRequest sendPaymentRequest = SendPaymentRequest(
+                  prepareResponse: _prepareResponse!,
+                  payerNote: comment,
+                );
+                Navigator.pop(context, sendPaymentRequest);
               },
             )
           : const SizedBox.shrink(),
