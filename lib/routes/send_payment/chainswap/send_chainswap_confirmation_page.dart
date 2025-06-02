@@ -100,7 +100,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
             affordableFees = feeOptions
                 .where(
                   (SendChainSwapFeeOption f) =>
-                      f.isAffordable(balanceSat: accountState.walletInfo!.balanceSat.toInt()),
+                      f.isAffordable(feeCoverageSat: accountState.walletInfo!.balanceSat.toInt()),
                 )
                 .toList();
             selectedFeeIndex = (affordableFees.length / 2).floor();

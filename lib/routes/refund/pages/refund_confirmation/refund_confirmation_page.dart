@@ -11,10 +11,9 @@ import 'package:misty_breez/widgets/widgets.dart';
 final Logger _logger = Logger('RefundConfirmationPage');
 
 class RefundConfirmationPage extends StatefulWidget {
-  final int refundAmountSat;
   final RefundParams refundParams;
 
-  const RefundConfirmationPage({required this.refundAmountSat, required this.refundParams, super.key});
+  const RefundConfirmationPage({required this.refundParams, super.key});
 
   @override
   State<RefundConfirmationPage> createState() => _RefundConfirmationPageState();
@@ -55,7 +54,7 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
 
           if (affordableFees.isNotEmpty) {
             return FeeChooser(
-              amountSat: widget.refundAmountSat,
+              amountSat: widget.refundParams.refundAmountSat,
               feeOptions: snapshot.data!,
               selectedFeeIndex: selectedFeeIndex,
               onSelect: (int index) => setState(() {
@@ -88,13 +87,10 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
     _fetchFeeOptionsFuture.then(
       (List<RefundFeeOption> feeOptions) {
         if (mounted) {
-          final AccountCubit accountCubit = context.read<AccountCubit>();
-          final AccountState accountState = accountCubit.state;
           setState(() {
             affordableFees = feeOptions
                 .where(
-                  (RefundFeeOption f) =>
-                      f.isAffordable(balanceSat: accountState.walletInfo!.balanceSat.toInt()),
+                  (RefundFeeOption f) => f.isAffordable(feeCoverageSat: widget.refundParams.refundAmountSat),
                 )
                 .toList();
             selectedFeeIndex = (affordableFees.length / 2).floor();

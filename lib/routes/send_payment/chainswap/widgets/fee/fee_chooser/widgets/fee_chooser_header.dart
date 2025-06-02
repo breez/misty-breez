@@ -38,10 +38,16 @@ class _FeeChooserHeaderState extends State<FeeChooserHeader> {
         Row(
           children: List<FeeOptionButton>.generate(widget.feeOptions.length, (int index) {
             final FeeOption feeOption = widget.feeOptions.elementAt(index);
+
+            final int feeCoverageSat = switch (feeOption) {
+              RefundFeeOption() => widget.amountSat,
+              _ => accountState.walletInfo!.balanceSat.toInt(),
+            };
+
             return FeeOptionButton(
               index: index,
               text: feeOption.getDisplayName(texts),
-              isAffordable: feeOption.isAffordable(balanceSat: accountState.walletInfo!.balanceSat.toInt()),
+              isAffordable: feeOption.isAffordable(feeCoverageSat: feeCoverageSat),
               isSelected: widget.selectedFeeIndex == index,
               onSelect: () => widget.onSelect(index),
             );

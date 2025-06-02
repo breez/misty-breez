@@ -1,5 +1,1 @@
-enum SdkConnectivityState {
-  disconnected,
-  connecting,
-  connected,
-}
+enum SdkConnectivityState { disconnected, connecting, connected }

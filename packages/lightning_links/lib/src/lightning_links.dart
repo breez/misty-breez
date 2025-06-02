@@ -17,18 +17,10 @@ class LightningLinksService {
   }
 
   void _initializeLinkHandling() {
-    Rx.merge(
-      <Stream<String?>>[
-        appLinks.getInitialLinkString().asStream(),
-        appLinks.stringLinkStream,
-      ],
-    )
-        .where(
-          (String? link) => _isValidLink(link),
-        )
-        .listen(
-          (String? link) => _handleLink(link),
-        );
+    Rx.merge(<Stream<String?>>[
+      appLinks.getInitialLinkString().asStream(),
+      appLinks.stringLinkStream,
+    ]).where((String? link) => _isValidLink(link)).listen((String? link) => _handleLink(link));
   }
 
   bool _isValidLink(String? link) {

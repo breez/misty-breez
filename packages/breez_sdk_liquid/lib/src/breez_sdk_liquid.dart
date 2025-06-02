@@ -23,9 +23,7 @@ class BreezSDKLiquid {
 
   liquid_sdk.BindingLiquidSdk? get instance => _instance;
 
-  Future<void> connect({
-    required liquid_sdk.ConnectRequest req,
-  }) async {
+  Future<void> connect({required liquid_sdk.ConnectRequest req}) async {
     try {
       _subscribeToLogStream();
       _instance = await liquid_sdk.connect(req: req);
@@ -60,9 +58,7 @@ class BreezSDKLiquid {
     return getInfoResponse;
   }
 
-  Future<List<liquid_sdk.Payment>> _listPayments({
-    required liquid_sdk.BindingLiquidSdk sdk,
-  }) async {
+  Future<List<liquid_sdk.Payment>> _listPayments({required liquid_sdk.BindingLiquidSdk sdk}) async {
     const liquid_sdk.ListPaymentsRequest req = liquid_sdk.ListPaymentsRequest();
     final List<liquid_sdk.Payment> paymentsList = await sdk.listPayments(req: req);
     _paymentsController.add(paymentsList);
@@ -78,9 +74,9 @@ class BreezSDKLiquid {
   /// Call once on your Dart entrypoint file, e.g.; `lib/main.dart`.
   void initializeLogStream() {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      _breezLogStream ??= const EventChannel('breez_sdk_liquid_logs')
-          .receiveBroadcastStream()
-          .map((dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']));
+      _breezLogStream ??= const EventChannel('breez_sdk_liquid_logs').receiveBroadcastStream().map(
+        (dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']),
+      );
     } else {
       _breezLogStream ??= liquid_sdk.breezLogStream().asBroadcastStream();
     }
@@ -110,19 +106,17 @@ class BreezSDKLiquid {
 
   /// Subscribes to SdkEvent's stream
   void _subscribeToEventsStream(liquid_sdk.BindingLiquidSdk sdk) {
-    _breezEventsSubscription = _breezEventsStream?.listen(
-      (liquid_sdk.SdkEvent event) async {
-        if (event.isPaymentEvent) {
-          _paymentEventStream.add(PaymentEvent.fromSdkEvent(event));
-        } else if (event is liquid_sdk.SdkEvent_PaymentFailed) {
-          _paymentEventStream.addError(event);
-        }
-        await _fetchWalletData(sdk);
-        if (event is liquid_sdk.SdkEvent_Synced) {
-          _didCompleteInitialSyncController.add(null);
-        }
-      },
-    );
+    _breezEventsSubscription = _breezEventsStream?.listen((liquid_sdk.SdkEvent event) async {
+      if (event.isPaymentEvent) {
+        _paymentEventStream.add(PaymentEvent.fromSdkEvent(event));
+      } else if (event is liquid_sdk.SdkEvent_PaymentFailed) {
+        _paymentEventStream.addError(event);
+      }
+      await _fetchWalletData(sdk);
+      if (event is liquid_sdk.SdkEvent_Synced) {
+        _didCompleteInitialSyncController.add(null);
+      }
+    });
   }
 
   final StreamController<liquid_sdk.LogEntry> _logStreamController =

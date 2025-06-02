@@ -15,10 +15,8 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
   final CredentialsManager credentialsManager;
   final BreezSDKLiquid breezSdkLiquid;
 
-  SdkConnectivityCubit({
-    required this.credentialsManager,
-    required this.breezSdkLiquid,
-  }) : super(SdkConnectivityState.disconnected);
+  SdkConnectivityCubit({required this.credentialsManager, required this.breezSdkLiquid})
+    : super(SdkConnectivityState.disconnected);
 
   Future<void> register() async {
     _logger.info('Registering a new wallet.');
@@ -99,22 +97,19 @@ class SdkConnectivityCubit extends Cubit<SdkConnectivityState> {
   Future<void> _retryUntilConnected() async {
     _logger.info('Subscribing to network events.');
     StreamSubscription<List<ConnectivityResult>>? subscription;
-    subscription = Connectivity().onConnectivityChanged.listen(
-      (List<ConnectivityResult> event) async {
-        final bool hasNetworkConnection = !(event.contains(ConnectivityResult.none) ||
-            event.every(
-              (ConnectivityResult result) => result == ConnectivityResult.vpn,
-            ));
-        // Attempt to reconnect when internet is back.
-        if (hasNetworkConnection && state == SdkConnectivityState.disconnected) {
-          _logger.info('Network connection detected.');
-          await reconnect();
-          if (state == SdkConnectivityState.connected) {
-            _logger.info('SDK has reconnected. Unsubscribing from network events.');
-            subscription!.cancel();
-          }
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) async {
+      final bool hasNetworkConnection =
+          !(event.contains(ConnectivityResult.none) ||
+              event.every((ConnectivityResult result) => result == ConnectivityResult.vpn));
+      // Attempt to reconnect when internet is back.
+      if (hasNetworkConnection && state == SdkConnectivityState.disconnected) {
+        _logger.info('Network connection detected.');
+        await reconnect();
+        if (state == SdkConnectivityState.connected) {
+          _logger.info('SDK has reconnected. Unsubscribing from network events.');
+          subscription!.cancel();
         }
-      },
-    );
+      }
+    });
   }
 }

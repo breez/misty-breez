@@ -72,12 +72,13 @@ class BreezLogger {
     }
 
     // Get and sort log files by modified date
-    final List<File> logFiles = loggingFolder
-        .listSync(followLinks: false)
-        .whereType<File>()
-        .where((File file) => file.path.endsWith('.log'))
-        .toList()
-      ..sort((File a, File b) => a.statSync().modified.compareTo(b.statSync().modified));
+    final List<File> logFiles =
+        loggingFolder
+            .listSync(followLinks: false)
+            .whereType<File>()
+            .where((File file) => file.path.endsWith('.log'))
+            .toList()
+          ..sort((File a, File b) => a.statSync().modified.compareTo(b.statSync().modified));
 
     // Delete all except the last 10 log files
     if (logFiles.length > 10) {
@@ -89,8 +90,9 @@ class BreezLogger {
   }
 
   void registerBreezSdkLiquidLogs(BreezSDKLiquid breezSdkLiquid) {
-    breezSdkLiquid.logStream
-        .listen((liquid_sdk.LogEntry e) => _logBreezSdkLiquidEntries(e, _breezSdkLiquidLogger));
+    breezSdkLiquid.logStream.listen(
+      (liquid_sdk.LogEntry e) => _logBreezSdkLiquidEntries(e, _breezSdkLiquidLogger),
+    );
   }
 
   void _logBreezSdkLiquidEntries(liquid_sdk.LogEntry log, Logger logger) {
