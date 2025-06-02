@@ -118,8 +118,9 @@ extension SendDestinationFormatter on SendDestination {
         offer: final LNOffer offer,
         receiverAmountSat: final BigInt receiverAmountSat,
         bip353Address: final String? bip353Address,
+        payerNote: final String? payerNote,
       ) =>
-        'BOLT12 Offer: ${offer.toFormattedString()}, Amount: $receiverAmountSat sats${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
+        'BOLT12 Offer: ${offer.toFormattedString()}, Amount: $receiverAmountSat sats${bip353Address != null ? ' (resolved from $bip353Address)' : ''}${payerNote != null ? ' with note $payerNote' : ''}',
     };
   }
 }

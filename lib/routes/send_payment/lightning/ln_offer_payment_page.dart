@@ -156,7 +156,14 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
           ? const PayAmount_Drain()
           : PayAmount_Bitcoin(receiverAmountSat: BigInt.from(amountSat));
 
-      final PrepareSendRequest req = PrepareSendRequest(destination: destination, amount: payAmount);
+      final String comment = widget.comment ?? _descriptionController.text;
+
+      final PrepareSendRequest prepareSendRequest = PrepareSendRequest(
+        destination: destination,
+        amount: payAmount,
+        comment: comment,
+      );
+      final PrepareSendRequest req = prepareSendRequest;
 
       final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(req: req);
       setState(() {
@@ -414,17 +421,13 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                     ),
                                   ],
                                 ],
-                                if (widget.isConfirmation && _descriptionController.text.isNotEmpty ||
-                                    !widget.isConfirmation &&
-                                        (widget.comment?.isNotEmpty ?? false)) ...<Widget>[
-                                  LnUrlPaymentComment(
-                                    isConfirmation: widget.isConfirmation,
-                                    enabled: _isFormEnabled,
-                                    descriptionController: _descriptionController,
-                                    descriptionFocusNode: _descriptionFocusNode,
-                                    maxCommentLength: 255,
-                                  ),
-                                ],
+                                LnUrlPaymentComment(
+                                  isConfirmation: widget.isConfirmation,
+                                  enabled: _isFormEnabled,
+                                  descriptionController: _descriptionController,
+                                  descriptionFocusNode: _descriptionFocusNode,
+                                  maxCommentLength: 255,
+                                ),
                               ].expand((Widget widget) sync* {
                                 yield widget;
                                 yield const Divider(
