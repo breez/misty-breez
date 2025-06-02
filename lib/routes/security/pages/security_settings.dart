@@ -20,17 +20,10 @@ class SecuritySettings extends StatelessWidget {
       appBar: AppBar(
         key: GlobalKey<ScaffoldState>(),
         leading: const back_button.BackButton(),
-        title: Text(
-          texts.security_and_backup_title,
-          style: themeData.appBarTheme.toolbarTextStyle,
-        ),
+        title: Text(texts.security_and_backup_title, style: themeData.appBarTheme.toolbarTextStyle),
       ),
       body: ListView(
-        children: const <Widget>[
-          SecurityPinManagement(),
-          Divider(),
-          SecurityMnemonicsManagement(),
-        ],
+        children: const <Widget>[SecurityPinManagement(), Divider(), SecurityMnemonicsManagement()],
       ),
     );
   }

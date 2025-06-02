@@ -8,11 +8,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   const WalletDashboardHeaderDelegate();
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return WalletDashboard(
       height: (kMaxExtent - shrinkOffset).clamp(kMinExtent, kMaxExtent),
       offsetFactor: (shrinkOffset / (kMaxExtent - kMinExtent)).clamp(0.0, 1.0),

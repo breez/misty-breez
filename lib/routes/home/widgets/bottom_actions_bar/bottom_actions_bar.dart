@@ -11,10 +11,7 @@ final AutoSizeGroup actionsGroup = AutoSizeGroup();
 class BottomActionsBar extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
 
-  const BottomActionsBar(
-    this.firstPaymentItemKey, {
-    super.key,
-  });
+  const BottomActionsBar(this.firstPaymentItemKey, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +25,7 @@ class BottomActionsBar extends StatelessWidget {
           children: <Widget>[
             BottomActionItem(
               onPress: () {
-                Navigator.of(context).pushNamed(
-                  EnterPaymentInfoPage.routeName,
-                );
+                Navigator.of(context).pushNamed(EnterPaymentInfoPage.routeName);
               },
               group: actionsGroup,
               text: texts.bottom_action_bar_send,
@@ -39,9 +34,7 @@ class BottomActionsBar extends StatelessWidget {
             Container(width: 64),
             BottomActionItem(
               onPress: () {
-                Navigator.of(context).pushNamed(
-                  ReceivePaymentPage.routeName,
-                );
+                Navigator.of(context).pushNamed(ReceivePaymentPage.routeName);
               },
               group: actionsGroup,
               text: texts.bottom_action_bar_receive,

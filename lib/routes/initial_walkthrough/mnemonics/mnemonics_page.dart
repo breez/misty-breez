@@ -37,18 +37,14 @@ class MnemonicsPageState extends State<MnemonicsPage> {
       ),
       body: MnemonicSeedList(mnemonicsList: _mnemonicsList),
       bottomNavigationBar: SingleButtonBottomBar(
-        text:
-            (widget.viewMode) ? texts.admin_login_dialog_action_ok : texts.backup_phrase_warning_action_next,
+        text: (widget.viewMode)
+            ? texts.admin_login_dialog_action_ok
+            : texts.backup_phrase_warning_action_next,
         onPressed: () {
           if (widget.viewMode) {
             Navigator.pop(context);
           } else {
-            Navigator.push(
-              context,
-              FadeInRoute<void>(
-                builder: (_) => VerifyMnemonicsPage(widget.mnemonics),
-              ),
-            );
+            Navigator.push(context, FadeInRoute<void>(builder: (_) => VerifyMnemonicsPage(widget.mnemonics)));
           }
         },
       ),

@@ -5,10 +5,7 @@ import 'package:misty_breez/cubit/cubit.dart';
 class SatEquivalentLabel extends StatelessWidget {
   final TextEditingController controller;
 
-  const SatEquivalentLabel({
-    required this.controller,
-    super.key,
-  });
+  const SatEquivalentLabel({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +19,7 @@ class SatEquivalentLabel extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Text(
           getSatoshiValue(currencyState),
-          style: themeData.primaryTextTheme.titleSmall!.copyWith(
-            fontSize: 18.0,
-          ),
+          style: themeData.primaryTextTheme.titleSmall!.copyWith(fontSize: 18.0),
         ),
       ),
     );
@@ -38,10 +33,7 @@ class SatEquivalentLabel extends StatelessWidget {
     }
 
     final int amountSat = currencyState.fiatConversion()!.fiatToSat(inputAmount);
-    final String formattedAmount = currencyState.bitcoinCurrency.format(
-      amountSat,
-      includeDisplayName: false,
-    );
+    final String formattedAmount = currencyState.bitcoinCurrency.format(amountSat, includeDisplayName: false);
 
     return '$formattedAmount ${currencyState.bitcoinCurrency.tickerSymbol}';
   }

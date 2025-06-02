@@ -29,9 +29,7 @@ class RestoreButton extends StatelessWidget {
           side: const BorderSide(color: Colors.white),
           elevation: 0.0,
           disabledBackgroundColor: themeData.disabledColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         onPressed: walkthroughService.restoreWallet,
         child: Semantics(
@@ -41,9 +39,7 @@ class RestoreButton extends StatelessWidget {
           child: AutoSizeText(
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
             'RESTORE',
-            style: themeData.textTheme.labelLarge?.copyWith(
-              color: Colors.white,
-            ),
+            style: themeData.textTheme.labelLarge?.copyWith(color: Colors.white),
             minFontSize: MinFontSize(context).minFontSize,
             stepGranularity: 0.1,
             group: autoSizeGroup,

@@ -68,10 +68,7 @@ class ReceiveLightningAddressPageState extends State<ReceiveLightningAddressPage
 class LnAddressSuccessView extends StatelessWidget {
   final LnAddressState lnAddressState;
 
-  const LnAddressSuccessView({
-    required this.lnAddressState,
-    super.key,
-  });
+  const LnAddressSuccessView({required this.lnAddressState, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +82,7 @@ class LnAddressSuccessView extends StatelessWidget {
           children: <Widget>[
             Container(
               decoration: ShapeDecoration(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(12),
-                  ),
-                ),
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                 color: themeData.customData.surfaceBgColor,
               ),
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),

@@ -7,19 +7,15 @@ class LNURLPageResult {
   final SuccessActionProcessed? successAction;
   final Object? error;
 
-  const LNURLPageResult({
-    this.protocol,
-    this.successAction,
-    this.error,
-  });
+  const LNURLPageResult({this.protocol, this.successAction, this.error});
 
   bool get hasError => error != null;
 
   String get errorMessage => ExceptionHandler.extractMessage(
-        error ?? '',
-        getSystemAppLocalizations(),
-        defaultErrorMsg: getSystemAppLocalizations().lnurl_payment_page_unknown_error,
-      );
+    error ?? '',
+    getSystemAppLocalizations(),
+    defaultErrorMsg: getSystemAppLocalizations().lnurl_payment_page_unknown_error,
+  );
 
   @override
   String toString() {

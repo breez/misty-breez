@@ -24,10 +24,7 @@ class RefundFormRefundTxAmount extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
             texts.ln_payment_amount_label,
-            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-              fontSize: 18.0,
-              color: Colors.white,
-            ),
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,
           ),
@@ -38,10 +35,7 @@ class RefundFormRefundTxAmount extends StatelessWidget {
             reverse: true,
             child: AutoSizeText(
               currencyState.bitcoinCurrency.format(refundTxSat),
-              style: const TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
+              style: const TextStyle(fontSize: 18.0, color: Colors.white),
               textAlign: TextAlign.right,
               maxLines: 1,
             ),

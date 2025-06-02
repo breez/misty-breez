@@ -23,11 +23,7 @@ class SecuredPage<T> extends StatefulWidget {
   ///
   /// [securedWidget] The widget to display after successful authentication
   /// [autoBiometrics] Whether to attempt biometric authentication automatically (default: true)
-  const SecuredPage({
-    required this.securedWidget,
-    this.autoBiometrics = true,
-    super.key,
-  });
+  const SecuredPage({required this.securedWidget, this.autoBiometrics = true, super.key});
 
   @override
   State<SecuredPage<T>> createState() => _SecuredPageState<T>();
@@ -55,10 +51,8 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
-      transitionBuilder: (Widget child, Animation<double> animation) => FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
+      transitionBuilder: (Widget child, Animation<double> animation) =>
+          FadeTransition(opacity: animation, child: child),
       child: _isAuthorized ? widget.securedWidget : _buildAuthenticationScreen(),
     );
   }
@@ -98,10 +92,7 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
           return widget.securedWidget;
         }
 
-        return Scaffold(
-          appBar: AppBar(),
-          body: _buildPinAuthenticationScreen(),
-        );
+        return Scaffold(appBar: AppBar(), body: _buildPinAuthenticationScreen());
       },
     );
   }
@@ -163,10 +154,7 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
       });
 
       _logger.warning('PIN validation failed: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: context.texts().lock_screen_pin_match_exception,
-      );
+      return AuthResult(success: false, errorMessage: context.texts().lock_screen_pin_match_exception);
     }
   }
 
@@ -216,10 +204,7 @@ class _SecuredPageState<T> extends State<SecuredPage<T>> {
       });
 
       _logger.severe('Biometric authentication error: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: texts.lock_screen_pin_match_exception,
-      );
+      return AuthResult(success: false, errorMessage: texts.lock_screen_pin_match_exception);
     }
   }
 

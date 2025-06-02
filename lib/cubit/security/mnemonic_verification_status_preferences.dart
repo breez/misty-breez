@@ -18,9 +18,7 @@ class MnemonicVerificationStatusPreferences {
           _logger.info('Saved verification complete to SharedPreferences successfully.');
           return;
         } else {
-          throw Exception(
-            'Failed to save verification complete to SharedPreferences on attempt $attempt.',
-          );
+          throw Exception('Failed to save verification complete to SharedPreferences on attempt $attempt.');
         }
       } catch (e, stackTrace) {
         attempt++;

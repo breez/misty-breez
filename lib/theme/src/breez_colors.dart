@@ -17,12 +17,7 @@ class BreezColors {
     500: Color(0xFFffffff),
   };
 
-  static const Map<int, Color> grey = <int, Color>{
-    500: Color(0xFF4d5d75),
-    600: Color(0xFF334560),
-  };
+  static const Map<int, Color> grey = <int, Color>{500: Color(0xFF4d5d75), 600: Color(0xFF334560)};
 
-  static const Map<int, Color> red = <int, Color>{
-    600: Color(0xFFff1d24),
-  };
+  static const Map<int, Color> red = <int, Color>{600: Color(0xFFff1d24)};
 }

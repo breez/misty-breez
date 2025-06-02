@@ -10,12 +10,7 @@ class MnemonicItem extends StatelessWidget {
   final int index;
   final AutoSizeGroup? autoSizeGroup;
 
-  const MnemonicItem({
-    required this.mnemonic,
-    required this.index,
-    super.key,
-    this.autoSizeGroup,
-  });
+  const MnemonicItem({required this.mnemonic, required this.index, super.key, this.autoSizeGroup});
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +22,11 @@ class MnemonicItem extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white30),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(4),
-        ),
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
       ),
       child: Row(
         children: <Widget>[
-          Text(
-            texts.backup_phrase_generation_index(index + 1),
-            style: mnemonicSeedTextStyle,
-          ),
+          Text(texts.backup_phrase_generation_index(index + 1), style: mnemonicSeedTextStyle),
           Expanded(
             child: AutoSizeText(
               mnemonic,

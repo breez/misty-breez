@@ -42,11 +42,7 @@ class _SendChainSwapFormPageState extends State<SendChainSwapFormPage> {
           children: <Widget>[
             Container(
               decoration: ShapeDecoration(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(12),
-                  ),
-                ),
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                 color: themeData.customData.surfaceBgColor,
               ),
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),

@@ -10,7 +10,8 @@ class BackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(iconData ?? const IconData(0xe906, fontFamily: 'icomoon')),
-      onPressed: onPressed ??
+      onPressed:
+          onPressed ??
           () {
             Navigator.pop(context);
           },

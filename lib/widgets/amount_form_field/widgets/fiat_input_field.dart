@@ -38,32 +38,20 @@ class FiatInputField extends StatelessWidget {
           decoration: InputDecoration(
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
             labelText: 'Amount in ${fiatConversion!.currencyData.id}',
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: errorBorderColor),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: errorBorderColor),
-            ),
+            errorBorder: OutlineInputBorder(borderSide: BorderSide(color: errorBorderColor)),
+            focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: errorBorderColor)),
             errorMaxLines: 2,
-            errorStyle: themeData.primaryTextTheme.bodySmall!.copyWith(
-              color: errorBorderColor,
-            ),
+            errorStyle: themeData.primaryTextTheme.bodySmall!.copyWith(color: errorBorderColor),
             prefix: Padding(
               padding: const EdgeInsets.only(right: 4.0),
-              child: Text(
-                fiatConversion!.currencyData.info.symbol?.grapheme ?? '',
-              ),
+              child: Text(fiatConversion!.currencyData.info.symbol?.grapheme ?? ''),
             ),
             border: const OutlineInputBorder(),
           ),
           inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(
-              fiatConversion!.whitelistedPattern,
-            ),
+            FilteringTextInputFormatter.allow(fiatConversion!.whitelistedPattern),
             TextInputFormatter.withFunction(
-              (_, TextEditingValue newValue) => newValue.copyWith(
-                text: newValue.text.replaceAll(',', '.'),
-              ),
+              (_, TextEditingValue newValue) => newValue.copyWith(text: newValue.text.replaceAll(',', '.')),
             ),
           ],
           keyboardType: const TextInputType.numberWithOptions(decimal: true),

@@ -39,9 +39,7 @@ class TransactionFee extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               reverse: true,
               child: AutoSizeText(
-                texts.sweep_all_coins_fee(
-                  BitcoinCurrency.sat.format(txFeeSat),
-                ),
+                texts.sweep_all_coins_fee(BitcoinCurrency.sat.format(txFeeSat)),
                 style: themeData.primaryTextTheme.displaySmall!.copyWith(
                   fontSize: 18.0,
                   color: themeData.colorScheme.error.withValues(alpha: .4),

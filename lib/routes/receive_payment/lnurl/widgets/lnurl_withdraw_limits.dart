@@ -45,14 +45,8 @@ class LnUrlWithdrawLimits extends StatelessWidget {
 
     final int minNetworkLimit = limitsResponse!.receive.minSat.toInt();
     final int maxNetworkLimit = limitsResponse!.receive.maxSat.toInt();
-    final int effectiveMinSat = min(
-      max(minNetworkLimit, minWithdrawableSat),
-      maxNetworkLimit,
-    );
-    final int effectiveMaxSat = max(
-      minNetworkLimit,
-      min(maxNetworkLimit, maxWithdrawableSat),
-    );
+    final int effectiveMinSat = min(max(minNetworkLimit, minWithdrawableSat), maxNetworkLimit);
+    final int effectiveMaxSat = max(minNetworkLimit, min(maxNetworkLimit, maxWithdrawableSat));
 
     // Displays the original range if range is outside payment limits
     final String effMinSendableFormatted = currencyState.bitcoinCurrency.format(
@@ -66,9 +60,7 @@ class LnUrlWithdrawLimits extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: RichText(
         text: TextSpan(
-          style: FieldTextStyle.labelStyle.copyWith(
-            fontSize: 14.3,
-          ),
+          style: FieldTextStyle.labelStyle.copyWith(fontSize: 14.3),
           children: <TextSpan>[
             TextSpan(
               text: texts.lnurl_fetch_invoice_min(effMinSendableFormatted),

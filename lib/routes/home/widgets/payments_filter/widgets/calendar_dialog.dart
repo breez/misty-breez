@@ -35,25 +35,15 @@ class CalendarDialogState extends State<CalendarDialog> {
     final ThemeData themeData = Theme.of(context);
 
     return AlertDialog(
-      title: Text(
-        texts.pos_transactions_range_dialog_title,
-      ),
+      title: Text(texts.pos_transactions_range_dialog_title),
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Flexible(
-            child: _selectDateButton(
-              texts.pos_transactions_range_dialog_start,
-              _startDateController,
-              true,
-            ),
+            child: _selectDateButton(texts.pos_transactions_range_dialog_start, _startDateController, true),
           ),
           Flexible(
-            child: _selectDateButton(
-              texts.pos_transactions_range_dialog_end,
-              _endDateController,
-              false,
-            ),
+            child: _selectDateButton(texts.pos_transactions_range_dialog_end, _endDateController, false),
           ),
         ],
       ),
@@ -82,22 +72,16 @@ class CalendarDialogState extends State<CalendarDialog> {
     // Check if filter is unchanged
     final NavigatorState navigator = Navigator.of(context);
     if (_startDate != widget.firstDate || _endDate.day != DateTime.now().day) {
-      navigator.pop(
-        <DateTime>[
-          DateTime(_startDate.year, _startDate.month, _startDate.day),
-          DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
-        ],
-      );
+      navigator.pop(<DateTime>[
+        DateTime(_startDate.year, _startDate.month, _startDate.day),
+        DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
+      ]);
     } else {
       navigator.pop();
     }
   }
 
-  Widget _selectDateButton(
-    String label,
-    TextEditingController textEditingController,
-    bool isStartBtn,
-  ) {
+  Widget _selectDateButton(String label, TextEditingController textEditingController, bool isStartBtn) {
     final ThemeData themeData = Theme.of(context);
 
     return GestureDetector(
@@ -110,14 +94,9 @@ class CalendarDialogState extends State<CalendarDialog> {
       child: Theme(
         data: themeData.isLightTheme
             ? themeData
-            : themeData.copyWith(
-                disabledColor: themeData.customData.paymentListBgColorLight,
-              ),
+            : themeData.copyWith(disabledColor: themeData.customData.paymentListBgColorLight),
         child: TextField(
-          decoration: InputDecoration(
-            labelText: label,
-            labelStyle: themeData.dialogTheme.contentTextStyle,
-          ),
+          decoration: InputDecoration(labelText: label, labelStyle: themeData.dialogTheme.contentTextStyle),
           controller: textEditingController,
           enabled: false,
           style: themeData.dialogTheme.contentTextStyle,
@@ -144,8 +123,9 @@ class CalendarDialogState extends State<CalendarDialog> {
         );
       },
     );
-    final Duration difference =
-        isStartBtn ? selectedDate!.difference(_endDate) : selectedDate!.difference(_startDate);
+    final Duration difference = isStartBtn
+        ? selectedDate!.difference(_endDate)
+        : selectedDate!.difference(_startDate);
     if (difference.inDays < 0) {
       setState(() {
         isStartBtn ? _startDate = selectedDate : _endDate = selectedDate;

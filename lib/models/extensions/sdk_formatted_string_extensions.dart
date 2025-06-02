@@ -4,7 +4,8 @@ import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/models.dart';
 
 extension RefundableSwapFormatter on RefundableSwap {
-  String toFormattedString() => 'RefundableSwap('
+  String toFormattedString() =>
+      'RefundableSwap('
       'swapAddress: $swapAddress, '
       'timestamp: $timestamp, '
       'amountSat: $amountSat, '
@@ -13,7 +14,8 @@ extension RefundableSwapFormatter on RefundableSwap {
 }
 
 extension RecommendedFeesFormatter on RecommendedFees {
-  String toFormattedString() => 'RecommendedFees('
+  String toFormattedString() =>
+      'RecommendedFees('
       'fastestFee: $fastestFee, '
       'halfHourFee: $halfHourFee, '
       'hourFee: $hourFee, '
@@ -62,7 +64,8 @@ extension SdkEventFormatter on SdkEvent {
 }
 
 extension PaymentFormatter on Payment {
-  String toFormattedString() => 'Payment('
+  String toFormattedString() =>
+      'Payment('
       'destination: ${destination ?? "N/A"}, '
       'txId: ${txId ?? "N/A"}, '
       'amountSat: $amountSat, '
@@ -75,7 +78,8 @@ extension PaymentFormatter on Payment {
 }
 
 extension PreparePayOnchainResponseFormatted on PreparePayOnchainResponse {
-  String toFormattedString() => 'PreparePayOnchainResponse('
+  String toFormattedString() =>
+      'PreparePayOnchainResponse('
       'receiverAmountSat: $receiverAmountSat, '
       'claimFeesSat: $claimFeesSat, '
       'totalFeesSat: $totalFeesSat'
@@ -83,7 +87,8 @@ extension PreparePayOnchainResponseFormatted on PreparePayOnchainResponse {
 }
 
 extension PrepareRefundResponseFormatted on PrepareRefundResponse {
-  String toFormattedString() => 'PrepareRefundResponse('
+  String toFormattedString() =>
+      'PrepareRefundResponse('
       'txVsize: $txVsize, '
       'txFeeSat: $txFeeSat, '
       'lastRefundTxId: ${lastRefundTxId ?? 'N/A'} '
@@ -91,7 +96,8 @@ extension PrepareRefundResponseFormatted on PrepareRefundResponse {
 }
 
 extension RefundRequestFormatted on RefundRequest {
-  String toFormattedString() => 'RefundRequest('
+  String toFormattedString() =>
+      'RefundRequest('
       'swapAddress: $swapAddress, '
       'refundAddress: $refundAddress, '
       'feeRateSatPerVbyte: $feeRateSatPerVbyte'
@@ -103,18 +109,15 @@ extension SendDestinationFormatter on SendDestination {
     return switch (this) {
       SendDestination_LiquidAddress(
         addressData: final LiquidAddressData addressData,
-        bip353Address: final String? bip353Address
-      ) =>
-        'Liquid Address: ${addressData.address}${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
-      SendDestination_Bolt11(
-        invoice: final LNInvoice invoice,
         bip353Address: final String? bip353Address,
       ) =>
+        'Liquid Address: ${addressData.address}${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
+      SendDestination_Bolt11(invoice: final LNInvoice invoice, bip353Address: final String? bip353Address) =>
         'BOLT11 Invoice: ${invoice.toFormattedString()}${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
       SendDestination_Bolt12(
         offer: final LNOffer offer,
         receiverAmountSat: final BigInt receiverAmountSat,
-        bip353Address: final String? bip353Address
+        bip353Address: final String? bip353Address,
       ) =>
         'BOLT12 Offer: ${offer.toFormattedString()}, Amount: $receiverAmountSat sats${bip353Address != null ? ' (resolved from $bip353Address)' : ''}',
     };
@@ -122,7 +125,8 @@ extension SendDestinationFormatter on SendDestination {
 }
 
 extension PrepareSendResponseFormatter on PrepareSendResponse {
-  String toFormattedString() => 'PrepareSendResponse('
+  String toFormattedString() =>
+      'PrepareSendResponse('
       'destination: $destination, '
       'feesSat: $feesSat'
       ')';

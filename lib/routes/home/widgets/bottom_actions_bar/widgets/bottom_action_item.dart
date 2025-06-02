@@ -22,16 +22,12 @@ class BottomActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: TextButton(
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-        ),
+        style: TextButton.styleFrom(padding: EdgeInsets.zero),
         onPressed: onPress,
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: bottomAppBarBtnStyle.copyWith(
-            fontSize: MediaQuery.of(context).textScaler.scale(13.5),
-          ),
+          style: bottomAppBarBtnStyle.copyWith(fontSize: MediaQuery.of(context).textScaler.scale(13.5)),
           maxLines: 1,
         ),
       ),

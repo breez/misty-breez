@@ -54,10 +54,7 @@ Widget _buildEnabledPinOptions(
 }
 
 /// Builds the switch to disable PIN protection
-Widget _buildDisablePinSwitch(
-  AuthService authService,
-  BreezTranslations texts,
-) {
+Widget _buildDisablePinSwitch(AuthService authService, BreezTranslations texts) {
   return SimpleSwitch(
     text: texts.security_and_backup_pin_option_deactivate,
     switchValue: true,
@@ -71,61 +68,33 @@ Widget _buildDisablePinSwitch(
 }
 
 /// Builds the tile to change the PIN
-Widget _buildChangePinTile(
-  BreezTranslations texts,
-  ThemeData themeData,
-  NavigatorState navigator,
-) {
+Widget _buildChangePinTile(BreezTranslations texts, ThemeData themeData, NavigatorState navigator) {
   return ListTile(
     title: Text(
       texts.security_and_backup_change_pin,
-      style: themeData.primaryTextTheme.titleMedium?.copyWith(
-        color: Colors.white,
-      ),
+      style: themeData.primaryTextTheme.titleMedium?.copyWith(color: Colors.white),
       maxLines: 1,
     ),
-    trailing: const Icon(
-      Icons.keyboard_arrow_right,
-      color: Colors.white,
-      size: 30.0,
-    ),
+    trailing: const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
     onTap: () {
       _logger.info('Navigating to change PIN page');
-      navigator.push(
-        FadeInRoute<void>(
-          builder: (_) => const ChangePinPage(),
-        ),
-      );
+      navigator.push(FadeInRoute<void>(builder: (_) => const ChangePinPage()));
     },
   );
 }
 
 /// Builds the option to create a PIN when none exists
-Widget _buildCreatePinOption(
-  BreezTranslations texts,
-  ThemeData themeData,
-  NavigatorState navigator,
-) {
+Widget _buildCreatePinOption(BreezTranslations texts, ThemeData themeData, NavigatorState navigator) {
   return ListTile(
     title: Text(
       texts.security_and_backup_pin_option_create,
-      style: themeData.primaryTextTheme.titleMedium?.copyWith(
-        color: Colors.white,
-      ),
+      style: themeData.primaryTextTheme.titleMedium?.copyWith(color: Colors.white),
       maxLines: 1,
     ),
-    trailing: const Icon(
-      Icons.keyboard_arrow_right,
-      color: Colors.white,
-      size: 30.0,
-    ),
+    trailing: const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
     onTap: () {
       _logger.info('Navigating to create PIN page');
-      navigator.push(
-        FadeInRoute<void>(
-          builder: (_) => const ChangePinPage(),
-        ),
-      );
+      navigator.push(FadeInRoute<void>(builder: (_) => const ChangePinPage()));
     },
   );
 }

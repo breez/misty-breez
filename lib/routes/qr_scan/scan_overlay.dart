@@ -9,10 +9,7 @@ class ScanOverlay extends StatelessWidget {
     return Center(
       child: CustomPaint(
         painter: BorderPainter(),
-        child: SizedBox(
-          width: dimension,
-          height: dimension,
-        ),
+        child: SizedBox(width: dimension, height: dimension),
       ),
     );
   }
@@ -24,37 +21,12 @@ class BorderPainter extends CustomPainter {
     const double width = 4.0;
     const double radius = 16.0;
     const double tRadius = 2 * radius;
-    final Rect rect = Rect.fromLTWH(
-      width,
-      width,
-      size.width - 2 * width,
-      size.height - 2 * width,
-    );
+    final Rect rect = Rect.fromLTWH(width, width, size.width - 2 * width, size.height - 2 * width);
     final RRect rrect = RRect.fromRectAndRadius(rect, const Radius.circular(radius));
-    const Rect clippingRect0 = Rect.fromLTWH(
-      0,
-      0,
-      tRadius,
-      tRadius,
-    );
-    final Rect clippingRect1 = Rect.fromLTWH(
-      size.width - tRadius,
-      0,
-      tRadius,
-      tRadius,
-    );
-    final Rect clippingRect2 = Rect.fromLTWH(
-      0,
-      size.height - tRadius,
-      tRadius,
-      tRadius,
-    );
-    final Rect clippingRect3 = Rect.fromLTWH(
-      size.width - tRadius,
-      size.height - tRadius,
-      tRadius,
-      tRadius,
-    );
+    const Rect clippingRect0 = Rect.fromLTWH(0, 0, tRadius, tRadius);
+    final Rect clippingRect1 = Rect.fromLTWH(size.width - tRadius, 0, tRadius, tRadius);
+    final Rect clippingRect2 = Rect.fromLTWH(0, size.height - tRadius, tRadius, tRadius);
+    final Rect clippingRect3 = Rect.fromLTWH(size.width - tRadius, size.height - tRadius, tRadius, tRadius);
 
     final Path path = Path()
       ..addRect(clippingRect0)

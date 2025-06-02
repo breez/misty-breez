@@ -18,13 +18,8 @@ class DigitButton extends StatelessWidget {
   ///
   /// Either [digit] or [icon] must be provided.
   /// [color] defaults to white.
-  const DigitButton({
-    required this.onPressed,
-    super.key,
-    this.digit,
-    this.icon,
-    this.color = Colors.white,
-  }) : assert(digit != null || icon != null, 'Either digit or icon must be provided');
+  const DigitButton({required this.onPressed, super.key, this.digit, this.icon, this.color = Colors.white})
+    : assert(digit != null || icon != null, 'Either digit or icon must be provided');
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +32,7 @@ class DigitButton extends StatelessWidget {
           highlightColor: themeData.highlightColor,
           customBorder: const CircleBorder(),
           onTap: onPressed == null ? null : () => onPressed?.call(digit),
-          child: Center(
-            child: _buildContent(),
-          ),
+          child: Center(child: _buildContent()),
         ),
       ),
     );
@@ -51,17 +44,10 @@ class DigitButton extends StatelessWidget {
       return Text(
         digit!,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          color: color,
-          fontSize: 20.0,
-        ),
+        style: TextStyle(color: color, fontSize: 20.0),
       );
     }
 
-    return Icon(
-      icon,
-      color: color,
-      size: 20.0,
-    );
+    return Icon(icon, color: color, size: 20.0);
   }
 }

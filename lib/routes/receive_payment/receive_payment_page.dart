@@ -62,10 +62,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
             ? <Widget>[
                 IconButton(
                   alignment: Alignment.center,
-                  icon: const Icon(
-                    Icons.edit_note_rounded,
-                    size: 24.0,
-                  ),
+                  icon: const Icon(Icons.edit_note_rounded, size: 24.0),
                   // TODO(erdemyerebasmaz): Add message to Breez-Translations
                   tooltip: 'Specify amount for invoice',
                   onPressed: () {

@@ -84,8 +84,9 @@ extension PaymentDetailsFromJson on PaymentDetails {
           bip353Address: json['bip353Address'] as String?,
           claimTxId: json['claimTxId'] as String?,
           refundTxId: json['refundTxId'] as String?,
-          refundTxAmountSat:
-              json['refundTxAmountSat'] != null ? BigInt.parse(json['refundTxAmountSat'] as String) : null,
+          refundTxAmountSat: json['refundTxAmountSat'] != null
+              ? BigInt.parse(json['refundTxAmountSat'] as String)
+              : null,
         );
 
       case 'liquid':
@@ -108,8 +109,9 @@ extension PaymentDetailsFromJson on PaymentDetails {
           bitcoinExpirationBlockheight: json['bitcoinExpirationBlockheight'] as int?,
           claimTxId: json['claimTxId'] as String?,
           refundTxId: json['refundTxId'] as String?,
-          refundTxAmountSat:
-              json['refundTxAmountSat'] != null ? BigInt.parse(json['refundTxAmountSat'] as String) : null,
+          refundTxAmountSat: json['refundTxAmountSat'] != null
+              ? BigInt.parse(json['refundTxAmountSat'] as String)
+              : null,
         );
 
       default:
@@ -183,12 +185,8 @@ extension PaymentDetailsHashCode on PaymentDetails {
         o.refundTxId,
         o.refundTxAmountSat,
       ),
-      liquid: (PaymentDetails_Liquid o) => Object.hash(
-        o.destination,
-        o.description,
-        o.assetId,
-        o.assetInfo?.toJson(),
-      ),
+      liquid: (PaymentDetails_Liquid o) =>
+          Object.hash(o.destination, o.description, o.assetId, o.assetInfo?.toJson()),
       bitcoin: (PaymentDetails_Bitcoin o) => Object.hash(
         o.swapId,
         o.bitcoinAddress,
@@ -232,14 +230,10 @@ extension PaymentDetailsExpiryDate on PaymentDetails {
     }
 
     return map(
-      bitcoin: (_) => BreezDateUtils.bitcoinBlockDiffToDate(
-        blockHeight: currentTip,
-        expiryBlock: expiryBlockheight,
-      ),
-      lightning: (_) => BreezDateUtils.liquidBlockDiffToDate(
-        blockHeight: currentTip,
-        expiryBlock: expiryBlockheight,
-      ),
+      bitcoin: (_) =>
+          BreezDateUtils.bitcoinBlockDiffToDate(blockHeight: currentTip, expiryBlock: expiryBlockheight),
+      lightning: (_) =>
+          BreezDateUtils.liquidBlockDiffToDate(blockHeight: currentTip, expiryBlock: expiryBlockheight),
       orElse: () => null,
     );
   }
@@ -293,14 +287,14 @@ extension PaymentDetailsFormatter on PaymentDetails {
 
 extension LnUrlInfoToJson on LnUrlInfo {
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'lnAddress': lnAddress,
-        'lnurlPayComment': lnurlPayComment,
-        'lnurlPayDomain': lnurlPayDomain,
-        'lnurlPayMetadata': lnurlPayMetadata,
-        'lnurlPaySuccessAction': lnurlPaySuccessAction?.toJson(),
-        'lnurlPayUnprocessedSuccessAction': lnurlPayUnprocessedSuccessAction?.toJson(),
-        'lnurlWithdrawEndpoint': lnurlWithdrawEndpoint,
-      };
+    'lnAddress': lnAddress,
+    'lnurlPayComment': lnurlPayComment,
+    'lnurlPayDomain': lnurlPayDomain,
+    'lnurlPayMetadata': lnurlPayMetadata,
+    'lnurlPaySuccessAction': lnurlPaySuccessAction?.toJson(),
+    'lnurlPayUnprocessedSuccessAction': lnurlPayUnprocessedSuccessAction?.toJson(),
+    'lnurlWithdrawEndpoint': lnurlWithdrawEndpoint,
+  };
 }
 
 extension LnUrlInfoFromJson on LnUrlInfo {
@@ -324,20 +318,14 @@ extension LnUrlInfoFromJson on LnUrlInfo {
 extension SuccessActionProcessedToJson on SuccessActionProcessed {
   Map<String, dynamic> toJson() {
     if (this is SuccessActionProcessed_Aes) {
-      return <String, dynamic>{
-        'type': 'aes',
-        'result': (this as SuccessActionProcessed_Aes).result.toJson(),
-      };
+      return <String, dynamic>{'type': 'aes', 'result': (this as SuccessActionProcessed_Aes).result.toJson()};
     } else if (this is SuccessActionProcessed_Message) {
       return <String, dynamic>{
         'type': 'message',
         'data': (this as SuccessActionProcessed_Message).data.toJson(),
       };
     } else if (this is SuccessActionProcessed_Url) {
-      return <String, dynamic>{
-        'type': 'url',
-        'data': (this as SuccessActionProcessed_Url).data.toJson(),
-      };
+      return <String, dynamic>{'type': 'url', 'data': (this as SuccessActionProcessed_Url).data.toJson()};
     } else {
       throw Exception('Unknown SuccessActionProcessed type');
     }
@@ -352,13 +340,9 @@ extension SuccessActionProcessedFromJson on SuccessActionProcessed {
           result: AesSuccessActionDataResultFromJson.fromJson(json['result']),
         );
       case 'message':
-        return SuccessActionProcessed.message(
-          data: MessageSuccessActionDataFromJson.fromJson(json['data']),
-        );
+        return SuccessActionProcessed.message(data: MessageSuccessActionDataFromJson.fromJson(json['data']));
       case 'url':
-        return SuccessActionProcessed.url(
-          data: UrlSuccessActionDataFromJson.fromJson(json['data']),
-        );
+        return SuccessActionProcessed.url(data: UrlSuccessActionDataFromJson.fromJson(json['data']));
       default:
         throw Exception('Unknown SuccessActionProcessed type: ${json['type']}');
     }
@@ -391,9 +375,7 @@ extension AesSuccessActionDataResultFromJson on AesSuccessActionDataResult {
           data: AesSuccessActionDataDecryptedFromJson.fromJson(json['data']),
         );
       case 'errorStatus':
-        return AesSuccessActionDataResult.errorStatus(
-          reason: json['reason'] as String,
-        );
+        return AesSuccessActionDataResult.errorStatus(reason: json['reason'] as String);
       default:
         throw Exception('Unknown AesSuccessActionDataResult type: ${json['type']}');
     }
@@ -401,10 +383,7 @@ extension AesSuccessActionDataResultFromJson on AesSuccessActionDataResult {
 }
 
 extension AesSuccessActionDataDecryptedToJson on AesSuccessActionDataDecrypted {
-  Map<String, String> toJson() => <String, String>{
-        'description': description,
-        'plaintext': plaintext,
-      };
+  Map<String, String> toJson() => <String, String>{'description': description, 'plaintext': plaintext};
 }
 
 extension AesSuccessActionDataDecryptedFromJson on AesSuccessActionDataDecrypted {
@@ -417,25 +396,21 @@ extension AesSuccessActionDataDecryptedFromJson on AesSuccessActionDataDecrypted
 }
 
 extension MessageSuccessActionDataToJson on MessageSuccessActionData {
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'message': message,
-      };
+  Map<String, dynamic> toJson() => <String, dynamic>{'message': message};
 }
 
 extension MessageSuccessActionDataFromJson on MessageSuccessActionData {
   static MessageSuccessActionData fromJson(Map<String, dynamic> json) {
-    return MessageSuccessActionData(
-      message: json['message'] as String,
-    );
+    return MessageSuccessActionData(message: json['message'] as String);
   }
 }
 
 extension UrlSuccessActionDataToJson on UrlSuccessActionData {
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'description': description,
-        'url': url,
-        'matchesCallbackDomain': matchesCallbackDomain,
-      };
+    'description': description,
+    'url': url,
+    'matchesCallbackDomain': matchesCallbackDomain,
+  };
 }
 
 extension UrlSuccessActionDataFromJson on UrlSuccessActionData {
@@ -451,20 +426,11 @@ extension UrlSuccessActionDataFromJson on UrlSuccessActionData {
 extension SuccessActionToJson on SuccessAction {
   Map<String, dynamic> toJson() {
     if (this is SuccessAction_Aes) {
-      return <String, dynamic>{
-        'type': 'aes',
-        'data': (this as SuccessAction_Aes).data.toJson(),
-      };
+      return <String, dynamic>{'type': 'aes', 'data': (this as SuccessAction_Aes).data.toJson()};
     } else if (this is SuccessAction_Message) {
-      return <String, dynamic>{
-        'type': 'message',
-        'data': (this as SuccessAction_Message).data.toJson(),
-      };
+      return <String, dynamic>{'type': 'message', 'data': (this as SuccessAction_Message).data.toJson()};
     } else if (this is SuccessAction_Url) {
-      return <String, dynamic>{
-        'type': 'url',
-        'data': (this as SuccessAction_Url).data.toJson(),
-      };
+      return <String, dynamic>{'type': 'url', 'data': (this as SuccessAction_Url).data.toJson()};
     } else {
       throw Exception('Unknown SuccessAction type');
     }
@@ -475,17 +441,11 @@ extension SuccessActionFromJson on SuccessAction {
   static SuccessAction fromJson(Map<String, dynamic> json) {
     switch (json['type']) {
       case 'aes':
-        return SuccessAction.aes(
-          data: AesSuccessActionDataFromJson.fromJson(json['data']),
-        );
+        return SuccessAction.aes(data: AesSuccessActionDataFromJson.fromJson(json['data']));
       case 'message':
-        return SuccessAction.message(
-          data: MessageSuccessActionDataFromJson.fromJson(json['data']),
-        );
+        return SuccessAction.message(data: MessageSuccessActionDataFromJson.fromJson(json['data']));
       case 'url':
-        return SuccessAction.url(
-          data: UrlSuccessActionDataFromJson.fromJson(json['data']),
-        );
+        return SuccessAction.url(data: UrlSuccessActionDataFromJson.fromJson(json['data']));
       default:
         throw Exception('Unknown SuccessAction type: ${json['type']}');
     }
@@ -494,10 +454,10 @@ extension SuccessActionFromJson on SuccessAction {
 
 extension AesSuccessActionDataToJson on AesSuccessActionData {
   Map<String, dynamic> toJson() => <String, String>{
-        'description': description,
-        'ciphertext': ciphertext,
-        'iv': iv,
-      };
+    'description': description,
+    'ciphertext': ciphertext,
+    'iv': iv,
+  };
 }
 
 extension AesSuccessActionDataFromJson on AesSuccessActionData {

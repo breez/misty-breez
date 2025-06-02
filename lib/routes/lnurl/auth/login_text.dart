@@ -20,10 +20,7 @@ class LoginText extends StatelessWidget {
             text: domain,
             style: themeData.dialogTheme.contentTextStyle!.copyWith(fontWeight: FontWeight.bold),
           ),
-          TextSpan(
-            text: '?',
-            style: themeData.dialogTheme.contentTextStyle,
-          ),
+          TextSpan(text: '?', style: themeData.dialogTheme.contentTextStyle),
         ],
       ),
     );

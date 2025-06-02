@@ -19,28 +19,28 @@ class WithdrawFundsAmountTextFormField extends AmountFormField {
     required BigInt balance,
     super.key,
   }) : super(
-          texts: context.texts(),
-          enableInteractiveSelection: !isDrain,
-          readOnly: policy.withdrawKind == WithdrawKind.unexpectedFunds || isDrain,
-          focusNode: isDrain ? null : focusNode,
-          validatorFn: (int amount) {
-            _logger.info('Validator called for $amount');
-            return PaymentValidator(
-              currency: bitcoinCurrency,
-              texts: context.texts(),
-              validatePayment: (int amount, bool outgoing) {
-                _logger.info('Validating $amount $policy');
-                if (outgoing && amount > balance.toInt()) {
-                  throw const InsufficientLocalBalanceError();
-                }
-                if (amount < policy.minValue.toInt()) {
-                  throw PaymentBelowLimitError(policy.minValue.toInt());
-                }
-                if (amount > policy.maxValue.toInt()) {
-                  throw PaymentExceedsLimitError(policy.maxValue.toInt());
-                }
-              },
-            ).validateOutgoing(amount);
-          },
-        );
+         texts: context.texts(),
+         enableInteractiveSelection: !isDrain,
+         readOnly: policy.withdrawKind == WithdrawKind.unexpectedFunds || isDrain,
+         focusNode: isDrain ? null : focusNode,
+         validatorFn: (int amount) {
+           _logger.info('Validator called for $amount');
+           return PaymentValidator(
+             currency: bitcoinCurrency,
+             texts: context.texts(),
+             validatePayment: (int amount, bool outgoing) {
+               _logger.info('Validating $amount $policy');
+               if (outgoing && amount > balance.toInt()) {
+                 throw const InsufficientLocalBalanceError();
+               }
+               if (amount < policy.minValue.toInt()) {
+                 throw PaymentBelowLimitError(policy.minValue.toInt());
+               }
+               if (amount > policy.maxValue.toInt()) {
+                 throw PaymentExceedsLimitError(policy.maxValue.toInt());
+               }
+             },
+           ).validateOutgoing(amount);
+         },
+       );
 }

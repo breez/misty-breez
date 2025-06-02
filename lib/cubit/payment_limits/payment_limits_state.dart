@@ -5,11 +5,7 @@ class PaymentLimitsState {
   final OnchainPaymentLimitsResponse? onchainPaymentLimits;
   final String errorMessage;
 
-  PaymentLimitsState({
-    this.lightningPaymentLimits,
-    this.onchainPaymentLimits,
-    this.errorMessage = '',
-  });
+  PaymentLimitsState({this.lightningPaymentLimits, this.onchainPaymentLimits, this.errorMessage = ''});
 
   PaymentLimitsState.initial() : this();
 

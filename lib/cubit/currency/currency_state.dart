@@ -63,17 +63,17 @@ class CurrencyState {
   }
 
   CurrencyState.fromJson(Map<String, dynamic> json)
-      : preferredCurrencies = (json['preferredCurrencies'] is List)
-            ? List<String>.from(json['preferredCurrencies'])
-            : const <String>['USD', 'EUR', 'GBP', 'JPY'],
-        exchangeRates = <String, Rate>{},
-        fiatCurrenciesData = <FiatCurrency>[],
-        fiatId = json['fiatId'] as String? ?? 'USD',
-        bitcoinTicker = json['bitcoinTicker'] as String? ?? 'SAT';
+    : preferredCurrencies = (json['preferredCurrencies'] is List)
+          ? List<String>.from(json['preferredCurrencies'])
+          : const <String>['USD', 'EUR', 'GBP', 'JPY'],
+      exchangeRates = <String, Rate>{},
+      fiatCurrenciesData = <FiatCurrency>[],
+      fiatId = json['fiatId'] as String? ?? 'USD',
+      bitcoinTicker = json['bitcoinTicker'] as String? ?? 'SAT';
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'preferredCurrencies': preferredCurrencies,
-        'fiatId': fiatId,
-        'bitcoinTicker': bitcoinTicker,
-      };
+    'preferredCurrencies': preferredCurrencies,
+    'fiatId': fiatId,
+    'bitcoinTicker': bitcoinTicker,
+  };
 }

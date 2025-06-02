@@ -113,8 +113,9 @@ class FiatConversion {
     final String spacing = ' ' * (localeOverride?.spacing ?? currencyData.info.spacing ?? 0);
     final int? symbolPosition = localeOverride?.symbol.position ?? currencyData.info.symbol?.position;
     final String? symbolGrapheme = localeOverride?.symbol.grapheme ?? currencyData.info.symbol?.grapheme;
-    String symbolText =
-        (symbolPosition == 1) ? spacing + (symbolGrapheme ?? '') : (symbolGrapheme ?? '') + spacing;
+    String symbolText = (symbolPosition == 1)
+        ? spacing + (symbolGrapheme ?? '')
+        : (symbolGrapheme ?? '') + spacing;
 
     // if conversion result is less than the minimum it doesn't make sense to display it
     if (fiatAmount < minimumAmount) {

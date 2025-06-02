@@ -4,17 +4,19 @@ extension InputTypeExtension on InputType {
   String toFormattedString() {
     return switch (this) {
       InputType_BitcoinAddress() => (this as InputType_BitcoinAddress).address.toFormattedString(),
-      InputType_Bolt12Offer() => (this as InputType_Bolt12Offer).offer.toFormattedString() +
-          ((this as InputType_Bolt12Offer).bip353Address == null
-              ? ''
-              : ', Bip 353 Address: ${(this as InputType_Bolt12Offer).bip353Address!}'),
+      InputType_Bolt12Offer() =>
+        (this as InputType_Bolt12Offer).offer.toFormattedString() +
+            ((this as InputType_Bolt12Offer).bip353Address == null
+                ? ''
+                : ', Bip 353 Address: ${(this as InputType_Bolt12Offer).bip353Address!}'),
       InputType_Bolt11() => (this as InputType_Bolt11).invoice.toFormattedString(),
       InputType_NodeId() => 'NodeId(nodeId: ${(this as InputType_NodeId).nodeId})',
       InputType_Url() => 'Url(url: ${(this as InputType_Url).url})',
-      InputType_LnUrlPay() => (this as InputType_LnUrlPay).data.toFormattedString() +
-          ((this as InputType_LnUrlPay).bip353Address == null
-              ? ''
-              : ', Bip 353 Address: ${(this as InputType_LnUrlPay).bip353Address!}'),
+      InputType_LnUrlPay() =>
+        (this as InputType_LnUrlPay).data.toFormattedString() +
+            ((this as InputType_LnUrlPay).bip353Address == null
+                ? ''
+                : ', Bip 353 Address: ${(this as InputType_LnUrlPay).bip353Address!}'),
       InputType_LnUrlWithdraw() => (this as InputType_LnUrlWithdraw).data.toFormattedString(),
       InputType_LnUrlAuth() => (this as InputType_LnUrlAuth).data.toFormattedString(),
       InputType_LnUrlError() => (this as InputType_LnUrlError).data.toFormattedString(),
@@ -49,7 +51,8 @@ extension LnOfferBlindedPathExtension on List<LnOfferBlindedPath> {
 }
 
 extension LnUrlPayRequestDataExtension on LnUrlPayRequestData {
-  String toFormattedString() => 'LnUrlPayRequestData(callback: $callback, minSendable: $minSendable, '
+  String toFormattedString() =>
+      'LnUrlPayRequestData(callback: $callback, minSendable: $minSendable, '
       'maxSendable: $maxSendable, metadataStr: $metadataStr, '
       'commentAllowed: $commentAllowed, domain: $domain, lnAddress: $lnAddress)';
 }

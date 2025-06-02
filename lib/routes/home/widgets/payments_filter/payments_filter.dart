@@ -37,30 +37,24 @@ class PaymentsFilterState extends State<PaymentsFilters> {
             texts.payments_filter_option_sent: <PaymentType>[PaymentType.send],
             texts.payments_filter_option_received: <PaymentType>[PaymentType.receive],
           };
-          _filter = _getFilterTypeString(
-            context,
-            paymentsState.paymentFilters.filters,
-          );
+          _filter = _getFilterTypeString(context, paymentsState.paymentFilters.filters);
         }
 
         return Row(
           children: <Widget>[
             PaymentFilterExporter(_getFilterType()),
             PaymentsFilterCalendar(_getFilterType()),
-            PaymentsFilterDropdown(
-              _filter!,
-              (Object? value) {
-                setState(() {
-                  _filter = value?.toString();
-                });
-                final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-                paymentsCubit.changePaymentFilter(
-                  filters: _getFilterType(),
-                  fromTimestamp: paymentsCubit.state.paymentFilters.fromTimestamp,
-                  toTimestamp: paymentsCubit.state.paymentFilters.toTimestamp,
-                );
-              },
-            ),
+            PaymentsFilterDropdown(_filter!, (Object? value) {
+              setState(() {
+                _filter = value?.toString();
+              });
+              final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+              paymentsCubit.changePaymentFilter(
+                filters: _getFilterType(),
+                fromTimestamp: paymentsCubit.state.paymentFilters.fromTimestamp,
+                toTimestamp: paymentsCubit.state.paymentFilters.toTimestamp,
+              );
+            }),
           ],
         );
       },
@@ -71,10 +65,7 @@ class PaymentsFilterState extends State<PaymentsFilters> {
     return _filterMap[_filter] ?? PaymentType.values;
   }
 
-  String _getFilterTypeString(
-    BuildContext context,
-    List<PaymentType>? filterType,
-  ) {
+  String _getFilterTypeString(BuildContext context, List<PaymentType>? filterType) {
     for (MapEntry<String, List<PaymentType>> entry in _filterMap.entries) {
       if (entry.value == filterType) {
         return entry.key;

@@ -21,12 +21,7 @@ class AccountState {
   });
 
   AccountState.initial()
-      : this(
-          isRestoring: false,
-          didCompleteInitialSync: false,
-          walletInfo: null,
-          blockchainInfo: null,
-        );
+    : this(isRestoring: false, didCompleteInitialSync: false, walletInfo: null, blockchainInfo: null);
 
   AccountState copyWith({
     bool? isRestoring,
@@ -103,14 +98,16 @@ extension WalletInfoFromJson on WalletInfo {
       return WalletInfo(
         balanceSat: JsonParsingUtils.parseToBigInt(json['balanceSat'], fieldName: 'balanceSat'),
         pendingSendSat: JsonParsingUtils.parseToBigInt(json['pendingSendSat'], fieldName: 'pendingSendSat'),
-        pendingReceiveSat:
-            JsonParsingUtils.parseToBigInt(json['pendingReceiveSat'], fieldName: 'pendingReceiveSat'),
+        pendingReceiveSat: JsonParsingUtils.parseToBigInt(
+          json['pendingReceiveSat'],
+          fieldName: 'pendingReceiveSat',
+        ),
         fingerprint: json['fingerprint'] as String? ?? '',
         pubkey: json['pubkey'] as String? ?? '',
         assetBalances: json['assetBalances'] != null
             ? (json['assetBalances'] as List<dynamic>)
-                .map((dynamic json) => AssetBalanceFromJson.fromJson(json))
-                .toList()
+                  .map((dynamic json) => AssetBalanceFromJson.fromJson(json))
+                  .toList()
             : <AssetBalance>[],
       );
     } catch (e, stack) {
@@ -122,10 +119,7 @@ extension WalletInfoFromJson on WalletInfo {
 
 extension BlockchainInfoToJson on BlockchainInfo {
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'liquidTip': liquidTip.toString(),
-      'bitcoinTip': bitcoinTip.toString(),
-    };
+    return <String, dynamic>{'liquidTip': liquidTip.toString(), 'bitcoinTip': bitcoinTip.toString()};
   }
 }
 

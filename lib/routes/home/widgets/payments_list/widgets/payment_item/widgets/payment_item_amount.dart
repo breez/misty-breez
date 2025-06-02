@@ -30,7 +30,8 @@ class PaymentItemAmount extends StatelessWidget {
               // Calculate the full refund amount (payment + fee) for pending refunds
               // or completed refunds where the refund transaction amount is not tracked
               // and then display it on Amount Widget with hidden fees
-              final bool shouldEstimateRefundAmount = paymentData.status == PaymentState.refundPending ||
+              final bool shouldEstimateRefundAmount =
+                  paymentData.status == PaymentState.refundPending ||
                   (paymentData.isRefunded && paymentData.refundTxAmountSat == 0);
 
               if (shouldEstimateRefundAmount) {
@@ -49,7 +50,8 @@ class PaymentItemAmount extends StatelessWidget {
                 includeDisplayName: false,
               );
 
-              final bool isPending = paymentData.status == PaymentState.pending ||
+              final bool isPending =
+                  paymentData.status == PaymentState.pending ||
                   paymentData.status == PaymentState.refundPending;
 
               return Column(
@@ -63,10 +65,10 @@ class PaymentItemAmount extends StatelessWidget {
                     hideBalance
                         ? texts.wallet_dashboard_payment_item_balance_hide
                         : shouldEstimateRefundAmount
-                            ? amountFormatted
-                            : paymentData.paymentType == PaymentType.receive
-                                ? texts.wallet_dashboard_payment_item_balance_positive(amountFormatted)
-                                : texts.wallet_dashboard_payment_item_balance_negative(amountFormatted),
+                        ? amountFormatted
+                        : paymentData.paymentType == PaymentType.receive
+                        ? texts.wallet_dashboard_payment_item_balance_positive(amountFormatted)
+                        : texts.wallet_dashboard_payment_item_balance_negative(amountFormatted),
                     style: themeData.paymentItemAmountTextStyle,
                   ),
                   // Fee widget

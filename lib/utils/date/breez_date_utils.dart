@@ -60,11 +60,7 @@ class BreezDateUtils {
   /// [fromDateTime] The start date of the range
   /// [toDateTime] The end date of the range
   /// Returns true if the date is between the two dates
-  static bool isBetween(
-    DateTime date,
-    DateTime fromDateTime,
-    DateTime toDateTime,
-  ) {
+  static bool isBetween(DateTime date, DateTime fromDateTime, DateTime toDateTime) {
     final bool isAfter = date.isAfter(fromDateTime);
     final bool isBefore = date.isBefore(toDateTime);
     return isAfter && isBefore;
@@ -96,10 +92,7 @@ class BreezDateUtils {
   /// [blockHeight] Current Bitcoin block height
   /// [expiryBlock] Expiry Bitcoin block height
   /// Returns an estimated expiry date or null if parameters are invalid
-  static DateTime? bitcoinBlockDiffToDate({
-    required int? blockHeight,
-    required int? expiryBlock,
-  }) {
+  static DateTime? bitcoinBlockDiffToDate({required int? blockHeight, required int? expiryBlock}) {
     return _blockDiffToDate(
       blockHeight: blockHeight,
       expiryBlock: expiryBlock,
@@ -112,10 +105,7 @@ class BreezDateUtils {
   /// [blockHeight] Current Liquid block height
   /// [expiryBlock] Expiry Liquid block height
   /// Returns an estimated expiry date or null if parameters are invalid
-  static DateTime? liquidBlockDiffToDate({
-    required int? blockHeight,
-    required int? expiryBlock,
-  }) {
+  static DateTime? liquidBlockDiffToDate({required int? blockHeight, required int? expiryBlock}) {
     return _blockDiffToDate(
       blockHeight: blockHeight,
       expiryBlock: expiryBlock,

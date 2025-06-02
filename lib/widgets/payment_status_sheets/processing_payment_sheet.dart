@@ -140,24 +140,23 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
 
     // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
     final Future<void> timeoutFuture = Future<void>.delayed(timeoutDuration);
-    Future.any(<Future<bool>>[
-      paymentCompleter.future,
-      timeoutFuture.then((_) => false),
-    ]).then((bool paymentSucceeded) {
-      if (!mounted) {
-        return;
-      }
+    Future.any(<Future<bool>>[paymentCompleter.future, timeoutFuture.then((_) => false)])
+        .then((bool paymentSucceeded) {
+          if (!mounted) {
+            return;
+          }
 
-      if (paymentSucceeded) {
-        _showSuccessAndClose();
-      } else {
-        _closeSheetOnCompletion();
-      }
-    }).catchError((_) {
-      if (mounted) {
-        _onPaymentFailure();
-      }
-    });
+          if (paymentSucceeded) {
+            _showSuccessAndClose();
+          } else {
+            _closeSheetOnCompletion();
+          }
+        })
+        .catchError((_) {
+          if (mounted) {
+            _onPaymentFailure();
+          }
+        });
   }
 
   void _showSuccessAndClose([dynamic payResult]) {
@@ -209,10 +208,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       return;
     }
     Navigator.of(context).pop();
-    showFlushbar(
-      context,
-      message: getSystemAppLocalizations().payment_error_to_send_unknown_reason,
-    );
+    showFlushbar(context, message: getSystemAppLocalizations().payment_error_to_send_unknown_reason);
   }
 
   void _promptErrorDialog(Object err, BreezTranslations texts) {
@@ -220,10 +216,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     promptError(
       context,
       title: texts.payment_failed_report_dialog_title,
-      body: Text(
-        ExceptionHandler.extractMessage(err, texts),
-        style: themeData.dialogTheme.contentTextStyle,
-      ),
+      body: Text(ExceptionHandler.extractMessage(err, texts), style: themeData.dialogTheme.contentTextStyle),
     );
   }
 
@@ -242,10 +235,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       color: themeData.customData.paymentListBgColorLight,
       child: _showPaymentSent
           ? const PaymentSentContent()
-          : ProcessingPaymentContent(
-              isBroadcast: widget.isBroadcast,
-              onClose: _closeSheetOnCompletion,
-            ),
+          : ProcessingPaymentContent(isBroadcast: widget.isBroadcast, onClose: _closeSheetOnCompletion),
     );
   }
 }

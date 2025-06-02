@@ -17,24 +17,22 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   final BreezSDKLiquid breezSdkLiquid;
   final LnUrlRegistrationManager registrationManager;
 
-  LnAddressCubit({
-    required this.breezSdkLiquid,
-    required this.registrationManager,
-  }) : super(const LnAddressState()) {
+  LnAddressCubit({required this.breezSdkLiquid, required this.registrationManager})
+    : super(const LnAddressState()) {
     _initializeLnAddressCubit();
   }
 
   /// Attempts to recover the Lightning Address once pubKey is available
   void _initializeLnAddressCubit() {
     _logger.info('Initializing Lightning Address Cubit.');
-    breezSdkLiquid.getInfoResponseStream.first.then(
-      (GetInfoResponse getInfoResponse) {
-        _logger.info('Received wallet info, setting up Lightning Address.');
-        setupLightningAddress(pubKey: getInfoResponse.walletInfo.pubkey, isRecover: true);
-      },
-    ).catchError((Object e) {
-      _logger.severe('Failed to initialize Lightning Address Cubit', e);
-    });
+    breezSdkLiquid.getInfoResponseStream.first
+        .then((GetInfoResponse getInfoResponse) {
+          _logger.info('Received wallet info, setting up Lightning Address.');
+          setupLightningAddress(pubKey: getInfoResponse.walletInfo.pubkey, isRecover: true);
+        })
+        .catchError((Object e) {
+          _logger.severe('Failed to initialize Lightning Address Cubit', e);
+        });
   }
 
   /// Sets up or updates the Lightning Address.
@@ -42,11 +40,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
   /// - If [isRecover] is true, it attempts to recover the LNURL Webhook. Fallbacks to registration on failure.
   /// - If [baseUsername] is provided, the function updates the Lightning Address username.
   /// - Otherwise, it initializes a new Lightning Address or refreshes an existing one.
-  Future<void> setupLightningAddress({
-    String? pubKey,
-    bool isRecover = false,
-    String? baseUsername,
-  }) async {
+  Future<void> setupLightningAddress({String? pubKey, bool isRecover = false, String? baseUsername}) async {
     final String registrationType = _determineRegistrationType(isRecover, baseUsername);
     final String actionMessage = _getActionMessage(registrationType, baseUsername);
 
@@ -120,30 +114,21 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
     final LnAddressStatus status = isUpdating ? state.status : LnAddressStatus.error;
     final Object? error = isUpdating ? null : e;
-    final LnAddressUpdateStatus? updateStatus =
-        isUpdating ? _createErrorUpdateStatus(e, actionMessage) : null;
+    final LnAddressUpdateStatus? updateStatus = isUpdating
+        ? _createErrorUpdateStatus(e, actionMessage)
+        : null;
 
-    emit(
-      state.copyWith(
-        status: status,
-        error: error,
-        updateStatus: updateStatus,
-      ),
-    );
+    emit(state.copyWith(status: status, error: error, updateStatus: updateStatus));
   }
 
   LnAddressUpdateStatus _createErrorUpdateStatus(Object e, String action) {
     final String errorMessage = e is RegisterLnurlPayException
         ? (e.responseBody?.isNotEmpty == true ? e.responseBody! : e.message)
         : e is UsernameConflictException
-            ? e.toString()
-            : 'Failed to $action';
+        ? e.toString()
+        : 'Failed to $action';
 
-    return LnAddressUpdateStatus(
-      status: UpdateStatus.error,
-      error: e,
-      errorMessage: errorMessage,
-    );
+    return LnAddressUpdateStatus(status: UpdateStatus.error, error: e, errorMessage: errorMessage);
   }
 
   Future<String> _getPubKey() async {

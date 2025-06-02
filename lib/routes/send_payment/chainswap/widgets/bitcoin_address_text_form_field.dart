@@ -15,11 +15,7 @@ class BitcoinAddressTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final ValidatorHolder validatorHolder;
 
-  const BitcoinAddressTextFormField({
-    required this.controller,
-    required this.validatorHolder,
-    super.key,
-  });
+  const BitcoinAddressTextFormField({required this.controller, required this.validatorHolder, super.key});
 
   @override
   BitcoinAddressTextFormFieldState createState() => BitcoinAddressTextFormFieldState();
@@ -51,9 +47,7 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
       controller: widget.controller,
       autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-        prefixIconConstraints: BoxConstraints.tight(
-          const Size(16, 56),
-        ),
+        prefixIconConstraints: BoxConstraints.tight(const Size(16, 56)),
         prefixIcon: const SizedBox.shrink(),
         contentPadding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
         border: const OutlineInputBorder(),
@@ -71,24 +65,19 @@ class BitcoinAddressTextFormFieldState extends State<BitcoinAddressTextFormField
           tooltip: texts.bitcoin_address_scan_tooltip,
           onPressed: () {
             _logger.info('Start qr code scan');
-            Navigator.pushNamed<String>(context, QRScanView.routeName).then(
-              (String? barcode) async {
-                _logger.info("Scanned string: '$barcode'");
-                if (barcode == null) {
-                  return;
-                }
-                if (barcode.isEmpty && context.mounted) {
-                  showFlushbar(
-                    context,
-                    message: texts.qr_code_not_detected_error,
-                  );
-                  return;
-                }
+            Navigator.pushNamed<String>(context, QRScanView.routeName).then((String? barcode) async {
+              _logger.info("Scanned string: '$barcode'");
+              if (barcode == null) {
+                return;
+              }
+              if (barcode.isEmpty && context.mounted) {
+                showFlushbar(context, message: texts.qr_code_not_detected_error);
+                return;
+              }
 
-                widget.controller.text = barcode;
-                await _validateAddress();
-              },
-            );
+              widget.controller.text = barcode;
+              await _validateAddress();
+            });
           },
         ),
       ),

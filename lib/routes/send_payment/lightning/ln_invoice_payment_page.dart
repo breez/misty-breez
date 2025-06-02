@@ -43,10 +43,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       if ((amountMsat == null || amountMsat == BigInt.zero) && context.mounted) {
         final BreezTranslations texts = context.texts();
         Navigator.pop(context);
-        showFlushbar(
-          context,
-          message: texts.payment_request_zero_amount_not_supported,
-        );
+        showFlushbar(context, message: texts.payment_request_zero_amount_not_supported);
       }
 
       setState(() {
@@ -80,10 +77,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
   }
 
   Future<void> _handleLightningPaymentLimitsResponse() async {
-    final String? errorMessage = validatePayment(
-      amountSat: amountSat!,
-      throwError: true,
-    );
+    final String? errorMessage = validatePayment(amountSat: amountSat!, throwError: true);
     if (errorMessage == null) {
       await _prepareSendPayment(amountSat!);
     }
@@ -99,9 +93,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
         errorMessage = '';
       });
 
-      final PayAmount payAmount = PayAmount_Bitcoin(
-        receiverAmountSat: BigInt.from(amountSat),
-      );
+      final PayAmount payAmount = PayAmount_Bitcoin(receiverAmountSat: BigInt.from(amountSat));
 
       final PrepareSendRequest req = PrepareSendRequest(
         destination: widget.lnInvoice.bolt11,
@@ -160,44 +152,36 @@ class LnPaymentPageState extends State<LnPaymentPage> {
                   Container(
                     decoration: ShapeDecoration(
                       shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
-                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                       color: themeData.customData.surfaceBgColor,
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 24,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                     child: Column(
-                      children: <Widget>[
-                        LnPaymentAmount(
-                          amountSat: amountSat!,
-                          hasError: errorMessage.isNotEmpty,
-                        ),
-                        if (_prepareResponse != null && _prepareResponse!.feesSat?.toInt() != 0) ...<Widget>[
-                          LnPaymentFee(
-                            isCalculatingFees: _isCalculatingFees,
-                            feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat?.toInt() : null,
-                          ),
-                        ],
-                        if (widget.lnInvoice.description != null &&
-                            widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
-                          LnPaymentDescription(
-                            metadataText: widget.lnInvoice.description!,
-                          ),
-                        ],
-                      ].expand((Widget widget) sync* {
-                        yield widget;
-                        yield const Divider(
-                          height: 32.0,
-                          color: Color.fromRGBO(40, 59, 74, 0.5),
-                          indent: 0.0,
-                          endIndent: 0.0,
-                        );
-                      }).toList()
-                        ..removeLast(),
+                      children:
+                          <Widget>[
+                              LnPaymentAmount(amountSat: amountSat!, hasError: errorMessage.isNotEmpty),
+                              if (_prepareResponse != null &&
+                                  _prepareResponse!.feesSat?.toInt() != 0) ...<Widget>[
+                                LnPaymentFee(
+                                  isCalculatingFees: _isCalculatingFees,
+                                  feesSat: errorMessage.isEmpty ? _prepareResponse?.feesSat?.toInt() : null,
+                                ),
+                              ],
+                              if (widget.lnInvoice.description != null &&
+                                  widget.lnInvoice.description!.isNotEmpty) ...<Widget>[
+                                LnPaymentDescription(metadataText: widget.lnInvoice.description!),
+                              ],
+                            ].expand((Widget widget) sync* {
+                              yield widget;
+                              yield const Divider(
+                                height: 32.0,
+                                color: Color.fromRGBO(40, 59, 74, 0.5),
+                                indent: 0.0,
+                                endIndent: 0.0,
+                              );
+                            }).toList()
+                            ..removeLast(),
                     ),
                   ),
                 ],
@@ -209,28 +193,25 @@ class LnPaymentPageState extends State<LnPaymentPage> {
       bottomNavigationBar: _isLoading
           ? null
           : _lightningLimits == null
-              ? SingleButtonBottomBar(
-                  stickToBottom: true,
-                  text: texts.ln_payment_action_retry,
-                  onPressed: () {
-                    _fetchLightningLimits();
-                  },
-                )
-              : SingleButtonBottomBar(
-                  stickToBottom: true,
-                  text: texts.ln_payment_action_send,
-                  enabled: _prepareResponse != null && errorMessage.isEmpty,
-                  onPressed: () async {
-                    Navigator.pop(context, _prepareResponse);
-                  },
-                ),
+          ? SingleButtonBottomBar(
+              stickToBottom: true,
+              text: texts.ln_payment_action_retry,
+              onPressed: () {
+                _fetchLightningLimits();
+              },
+            )
+          : SingleButtonBottomBar(
+              stickToBottom: true,
+              text: texts.ln_payment_action_send,
+              enabled: _prepareResponse != null && errorMessage.isEmpty,
+              onPressed: () async {
+                Navigator.pop(context, _prepareResponse);
+              },
+            ),
     );
   }
 
-  String? validatePayment({
-    required int amountSat,
-    bool throwError = false,
-  }) {
+  String? validatePayment({required int amountSat, bool throwError = false}) {
     final BreezTranslations texts = context.texts();
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     final CurrencyState currencyState = currencyCubit.state;
@@ -242,9 +223,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
     final int effectiveMinSat = _lightningLimits!.send.minSat.toInt();
     final int effectiveMaxSat = _lightningLimits!.send.maxSat.toInt();
     if (amountSat > effectiveMaxSat) {
-      final String networkLimit = '(${currencyState.bitcoinCurrency.format(
-        effectiveMaxSat,
-      )})';
+      final String networkLimit = '(${currencyState.bitcoinCurrency.format(effectiveMaxSat)})';
       message = throwError
           ? texts.valid_payment_error_exceeds_the_limit(networkLimit)
           : '${texts.lnurl_payment_page_error_exceeds_limit(effectiveMaxSat)} ${currencyState.bitcoinCurrency.displayName}';

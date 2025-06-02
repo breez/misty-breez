@@ -43,9 +43,7 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
     final BreezTranslations texts = context.texts();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(texts.sweep_all_coins_speed),
-      ),
+      appBar: AppBar(title: Text(texts.sweep_all_coins_speed)),
       body: FutureBuilder<List<SendChainSwapFeeOption>>(
         future: _fetchFeeOptionsFuture,
         builder: (BuildContext context, AsyncSnapshot<List<SendChainSwapFeeOption>> snapshot) {
@@ -77,13 +75,13 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
       ),
       bottomNavigationBar:
           (affordableFees.isNotEmpty && selectedFeeIndex >= 0 && selectedFeeIndex < affordableFees.length)
-              ? SafeArea(
-                  child: SendChainSwapButton(
-                    recipientAddress: widget.onchainRecipientAddress,
-                    preparePayOnchainResponse: affordableFees[selectedFeeIndex].preparePayOnchainResponse,
-                  ),
-                )
-              : null,
+          ? SafeArea(
+              child: SendChainSwapButton(
+                recipientAddress: widget.onchainRecipientAddress,
+                preparePayOnchainResponse: affordableFees[selectedFeeIndex].preparePayOnchainResponse,
+              ),
+            )
+          : null,
     );
   }
 
@@ -101,9 +99,8 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
           setState(() {
             affordableFees = feeOptions
                 .where(
-                  (SendChainSwapFeeOption f) => f.isAffordable(
-                    balanceSat: accountState.walletInfo!.balanceSat.toInt(),
-                  ),
+                  (SendChainSwapFeeOption f) =>
+                      f.isAffordable(balanceSat: accountState.walletInfo!.balanceSat.toInt()),
                 )
                 .toList();
             selectedFeeIndex = (affordableFees.length / 2).floor();
@@ -124,19 +121,14 @@ class _SendChainSwapConfirmationPageState extends State<SendChainSwapConfirmatio
 class _ErrorMessage extends StatelessWidget {
   final String message;
 
-  const _ErrorMessage({
-    required this.message,
-  });
+  const _ErrorMessage({required this.message});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40.0),
-        child: Text(
-          message,
-          textAlign: TextAlign.center,
-        ),
+        child: Text(message, textAlign: TextAlign.center),
       ),
     );
   }

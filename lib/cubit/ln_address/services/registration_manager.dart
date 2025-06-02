@@ -46,11 +46,7 @@ class LnUrlRegistrationManager {
   }
 
   /// Updates cached preferences and persists changes.
-  Future<void> _updatePreferences({
-    String? webhookUrl,
-    String? username,
-    bool? isRegistered,
-  }) async {
+  Future<void> _updatePreferences({String? webhookUrl, String? username, bool? isRegistered}) async {
     // Update cache and persist changes in batch
     final List<Future<void>> updates = <Future<void>>[];
 
@@ -289,10 +285,7 @@ class LnUrlRegistrationManager {
   }
 
   /// Unregisters an existing webhook if it exists and differs from the new webhook URL.
-  Future<String?> _unregisterExistingWebhookIfNeeded({
-    required String pubKey,
-    String? newWebhookUrl,
-  }) async {
+  Future<String?> _unregisterExistingWebhookIfNeeded({required String pubKey, String? newWebhookUrl}) async {
     // Use cached webhook URL if available
     final String? existingWebhook = _cachedWebhookUrl ?? await breezPreferences.webhookUrl;
 
@@ -320,10 +313,7 @@ class LnUrlRegistrationManager {
   }
 
   /// Unregisters a webhook.
-  Future<void> _unregisterWebhook({
-    required String pubKey,
-    required String webhookUrl,
-  }) async {
+  Future<void> _unregisterWebhook({required String pubKey, required String webhookUrl}) async {
     if (_logger.isLoggable(Level.FINE)) {
       _logger.fine('Unregistering webhook: $webhookUrl');
     }
@@ -357,10 +347,7 @@ class LnUrlRegistrationManager {
     );
 
     // Batch preference updates to minimize disk writes
-    await _updatePreferences(
-      username: username?.isNotEmpty == true ? username : null,
-      isRegistered: true,
-    );
+    await _updatePreferences(username: username?.isNotEmpty == true ? username : null, isRegistered: true);
 
     if (_logger.isLoggable(Level.INFO)) {
       _logger.info('Successfully registered LNURL Webhook');
@@ -468,10 +455,7 @@ class LnUrlRegistrationManager {
 
       // Batch preference updates into one call
       if (username.isNotEmpty) {
-        await _updatePreferences(
-          username: username,
-          isRegistered: true,
-        );
+        await _updatePreferences(username: username, isRegistered: true);
       }
 
       if (_logger.isLoggable(Level.INFO)) {

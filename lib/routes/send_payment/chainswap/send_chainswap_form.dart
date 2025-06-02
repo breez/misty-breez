@@ -96,12 +96,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
           ),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(
-              height: 32.0,
-              color: Color.fromRGBO(40, 59, 74, 0.5),
-              indent: 0.0,
-              endIndent: 0.0,
-            ),
+            child: Divider(height: 32.0, color: Color.fromRGBO(40, 59, 74, 0.5), indent: 0.0, endIndent: 0.0),
           ),
           WithdrawFundsAmountTextFormField(
             context: context,
@@ -120,9 +115,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             padding: const EdgeInsets.only(top: 12.0),
             child: AutoSizeText(
               texts.invoice_min_payment_limit(
-                widget.bitcoinCurrency.format(
-                  widget.paymentLimits.send.minSat.toInt(),
-                ),
+                widget.bitcoinCurrency.format(widget.paymentLimits.send.minSat.toInt()),
               ),
               style: paymentLimitInformationTextStyle,
               maxLines: 1,
@@ -131,12 +124,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
           ),
           const Padding(
             padding: EdgeInsets.only(top: 8.0),
-            child: Divider(
-              height: 32.0,
-              color: Color.fromRGBO(40, 59, 74, 0.5),
-              indent: 0.0,
-              endIndent: 0.0,
-            ),
+            child: Divider(height: 32.0, color: Color.fromRGBO(40, 59, 74, 0.5), indent: 0.0, endIndent: 0.0),
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
@@ -155,9 +143,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(
-                  accountState.walletInfo!.balanceSat.toInt(),
-                )}',
+                '${texts.available_balance_label} ${currencyState.bitcoinCurrency.format(accountState.walletInfo!.balanceSat.toInt())}',
                 style: const TextStyle(
                   color: Color.fromRGBO(182, 188, 193, 1),
                   fontSize: 16,
@@ -174,25 +160,23 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
                 activeColor: Colors.white,
                 activeTrackColor: themeData.primaryColor,
                 onChanged: (bool value) async {
-                  setState(
-                    () {
-                      widget.onChanged(value);
-                      if (value) {
-                        final String formattedAmount = currencyState.bitcoinCurrency
-                            .format(
-                              accountState.walletInfo!.balanceSat.toInt(),
-                              includeDisplayName: false,
-                              userInput: true,
-                            )
-                            .formatBySatAmountFormFieldFormatter();
-                        setState(() {
-                          widget.amountController.text = formattedAmount;
-                        });
-                      } else {
-                        widget.amountController.text = '';
-                      }
-                    },
-                  );
+                  setState(() {
+                    widget.onChanged(value);
+                    if (value) {
+                      final String formattedAmount = currencyState.bitcoinCurrency
+                          .format(
+                            accountState.walletInfo!.balanceSat.toInt(),
+                            includeDisplayName: false,
+                            userInput: true,
+                          )
+                          .formatBySatAmountFormFieldFormatter();
+                      setState(() {
+                        widget.amountController.text = formattedAmount;
+                      });
+                    } else {
+                      widget.amountController.text = '';
+                    }
+                  });
                 },
               ),
             ),

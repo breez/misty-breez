@@ -25,9 +25,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
 
   final BreezSDKLiquid _breezSdkLiquid;
 
-  PaymentsCubit(
-    this._breezSdkLiquid,
-  ) : super(PaymentsState.initial()) {
+  PaymentsCubit(this._breezSdkLiquid) : super(PaymentsState.initial()) {
     hydrate();
 
     _paymentFiltersStreamController.add(state.paymentFilters);
@@ -58,18 +56,11 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }) {
     return _breezSdkLiquid.paymentEventStream
         .map((PaymentEvent e) => e.payment)
-        .where(
-          paymentFilter,
-        )
-        .listen(
-          (Payment payment) => onData.call(payment),
-          onError: onError,
-        );
+        .where(paymentFilter)
+        .listen((Payment payment) => onData.call(payment), onError: onError);
   }
 
-  Future<PrepareSendResponse> prepareSendPayment({
-    required PrepareSendRequest req,
-  }) async {
+  Future<PrepareSendResponse> prepareSendPayment({required PrepareSendRequest req}) async {
     _logger.info('prepareSendPayment\nPreparing send payment for destination: ${req.destination}');
     try {
       return await _breezSdkLiquid.instance!.prepareSendPayment(req: req);
@@ -96,8 +87,9 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
   }) async {
     _logger.info('prepareReceivePayment\nPreparing receive payment for $payerAmountSat sats');
     try {
-      final ReceiveAmount_Bitcoin? receiveAmount =
-          payerAmountSat != null ? ReceiveAmount_Bitcoin(payerAmountSat: payerAmountSat) : null;
+      final ReceiveAmount_Bitcoin? receiveAmount = payerAmountSat != null
+          ? ReceiveAmount_Bitcoin(payerAmountSat: payerAmountSat)
+          : null;
       final PrepareReceiveRequest req = PrepareReceiveRequest(
         paymentMethod: paymentMethod,
         amount: receiveAmount,
@@ -118,8 +110,10 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
       '${prepareResponse.amount} (sats), fees: ${prepareResponse.feesSat} (sats), description: $description',
     );
     try {
-      final ReceivePaymentRequest req =
-          ReceivePaymentRequest(prepareResponse: prepareResponse, description: description);
+      final ReceivePaymentRequest req = ReceivePaymentRequest(
+        prepareResponse: prepareResponse,
+        description: description,
+      );
       return _breezSdkLiquid.instance!.receivePayment(req: req);
     } catch (e) {
       _logger.severe('receivePayment\nError receiving payment', e);
@@ -127,11 +121,7 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
     }
   }
 
-  void changePaymentFilter({
-    List<PaymentType>? filters,
-    int? fromTimestamp,
-    int? toTimestamp,
-  }) async {
+  void changePaymentFilter({List<PaymentType>? filters, int? fromTimestamp, int? toTimestamp}) async {
     final PaymentFilters newPaymentFilters = state.paymentFilters.copyWith(
       filters: filters,
       fromTimestamp: fromTimestamp,

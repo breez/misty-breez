@@ -55,16 +55,15 @@ class RestoreFormState extends State<RestoreForm> {
                 textInputAction: TextInputAction.next,
                 onSubmitted: (String text) async {
                   final List<String> suggestions = await _getSuggestions(text);
-                  widget.textEditingControllers[itemIndex].text =
-                      suggestions.length == 1 ? suggestions.first : text;
+                  widget.textEditingControllers[itemIndex].text = suggestions.length == 1
+                      ? suggestions.first
+                      : text;
                   if (itemIndex + 1 < focusNodes.length) {
                     focusNodes[itemIndex + 1].requestFocus();
                   }
                 },
                 focusNode: focusNodes[itemIndex],
-                decoration: InputDecoration(
-                  labelText: '${itemIndex + 1}',
-                ),
+                decoration: InputDecoration(labelText: '${itemIndex + 1}'),
                 style: FieldTextStyle.textStyle,
                 onChanged: _processPotentialBackupPhrase,
               ),
@@ -76,28 +75,15 @@ class RestoreFormState extends State<RestoreForm> {
               autoFlipDirection: true,
               suggestionsBoxDecoration: const SuggestionsBoxDecoration(
                 color: Colors.white,
-                constraints: BoxConstraints(
-                  minWidth: 180,
-                  maxWidth: 180,
-                  maxHeight: 180,
-                ),
+                constraints: BoxConstraints(minWidth: 180, maxWidth: 180, maxHeight: 180),
               ),
               itemBuilder: <BuildContext, String>(BuildContext context, dynamic suggestion) {
                 return Container(
                   decoration: const BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        width: 0.5,
-                        color: Color.fromRGBO(5, 93, 235, 1.0),
-                      ),
-                    ),
+                    border: Border(bottom: BorderSide(width: 0.5, color: Color.fromRGBO(5, 93, 235, 1.0))),
                   ),
                   child: ListTile(
-                    title: Text(
-                      suggestion,
-                      overflow: TextOverflow.ellipsis,
-                      style: autoCompleteStyle,
-                    ),
+                    title: Text(suggestion, overflow: TextOverflow.ellipsis, style: autoCompleteStyle),
                   ),
                 );
               },
@@ -135,9 +121,6 @@ class RestoreFormState extends State<RestoreForm> {
   }
 
   void _processPotentialBackupPhrase(String? backupPhrase) {
-    MnemonicUtils.tryPopulateTextFieldsFromText(
-      backupPhrase,
-      widget.textEditingControllers,
-    );
+    MnemonicUtils.tryPopulateTextFieldsFromText(backupPhrase, widget.textEditingControllers);
   }
 }

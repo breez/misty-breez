@@ -42,32 +42,22 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
         children: <Widget>[
           Text(
             widget.payeeName,
-            style: themeData.primaryTextTheme.headlineMedium!.copyWith(
-              fontSize: 18,
-              color: Colors.white,
-            ),
+            style: themeData.primaryTextTheme.headlineMedium!.copyWith(fontSize: 18, color: Colors.white),
             textAlign: TextAlign.center,
           ),
           Text(
             widget.payeeName.isEmpty
                 ? texts.payment_request_dialog_requested
                 : texts.payment_request_dialog_requesting,
-            style: themeData.primaryTextTheme.displaySmall!.copyWith(
-              fontSize: 16,
-              color: Colors.white70,
-            ),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white70),
             textAlign: TextAlign.center,
           ),
           ConstrainedBox(
-            constraints: const BoxConstraints(
-              minWidth: double.infinity,
-            ),
+            constraints: const BoxConstraints(minWidth: double.infinity),
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: balanceAmountTextStyle.copyWith(
-                  color: themeData.colorScheme.onSurface,
-                ),
+                style: balanceAmountTextStyle.copyWith(color: themeData.colorScheme.onSurface),
                 text: currencyState.bitcoinCurrency.format(
                   widget.totalAmount,
                   removeTrailingZeros: true,
@@ -76,9 +66,7 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
                 children: <InlineSpan>[
                   TextSpan(
                     text: ' ${currencyState.bitcoinCurrency.displayName}',
-                    style: balanceCurrencyTextStyle.copyWith(
-                      color: themeData.colorScheme.onSurface,
-                    ),
+                    style: balanceCurrencyTextStyle.copyWith(color: themeData.colorScheme.onSurface),
                   ),
                 ],
               ),
@@ -86,11 +74,7 @@ class _LnPaymentHeaderState extends State<LnPaymentHeader> {
           ),
           if (fiatConversion != null) ...<Widget>[
             AutoSizeText(
-              fiatConversion.format(
-                widget.totalAmount,
-                addCurrencySymbol: false,
-                includeDisplayName: true,
-              ),
+              fiatConversion.format(widget.totalAmount, addCurrencySymbol: false, includeDisplayName: true),
               style: balanceFiatConversionTextStyle.copyWith(
                 fontSize: 18.0,
                 color: themeData.colorScheme.onSurface.withValues(alpha: 0.7),

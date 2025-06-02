@@ -40,10 +40,7 @@ class LnUrlPaymentComment extends StatelessWidget {
             AutoSizeText(
               // TODO(erdemyerebasmaz): Add message to Breez-Translations instead of reusing another value
               texts.payment_details_dialog_share_comment,
-              style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
+              style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
               textAlign: TextAlign.left,
               maxLines: 1,
             ),
@@ -73,9 +70,7 @@ class LnUrlPaymentComment extends StatelessWidget {
         maxLength: maxCommentLength,
         maxLengthEnforcement: MaxLengthEnforcement.enforced,
         decoration: InputDecoration(
-          prefixIconConstraints: BoxConstraints.tight(
-            const Size(16, 56),
-          ),
+          prefixIconConstraints: BoxConstraints.tight(const Size(16, 56)),
           prefixIcon: const SizedBox.shrink(),
           contentPadding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
           border: const OutlineInputBorder(),

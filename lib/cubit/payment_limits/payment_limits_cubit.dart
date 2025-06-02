@@ -34,15 +34,17 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
 
   void _fetchPaymentLimits() {
     if (_breezSdkLiquid.instance != null) {
-      _breezSdkLiquid.getInfoResponseStream.first.then((GetInfoResponse getInfoResponse) {
-        fetchLightningLimits();
-        fetchOnchainLimits();
-      }).timeout(
-        const Duration(seconds: 15),
-        onTimeout: () {
-          emit(state.copyWith(errorMessage: 'Fetching payment network limits timed out.'));
-        },
-      );
+      _breezSdkLiquid.getInfoResponseStream.first
+          .then((GetInfoResponse getInfoResponse) {
+            fetchLightningLimits();
+            fetchOnchainLimits();
+          })
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              emit(state.copyWith(errorMessage: 'Fetching payment network limits timed out.'));
+            },
+          );
     } else {
       emit(state.copyWith(errorMessage: 'Breez SDK instance is not running'));
     }
@@ -58,8 +60,8 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
     emit(state.copyWith(errorMessage: ''));
     if (_breezSdkLiquid.instance != null) {
       try {
-        final LightningPaymentLimitsResponse lightningPaymentLimits =
-            await _breezSdkLiquid.instance!.fetchLightningLimits();
+        final LightningPaymentLimitsResponse lightningPaymentLimits = await _breezSdkLiquid.instance!
+            .fetchLightningLimits();
         emit(state.copyWith(lightningPaymentLimits: lightningPaymentLimits, errorMessage: ''));
         return lightningPaymentLimits;
       } catch (e) {
@@ -78,8 +80,8 @@ class PaymentLimitsCubit extends Cubit<PaymentLimitsState> {
     emit(state.copyWith(errorMessage: ''));
     if (_breezSdkLiquid.instance != null) {
       try {
-        final OnchainPaymentLimitsResponse onchainPaymentLimits =
-            await _breezSdkLiquid.instance!.fetchOnchainLimits();
+        final OnchainPaymentLimitsResponse onchainPaymentLimits = await _breezSdkLiquid.instance!
+            .fetchOnchainLimits();
         emit(state.copyWith(onchainPaymentLimits: onchainPaymentLimits, errorMessage: ''));
         return onchainPaymentLimits;
       } catch (e) {

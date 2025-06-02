@@ -39,8 +39,8 @@ class FeeOptionButton extends StatelessWidget {
           color: !isAffordable
               ? themeData.disabledColor
               : isSelected
-                  ? themeData.primaryColor
-                  : themeData.customData.surfaceBgColor,
+              ? themeData.primaryColor
+              : themeData.customData.surfaceBgColor,
           border: border,
         ),
         child: TextButton(
@@ -52,8 +52,8 @@ class FeeOptionButton extends StatelessWidget {
               color: !isAffordable
                   ? Colors.white.withValues(alpha: .4)
                   : isSelected
-                      ? Colors.white
-                      : Colors.white,
+                  ? Colors.white
+                  : Colors.white,
             ),
             maxLines: 1,
             group: autoSizeGroup,

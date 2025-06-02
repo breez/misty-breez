@@ -62,10 +62,7 @@ class FiatCurrencyListTile extends StatelessWidget {
         }
         onChanged(prefCurrencies);
       },
-      subtitle: Text(
-        subtitle,
-        style: fiatConversionDescriptionStyle,
-      ),
+      subtitle: Text(subtitle, style: fiatConversionDescriptionStyle),
       title: RichText(
         text: TextSpan(
           text: currencyData.id,

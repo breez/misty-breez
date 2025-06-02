@@ -27,9 +27,7 @@ class LnUrlService {
   ///
   /// Returns a [LnUrlWithdrawResult] with the withdrawal operation result
   /// Throws an exception if the operation fails
-  Future<LnUrlWithdrawResult> lnurlWithdraw({
-    required LnUrlWithdrawRequest req,
-  }) async {
+  Future<LnUrlWithdrawResult> lnurlWithdraw({required LnUrlWithdrawRequest req}) async {
     _logger.info('Initiating LNURL withdraw');
 
     try {
@@ -51,9 +49,7 @@ class LnUrlService {
   ///
   /// Returns a [PrepareLnUrlPayResponse] with the prepared payment details
   /// Throws an exception if the preparation fails
-  Future<PrepareLnUrlPayResponse> prepareLnurlPay({
-    required PrepareLnUrlPayRequest req,
-  }) async {
+  Future<PrepareLnUrlPayResponse> prepareLnurlPay({required PrepareLnUrlPayRequest req}) async {
     _logger.info('Preparing LNURL payment');
 
     try {
@@ -75,9 +71,7 @@ class LnUrlService {
   ///
   /// Returns a [LnUrlPayResult] with the payment result
   /// Throws an exception if the payment fails
-  Future<LnUrlPayResult> lnurlPay({
-    required LnUrlPayRequest req,
-  }) async {
+  Future<LnUrlPayResult> lnurlPay({required LnUrlPayRequest req}) async {
     _logger.info('Executing LNURL payment');
 
     try {
@@ -99,9 +93,7 @@ class LnUrlService {
   ///
   /// Returns a [LnUrlCallbackStatus] indicating the auth operation result
   /// Throws an exception if authentication fails
-  Future<LnUrlCallbackStatus> lnurlAuth({
-    required LnUrlAuthRequestData reqData,
-  }) async {
+  Future<LnUrlCallbackStatus> lnurlAuth({required LnUrlAuthRequestData reqData}) async {
     _logger.info('Authenticating with LNURL');
 
     try {

@@ -69,10 +69,7 @@ class WebhookService {
     _logger.info('Generating webhook URL');
 
     try {
-      final List<String> components = await Future.wait(<Future<String>>[
-        _getPlatform(),
-        _getToken(),
-      ]);
+      final List<String> components = await Future.wait(<Future<String>>[_getPlatform(), _getToken()]);
 
       final String platform = components[0];
       final String token = components[1];
@@ -95,12 +92,14 @@ class WebhookService {
         throw RegisterWebhookException('Breez SDK not initialized');
       }
 
-      await sdk.registerWebhook(webhookUrl: webhookUrl).timeout(
-        timeout,
-        onTimeout: () {
-          throw TimeoutException('Webhook registration timed out after ${timeout.inSeconds} seconds');
-        },
-      );
+      await sdk
+          .registerWebhook(webhookUrl: webhookUrl)
+          .timeout(
+            timeout,
+            onTimeout: () {
+              throw TimeoutException('Webhook registration timed out after ${timeout.inSeconds} seconds');
+            },
+          );
     } catch (e, stackTrace) {
       _logger.severe('Failed to register webhook', e, stackTrace);
       throw RegisterWebhookException('Failed to register webhook: $e');

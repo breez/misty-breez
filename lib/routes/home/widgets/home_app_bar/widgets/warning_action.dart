@@ -20,14 +20,8 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
-    _animation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(_animationController!);
+    _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController!);
     _animation!.addListener(() {
       setState(() {});
     });
@@ -50,7 +44,8 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
       padding: EdgeInsets.zero,
       icon: SizedBox(
         width: 45 * _animation!.value,
-        child: widget.iconWidget ??
+        child:
+            widget.iconWidget ??
             SvgPicture.asset(
               'assets/icons/warning.svg',
               colorFilter: ColorFilter.mode(

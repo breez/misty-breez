@@ -12,10 +12,7 @@ class UpdateLnAddressUsernameBottomSheet extends StatefulWidget {
   /// The current Lightning Address
   final String lnAddress;
 
-  const UpdateLnAddressUsernameBottomSheet({
-    required this.lnAddress,
-    super.key,
-  });
+  const UpdateLnAddressUsernameBottomSheet({required this.lnAddress, super.key});
 
   @override
   State<UpdateLnAddressUsernameBottomSheet> createState() => _UpdateLnAddressUsernameBottomSheetState();
@@ -38,7 +35,8 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
         lnAddressState.username ?? (widget.lnAddress.contains('@') ? widget.lnAddress.split('@').first : '');
 
     // First try to get domain from state, fall back to domain from widget.lnAddress & lastly hardcoded value
-    _domain = lnAddressState.domain ??
+    _domain =
+        lnAddressState.domain ??
         (widget.lnAddress.contains('@') ? widget.lnAddress.split('@').last : 'breez.fun');
 
     _usernameController.text = username;
@@ -66,9 +64,7 @@ class _UpdateLnAddressUsernameBottomSheetState extends State<UpdateLnAddressUser
           current.updateStatus.status != previous.updateStatus.status,
       listener: _onUpdateStatusChanged,
       child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -182,10 +178,7 @@ class BottomSheetHandle extends StatelessWidget {
         margin: const EdgeInsets.only(top: 8.0),
         width: 40.0,
         height: 6.5,
-        decoration: BoxDecoration(
-          color: Colors.white24,
-          borderRadius: BorderRadius.circular(50),
-        ),
+        decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(50)),
       ),
     );
   }
@@ -195,10 +188,7 @@ class BottomSheetHandle extends StatelessWidget {
 class BottomSheetTitle extends StatelessWidget {
   final String title;
 
-  const BottomSheetTitle({
-    required this.title,
-    super.key,
-  });
+  const BottomSheetTitle({required this.title, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -207,10 +197,7 @@ class BottomSheetTitle extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Text(
         title,
-        style: themeData.primaryTextTheme.headlineMedium!.copyWith(
-          fontSize: 18.0,
-          color: Colors.white,
-        ),
+        style: themeData.primaryTextTheme.headlineMedium!.copyWith(fontSize: 18.0, color: Colors.white),
         textAlign: TextAlign.left,
       ),
     );
@@ -253,9 +240,7 @@ class UsernameFormField extends StatelessWidget {
               focusNode: focusNode,
               decoration: InputDecoration(
                 labelText: texts.update_ln_address_username_label,
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: themeData.colorScheme.error),
-                ),
+                errorBorder: OutlineInputBorder(borderSide: BorderSide(color: themeData.colorScheme.error)),
                 focusedErrorBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: themeData.colorScheme.error),
                 ),
@@ -264,10 +249,7 @@ class UsernameFormField extends StatelessWidget {
                   color: themeData.colorScheme.error,
                   height: 1.0,
                 ),
-                suffix: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Text('@$domain'),
-                ),
+                suffix: Padding(padding: const EdgeInsets.only(right: 8.0), child: Text('@$domain')),
                 border: const OutlineInputBorder(),
                 errorText: isConflict ? texts.validator_ln_address_username_taken : null,
               ),
@@ -292,20 +274,13 @@ class SubmitButtonSection extends StatelessWidget {
   final String doneText;
   final VoidCallback onPressed;
 
-  const SubmitButtonSection({
-    required this.doneText,
-    required this.onPressed,
-    super.key,
-  });
+  const SubmitButtonSection({required this.doneText, required this.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Align(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 16.0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
         child: BlocBuilder<LnAddressCubit, LnAddressState>(
           buildWhen: (LnAddressState previous, LnAddressState current) =>
               current.updateStatus.status != previous.updateStatus.status,

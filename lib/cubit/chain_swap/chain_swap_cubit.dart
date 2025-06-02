@@ -31,9 +31,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     }
   }
 
-  Future<SendPaymentResponse> payOnchain({
-    required PayOnchainRequest req,
-  }) async {
+  Future<SendPaymentResponse> payOnchain({required PayOnchainRequest req}) async {
     try {
       _logger.info(
         'Paying onchain ${req.address} to ${req.prepareResponse.receiverAmountSat} with fee ${req.prepareResponse.totalFeesSat}',
@@ -78,15 +76,14 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
       List<Future<SendChainSwapFeeOption>>.generate(3, (int index) async {
         final PayAmount payAmount = isDrain
             ? const PayAmount_Drain()
-            : PayAmount_Bitcoin(
-                receiverAmountSat: BigInt.from(amountSat),
-              );
+            : PayAmount_Bitcoin(receiverAmountSat: BigInt.from(amountSat));
         final PreparePayOnchainRequest preparePayOnchainRequest = PreparePayOnchainRequest(
           amount: payAmount,
           feeRateSatPerVbyte: recommendedFeeList[index].toInt(),
         );
-        final PreparePayOnchainResponse preparePayOnchainResponse =
-            await _preparePayOnchain(preparePayOnchainRequest);
+        final PreparePayOnchainResponse preparePayOnchainResponse = await _preparePayOnchain(
+          preparePayOnchainRequest,
+        );
 
         return SendChainSwapFeeOption(
           processingSpeed: ProcessingSpeed.values[index],
@@ -101,9 +98,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
 
   Future<PreparePayOnchainResponse> _preparePayOnchain(PreparePayOnchainRequest req) async {
     try {
-      _logger.info(
-        'Preparing pay onchain for amount: ${req.amount} with fee ${req.feeRateSatPerVbyte}',
-      );
+      _logger.info('Preparing pay onchain for amount: ${req.amount} with fee ${req.feeRateSatPerVbyte}');
       return await _breezSdkLiquid.instance!.preparePayOnchain(req: req);
     } catch (e) {
       _logger.severe('Failed to prepare pay onchain', e);
@@ -111,12 +106,7 @@ class ChainSwapCubit extends Cubit<ChainSwapState> {
     }
   }
 
-  void validateSwap(
-    BigInt amount,
-    bool outgoing,
-    OnchainPaymentLimitsResponse onchainLimits,
-    int balance,
-  ) {
+  void validateSwap(BigInt amount, bool outgoing, OnchainPaymentLimitsResponse onchainLimits, int balance) {
     if (outgoing && amount.toInt() > balance) {
       throw const InsufficientLocalBalanceError();
     }

@@ -18,10 +18,7 @@ class AvailableBalance extends StatelessWidget {
         builder: (BuildContext context, AccountState account) {
           return Row(
             children: <Widget>[
-              Text(
-                texts.available_balance_label,
-                style: textStyle,
-              ),
+              Text(texts.available_balance_label, style: textStyle),
               Padding(
                 padding: const EdgeInsets.only(left: 3.0),
                 child: BlocBuilder<CurrencyCubit, CurrencyState>(

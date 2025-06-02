@@ -8,10 +8,7 @@ import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
-const Set<String> knownPlayServiceErrors = <String>{
-  'SERVICE_NOT_AVAILABLE',
-  'MISSING_INSTANCEID_SERVICE',
-};
+const Set<String> knownPlayServiceErrors = <String>{'SERVICE_NOT_AVAILABLE', 'MISSING_INSTANCEID_SERVICE'};
 
 /// Warning box for LnAddressState errors
 class LnAddressErrorWarningBox extends StatelessWidget {
@@ -28,9 +25,7 @@ class LnAddressErrorWarningBox extends StatelessWidget {
           // Redirect to Lightning Address Page after LnAddressState error is resolved
           Future<void>.microtask(() {
             if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(
-                ReceivePaymentPage.routeName,
-              );
+              Navigator.of(context).pushReplacementNamed(ReceivePaymentPage.routeName);
             }
           });
           return const SizedBox.shrink();
@@ -41,7 +36,8 @@ class LnAddressErrorWarningBox extends StatelessWidget {
           return errorMessage.toLowerCase().contains(e.toLowerCase());
         });
         if (defaultTargetPlatform == TargetPlatform.android && isKnownPlayServiceError) {
-          errorMessage = 'Unable to connect to messaging services. '
+          errorMessage =
+              'Unable to connect to messaging services. '
               'Please check your internet connection and ensure Google services are available on your device.';
         }
 
@@ -62,9 +58,7 @@ class LnAddressErrorWarningBox extends StatelessWidget {
                   : RichText(
                       text: TextSpan(
                         text: errorMessage,
-                        style: themeData.textTheme.bodyLarge?.copyWith(
-                          color: themeData.colorScheme.error,
-                        ),
+                        style: themeData.textTheme.bodyLarge?.copyWith(color: themeData.colorScheme.error),
                         children: <InlineSpan>[
                           TextSpan(
                             text: '\n\nTap here to retry',

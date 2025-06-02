@@ -6,11 +6,7 @@ class RefundItemCardDate extends StatelessWidget {
   final int timestamp;
   final AutoSizeGroup? labelAutoSizeGroup;
 
-  const RefundItemCardDate({
-    required this.timestamp,
-    this.labelAutoSizeGroup,
-    super.key,
-  });
+  const RefundItemCardDate({required this.timestamp, this.labelAutoSizeGroup, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +22,7 @@ class RefundItemCardDate extends StatelessWidget {
           child: AutoSizeText(
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
             'Date:',
-            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-              fontSize: 18.0,
-              color: Colors.white,
-            ),
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,
             group: labelAutoSizeGroup,
@@ -42,10 +35,7 @@ class RefundItemCardDate extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               dateFormatted,
-              style: themeData.primaryTextTheme.displaySmall!.copyWith(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
+              style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 18.0, color: Colors.white),
               textAlign: TextAlign.right,
               maxLines: 1,
             ),

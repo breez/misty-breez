@@ -67,10 +67,7 @@ class KeyboardDoneAction {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         texts.keyboard_done_action,
-                        style: TextStyle(
-                          color: BreezColors.blue[500],
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: BreezColors.blue[500], fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),

@@ -58,11 +58,7 @@ class BreezNavigationDrawer extends StatelessWidget {
   final void Function(String screenName) _onItemSelected;
   final ScrollController _scrollController = ScrollController();
 
-  BreezNavigationDrawer(
-    this._drawerGroupedItems,
-    this._onItemSelected, {
-    super.key,
-  });
+  BreezNavigationDrawer(this._drawerGroupedItems, this._onItemSelected, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +83,10 @@ class BreezNavigationDrawer extends StatelessWidget {
 
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: Theme.of(context).appBarTheme.systemOverlayStyle!.copyWith(
-                systemNavigationBarColor: themeData.customData.surfaceBgColor,
-              ),
+            systemNavigationBarColor: themeData.customData.surfaceBgColor,
+          ),
           child: Theme(
-            data: themeData.copyWith(
-              canvasColor: themeData.customData.surfaceBgColor,
-            ),
+            data: themeData.copyWith(canvasColor: themeData.customData.surfaceBgColor),
             child: Drawer(
               child: Column(
                 children: <Widget>[
@@ -121,22 +115,14 @@ class BreezNavigationDrawer extends StatelessWidget {
   }) {
     List<Widget> groupItems = group.items
         .map(
-          (DrawerItemConfig action) => _actionTile(
-            action,
-            context,
-            action.onItemSelected ?? _onItemSelected,
-          ),
+          (DrawerItemConfig action) => _actionTile(action, context, action.onItemSelected ?? _onItemSelected),
         )
         .toList();
     if (group.groupTitle != null && groupItems.isNotEmpty) {
       groupItems = group.items
           .map(
-            (DrawerItemConfig action) => _actionTile(
-              action,
-              context,
-              action.onItemSelected ?? _onItemSelected,
-              subTile: true,
-            ),
+            (DrawerItemConfig action) =>
+                _actionTile(action, context, action.onItemSelected ?? _onItemSelected, subTile: true),
           )
           .toList();
       groupItems = <Widget>[
@@ -156,10 +142,7 @@ class BreezNavigationDrawer extends StatelessWidget {
     return groupItems;
   }
 
-  Widget _breezDrawerHeader(
-    BuildContext context,
-    UserProfileSettings user,
-  ) {
+  Widget _breezDrawerHeader(BuildContext context, UserProfileSettings user) {
     return Container(
       color: Theme.of(context).customData.navigationDrawerHeaderBgColor,
       child: BreezDrawerHeader(
@@ -169,24 +152,13 @@ class BreezNavigationDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerHeaderContent(
-    UserProfileSettings user,
-    BuildContext context,
-  ) {
+  Widget _buildDrawerHeaderContent(UserProfileSettings user, BuildContext context) {
     final BreezTranslations texts = context.texts();
 
     final List<Widget> drawerHeaderContent = <Widget>[];
     drawerHeaderContent
-      ..add(
-        const SizedBox(height: 42.0),
-      )
-      ..add(
-        Row(
-          children: <Widget>[
-            BreezAvatar(user.avatarURL, radius: 24.0),
-          ],
-        ),
-      )
+      ..add(const SizedBox(height: 42.0))
+      ..add(Row(children: <Widget>[BreezAvatar(user.avatarURL, radius: 24.0)]))
       ..add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,10 +204,7 @@ class NavigationDrawerFooter extends StatelessWidget {
             children: <Widget>[
               SvgPicture.asset(
                 'assets/images/drawer_footer.svg',
-                colorFilter: ColorFilter.mode(
-                  BreezColors.white[500]!,
-                  BlendMode.srcATop,
-                ),
+                colorFilter: ColorFilter.mode(BreezColors.white[500]!, BlendMode.srcATop),
                 height: 39,
                 width: 183,
                 fit: BoxFit.scaleDown,
@@ -251,19 +220,11 @@ class NavigationDrawerFooter extends StatelessWidget {
 class _ListDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.only(left: 8.0, right: 8.0),
-      child: Divider(),
-    );
+    return const Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider());
   }
 }
 
-Widget _actionTile(
-  DrawerItemConfig action,
-  BuildContext context,
-  Function onItemSelected, {
-  bool? subTile,
-}) {
+Widget _actionTile(DrawerItemConfig action, BuildContext context, Function onItemSelected, {bool? subTile}) {
   final ThemeData themeData = Theme.of(context);
   TextStyle itemStyle = drawerItemTextStyle;
 
@@ -273,43 +234,28 @@ Widget _actionTile(
     itemStyle = itemStyle.copyWith(color: color);
   }
   return Padding(
-    padding: EdgeInsets.only(
-      right: subTile != null ? 0.0 : 16.0,
-    ),
+    padding: EdgeInsets.only(right: subTile != null ? 0.0 : 16.0),
     child: Ink(
       decoration: subTile != null
           ? null
           : BoxDecoration(
               color: action.isSelected ? themeData.primaryColorLight : Colors.transparent,
-              borderRadius: const BorderRadius.horizontal(
-                right: Radius.circular(32),
-              ),
+              borderRadius: const BorderRadius.horizontal(right: Radius.circular(32)),
             ),
       child: ListTile(
         key: action.key,
         shape: subTile != null
             ? null
-            : const RoundedRectangleBorder(
-                borderRadius: BorderRadius.horizontal(
-                  right: Radius.circular(32),
-                ),
-              ),
+            : const RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(right: Radius.circular(32))),
         leading: Padding(
           padding: subTile != null
               ? const EdgeInsets.only(left: 28.0)
               : const EdgeInsets.symmetric(horizontal: 8.0),
-          child: ImageIcon(
-            AssetImage(action.icon),
-            size: 26.0,
-            color: color,
-          ),
+          child: ImageIcon(AssetImage(action.icon), size: 26.0, color: color),
         ),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            action.title,
-            style: itemStyle,
-          ),
+          child: Text(action.title, style: itemStyle),
         ),
         trailing: action.switchWidget,
         onTap: action.disabled
@@ -341,45 +287,22 @@ class _ExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final ThemeData expansionTileTheme = themeData.copyWith(
-      dividerColor: themeData.canvasColor,
-    );
+    final ThemeData expansionTileTheme = themeData.copyWith(dividerColor: themeData.canvasColor);
     return Theme(
       data: expansionTileTheme,
       child: ExpansionTile(
         title: Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          child: (icon?.assetName ?? '') == ''
-              ? null
-              : Text(
-                  title,
-                  style: drawerItemTextStyle,
-                ),
+          child: (icon?.assetName ?? '') == '' ? null : Text(title, style: drawerItemTextStyle),
         ),
         initiallyExpanded: isExpanded,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: (icon?.assetName ?? '') == ''
-              ? Text(
-                  title,
-                  style: drawerItemTextStyle.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                )
-              : ImageIcon(
-                  icon,
-                  size: 26.0,
-                  color: Colors.white,
-                ),
+              ? Text(title, style: drawerItemTextStyle.copyWith(fontWeight: FontWeight.w500))
+              : ImageIcon(icon, size: 26.0, color: Colors.white),
         ),
-        children: items
-            .map(
-              (Widget item) => Padding(
-                padding: const EdgeInsets.only(),
-                child: item,
-              ),
-            )
-            .toList(),
+        children: items.map((Widget item) => Padding(padding: const EdgeInsets.only(), child: item)).toList(),
         onExpansionChanged: (bool isExpanded) async {
           final UserProfileCubit userProfileCubit = context.read<UserProfileCubit>();
           userProfileCubit.updateProfileSettings(expandPreferences: isExpanded);

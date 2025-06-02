@@ -14,11 +14,7 @@ class RefundConfirmationPage extends StatefulWidget {
   final int refundAmountSat;
   final RefundParams refundParams;
 
-  const RefundConfirmationPage({
-    required this.refundAmountSat,
-    required this.refundParams,
-    super.key,
-  });
+  const RefundConfirmationPage({required this.refundAmountSat, required this.refundParams, super.key});
 
   @override
   State<RefundConfirmationPage> createState() => _RefundConfirmationPageState();
@@ -41,9 +37,7 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
     final BreezTranslations texts = context.texts();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(texts.sweep_all_coins_speed),
-      ),
+      appBar: AppBar(title: Text(texts.sweep_all_coins_speed)),
       body: FutureBuilder<List<RefundFeeOption>>(
         future: _fetchFeeOptionsFuture,
         builder: (BuildContext context, AsyncSnapshot<List<RefundFeeOption>> snapshot) {
@@ -75,24 +69,22 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
       ),
       bottomNavigationBar:
           (affordableFees.isNotEmpty && selectedFeeIndex >= 0 && selectedFeeIndex < affordableFees.length)
-              ? SafeArea(
-                  child: RefundConfirmationButton(
-                    req: RefundRequest(
-                      feeRateSatPerVbyte: affordableFees[selectedFeeIndex].feeRateSatPerVbyte.toInt(),
-                      refundAddress: widget.refundParams.toAddress,
-                      swapAddress: widget.refundParams.swapAddress,
-                    ),
-                  ),
-                )
-              : null,
+          ? SafeArea(
+              child: RefundConfirmationButton(
+                req: RefundRequest(
+                  feeRateSatPerVbyte: affordableFees[selectedFeeIndex].feeRateSatPerVbyte.toInt(),
+                  refundAddress: widget.refundParams.toAddress,
+                  swapAddress: widget.refundParams.swapAddress,
+                ),
+              ),
+            )
+          : null,
     );
   }
 
   void _fetchRefundFeeOptions() {
     final RefundCubit refundCubit = context.read<RefundCubit>();
-    _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(
-      params: widget.refundParams,
-    );
+    _fetchFeeOptionsFuture = refundCubit.fetchRefundFeeOptions(params: widget.refundParams);
     _fetchFeeOptionsFuture.then(
       (List<RefundFeeOption> feeOptions) {
         if (mounted) {
@@ -101,9 +93,8 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
           setState(() {
             affordableFees = feeOptions
                 .where(
-                  (RefundFeeOption f) => f.isAffordable(
-                    balanceSat: accountState.walletInfo!.balanceSat.toInt(),
-                  ),
+                  (RefundFeeOption f) =>
+                      f.isAffordable(balanceSat: accountState.walletInfo!.balanceSat.toInt()),
                 )
                 .toList();
             selectedFeeIndex = (affordableFees.length / 2).floor();
@@ -124,19 +115,14 @@ class _RefundConfirmationPageState extends State<RefundConfirmationPage> {
 class _ErrorMessage extends StatelessWidget {
   final String message;
 
-  const _ErrorMessage({
-    required this.message,
-  });
+  const _ErrorMessage({required this.message});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40.0),
-        child: Text(
-          message,
-          textAlign: TextAlign.center,
-        ),
+        child: Text(message, textAlign: TextAlign.center),
       ),
     );
   }

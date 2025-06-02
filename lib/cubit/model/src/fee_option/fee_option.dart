@@ -15,10 +15,7 @@ abstract class FeeOption {
   final ProcessingSpeed processingSpeed;
   final BigInt feeRateSatPerVbyte;
 
-  FeeOption({
-    required this.processingSpeed,
-    required this.feeRateSatPerVbyte,
-  });
+  FeeOption({required this.processingSpeed, required this.feeRateSatPerVbyte});
 
   String getDisplayName(BreezTranslations texts) {
     switch (processingSpeed) {

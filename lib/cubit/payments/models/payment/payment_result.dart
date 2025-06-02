@@ -8,10 +8,7 @@ class PaymentResult {
   final Payment? paymentInfo;
   final PaymentResultError? error;
 
-  const PaymentResult({
-    this.paymentInfo,
-    this.error,
-  });
+  const PaymentResult({this.paymentInfo, this.error});
 
   @override
   String toString() {
@@ -35,11 +32,7 @@ class PaymentResultError {
   final String paymentHash;
   final String comment;
 
-  const PaymentResultError({
-    required this.message,
-    required this.paymentHash,
-    required this.comment,
-  });
+  const PaymentResultError({required this.message, required this.paymentHash, required this.comment});
 
   factory PaymentResultError.fromException(String paymentHash, Object? error, {BuildContext? context}) {
     final BreezTranslations texts = context?.texts() ?? getSystemAppLocalizations();

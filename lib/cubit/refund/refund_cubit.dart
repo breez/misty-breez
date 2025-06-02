@@ -22,10 +22,7 @@ class RefundParams {
   final String toAddress;
 
   /// Constructor for RefundParams
-  const RefundParams({
-    required this.swapAddress,
-    required this.toAddress,
-  });
+  const RefundParams({required this.swapAddress, required this.toAddress});
 }
 
 /// Cubit that handles refund operations for failed or expired swaps.
@@ -118,9 +115,7 @@ class RefundCubit extends Cubit<RefundState> {
   /// Fetches refund fee options for a given [params].
   ///
   /// Returns a list of [RefundFeeOption] representing different fee rates.
-  Future<List<RefundFeeOption>> fetchRefundFeeOptions({
-    required RefundParams params,
-  }) async {
+  Future<List<RefundFeeOption>> fetchRefundFeeOptions({required RefundParams params}) async {
     try {
       _logger.info(
         'Fetching refund fee options for swapAddress: ${params.swapAddress}, '
@@ -161,11 +156,8 @@ class RefundCubit extends Cubit<RefundState> {
     try {
       final List<Future<RefundFeeOption>> feeOptionFutures = processingSpeedToFeeMap.entries
           .map(
-            (MapEntry<ProcessingSpeed, BigInt> entry) => _createRefundFeeOption(
-              processingSpeed: entry.key,
-              feeRate: entry.value,
-              params: params,
-            ),
+            (MapEntry<ProcessingSpeed, BigInt> entry) =>
+                _createRefundFeeOption(processingSpeed: entry.key, feeRate: entry.value, params: params),
           )
           .toList();
 

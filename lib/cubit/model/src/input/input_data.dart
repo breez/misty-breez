@@ -4,10 +4,7 @@ class InputData {
   final String data;
   final InputSource source;
 
-  const InputData({
-    required this.data,
-    required this.source,
-  });
+  const InputData({required this.data, required this.source});
 
   @override
   String toString() {

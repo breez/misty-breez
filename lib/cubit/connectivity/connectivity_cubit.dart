@@ -21,11 +21,11 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
 
   void _initializeConnectivityCubit() {
     checkConnectivity();
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
-      (List<ConnectivityResult> connectivityResult) async {
-        _updateConnectivityResult(connectivityResult);
-      },
-    );
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((
+      List<ConnectivityResult> connectivityResult,
+    ) async {
+      _updateConnectivityResult(connectivityResult);
+    });
   }
 
   Future<void> checkConnectivity() async {

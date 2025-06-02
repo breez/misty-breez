@@ -10,11 +10,7 @@ class PaymentDetailsSheetFee extends StatelessWidget {
   final PaymentData paymentData;
   final AutoSizeGroup? labelAutoSizeGroup;
 
-  const PaymentDetailsSheetFee({
-    required this.paymentData,
-    super.key,
-    this.labelAutoSizeGroup,
-  });
+  const PaymentDetailsSheetFee({required this.paymentData, super.key, this.labelAutoSizeGroup});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +23,7 @@ class PaymentDetailsSheetFee extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
             texts.payment_details_sheet_fee_label,
-            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-              fontSize: 18.0,
-              color: Colors.white,
-            ),
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,
             group: labelAutoSizeGroup,

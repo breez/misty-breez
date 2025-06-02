@@ -24,9 +24,7 @@ final ThemeData breezDarkTheme = ThemeData(
   appBarTheme: AppBarTheme(
     centerTitle: false,
     backgroundColor: const Color(0xFF00091c),
-    iconTheme: const IconThemeData(
-      color: Colors.white,
-    ),
+    iconTheme: const IconThemeData(color: Colors.white),
     toolbarTextStyle: toolbarTextStyle,
     titleTextStyle: titleTextStyle,
     elevation: 0.0,
@@ -44,9 +42,7 @@ final ThemeData breezDarkTheme = ThemeData(
     titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
     contentTextStyle: TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),
     backgroundColor: Color.fromRGBO(10, 20, 40, 1),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12.0)),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
   ),
   dividerColor: const Color(0x337aa5eb),
   cardColor: const Color(0xFF121212), // will be replaced with CardTheme.color
@@ -56,10 +52,7 @@ final ThemeData breezDarkTheme = ThemeData(
     titleSmall: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
     headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
     labelLarge: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-    headlineMedium: TextStyle(
-      color: Color(0xffffe685),
-      fontSize: 18.0,
-    ),
+    headlineMedium: TextStyle(color: Color(0xffffe685), fontSize: 18.0),
     titleLarge: TextStyle(
       color: Colors.white,
       fontSize: 14.0,
@@ -159,31 +152,23 @@ final DatePickerThemeData calendarDarkTheme = DatePickerThemeData(
   headerBackgroundColor: const Color(0xFF0085fb),
   headerForegroundColor: Colors.white,
   backgroundColor: const Color.fromRGBO(10, 20, 40, 1),
-  shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(
-      Radius.circular(12.0),
-    ),
-  ),
+  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
   cancelButtonStyle: ButtonStyle(
-    foregroundColor: WidgetStateProperty.resolveWith<Color?>(
-      (Set<WidgetState> states) {
-        if (states.contains(WidgetState.disabled)) {
-          return Colors.white38;
-        }
+    foregroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+      if (states.contains(WidgetState.disabled)) {
+        return Colors.white38;
+      }
 
-        return const Color(0xFF0085fb);
-      },
-    ),
+      return const Color(0xFF0085fb);
+    }),
   ),
   confirmButtonStyle: ButtonStyle(
-    foregroundColor: WidgetStateProperty.resolveWith<Color?>(
-      (Set<WidgetState> states) {
-        if (states.contains(WidgetState.disabled)) {
-          return Colors.white38;
-        }
+    foregroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+      if (states.contains(WidgetState.disabled)) {
+        return Colors.white38;
+      }
 
-        return const Color(0xFF0085fb);
-      },
-    ),
+      return const Color(0xFF0085fb);
+    }),
   ),
 );

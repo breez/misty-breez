@@ -11,11 +11,7 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
   final PaymentData paymentData;
   final AutoSizeGroup? labelAutoSizeGroup;
 
-  const PaymentDetailsSheetRefundTxAmount({
-    required this.paymentData,
-    super.key,
-    this.labelAutoSizeGroup,
-  });
+  const PaymentDetailsSheetRefundTxAmount({required this.paymentData, super.key, this.labelAutoSizeGroup});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +24,7 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: AutoSizeText(
             texts.payment_details_sheet_refund_tx_amount_label,
-            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-              fontSize: 18.0,
-              color: Colors.white,
-            ),
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
             textAlign: TextAlign.left,
             maxLines: 1,
           ),
@@ -45,7 +38,8 @@ class PaymentDetailsSheetRefundTxAmount extends StatelessWidget {
                 int refundTxAmountSat = paymentData.refundTxAmountSat;
                 // Calculate the full refund amount (payment + fee) for pending refunds
                 // or completed refunds where the refund transaction amount is not tracked
-                final bool shouldEstimateRefundAmount = paymentData.status == PaymentState.refundPending ||
+                final bool shouldEstimateRefundAmount =
+                    paymentData.status == PaymentState.refundPending ||
                     (paymentData.isRefunded && paymentData.refundTxAmountSat == 0);
 
                 if (shouldEstimateRefundAmount) {

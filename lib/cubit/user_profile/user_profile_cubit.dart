@@ -21,9 +21,7 @@ final Logger _logger = Logger('UserProfileCubit');
 class UserProfileCubit extends Cubit<UserProfileState> with HydratedMixin<UserProfileState> {
   final BreezPreferences _breezPreferences;
 
-  UserProfileCubit(
-    this._breezPreferences,
-  ) : super(UserProfileState.initial()) {
+  UserProfileCubit(this._breezPreferences) : super(UserProfileState.initial()) {
     hydrate();
 
     _initializeProfile();

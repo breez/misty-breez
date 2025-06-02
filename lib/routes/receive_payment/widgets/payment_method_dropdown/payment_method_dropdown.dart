@@ -29,13 +29,8 @@ class PaymentMethodDropdown extends StatelessWidget {
 
     return PopupMenuButton<PaymentMethod>(
       color: themeData.customData.surfaceBgColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      constraints: const BoxConstraints(
-        minHeight: 48,
-        maxWidth: 180,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      constraints: const BoxConstraints(minHeight: 48, maxWidth: 180),
       elevation: 12.0,
       initialValue: currentPaymentMethod,
       onSelected: (PaymentMethod method) {
@@ -48,39 +43,32 @@ class PaymentMethodDropdown extends StatelessWidget {
       itemBuilder: (BuildContext context) {
         return allMethods
             .where((PaymentMethod method) => method != currentPaymentMethod)
-            .map<PopupMenuItem<PaymentMethod>>(
-          (PaymentMethod method) {
-            return PopupMenuItem<PaymentMethod>(
-              value: method,
-              child: Container(
-                width: min(screenSize.width * 0.5, 168),
-                constraints: const BoxConstraints(
-                  minHeight: 48,
-                  maxWidth: 180,
+            .map<PopupMenuItem<PaymentMethod>>((PaymentMethod method) {
+              return PopupMenuItem<PaymentMethod>(
+                value: method,
+                child: Container(
+                  width: min(screenSize.width * 0.5, 168),
+                  constraints: const BoxConstraints(minHeight: 48, maxWidth: 180),
+                  alignment: Alignment.center,
+                  child: AutoSizeText(
+                    method.displayName.toUpperCase(),
+                    style: themeData.appBarTheme.titleTextStyle,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    minFontSize: MinFontSize(context).minFontSize,
+                    stepGranularity: 0.1,
+                  ),
                 ),
-                alignment: Alignment.center,
-                child: AutoSizeText(
-                  method.displayName.toUpperCase(),
-                  style: themeData.appBarTheme.titleTextStyle,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
-                  stepGranularity: 0.1,
-                ),
-              ),
-            );
-          },
-        ).toList();
+              );
+            })
+            .toList();
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(
-              currentPaymentMethod.displayName.toUpperCase(),
-              style: themeData.appBarTheme.titleTextStyle,
-            ),
+            Text(currentPaymentMethod.displayName.toUpperCase(), style: themeData.appBarTheme.titleTextStyle),
             const SizedBox(width: 4.0),
             const Icon(Icons.arrow_drop_down, color: Colors.white),
           ],

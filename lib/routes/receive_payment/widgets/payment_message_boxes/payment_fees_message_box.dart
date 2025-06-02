@@ -9,10 +9,7 @@ import 'package:misty_breez/utils/utils.dart';
 class PaymentFeesMessageBox extends StatelessWidget {
   final int feesSat;
 
-  const PaymentFeesMessageBox({
-    required this.feesSat,
-    super.key,
-  });
+  const PaymentFeesMessageBox({required this.feesSat, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +30,7 @@ class PaymentFeesMessageBox extends StatelessWidget {
     if (fiatConversion == null) {
       return texts.payment_fees_message(formattedFees);
     } else {
-      return texts.payment_fees_message_with_fiat(
-        formattedFees,
-        fiatConversion.format(feesSat),
-      );
+      return texts.payment_fees_message_with_fiat(formattedFees, fiatConversion.format(feesSat));
     }
   }
 }

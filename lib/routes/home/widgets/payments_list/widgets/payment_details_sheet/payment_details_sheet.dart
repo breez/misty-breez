@@ -14,17 +14,12 @@ final AutoSizeGroup _labelGroup = AutoSizeGroup();
 
 final Logger _logger = Logger('PaymentDetailsSheet');
 
-Future<dynamic> showPaymentDetailsSheet(
-  BuildContext context, {
-  required PaymentData paymentData,
-}) async {
+Future<dynamic> showPaymentDetailsSheet(BuildContext context, {required PaymentData paymentData}) async {
   return await showModalBottomSheet(
     context: context,
     useSafeArea: true,
     isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(24.0)),
-    ),
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
     builder: (BuildContext context) {
       return DraggableScrollableSheet(
         initialChildSize: 1.0,
@@ -32,10 +27,7 @@ Future<dynamic> showPaymentDetailsSheet(
         snap: true,
         snapSizes: <double>[1.0],
         builder: (BuildContext context, ScrollController scrollController) {
-          return PaymentDetailsSheet(
-            paymentData: paymentData,
-            scrollController: scrollController,
-          );
+          return PaymentDetailsSheet(paymentData: paymentData, scrollController: scrollController);
         },
       );
     },
@@ -46,11 +38,7 @@ class PaymentDetailsSheet extends StatelessWidget {
   final PaymentData paymentData;
   final ScrollController scrollController;
 
-  PaymentDetailsSheet({
-    required this.paymentData,
-    required this.scrollController,
-    super.key,
-  }) {
+  PaymentDetailsSheet({required this.paymentData, required this.scrollController, super.key}) {
     _logger.info('PaymentDetailsSheet for payment: $paymentData');
   }
 
@@ -86,7 +74,8 @@ class PaymentDetailsSheet extends StatelessWidget {
       orElse: () => '',
     );
 
-    final String bip353Address = paymentData.details.map(
+    final String bip353Address =
+        paymentData.details.map(
           lightning: (PaymentDetails_Lightning details) => details.bip353Address,
           liquid: (PaymentDetails_Liquid details) => details.bip353Address,
           orElse: () => null,
@@ -105,16 +94,16 @@ class PaymentDetailsSheet extends StatelessWidget {
     final (
       String lnurlPaySuccessActionDescription,
       String lnurlPaySuccessActionMessage,
-      String lnurlPaySuccessActionUrl
+      String lnurlPaySuccessActionUrl,
     ) = switch (lnurlInfo?.lnurlPaySuccessAction) {
       SuccessActionProcessed_Aes(result: final AesSuccessActionDataResult result) => switch (result) {
-          AesSuccessActionDataResult_Decrypted(data: final AesSuccessActionDataDecrypted data) => (
-              data.description,
-              data.plaintext,
-              ''
-            ),
-          AesSuccessActionDataResult_ErrorStatus() => ('', '', ''),
-        },
+        AesSuccessActionDataResult_Decrypted(data: final AesSuccessActionDataDecrypted data) => (
+          data.description,
+          data.plaintext,
+          '',
+        ),
+        AesSuccessActionDataResult_ErrorStatus() => ('', '', ''),
+      },
       SuccessActionProcessed_Message(data: final MessageSuccessActionData data) => ('', data.message, ''),
       SuccessActionProcessed_Url(data: final UrlSuccessActionData data) => (data.description, '', data.url),
       null => ('', '', ''),
@@ -128,9 +117,7 @@ class PaymentDetailsSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height - kToolbarHeight,
       width: MediaQuery.of(context).size.width,
       decoration: ShapeDecoration(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
         color: themeData.canvasColor,
       ),
       child: SingleChildScrollView(
@@ -154,107 +141,99 @@ class PaymentDetailsSheet extends StatelessWidget {
                 ),
                 Container(
                   decoration: ShapeDecoration(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                     color: themeData.customData.surfaceBgColor,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
                   child: Column(
-                    children: <Widget>[
-                      PaymentDetailsSheetAmount(
-                        paymentData: paymentData,
-                        labelAutoSizeGroup: _labelGroup,
-                      ),
-                      PaymentDetailsSheetFee(
-                        paymentData: paymentData,
-                        labelAutoSizeGroup: _labelGroup,
-                      ),
-                      if (paymentData.isRefunded ||
-                          paymentData.status == PaymentState.refundPending) ...<Widget>[
-                        PaymentDetailsSheetRefundTxAmount(
-                          paymentData: paymentData,
-                          labelAutoSizeGroup: _labelGroup,
-                        ),
-                      ],
-                      PaymentDetailsSheetDate(
-                        paymentData: paymentData,
-                        labelAutoSizeGroup: _labelGroup,
-                      ),
-                      if (paymentData.status == PaymentState.pending && expiryDate != null) ...<Widget>[
-                        PaymentDetailsSheetExpiry(
-                          expiryDate: expiryDate,
-                          labelAutoSizeGroup: _labelGroup,
-                        ),
-                      ],
-                      if (bip353Address.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetBip353Address(bip353Address: bip353Address),
-                      ],
-                      if (lnAddress.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetLnUrlLnAddress(lnAddress: lnAddress),
-                      ],
-                      if (lnurlPayComment.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetLnUrlPayComment(payComment: lnurlPayComment),
-                      ],
-                      if (paymentData.status == PaymentState.complete) ...<Widget>[
-                        if (lnurlPaySuccessActionDescription.isNotEmpty) ...<Widget>[
-                          PaymentDetailsSheetLnUrlPaySuccessDescription(
-                            paySuccessDescription: lnurlPaySuccessActionDescription,
-                          ),
-                        ],
-                        if (lnurlPaySuccessActionMessage.isNotEmpty) ...<Widget>[
-                          PaymentDetailsSheetLnUrlPaySuccessMessage(
-                            paySuccessMessage: lnurlPaySuccessActionMessage,
-                          ),
-                        ],
-                        if (lnurlPaySuccessActionUrl.isNotEmpty) ...<Widget>[
-                          PaymentDetailsSheetLnUrlPaySuccessUrl(paySuccessUrl: lnurlPaySuccessActionUrl),
-                        ],
-                      ],
-                      if (lnurlPayDomain.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetLnUrlPayDomain(payDomain: lnurlPayDomain),
-                      ],
-                      if (invoice != null && invoice.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetInvoice(invoice: invoice),
-                      ],
-                      if (paymentPreimage.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetPreimage(
-                          invoice: invoice,
-                          paymentPreimage: paymentPreimage,
-                        ),
-                      ],
-                      if (destinationPubkey.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetDestinationPubkey(destinationPubkey: destinationPubkey),
-                      ],
-                      if (paymentData.txId.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetTxId(
-                          txId: paymentData.txId,
-                          unblindingData: paymentData.unblindingData,
-                        ),
-                      ],
-                      if (claimTxId.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetTxId(
-                          txId: claimTxId,
-                          unblindingData: paymentData.unblindingData,
-                          isBtcTx: paymentData.details is PaymentDetails_Bitcoin &&
-                              paymentData.paymentType == PaymentType.send,
-                        ),
-                      ],
-                      if (swapId.isNotEmpty) ...<Widget>[
-                        PaymentDetailsSheetSwapId(swapId: swapId),
-                      ],
-                    ].expand((Widget widget) sync* {
-                      yield widget;
-                      yield const Divider(
-                        height: 32.0,
-                        color: Color.fromRGBO(40, 59, 74, 0.5),
-                        indent: 0.0,
-                        endIndent: 0.0,
-                      );
-                    }).toList()
-                      ..removeLast(),
+                    children:
+                        <Widget>[
+                            PaymentDetailsSheetAmount(
+                              paymentData: paymentData,
+                              labelAutoSizeGroup: _labelGroup,
+                            ),
+                            PaymentDetailsSheetFee(paymentData: paymentData, labelAutoSizeGroup: _labelGroup),
+                            if (paymentData.isRefunded ||
+                                paymentData.status == PaymentState.refundPending) ...<Widget>[
+                              PaymentDetailsSheetRefundTxAmount(
+                                paymentData: paymentData,
+                                labelAutoSizeGroup: _labelGroup,
+                              ),
+                            ],
+                            PaymentDetailsSheetDate(
+                              paymentData: paymentData,
+                              labelAutoSizeGroup: _labelGroup,
+                            ),
+                            if (paymentData.status == PaymentState.pending && expiryDate != null) ...<Widget>[
+                              PaymentDetailsSheetExpiry(
+                                expiryDate: expiryDate,
+                                labelAutoSizeGroup: _labelGroup,
+                              ),
+                            ],
+                            if (bip353Address.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetBip353Address(bip353Address: bip353Address),
+                            ],
+                            if (lnAddress.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetLnUrlLnAddress(lnAddress: lnAddress),
+                            ],
+                            if (lnurlPayComment.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetLnUrlPayComment(payComment: lnurlPayComment),
+                            ],
+                            if (paymentData.status == PaymentState.complete) ...<Widget>[
+                              if (lnurlPaySuccessActionDescription.isNotEmpty) ...<Widget>[
+                                PaymentDetailsSheetLnUrlPaySuccessDescription(
+                                  paySuccessDescription: lnurlPaySuccessActionDescription,
+                                ),
+                              ],
+                              if (lnurlPaySuccessActionMessage.isNotEmpty) ...<Widget>[
+                                PaymentDetailsSheetLnUrlPaySuccessMessage(
+                                  paySuccessMessage: lnurlPaySuccessActionMessage,
+                                ),
+                              ],
+                              if (lnurlPaySuccessActionUrl.isNotEmpty) ...<Widget>[
+                                PaymentDetailsSheetLnUrlPaySuccessUrl(
+                                  paySuccessUrl: lnurlPaySuccessActionUrl,
+                                ),
+                              ],
+                            ],
+                            if (lnurlPayDomain.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetLnUrlPayDomain(payDomain: lnurlPayDomain),
+                            ],
+                            if (invoice != null && invoice.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetInvoice(invoice: invoice),
+                            ],
+                            if (paymentPreimage.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetPreimage(invoice: invoice, paymentPreimage: paymentPreimage),
+                            ],
+                            if (destinationPubkey.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetDestinationPubkey(destinationPubkey: destinationPubkey),
+                            ],
+                            if (paymentData.txId.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetTxId(
+                                txId: paymentData.txId,
+                                unblindingData: paymentData.unblindingData,
+                              ),
+                            ],
+                            if (claimTxId.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetTxId(
+                                txId: claimTxId,
+                                unblindingData: paymentData.unblindingData,
+                                isBtcTx:
+                                    paymentData.details is PaymentDetails_Bitcoin &&
+                                    paymentData.paymentType == PaymentType.send,
+                              ),
+                            ],
+                            if (swapId.isNotEmpty) ...<Widget>[PaymentDetailsSheetSwapId(swapId: swapId)],
+                          ].expand((Widget widget) sync* {
+                            yield widget;
+                            yield const Divider(
+                              height: 32.0,
+                              color: Color.fromRGBO(40, 59, 74, 0.5),
+                              indent: 0.0,
+                              endIndent: 0.0,
+                            );
+                          }).toList()
+                          ..removeLast(),
                   ),
                 ),
               ],

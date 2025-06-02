@@ -152,10 +152,7 @@ class WalletArchiveService {
   ///
   /// [encoder] The zip encoder to which the file will be added
   /// [fingerprint] The fingerprint of the wallet
-  static Future<void> _addStorageFileToZip(
-    ZipFileEncoder encoder,
-    String fingerprint,
-  ) async {
+  static Future<void> _addStorageFileToZip(ZipFileEncoder encoder, String fingerprint) async {
     final String storageFilePath = await _getStorageFilePath(fingerprint);
     _logger.info('Adding storage file: $storageFilePath');
 

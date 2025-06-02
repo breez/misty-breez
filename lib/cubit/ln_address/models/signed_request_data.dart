@@ -9,8 +9,5 @@ class SignedRequestData {
   final String signature;
 
   /// Creates a new SignedRequestData instance.
-  SignedRequestData({
-    required this.timestamp,
-    required this.signature,
-  });
+  SignedRequestData({required this.timestamp, required this.signature});
 }

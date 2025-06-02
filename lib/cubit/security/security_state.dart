@@ -36,11 +36,8 @@ class ValidatePinResult {
   /// [success] Whether the validation succeeded
   /// [clearOnSuccess] Whether to clear the PIN field after success
   /// [errorMessage] Error message to display if validation failed
-  const ValidatePinResult(
-    this.success, {
-    this.clearOnSuccess = false,
-    this.errorMessage,
-  }) : assert(success || errorMessage != null, 'errorMessage must be provided if success is false');
+  const ValidatePinResult(this.success, {this.clearOnSuccess = false, this.errorMessage})
+    : assert(success || errorMessage != null, 'errorMessage must be provided if success is false');
 }
 
 /// Represents the type of biometric authentication available on the device
@@ -137,13 +134,13 @@ class SecurityState {
 
   /// Creates a default initial state
   const SecurityState.initial()
-      : this(
-          pinStatus: PinStatus.initial,
-          autoLockTimeout: const Duration(seconds: _kDefaultLockTimeout),
-          biometricType: BiometricType.none,
-          lockState: LockState.initial,
-          mnemonicStatus: MnemonicStatus.initial,
-        );
+    : this(
+        pinStatus: PinStatus.initial,
+        autoLockTimeout: const Duration(seconds: _kDefaultLockTimeout),
+        biometricType: BiometricType.none,
+        lockState: LockState.initial,
+        mnemonicStatus: MnemonicStatus.initial,
+      );
 
   /// Creates a new SecurityState with specified fields updated
   SecurityState copyWith({
@@ -176,8 +173,8 @@ class SecurityState {
       final int timeoutSeconds = json['autoLockTimeout'] is int
           ? json['autoLockTimeout'] as int
           : json['autoLockTimeout'] is String
-              ? int.tryParse(json['autoLockTimeout'] as String) ?? _kDefaultLockTimeout
-              : _kDefaultLockTimeout;
+          ? int.tryParse(json['autoLockTimeout'] as String) ?? _kDefaultLockTimeout
+          : _kDefaultLockTimeout;
 
       final BiometricType biometricType = parseEnum(
         value: json['biometricType'],
@@ -212,12 +209,12 @@ class SecurityState {
 
   /// Converts the state to JSON for persistence
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'pinStatus': pinStatus.name,
-        'autoLockTimeout': autoLockTimeout.inSeconds,
-        'biometricType': biometricType.name,
-        'lockState': lockState.name,
-        'mnemonicStatus': mnemonicStatus.name,
-      };
+    'pinStatus': pinStatus.name,
+    'autoLockTimeout': autoLockTimeout.inSeconds,
+    'biometricType': biometricType.name,
+    'lockState': lockState.name,
+    'mnemonicStatus': mnemonicStatus.name,
+  };
 
   @override
   String toString() => jsonEncode(toJson());
@@ -236,11 +233,5 @@ class SecurityState {
   }
 
   @override
-  int get hashCode => Object.hash(
-        pinStatus,
-        autoLockTimeout,
-        biometricType,
-        lockState,
-        mnemonicStatus,
-      );
+  int get hashCode => Object.hash(pinStatus, autoLockTimeout, biometricType, lockState, mnemonicStatus);
 }

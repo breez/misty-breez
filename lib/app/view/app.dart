@@ -15,11 +15,7 @@ class App extends StatelessWidget {
   final ServiceInjector injector;
   final SdkConnectivityCubit sdkConnectivityCubit;
 
-  const App({
-    required this.injector,
-    required this.sdkConnectivityCubit,
-    super.key,
-  });
+  const App({required this.injector, required this.sdkConnectivityCubit, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +27,12 @@ class App extends StatelessWidget {
           lazy: false,
           create: (BuildContext context) => AccountCubit(injector.breezSdkLiquid),
         ),
-        BlocProvider<PaymentsCubit>(
-          create: (BuildContext context) => PaymentsCubit(injector.breezSdkLiquid),
-        ),
-        BlocProvider<SdkConnectivityCubit>(
-          create: (BuildContext context) => sdkConnectivityCubit,
-        ),
-        BlocProvider<RefundCubit>(
-          create: (BuildContext context) => RefundCubit(injector.breezSdkLiquid),
-        ),
-        BlocProvider<ConnectivityCubit>(
-          create: (BuildContext context) => ConnectivityCubit(),
-        ),
+        BlocProvider<PaymentsCubit>(create: (BuildContext context) => PaymentsCubit(injector.breezSdkLiquid)),
+        BlocProvider<SdkConnectivityCubit>(create: (BuildContext context) => sdkConnectivityCubit),
+        BlocProvider<RefundCubit>(create: (BuildContext context) => RefundCubit(injector.breezSdkLiquid)),
+        BlocProvider<ConnectivityCubit>(create: (BuildContext context) => ConnectivityCubit()),
         BlocProvider<InputCubit>(
-          create: (BuildContext context) => InputCubit(
-            injector.breezSdkLiquid,
-            injector.lightningLinks,
-          ),
+          create: (BuildContext context) => InputCubit(injector.breezSdkLiquid, injector.lightningLinks),
         ),
         BlocProvider<UserProfileCubit>(
           create: (BuildContext context) => UserProfileCubit(injector.breezPreferences),
@@ -55,21 +40,13 @@ class App extends StatelessWidget {
         BlocProvider<LnAddressCubit>(
           create: (BuildContext context) => LnAddressCubitFactory.create(injector, permissionsCubit),
         ),
-        BlocProvider<CurrencyCubit>(
-          create: (BuildContext context) => CurrencyCubit(injector.breezSdkLiquid),
-        ),
-        BlocProvider<SecurityCubit>(
-          create: (BuildContext context) => SecurityCubit(injector.keychain),
-        ),
-        BlocProvider<BackupCubit>(
-          create: (BuildContext context) => BackupCubit(injector.breezSdkLiquid),
-        ),
+        BlocProvider<CurrencyCubit>(create: (BuildContext context) => CurrencyCubit(injector.breezSdkLiquid)),
+        BlocProvider<SecurityCubit>(create: (BuildContext context) => SecurityCubit(injector.keychain)),
+        BlocProvider<BackupCubit>(create: (BuildContext context) => BackupCubit(injector.breezSdkLiquid)),
         BlocProvider<ChainSwapCubit>(
           create: (BuildContext context) => ChainSwapCubit(injector.breezSdkLiquid),
         ),
-        BlocProvider<PermissionsCubit>(
-          create: (BuildContext context) => permissionsCubit,
-        ),
+        BlocProvider<PermissionsCubit>(create: (BuildContext context) => permissionsCubit),
       ],
       child: Provider<LnUrlService>(
         create: (BuildContext context) => LnUrlService(injector.breezSdkLiquid),
@@ -130,12 +107,10 @@ class _AppViewState extends State<AppView> {
                     initialRoute: securityState.pinStatus == PinStatus.enabled
                         ? LockScreen.routeName
                         : !isOnboardingComplete
-                            ? SplashPage.routeName
-                            : Home.routeName,
-                    onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
-                      settings: settings,
-                      homeNavigatorKey: _homeNavigatorKey,
-                    ),
+                        ? SplashPage.routeName
+                        : Home.routeName,
+                    onGenerateRoute: (RouteSettings settings) =>
+                        onGenerateRoute(settings: settings, homeNavigatorKey: _homeNavigatorKey),
                   );
                 },
               );

@@ -21,22 +21,16 @@ Route<dynamic>? onGenerateRoute({
         settings: settings,
       );
     case SplashPage.routeName:
-      return FadeInRoute<void>(
-        builder: (BuildContext _) => const SplashPage(),
-        settings: settings,
-      );
+      return FadeInRoute<void>(builder: (BuildContext _) => const SplashPage(), settings: settings);
     case LockScreen.routeName:
       return NoTransitionRoute<void>(
-        builder: (BuildContext _) => const LockScreen(
-          authorizedAction: AuthorizedAction.launchHome,
-        ),
+        builder: (BuildContext _) => const LockScreen(authorizedAction: AuthorizedAction.launchHome),
         settings: settings,
       );
     case EnterMnemonicsPage.routeName:
       return FadeInRoute<String>(
-        builder: (BuildContext _) => EnterMnemonicsPage(
-          arguments: settings.arguments as EnterMnemonicsPageArguments,
-        ),
+        builder: (BuildContext _) =>
+            EnterMnemonicsPage(arguments: settings.arguments as EnterMnemonicsPageArguments),
         settings: settings,
       );
     case Home.routeName:
@@ -50,10 +44,7 @@ Route<dynamic>? onGenerateRoute({
               _logger.info('New inner route: ${settings.name}');
               switch (settings.name) {
                 case Home.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) => const Home(),
-                    settings: settings,
-                  );
+                  return FadeInRoute<void>(builder: (BuildContext _) => const Home(), settings: settings);
                 case ReceivePaymentPage.routeName:
                   return FadeInRoute<void>(
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
@@ -90,9 +81,7 @@ Route<dynamic>? onGenerateRoute({
                   );
                 case RefundPage.routeName:
                   return FadeInRoute<void>(
-                    builder: (BuildContext _) => RefundPage(
-                      swapInfo: settings.arguments as RefundableSwap,
-                    ),
+                    builder: (BuildContext _) => RefundPage(swapInfo: settings.arguments as RefundableSwap),
                     settings: settings,
                   );
                 case EnterPaymentInfoPage.routeName:
@@ -104,9 +93,7 @@ Route<dynamic>? onGenerateRoute({
                   return FadeInRoute<void>(
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: SendChainSwapPage(
-                        btcAddressData: settings.arguments as BitcoinAddressData?,
-                      ),
+                      child: SendChainSwapPage(btcAddressData: settings.arguments as BitcoinAddressData?),
                     ),
                     settings: settings,
                   );
@@ -114,9 +101,7 @@ Route<dynamic>? onGenerateRoute({
                   return FadeInRoute<PrepareSendResponse?>(
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: LnPaymentPage(
-                        lnInvoice: settings.arguments as LNInvoice,
-                      ),
+                      child: LnPaymentPage(lnInvoice: settings.arguments as LNInvoice),
                     ),
                     settings: settings,
                   );
@@ -147,16 +132,14 @@ Route<dynamic>? onGenerateRoute({
                   );
                 case SecuritySettings.routeName:
                   return FadeInRoute<void>(
-                    builder: (BuildContext _) => const SecuredPage<SecuritySettings>(
-                      securedWidget: SecuritySettings(),
-                    ),
+                    builder: (BuildContext _) =>
+                        const SecuredPage<SecuritySettings>(securedWidget: SecuritySettings()),
                     settings: settings,
                   );
                 case MnemonicsConfirmationPage.routeName:
                   return FadeInRoute<void>(
-                    builder: (BuildContext _) => MnemonicsConfirmationPage(
-                      mnemonics: settings.arguments as String,
-                    ),
+                    builder: (BuildContext _) =>
+                        MnemonicsConfirmationPage(mnemonics: settings.arguments as String),
                     settings: settings,
                   );
                 case DevelopersView.routeName:

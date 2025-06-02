@@ -23,9 +23,7 @@ class PaymentLimitsMessageBox extends StatelessWidget {
           return ScrollableErrorMessageWidget(
             title: texts.payment_limits_generic_error_title,
             padding: const EdgeInsets.symmetric(vertical: 20),
-            message: texts.reverse_swap_upstream_generic_error_message(
-              snapshot.errorMessage,
-            ),
+            message: texts.reverse_swap_upstream_generic_error_message(snapshot.errorMessage),
           );
         }
         if (snapshot.lightningPaymentLimits == null) {
@@ -35,10 +33,7 @@ class PaymentLimitsMessageBox extends StatelessWidget {
         final Limits receivePaymentLimits = snapshot.lightningPaymentLimits!.receive;
         final String limitsMessage = _formatLimitsMessage(context, receivePaymentLimits);
 
-        return PaymentInfoMessageBox(
-          message: limitsMessage,
-          linkUrl: feeInfoUrl,
-        );
+        return PaymentInfoMessageBox(message: limitsMessage, linkUrl: feeInfoUrl);
       },
     );
   }

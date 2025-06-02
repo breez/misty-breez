@@ -47,33 +47,18 @@ class _RefundFormState extends State<RefundForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          BitcoinAddressTextFormField(
-            controller: widget.addressController,
-            validatorHolder: validatorHolder,
-          ),
+          BitcoinAddressTextFormField(controller: widget.addressController, validatorHolder: validatorHolder),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(
-              height: 32.0,
-              color: Color.fromRGBO(40, 59, 74, 0.5),
-              indent: 0.0,
-              endIndent: 0.0,
-            ),
+            child: Divider(height: 32.0, color: Color.fromRGBO(40, 59, 74, 0.5), indent: 0.0, endIndent: 0.0),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: RefundFormRefundTxAmount(
-              refundTxSat: widget.swapInfo.amountSat.toInt(),
-            ),
+            child: RefundFormRefundTxAmount(refundTxSat: widget.swapInfo.amountSat.toInt()),
           ),
           const Padding(
             padding: EdgeInsets.only(top: 8.0),
-            child: Divider(
-              height: 32.0,
-              color: Color.fromRGBO(40, 59, 74, 0.5),
-              indent: 0.0,
-              endIndent: 0.0,
-            ),
+            child: Divider(height: 32.0, color: Color.fromRGBO(40, 59, 74, 0.5), indent: 0.0, endIndent: 0.0),
           ),
           // Original transaction address
           ShareablePaymentRow(

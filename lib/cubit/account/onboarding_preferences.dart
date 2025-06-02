@@ -18,9 +18,7 @@ class OnboardingPreferences {
           _logger.info('Saved isOnboardingComplete to SharedPreferences successfully.');
           return;
         } else {
-          throw Exception(
-            'Failed to save isOnboardingComplete to SharedPreferences on attempt $attempt.',
-          );
+          throw Exception('Failed to save isOnboardingComplete to SharedPreferences on attempt $attempt.');
         }
       } catch (e, stackTrace) {
         attempt++;

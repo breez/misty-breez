@@ -12,11 +12,7 @@ class AccountPage extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
 
-  const AccountPage(
-    this.firstPaymentItemKey,
-    this.scrollController, {
-    super.key,
-  });
+  const AccountPage(this.firstPaymentItemKey, this.scrollController, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +29,7 @@ class AccountPage extends StatelessWidget {
                 final List<Widget> slivers = <Widget>[];
 
                 slivers.add(
-                  const SliverPersistentHeader(
-                    delegate: WalletDashboardHeaderDelegate(),
-                    pinned: true,
-                  ),
+                  const SliverPersistentHeader(delegate: WalletDashboardHeaderDelegate(), pinned: true),
                 );
 
                 final bool showPaymentsList = filteredPayments.isNotEmpty;
@@ -134,10 +127,7 @@ class AccountPage extends StatelessWidget {
                           !(accountState.isRestoring && nonFilteredPayments.isEmpty)) ...<Widget>[
                         CustomPaint(painter: BubblePainter(context)),
                       ],
-                      CustomScrollView(
-                        controller: scrollController,
-                        slivers: slivers,
-                      ),
+                      CustomScrollView(controller: scrollController, slivers: slivers),
                     ],
                   ),
                 );
@@ -149,11 +139,7 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  double _bottomPlaceholderSpace(
-    BuildContext context,
-    bool hasDateFilters,
-    int paymentsSize,
-  ) {
+  double _bottomPlaceholderSpace(BuildContext context, bool hasDateFilters, int paymentsSize) {
     if (paymentsSize == 0) {
       return 0.0;
     }

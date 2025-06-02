@@ -8,10 +8,6 @@ class CenteredLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    return Center(
-      child: Loader(
-        color: color ?? themeData.primaryColor.withValues(alpha: .5),
-      ),
-    );
+    return Center(child: Loader(color: color ?? themeData.primaryColor.withValues(alpha: .5)));
   }
 }

@@ -25,15 +25,13 @@ class HomeDrawer extends StatelessWidget {
             return BreezNavigationDrawer(
               <DrawerItemConfigGroup>[
                 if (refundState.hasRefundables) ...<DrawerItemConfigGroup>[
-                  DrawerItemConfigGroup(
-                    <DrawerItemConfig>[
-                      DrawerItemConfig(
-                        GetRefundPage.routeName,
-                        texts.home_drawer_item_title_get_refund,
-                        'assets/icons/get_refund.png',
-                      ),
-                    ],
-                  ),
+                  DrawerItemConfigGroup(<DrawerItemConfig>[
+                    DrawerItemConfig(
+                      GetRefundPage.routeName,
+                      texts.home_drawer_item_title_get_refund,
+                      'assets/icons/get_refund.png',
+                    ),
+                  ]),
                 ],
                 DrawerItemConfigGroup(<DrawerItemConfig>[
                   DrawerItemConfig(
@@ -70,13 +68,11 @@ class HomeDrawer extends StatelessWidget {
                 ),
               ],
               (String routeName) {
-                Navigator.of(context).pushNamed(routeName).then(
-                  (Object? message) {
-                    if (message != null && message is String && context.mounted) {
-                      showFlushbar(context, message: message);
-                    }
-                  },
-                );
+                Navigator.of(context).pushNamed(routeName).then((Object? message) {
+                  if (message != null && message is String && context.mounted) {
+                    showFlushbar(context, message: message);
+                  }
+                });
               },
             );
           },

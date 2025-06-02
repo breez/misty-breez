@@ -35,14 +35,12 @@ class _BalanceTextState extends State<BalanceText> {
 
     return TextButton(
       style: ButtonStyle(
-        overlayColor: WidgetStateProperty.resolveWith<Color?>(
-          (Set<WidgetState> states) {
-            if (<WidgetState>{WidgetState.focused, WidgetState.hovered}.any(states.contains)) {
-              return themeData.customData.paymentListBgColor;
-            }
-            return null;
-          },
-        ),
+        overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+          if (<WidgetState>{WidgetState.focused, WidgetState.hovered}.any(states.contains)) {
+            return themeData.customData.paymentListBgColor;
+          }
+          return null;
+        }),
       ),
       onPressed: () async => await _changeBtcCurrency(context),
       child: widget.hiddenBalance
@@ -88,9 +86,7 @@ class _BalanceTextState extends State<BalanceText> {
       return;
     }
     final List<BitcoinCurrency> list = BitcoinCurrency.currencies;
-    final int index = list.indexOf(
-      BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker),
-    );
+    final int index = list.indexOf(BitcoinCurrency.fromTickerSymbol(currencyState.bitcoinTicker));
     final int nextCurrencyIndex = (index + 1) % list.length;
     if (nextCurrencyIndex == 1) {
       userProfileCubit.updateProfileSettings(hideBalance: true);

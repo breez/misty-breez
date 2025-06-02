@@ -4,8 +4,10 @@ class BitcoinCurrency extends Object {
   final String tickerSymbol;
   static const BitcoinCurrency btc = BitcoinCurrency._internal('BTC');
   static const BitcoinCurrency sat = BitcoinCurrency._internal('SAT');
-  static final List<BitcoinCurrency> currencies =
-      List<BitcoinCurrency>.unmodifiable(<BitcoinCurrency>[btc, sat]);
+  static final List<BitcoinCurrency> currencies = List<BitcoinCurrency>.unmodifiable(<BitcoinCurrency>[
+    btc,
+    sat,
+  ]);
 
   const BitcoinCurrency._internal(this.tickerSymbol);
 
@@ -21,22 +23,18 @@ class BitcoinCurrency extends Object {
     bool includeDisplayName = true,
     bool removeTrailingZeros = false,
     bool userInput = false,
-  }) =>
-      BitcoinCurrencyFormatter().format(
-        sat,
-        this,
-        addCurrencySymbol: includeCurrencySymbol,
-        addCurrencySuffix: includeDisplayName,
-        removeTrailingZeros: removeTrailingZeros,
-        userInput: userInput,
-      );
+  }) => BitcoinCurrencyFormatter().format(
+    sat,
+    this,
+    addCurrencySymbol: includeCurrencySymbol,
+    addCurrencySuffix: includeDisplayName,
+    removeTrailingZeros: removeTrailingZeros,
+    userInput: userInput,
+  );
 
   int parse(String amountStr) => BitcoinCurrencyFormatter().parse(amountStr, this);
 
-  int parseToInt(
-    String amountStr, {
-    int def = 0,
-  }) {
+  int parseToInt(String amountStr, {int def = 0}) {
     int value;
     try {
       value = parse(amountStr).toInt();

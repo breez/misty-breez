@@ -12,14 +12,8 @@ class WarningBox extends StatelessWidget {
   const WarningBox({
     required this.child,
     super.key,
-    this.boxPadding = const EdgeInsets.symmetric(
-      vertical: 16,
-      horizontal: 30,
-    ),
-    this.contentPadding = const EdgeInsets.symmetric(
-      horizontal: 12.3,
-      vertical: 16.2,
-    ),
+    this.boxPadding = const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: 12.3, vertical: 16.2),
     this.backgroundColor,
     this.borderColor,
   });

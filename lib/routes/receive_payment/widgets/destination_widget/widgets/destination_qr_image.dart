@@ -15,15 +15,9 @@ class DestinationQRImage extends StatelessWidget {
         height: 230.0,
         clipBehavior: Clip.antiAlias,
         decoration: const ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(4),
-            ),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         ),
-        child: CompactQRImage(
-          data: destination,
-        ),
+        child: CompactQRImage(data: destination),
       ),
     );
   }

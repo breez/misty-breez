@@ -21,15 +21,10 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
     final ThemeData themeData = Theme.of(context);
 
     return Theme(
-      data: themeData.copyWith(
-        unselectedWidgetColor: themeData.canvasColor,
-      ),
+      data: themeData.copyWith(unselectedWidgetColor: themeData.canvasColor),
       child: AlertDialog(
         titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-        title: Text(
-          texts.backup_dialog_title,
-          style: themeData.dialogTheme.titleTextStyle,
-        ),
+        title: Text(texts.backup_dialog_title, style: themeData.dialogTheme.titleTextStyle),
         contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: SizedBox(
           width: MediaQuery.of(context).size.width,

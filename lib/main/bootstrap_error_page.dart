@@ -10,11 +10,7 @@ class BootstrapErrorPage extends StatefulWidget {
   final Object error;
   final StackTrace stackTrace;
 
-  const BootstrapErrorPage({
-    required this.error,
-    required this.stackTrace,
-    super.key,
-  });
+  const BootstrapErrorPage({required this.error, required this.stackTrace, super.key});
 
   @override
   State<BootstrapErrorPage> createState() => _BootstrapErrorPageState();
@@ -52,10 +48,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
         builder: (BuildContext context, Widget? child) {
           const double kMaxTitleTextScaleFactor = 1.3;
 
-          return MediaQuery.withClampedTextScaling(
-            maxScaleFactor: kMaxTitleTextScaleFactor,
-            child: child!,
-          );
+          return MediaQuery.withClampedTextScaling(maxScaleFactor: kMaxTitleTextScaleFactor, child: child!);
         },
         home: Scaffold(
           appBar: AppBar(),
@@ -66,11 +59,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
-                      Icons.error_outline,
-                      color: breezLightTheme.iconTheme.color,
-                      size: 64,
-                    ),
+                    Icon(Icons.error_outline, color: breezLightTheme.iconTheme.color, size: 64),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
@@ -98,10 +87,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                           ),
                           const SizedBox(height: 8),
                           Container(
-                            constraints: const BoxConstraints(
-                              minHeight: 80,
-                              maxHeight: 120,
-                            ),
+                            constraints: const BoxConstraints(minHeight: 80, maxHeight: 120),
                             child: Theme(
                               data: ThemeData(),
                               child: Scrollbar(
@@ -150,10 +136,7 @@ class _BootstrapErrorPageState extends State<BootstrapErrorPage> {
                           ),
                           const SizedBox(height: 8),
                           Container(
-                            constraints: const BoxConstraints(
-                              minHeight: 160,
-                              maxHeight: 240,
-                            ),
+                            constraints: const BoxConstraints(minHeight: 160, maxHeight: 240),
                             child: Theme(
                               data: ThemeData(),
                               child: Scrollbar(

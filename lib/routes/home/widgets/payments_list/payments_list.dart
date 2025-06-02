@@ -23,11 +23,8 @@ class PaymentsList extends StatelessWidget {
     return SliverFixedExtentList(
       itemExtent: paymentItemHeight + _kBottomPadding,
       delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) => PaymentItem(
-          paymentsList[index],
-          0 == index,
-          firstPaymentItemKey,
-        ),
+        (BuildContext context, int index) =>
+            PaymentItem(paymentsList[index], 0 == index, firstPaymentItemKey),
         childCount: paymentsList.length,
       ),
     );

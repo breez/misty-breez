@@ -39,10 +39,7 @@ class PlaceholderPaymentItem extends StatelessWidget {
                     child: const CircleAvatar(
                       radius: 16,
                       backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.bolt_rounded,
-                        color: Color(0xb3303234),
-                      ),
+                      child: Icon(Icons.bolt_rounded, color: Color(0xb3303234)),
                     ),
                   ),
                   title: Transform.translate(
@@ -57,9 +54,7 @@ class PlaceholderPaymentItem extends StatelessWidget {
                     offset: const Offset(-8, 0),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text('', style: themeData.paymentItemSubtitleTextStyle),
-                      ],
+                      children: <Widget>[Text('', style: themeData.paymentItemSubtitleTextStyle)],
                     ),
                   ),
                   trailing: SizedBox(
@@ -68,14 +63,8 @@ class PlaceholderPaymentItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        Text(
-                          '',
-                          style: themeData.paymentItemAmountTextStyle,
-                        ),
-                        Text(
-                          '',
-                          style: themeData.paymentItemFeeTextStyle,
-                        ),
+                        Text('', style: themeData.paymentItemAmountTextStyle),
+                        Text('', style: themeData.paymentItemFeeTextStyle),
                       ],
                     ),
                   ),

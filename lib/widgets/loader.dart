@@ -8,13 +8,7 @@ class Loader extends StatelessWidget {
   final Color? color;
   final double strokeWidth;
 
-  const Loader({
-    super.key,
-    this.value,
-    this.label,
-    this.color,
-    this.strokeWidth = 4.0,
-  });
+  const Loader({super.key, this.value, this.label, this.color, this.strokeWidth = 4.0});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +19,7 @@ class Loader extends StatelessWidget {
           value: value,
           semanticsLabel: label,
           strokeWidth: strokeWidth,
-          valueColor: AlwaysStoppedAnimation<Color>(
-            color ?? circularLoaderColor,
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(color ?? circularLoaderColor),
         ),
       ],
     );
@@ -41,16 +33,9 @@ TransparentPageRoute<void> createLoaderRoute(
   Future<void>? action,
   VoidCallback? onClose,
 }) {
-  return TransparentPageRoute<void>(
-    (BuildContext context) {
-      return TransparentRouteLoader(
-        message: message,
-        opacity: opacity,
-        action: action,
-        onClose: onClose,
-      );
-    },
-  );
+  return TransparentPageRoute<void>((BuildContext context) {
+    return TransparentRouteLoader(message: message, opacity: opacity, action: action, onClose: onClose);
+  });
 }
 
 class FullScreenLoader extends StatelessWidget {
@@ -94,10 +79,7 @@ class FullScreenLoader extends StatelessWidget {
                   if (message != null) ...<Widget>[
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        message!,
-                        textAlign: TextAlign.center,
-                      ),
+                      child: Text(message!, textAlign: TextAlign.center),
                     ),
                   ],
                 ],
@@ -112,10 +94,7 @@ class FullScreenLoader extends StatelessWidget {
                 child: IconButton(
                   color: Colors.white,
                   onPressed: () => onClose!(),
-                  icon: Icon(
-                    Icons.close,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
+                  icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
                 ),
               ),
             ),
@@ -159,10 +138,6 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return FullScreenLoader(
-      message: widget.message,
-      opacity: widget.opacity,
-      onClose: widget.onClose,
-    );
+    return FullScreenLoader(message: widget.message, opacity: widget.opacity, onClose: widget.onClose);
   }
 }

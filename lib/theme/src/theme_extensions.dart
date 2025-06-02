@@ -75,11 +75,7 @@ const TextStyle navigationDrawerHandleStyle = TextStyle(
 );
 const TextStyle validatorStyle = TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
 final TextStyle welcomeTextStyle = TextStyle(color: BreezColors.white[500], fontSize: 16.0, height: 1.1);
-final TextStyle buttonStyle = TextStyle(
-  color: BreezColors.blue[500],
-  fontSize: 14.3,
-  letterSpacing: 1.25,
-);
+final TextStyle buttonStyle = TextStyle(color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25);
 final TextStyle whiteButtonStyle = TextStyle(
   color: BreezColors.white[500],
   fontSize: 14.3,
@@ -139,20 +135,14 @@ final TextStyle mnemonicSeedConfirmationTextStyle = TextStyle(
   fontWeight: FontWeight.w500,
   fontFamily: 'IBMPlexSans',
 );
-const TextStyle autoCompleteStyle = TextStyle(
-  color: Colors.black,
-  fontSize: 14.0,
-);
+const TextStyle autoCompleteStyle = TextStyle(color: Colors.black, fontSize: 14.0);
 final TextStyle smallTextStyle = TextStyle(
   color: BreezColors.white[500],
   fontSize: 10.0,
   letterSpacing: 0.09,
 );
 
-const TextStyle warningStyle = TextStyle(
-  color: Color(0xffffe685),
-  fontSize: 16.0,
-);
+const TextStyle warningStyle = TextStyle(color: Color(0xffffe685), fontSize: 16.0);
 
 const TextStyle counterTextStyle = TextStyle(
   color: Colors.white54,
@@ -250,10 +240,6 @@ extension ThemeExtensions on ThemeData {
           letterSpacing: 0.39,
         );
 
-  TextStyle get errorTextStyle => TextStyle(
-        color: colorScheme.error,
-        fontSize: 10.5,
-        fontWeight: FontWeight.w400,
-        height: 1.16,
-      );
+  TextStyle get errorTextStyle =>
+      TextStyle(color: colorScheme.error, fontSize: 10.5, fontWeight: FontWeight.w400, height: 1.16);
 }

@@ -35,9 +35,9 @@ Future<LNURLPageResult?> handleWithdrawRequest(
               requestData: requestData,
               onFinish: (LNURLPageResult? response) {
                 completer.complete(response);
-                Navigator.of(context).popUntil(
-                  (Route<dynamic> route) => route.settings.name == Home.routeName,
-                );
+                Navigator.of(
+                  context,
+                ).popUntil((Route<dynamic> route) => route.settings.name == Home.routeName);
               },
             ),
           ),

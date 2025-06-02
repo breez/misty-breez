@@ -30,13 +30,7 @@ class DigitMasked extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        _buildOuterCircle(),
-        _buildInnerCircle(),
-      ],
-    );
+    return Stack(alignment: Alignment.center, children: <Widget>[_buildOuterCircle(), _buildInnerCircle()]);
   }
 
   /// Builds the outer circle (border)
@@ -51,10 +45,7 @@ class DigitMasked extends StatelessWidget {
       decoration: BoxDecoration(
         color: unfilledColor,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: filledColor,
-          width: 2.0,
-        ),
+        border: Border.all(color: filledColor, width: 2.0),
       ),
     );
   }
@@ -72,10 +63,7 @@ class DigitMasked extends StatelessWidget {
       decoration: BoxDecoration(
         color: filledColor,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: filled ? filledColor : unfilledColor,
-          width: 2.0,
-        ),
+        border: Border.all(color: filled ? filledColor : unfilledColor, width: 2.0),
       ),
     );
   }

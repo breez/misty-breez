@@ -24,20 +24,12 @@ Flushbar<dynamic> showFlushbar(
   flush = Flushbar<dynamic>(
     isDismissible: isDismissible,
     flushbarPosition: position,
-    titleText: title == null
-        ? null
-        : Text(
-            title,
-            style: const TextStyle(height: 0.0),
-          ),
+    titleText: title == null ? null : Text(title, style: const TextStyle(height: 0.0)),
     icon: icon,
     duration: duration == Duration.zero ? null : duration,
-    messageText: messageWidget ??
-        Text(
-          message ?? texts.flushbar_default_message,
-          style: snackBarStyle,
-          textAlign: TextAlign.left,
-        ),
+    messageText:
+        messageWidget ??
+        Text(message ?? texts.flushbar_default_message, style: snackBarStyle, textAlign: TextAlign.left),
     backgroundColor: snackBarBackgroundColor,
     mainButton: !showMainButton
         ? null
@@ -50,9 +42,7 @@ Flushbar<dynamic> showFlushbar(
             },
             child: Text(
               buttonText ?? texts.flushbar_default_action,
-              style: snackBarStyle.copyWith(
-                color: themeData.colorScheme.error,
-              ),
+              style: snackBarStyle.copyWith(color: themeData.colorScheme.error),
             ),
           ),
   )..show(context);

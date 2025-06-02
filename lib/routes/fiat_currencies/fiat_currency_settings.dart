@@ -28,10 +28,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     final BreezTranslations texts = context.texts();
 
     return Scaffold(
-      appBar: AppBar(
-        leading: const back_button.BackButton(),
-        title: Text(texts.fiat_currencies_title),
-      ),
+      appBar: AppBar(leading: const back_button.BackButton(), title: Text(texts.fiat_currencies_title)),
       body: BlocBuilder<CurrencyCubit, CurrencyState>(
         buildWhen: (CurrencyState s1, CurrencyState s2) =>
             !listEquals(s1.preferredCurrencies, s2.preferredCurrencies),
@@ -49,24 +46,23 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                   DragAndDropList(
                     header: const SizedBox.shrink(),
                     canDrag: false,
-                    children: List<DragAndDropItem>.generate(
-                      currencyState.fiatCurrenciesData.length,
-                      (int index) {
-                        return DragAndDropItem(
-                          child: FiatCurrencyListTile(
-                            index: index,
-                            currencyState: currencyState,
-                            scrollController: _scrollController,
-                            onChanged: (List<String> preferredFiatCurrencies) {
-                              _updatePreferredCurrencies(preferredFiatCurrencies);
-                            },
-                          ),
-                          canDrag: currencyState.preferredCurrencies.contains(
-                            currencyState.fiatCurrenciesData[index].id,
-                          ),
-                        );
-                      },
-                    ),
+                    children: List<DragAndDropItem>.generate(currencyState.fiatCurrenciesData.length, (
+                      int index,
+                    ) {
+                      return DragAndDropItem(
+                        child: FiatCurrencyListTile(
+                          index: index,
+                          currencyState: currencyState,
+                          scrollController: _scrollController,
+                          onChanged: (List<String> preferredFiatCurrencies) {
+                            _updatePreferredCurrencies(preferredFiatCurrencies);
+                          },
+                        ),
+                        canDrag: currencyState.preferredCurrencies.contains(
+                          currencyState.fiatCurrenciesData[index].id,
+                        ),
+                      );
+                    }),
                   ),
                 ],
                 lastListTargetSize: 0,
@@ -78,10 +74,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                 itemDragHandle: DragHandle(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Icon(
-                      Icons.drag_handle,
-                      color: BreezColors.white[200],
-                    ),
+                    child: Icon(Icons.drag_handle, color: BreezColors.white[200]),
                   ),
                 ),
               );
@@ -92,14 +85,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     );
   }
 
-  void _onReorder(
-    CurrencyState currencyState,
-    int oldIndex,
-    int newIndex,
-  ) {
-    final List<String> preferredFiatCurrencies = List<String>.from(
-      currencyState.preferredCurrencies,
-    );
+  void _onReorder(CurrencyState currencyState, int oldIndex, int newIndex) {
+    final List<String> preferredFiatCurrencies = List<String>.from(currencyState.preferredCurrencies);
     if (newIndex >= preferredFiatCurrencies.length) {
       newIndex = preferredFiatCurrencies.length - 1;
     }
@@ -108,9 +95,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     _updatePreferredCurrencies(preferredFiatCurrencies);
   }
 
-  void _updatePreferredCurrencies(
-    List<String> preferredFiatCurrencies,
-  ) {
+  void _updatePreferredCurrencies(List<String> preferredFiatCurrencies) {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     currencyCubit.setPreferredCurrencies(preferredFiatCurrencies);
   }

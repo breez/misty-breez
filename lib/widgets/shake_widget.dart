@@ -9,23 +9,16 @@ class ShakeWidget extends StatelessWidget {
   final Animation<double> _anim;
   final Widget child;
 
-  ShakeWidget({
-    required this.controller,
-    required this.child,
-    super.key,
-  }) : _anim = Tween<double>(begin: 50, end: 120).animate(controller);
+  ShakeWidget({required this.controller, required this.child, super.key})
+    : _anim = Tween<double>(begin: 50, end: 120).animate(controller);
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: controller,
       child: child,
-      builder: (BuildContext context, Widget? child) => Transform(
-        transform: Matrix4.translation(
-          _shake(_anim.value),
-        ),
-        child: child,
-      ),
+      builder: (BuildContext context, Widget? child) =>
+          Transform(transform: Matrix4.translation(_shake(_anim.value)), child: child),
     );
   }
 
@@ -36,10 +29,8 @@ class ShakeWidget extends StatelessWidget {
 }
 
 class ShakeController extends AnimationController {
-  ShakeController(
-    TickerProvider vsync, {
-    Duration duration = const Duration(milliseconds: 300),
-  }) : super(vsync: vsync, duration: duration);
+  ShakeController(TickerProvider vsync, {Duration duration = const Duration(milliseconds: 300)})
+    : super(vsync: vsync, duration: duration);
 
   void shake() async {
     if (status == AnimationStatus.completed) {

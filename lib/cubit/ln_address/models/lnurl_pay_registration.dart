@@ -48,10 +48,7 @@ class RegisterRecoverLnurlPayResponse {
   final String lnurl;
   final String lightningAddress;
 
-  const RegisterRecoverLnurlPayResponse({
-    required this.lnurl,
-    required this.lightningAddress,
-  });
+  const RegisterRecoverLnurlPayResponse({required this.lnurl, required this.lightningAddress});
 
   factory RegisterRecoverLnurlPayResponse.fromJson(Map<String, dynamic> json) {
     return RegisterRecoverLnurlPayResponse(
@@ -76,11 +73,7 @@ class UnregisterRecoverLnurlPayRequest {
   });
 
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'time': time,
-      'webhook_url': webhookUrl,
-      'signature': signature,
-    };
+    return <String, dynamic>{'time': time, 'webhook_url': webhookUrl, 'signature': signature};
   }
 
   @override

@@ -8,10 +8,7 @@ class EnterMnemonicsPageArguments {
   final List<String> initialWords;
   final String errorMessage;
 
-  EnterMnemonicsPageArguments({
-    required this.initialWords,
-    this.errorMessage = '',
-  });
+  EnterMnemonicsPageArguments({required this.initialWords, this.errorMessage = ''});
 }
 
 class EnterMnemonicsPage extends StatefulWidget {
@@ -29,8 +26,10 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
   int _currentPage = 1;
   final int _lastPage = 2;
 
-  List<TextEditingController> textEditingControllers =
-      List<TextEditingController>.generate(12, (_) => TextEditingController());
+  List<TextEditingController> textEditingControllers = List<TextEditingController>.generate(
+    12,
+    (_) => TextEditingController(),
+  );
 
   @override
   void initState() {
@@ -69,17 +68,8 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
               }
             },
           ),
-          actions: <Widget>[
-            PasteBackupPhraseButton(
-              textEditingControllers: textEditingControllers,
-            ),
-          ],
-          title: Text(
-            texts.enter_backup_phrase(
-              _currentPage.toString(),
-              _lastPage.toString(),
-            ),
-          ),
+          actions: <Widget>[PasteBackupPhraseButton(textEditingControllers: textEditingControllers)],
+          title: Text(texts.enter_backup_phrase(_currentPage.toString(), _lastPage.toString())),
         ),
         body: SingleChildScrollView(
           child: SizedBox(

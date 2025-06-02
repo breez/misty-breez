@@ -34,32 +34,29 @@ class VerifyFormPageState extends State<VerifyForm> {
         padding: const EdgeInsets.only(top: 24.0, bottom: 40.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: List<Widget>.generate(
-            widget.randomlySelectedIndexes.length,
-            (int index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: texts.backup_phrase_generation_type_step(
-                      widget.randomlySelectedIndexes[index] + 1,
-                    ),
+          children: List<Widget>.generate(widget.randomlySelectedIndexes.length, (int index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: texts.backup_phrase_generation_type_step(
+                    widget.randomlySelectedIndexes[index] + 1,
                   ),
-                  style: FieldTextStyle.textStyle,
-                  validator: (String? text) {
-                    if (text!.isEmpty ||
-                        text.toLowerCase().trim() !=
-                            widget.mnemonicsList[widget.randomlySelectedIndexes[index]]) {
-                      widget.onError();
-                    }
-                    return null;
-                  },
-                  onEditingComplete: () =>
-                      (index == 2) ? FocusScope.of(context).unfocus() : FocusScope.of(context).nextFocus(),
                 ),
-              );
-            },
-          )..add(widget.errorText),
+                style: FieldTextStyle.textStyle,
+                validator: (String? text) {
+                  if (text!.isEmpty ||
+                      text.toLowerCase().trim() !=
+                          widget.mnemonicsList[widget.randomlySelectedIndexes[index]]) {
+                    widget.onError();
+                  }
+                  return null;
+                },
+                onEditingComplete: () =>
+                    (index == 2) ? FocusScope.of(context).unfocus() : FocusScope.of(context).nextFocus(),
+              ),
+            );
+          })..add(widget.errorText),
         ),
       ),
     );

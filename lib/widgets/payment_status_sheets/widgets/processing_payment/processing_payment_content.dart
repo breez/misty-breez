@@ -35,10 +35,7 @@ class ProcessingPaymentContent extends StatelessWidget {
         Positioned(
           top: MediaQuery.of(context).viewInsets.top + 40.0,
           right: 16.0,
-          child: CloseButton(
-            color: Colors.white,
-            onPressed: onClose,
-          ),
+          child: CloseButton(color: Colors.white, onPressed: onClose),
         ),
       ],
     );
@@ -82,10 +79,7 @@ class PaymentProcessingTitle extends StatelessWidget {
       // Fallback to a simpler text widget if styling fails
       return Padding(
         padding: _padding,
-        child: Text(
-          isBroadcast ? 'Broadcasting' : 'Processing Payment',
-          textAlign: TextAlign.center,
-        ),
+        child: Text(isBroadcast ? 'Broadcasting' : 'Processing Payment', textAlign: TextAlign.center),
       );
     }
   }
@@ -138,9 +132,7 @@ class PaymentProcessingLoadingMessage extends StatelessWidget {
         padding: _padding,
         child: SizedBox(
           height: _height,
-          child: Center(
-            child: Text('Please wait...'),
-          ),
+          child: Center(child: Text('Please wait...')),
         ),
       );
     }
@@ -177,11 +169,7 @@ class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
         filterQuality: FilterQuality.high,
         fit: BoxFit.fill,
         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-          _logger.severe(
-            'Failed to load Lottie animation',
-            error,
-            stackTrace,
-          );
+          _logger.severe('Failed to load Lottie animation', error, stackTrace);
           // Fallback to a simple CircularProgressIndicator if Lottie fails
           return const Center(child: CircularProgressIndicator());
         },
@@ -194,10 +182,7 @@ class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
   /// Attempts to decode the Lottie file multiple times before giving up.
   Future<LottieComposition?> _decodeLottieFileWithRetry(List<int> bytes, int remainingAttempts) async {
     try {
-      return await LottieComposition.decodeZip(
-        bytes,
-        filePicker: _selectLottieFileFromArchive,
-      );
+      return await LottieComposition.decodeZip(bytes, filePicker: _selectLottieFileFromArchive);
     } catch (e, stackTrace) {
       if (remainingAttempts > 0) {
         _logger.warning(
@@ -210,11 +195,7 @@ class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
         return _decodeLottieFileWithRetry(bytes, remainingAttempts - 1);
       }
 
-      _logger.severe(
-        'Failed to decode Lottie ZIP file after $_maxRetryAttempts attempts',
-        e,
-        stackTrace,
-      );
+      _logger.severe('Failed to decode Lottie ZIP file after $_maxRetryAttempts attempts', e, stackTrace);
       rethrow; // Let Lottie's error builder handle this after all retries are exhausted
     }
   }
@@ -236,11 +217,7 @@ class _PaymentProcessingAnimationState extends State<PaymentProcessingAnimation>
         },
       );
     } catch (e, stackTrace) {
-      _logger.severe(
-        'Failed to select Lottie file from archive',
-        e,
-        stackTrace,
-      );
+      _logger.severe('Failed to select Lottie file from archive', e, stackTrace);
       rethrow;
     }
   }

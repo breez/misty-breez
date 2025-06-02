@@ -8,11 +8,7 @@ class PaymentDetailsSheetPreimage extends StatelessWidget {
   final String paymentPreimage;
   final String? invoice;
 
-  const PaymentDetailsSheetPreimage({
-    required this.paymentPreimage,
-    required this.invoice,
-    super.key,
-  });
+  const PaymentDetailsSheetPreimage({required this.paymentPreimage, required this.invoice, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +25,7 @@ class PaymentDetailsSheetPreimage extends StatelessWidget {
       ),
       sharedValue: paymentPreimage,
       isURL: invoice != null,
-      urlValue: LnPaymentValidatorService.formatValidatorUrl(
-        invoice: invoice!,
-        preimage: paymentPreimage,
-      ),
+      urlValue: LnPaymentValidatorService.formatValidatorUrl(invoice: invoice!, preimage: paymentPreimage),
     );
   }
 }

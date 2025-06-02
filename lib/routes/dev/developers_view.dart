@@ -55,11 +55,7 @@ class _DevelopersViewState extends State<DevelopersView> {
 
   /// Initializes all data required by the view
   Future<void> _initializeViewData() async {
-    await Future.wait(<Future<void>>[
-      _loadSdkVersion(),
-      _loadPreferences(),
-      _loadBolt12Offer(),
-    ]);
+    await Future.wait(<Future<void>>[_loadSdkVersion(), _loadPreferences(), _loadBolt12Offer()]);
   }
 
   /// Loads the SDK version
@@ -148,10 +144,7 @@ class _DevelopersViewState extends State<DevelopersView> {
           fingerprint: walletInfo.fingerprint,
         );
 
-        final ShareParams shareParams = ShareParams(
-          title: 'Keys',
-          files: <XFile>[XFile(keysZipPath)],
-        );
+        final ShareParams shareParams = ShareParams(title: 'Keys', files: <XFile>[XFile(keysZipPath)]);
         SharePlus.instance.share(shareParams);
       } else {
         final CredentialsManager credentialsManager = ServiceInjector().credentialsManager;
@@ -182,10 +175,7 @@ class _DevelopersViewState extends State<DevelopersView> {
 
     try {
       final String zipPath = await WalletArchiveService.createLogsArchive();
-      final ShareParams shareParams = ShareParams(
-        title: 'Logs',
-        files: <XFile>[XFile(zipPath)],
-      );
+      final ShareParams shareParams = ShareParams(title: 'Logs', files: <XFile>[XFile(zipPath)]);
       SharePlus.instance.share(shareParams);
     } catch (e) {
       _logger.severe('Failed to share logs: $e');
@@ -283,13 +273,7 @@ class _DevelopersViewState extends State<DevelopersView> {
         leading: const back_button.BackButton(),
         title: Text(texts.home_drawer_item_title_developers),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            _buildInfoCard(),
-          ],
-        ),
-      ),
+      body: SingleChildScrollView(child: Column(children: <Widget>[_buildInfoCard()])),
     );
   }
 
@@ -309,67 +293,68 @@ class _DevelopersViewState extends State<DevelopersView> {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            StatusItem(label: 'SDK Version', value: _sdkVersion),
-            if (walletInfo != null) ...<Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: ShareablePaymentRow(
-                  tilePadding: EdgeInsets.zero,
-                  dividerColor: Colors.transparent,
-                  title: 'Public Key',
-                  titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                  ),
-                  sharedValue: walletInfo.pubkey,
-                  shouldPop: false,
-                  trimTitle: false,
-                ),
-              ),
-              if (_bolt12Offer.isNotEmpty) ...<Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: ShareablePaymentRow(
-                    tilePadding: EdgeInsets.zero,
-                    dividerColor: Colors.transparent,
-                    title: 'BOLT 12 Offer',
-                    titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
-                      fontSize: 18.0,
-                      color: Colors.white,
+          children:
+              <Widget>[
+                  StatusItem(label: 'SDK Version', value: _sdkVersion),
+                  if (walletInfo != null) ...<Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ShareablePaymentRow(
+                        tilePadding: EdgeInsets.zero,
+                        dividerColor: Colors.transparent,
+                        title: 'Public Key',
+                        titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                        ),
+                        sharedValue: walletInfo.pubkey,
+                        shouldPop: false,
+                        trimTitle: false,
+                      ),
                     ),
-                    sharedValue: _bolt12Offer,
-                    shouldPop: false,
-                    trimTitle: false,
-                  ),
-                ),
-              ],
-              StatusItem(label: 'Fingerprint', value: walletInfo.fingerprint),
-              if (walletInfo.balanceSat > BigInt.zero) ...<Widget>[
-                StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),
-              ],
-              if (walletInfo.pendingReceiveSat > BigInt.zero) ...<Widget>[
-                StatusItem(label: 'Pending Receive Amount', value: '${walletInfo.pendingReceiveSat}'),
-              ],
-              if (walletInfo.pendingSendSat > BigInt.zero) ...<Widget>[
-                StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
-              ],
-            ],
-            if (blockchainInfo != null) ...<Widget>[
-              StatusItem(label: 'Liquid Tip', value: '${blockchainInfo.liquidTip}'),
-              StatusItem(label: 'Bitcoin Tip', value: '${blockchainInfo.bitcoinTip}'),
-            ],
-            _buildActionButtons(),
-          ].expand((Widget widget) sync* {
-            yield widget;
-            yield const Divider(
-              height: 8.0,
-              color: Color.fromRGBO(40, 59, 74, 0.5),
-              indent: 0.0,
-              endIndent: 0.0,
-            );
-          }).toList()
-            ..removeLast(),
+                    if (_bolt12Offer.isNotEmpty) ...<Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: ShareablePaymentRow(
+                          tilePadding: EdgeInsets.zero,
+                          dividerColor: Colors.transparent,
+                          title: 'BOLT 12 Offer',
+                          titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                            fontSize: 18.0,
+                            color: Colors.white,
+                          ),
+                          sharedValue: _bolt12Offer,
+                          shouldPop: false,
+                          trimTitle: false,
+                        ),
+                      ),
+                    ],
+                    StatusItem(label: 'Fingerprint', value: walletInfo.fingerprint),
+                    if (walletInfo.balanceSat > BigInt.zero) ...<Widget>[
+                      StatusItem(label: 'Balance', value: '${walletInfo.balanceSat}'),
+                    ],
+                    if (walletInfo.pendingReceiveSat > BigInt.zero) ...<Widget>[
+                      StatusItem(label: 'Pending Receive Amount', value: '${walletInfo.pendingReceiveSat}'),
+                    ],
+                    if (walletInfo.pendingSendSat > BigInt.zero) ...<Widget>[
+                      StatusItem(label: 'Pending Send Amount', value: '${walletInfo.pendingSendSat}'),
+                    ],
+                  ],
+                  if (blockchainInfo != null) ...<Widget>[
+                    StatusItem(label: 'Liquid Tip', value: '${blockchainInfo.liquidTip}'),
+                    StatusItem(label: 'Bitcoin Tip', value: '${blockchainInfo.bitcoinTip}'),
+                  ],
+                  _buildActionButtons(),
+                ].expand((Widget widget) sync* {
+                  yield widget;
+                  yield const Divider(
+                    height: 8.0,
+                    color: Color.fromRGBO(40, 59, 74, 0.5),
+                    indent: 0.0,
+                    endIndent: 0.0,
+                  );
+                }).toList()
+                ..removeLast(),
         ),
       ),
     );

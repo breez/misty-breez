@@ -32,10 +32,7 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Container(
-        constraints: const BoxConstraints(
-          maxHeight: 54,
-          minWidth: double.infinity,
-        ),
+        constraints: const BoxConstraints(maxHeight: 54, minWidth: double.infinity),
         child: Scrollbar(
           child: SingleChildScrollView(
             child: AutoSizeText(
@@ -45,8 +42,9 @@ class PaymentDetailsSheetDescription extends StatelessWidget {
                 color: Colors.white70,
                 height: 1.208,
               ),
-              textAlign:
-                  description.length > 60 && !description.contains('\n') ? TextAlign.start : TextAlign.center,
+              textAlign: description.length > 60 && !description.contains('\n')
+                  ? TextAlign.start
+                  : TextAlign.center,
             ),
           ),
         ),

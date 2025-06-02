@@ -13,10 +13,7 @@ class PaymentsState {
 
   PaymentsState.initial() : this(payments: <PaymentData>[], paymentFilters: PaymentFilters.initial());
 
-  PaymentsState copyWith({
-    List<PaymentData>? payments,
-    PaymentFilters? paymentFilters,
-  }) {
+  PaymentsState copyWith({List<PaymentData>? payments, PaymentFilters? paymentFilters}) {
     // This is a workaround to only include BTC assets in the unfiltered payments.
     // If Misty is to support multi-assets then this prefilter should be removed.
     final List<PaymentData>? prefilteredPayments = payments?.where((PaymentData paymentData) {
@@ -42,28 +39,28 @@ class PaymentsState {
         ? paymentFilters.filters!.map((PaymentType filter) => filter.name).toSet()
         : null;
 
-    return payments.where(
-      (PaymentData paymentData) {
-        final int milliseconds = paymentData.paymentTime.millisecondsSinceEpoch;
+    return payments.where((PaymentData paymentData) {
+      final int milliseconds = paymentData.paymentTime.millisecondsSinceEpoch;
 
-        final bool passDateFilter = !paymentFilters.hasDateFilters ||
-            (paymentFilters.fromTimestamp! < milliseconds && milliseconds < paymentFilters.toTimestamp!);
+      final bool passDateFilter =
+          !paymentFilters.hasDateFilters ||
+          (paymentFilters.fromTimestamp! < milliseconds && milliseconds < paymentFilters.toTimestamp!);
 
-        final bool passTypeFilter =
-            typeFilterSet == null || typeFilterSet.contains(paymentData.paymentType.name);
+      final bool passTypeFilter =
+          typeFilterSet == null || typeFilterSet.contains(paymentData.paymentType.name);
 
-        final String? paymentAssetTicker = paymentData.details.map(
-          liquid: (PaymentDetails_Liquid details) => details.assetInfo?.ticker ?? '',
-          orElse: () => null,
-        );
+      final String? paymentAssetTicker = paymentData.details.map(
+        liquid: (PaymentDetails_Liquid details) => details.assetInfo?.ticker ?? '',
+        orElse: () => null,
+      );
 
-        final bool passAssetFilter = !paymentFilters.hasAssetFilters ||
-            paymentAssetTicker == null ||
-            paymentAssetTicker == paymentFilters.assetTicker;
+      final bool passAssetFilter =
+          !paymentFilters.hasAssetFilters ||
+          paymentAssetTicker == null ||
+          paymentAssetTicker == paymentFilters.assetTicker;
 
-        return passDateFilter && passTypeFilter && passAssetFilter;
-      },
-    ).toList();
+      return passDateFilter && passTypeFilter && passAssetFilter;
+    }).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -86,10 +83,8 @@ class PaymentsState {
   String toString() => jsonEncode(toJson());
 
   @override
-  int get hashCode => Object.hash(
-        payments.map((PaymentData payment) => payment.hashCode).toList(),
-        paymentFilters.hashCode,
-      );
+  int get hashCode =>
+      Object.hash(payments.map((PaymentData payment) => payment.hashCode).toList(), paymentFilters.hashCode);
 
   @override
   bool operator ==(Object other) {

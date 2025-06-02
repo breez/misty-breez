@@ -95,8 +95,9 @@ class PaymentData {
         destination: json['destination'] as String? ?? '',
         txId: json['txId'] as String? ?? '',
         unblindingData: json['unblindingData'] as String? ?? '',
-        paymentTime:
-            json['paymentTime'] != null ? DateTime.parse(json['paymentTime'] as String) : DateTime.now(),
+        paymentTime: json['paymentTime'] != null
+            ? DateTime.parse(json['paymentTime'] as String)
+            : DateTime.now(),
         amountSat: json['amountSat'] as int? ?? 0,
         feeSat: json['feeSat'] as int? ?? 0,
         paymentType: paymentType,
@@ -116,18 +117,18 @@ class PaymentData {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        title,
-        destination,
-        txId,
-        unblindingData,
-        paymentTime,
-        amountSat,
-        feeSat,
-        paymentType,
-        status,
-        details.calculateHashCode(),
-      );
+    id,
+    title,
+    destination,
+    txId,
+    unblindingData,
+    paymentTime,
+    amountSat,
+    feeSat,
+    paymentType,
+    status,
+    details.calculateHashCode(),
+  );
 
   @override
   bool operator ==(Object other) {
@@ -147,16 +148,16 @@ class PaymentData {
   }
 
   int get refundTxAmountSat => details.map(
-        bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxAmountSat?.toInt() ?? 0,
-        lightning: (PaymentDetails_Lightning details) => details.refundTxAmountSat?.toInt() ?? 0,
-        orElse: () => 0,
-      );
+    bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxAmountSat?.toInt() ?? 0,
+    lightning: (PaymentDetails_Lightning details) => details.refundTxAmountSat?.toInt() ?? 0,
+    orElse: () => 0,
+  );
 
   String? get refundTxId => details.map(
-        bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxId,
-        lightning: (PaymentDetails_Lightning details) => details.refundTxId,
-        orElse: () => null,
-      );
+    bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxId,
+    lightning: (PaymentDetails_Lightning details) => details.refundTxId,
+    orElse: () => null,
+  );
 
   bool get isRefunded => (refundTxAmountSat > 0 || refundTxId != null) && status == PaymentState.failed;
 
@@ -196,8 +197,8 @@ class _PaymentDataFactory {
       final String? lnUrlTitle = lnurlInfo.lnAddress?.isNotEmpty == true
           ? lnurlInfo.lnAddress
           : metadataMap['text/identifier'] ??
-              metadataMap['text/email'] ??
-              (lnurlInfo.lnurlPayDomain?.isNotEmpty == true ? lnurlInfo.lnurlPayDomain : null);
+                metadataMap['text/email'] ??
+                (lnurlInfo.lnurlPayDomain?.isNotEmpty == true ? lnurlInfo.lnurlPayDomain : null);
 
       if (lnUrlTitle != null && lnUrlTitle.isNotEmpty) {
         return lnUrlTitle;

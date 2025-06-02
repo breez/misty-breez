@@ -58,11 +58,7 @@ class UserProfileImageCache {
     try {
       _logger.info('Caching profile image, size: ${bytes.length} bytes');
       await _cacheManager.removeFile(profileImageCacheKey);
-      await _cacheManager.putFile(
-        profileImageCacheKey,
-        bytes,
-        eTag: profileImageCacheKey,
-      );
+      await _cacheManager.putFile(profileImageCacheKey, bytes, eTag: profileImageCacheKey);
     } catch (e) {
       _logger.warning('Error caching profile image: $e');
       rethrow;

@@ -10,10 +10,7 @@ import 'package:misty_breez/widgets/widgets.dart';
 class DestinationInformation extends StatefulWidget {
   final String lnAddress;
 
-  const DestinationInformation({
-    required this.lnAddress,
-    super.key,
-  });
+  const DestinationInformation({required this.lnAddress, super.key});
 
   @override
   DestinationInformationState createState() => DestinationInformationState();
@@ -34,13 +31,8 @@ class DestinationInformationState extends State<DestinationInformation> {
         showMenu(
           context: context,
           color: themeData.customData.paymentListBgColorLight,
-          position: RelativeRect.fromRect(
-            Rect.fromPoints(offset, offset),
-            Offset.zero & overlay.size,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
+          position: RelativeRect.fromRect(Rect.fromPoints(offset, offset), Offset.zero & overlay.size),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
           items: <PopupMenuItem<String>>[
             PopupMenuItem<String>(
               // TODO(erdemyerebasmaz): Replace with const var
@@ -48,9 +40,7 @@ class DestinationInformationState extends State<DestinationInformation> {
               child: Row(
                 children: <Widget>[
                   const Icon(Icons.edit),
-                  const SizedBox(
-                    width: 8.0,
-                  ),
+                  const SizedBox(width: 8.0),
                   Text(texts.update_ln_address_username_title),
                 ],
               ),
@@ -63,13 +53,10 @@ class DestinationInformationState extends State<DestinationInformation> {
               showModalBottomSheet(
                 context: context,
                 backgroundColor: themeData.customData.paymentListBgColor,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                ),
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
                 isScrollControlled: true,
-                builder: (BuildContext context) => UpdateLnAddressUsernameBottomSheet(
-                  lnAddress: widget.lnAddress,
-                ),
+                builder: (BuildContext context) =>
+                    UpdateLnAddressUsernameBottomSheet(lnAddress: widget.lnAddress),
               );
             }
           }
@@ -77,10 +64,7 @@ class DestinationInformationState extends State<DestinationInformation> {
       },
       child: WarningBox(
         boxPadding: const EdgeInsets.only(bottom: 24.0),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 16,
-        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         borderColor: Colors.transparent,
         backgroundColor: Theme.of(context).canvasColor,
         child: Center(

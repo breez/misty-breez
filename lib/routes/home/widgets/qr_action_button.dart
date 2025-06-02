@@ -24,10 +24,7 @@ class QrActionButton extends StatelessWidget {
         onPressed: () => _scanBarcode(context),
         child: SvgPicture.asset(
           'assets/icons/qr_scan.svg',
-          colorFilter: ColorFilter.mode(
-            BreezColors.white[500]!,
-            BlendMode.srcATop,
-          ),
+          colorFilter: ColorFilter.mode(BreezColors.white[500]!, BlendMode.srcATop),
           width: 24.0,
           height: 24.0,
         ),
@@ -40,21 +37,16 @@ class QrActionButton extends StatelessWidget {
     final InputCubit inputCubit = context.read<InputCubit>();
 
     _logger.info('Start qr code scan');
-    Navigator.pushNamed<String>(context, QRScanView.routeName).then(
-      (String? barcode) {
-        _logger.info("Scanned string: '$barcode'");
-        if (barcode == null) {
-          return;
-        }
-        if (barcode.isEmpty && context.mounted) {
-          showFlushbar(
-            context,
-            message: texts.qr_action_button_error_code_not_detected,
-          );
-          return;
-        }
-        inputCubit.addIncomingInput(barcode, InputSource.qrcodeReader);
-      },
-    );
+    Navigator.pushNamed<String>(context, QRScanView.routeName).then((String? barcode) {
+      _logger.info("Scanned string: '$barcode'");
+      if (barcode == null) {
+        return;
+      }
+      if (barcode.isEmpty && context.mounted) {
+        showFlushbar(context, message: texts.qr_action_button_error_code_not_detected);
+        return;
+      }
+      inputCubit.addIncomingInput(barcode, InputSource.qrcodeReader);
+    });
   }
 }

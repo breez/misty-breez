@@ -31,15 +31,13 @@ class UsernameResolver {
   /// @param recoveredLightningAddress Optional recovered lightning address
   /// @param baseUsername Optional explicitly provided username
   /// @return The resolved username or null if no username could be determined
-  Future<String?> resolveUsername({
-    String? recoveredLightningAddress,
-    String? baseUsername,
-  }) async {
+  Future<String?> resolveUsername({String? recoveredLightningAddress, String? baseUsername}) async {
     try {
       _logger.info('Resolving username');
 
       // Try each resolution strategy in order of precedence
-      final String username = await _tryResolveFromRecoveredAddress(recoveredLightningAddress) ??
+      final String username =
+          await _tryResolveFromRecoveredAddress(recoveredLightningAddress) ??
           _tryResolveFromProvidedUsername(baseUsername) ??
           await _tryResolveFromStoredUsername() ??
           await _tryResolveFromProfileName();

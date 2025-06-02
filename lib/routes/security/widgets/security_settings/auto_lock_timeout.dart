@@ -17,10 +17,7 @@ class AutoLockTimeout extends StatelessWidget {
   /// Creates a security interval selector
   ///
   /// [interval] The current auto-lock interval
-  const AutoLockTimeout({
-    required this.interval,
-    super.key,
-  });
+  const AutoLockTimeout({required this.interval, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +32,7 @@ class AutoLockTimeout extends StatelessWidget {
     return ListTile(
       title: Text(
         texts.security_and_backup_lock_automatically,
-        style: themeData.primaryTextTheme.titleMedium?.copyWith(
-          color: Colors.white,
-        ),
+        style: themeData.primaryTextTheme.titleMedium?.copyWith(color: Colors.white),
         maxLines: 1,
       ),
       trailing: _buildIntervalDropdown(context, themeData, options, texts),
@@ -52,9 +47,7 @@ class AutoLockTimeout extends StatelessWidget {
     BreezTranslations texts,
   ) {
     return Theme(
-      data: themeData.copyWith(
-        canvasColor: themeData.customData.paymentListBgColor,
-      ),
+      data: themeData.copyWith(canvasColor: themeData.customData.paymentListBgColor),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(
           iconEnabledColor: Colors.white,
@@ -66,9 +59,7 @@ class AutoLockTimeout extends StatelessWidget {
               value: seconds,
               child: Text(
                 _formatSeconds(texts, seconds),
-                style: themeData.primaryTextTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                ),
+                style: themeData.primaryTextTheme.titleMedium?.copyWith(color: Colors.white),
                 maxLines: 1,
               ),
             );

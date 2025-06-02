@@ -72,9 +72,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
           return prepareResponseFuture == null
               ? Padding(
                   padding: const EdgeInsets.only(top: 32.0, bottom: 40.0),
-                  child: SingleChildScrollView(
-                    child: _buildForm(onchainPaymentLimits),
-                  ),
+                  child: SingleChildScrollView(child: _buildForm(onchainPaymentLimits)),
                 )
               : _buildQRCode();
         },
@@ -91,46 +89,41 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                   },
                 )
               : snapshot.lightningPaymentLimits == null
-                  ? const SizedBox.shrink()
-                  : prepareResponseFuture == null && receivePaymentResponseFuture == null
-                      ? SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.invoice_action_create,
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              _createSwap();
-                            }
-                          },
-                        )
-                      : FutureBuilder<PrepareReceiveResponse>(
-                          future: prepareResponseFuture,
-                          builder: (
-                            BuildContext context,
-                            AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
-                          ) {
-                            if (prepareSnapshot.hasData) {
-                              return FutureBuilder<ReceivePaymentResponse>(
-                                future: receivePaymentResponseFuture,
-                                builder: (
-                                  BuildContext context,
-                                  AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot,
-                                ) {
-                                  if (receiveSnapshot.hasData) {
-                                    return SingleButtonBottomBar(
-                                      stickToBottom: true,
-                                      text: texts.qr_code_dialog_action_close,
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    );
-                                  }
-                                  return const SizedBox.shrink();
-                                },
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          },
-                        );
+              ? const SizedBox.shrink()
+              : prepareResponseFuture == null && receivePaymentResponseFuture == null
+              ? SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.invoice_action_create,
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      _createSwap();
+                    }
+                  },
+                )
+              : FutureBuilder<PrepareReceiveResponse>(
+                  future: prepareResponseFuture,
+                  builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
+                    if (prepareSnapshot.hasData) {
+                      return FutureBuilder<ReceivePaymentResponse>(
+                        future: receivePaymentResponseFuture,
+                        builder:
+                            (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
+                              if (receiveSnapshot.hasData) {
+                                return SingleButtonBottomBar(
+                                  stickToBottom: true,
+                                  text: texts.qr_code_dialog_action_close,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                );
         },
       ),
     );
@@ -142,10 +135,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
 
     return FutureBuilder<PrepareReceiveResponse>(
       future: prepareResponseFuture,
-      builder: (
-        BuildContext context,
-        AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
-      ) {
+      builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
         if (prepareSnapshot.hasError) {
           return ScrollableErrorMessageWidget(
             showIcon: true,
@@ -158,10 +148,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
         if (prepareSnapshot.hasData) {
           return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
-            builder: (
-              BuildContext context,
-              AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot,
-            ) {
+            builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
               if (receiveSnapshot.hasError) {
                 return ScrollableErrorMessageWidget(
                   showIcon: true,
@@ -174,11 +161,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
               if (receiveSnapshot.hasData) {
                 return Container(
                   decoration: ShapeDecoration(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                     color: themeData.customData.surfaceBgColor,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
@@ -187,9 +170,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                       snapshot: receiveSnapshot,
                       destination: receiveSnapshot.data?.destination,
                       paymentLabel: texts.receive_payment_method_btc_address,
-                      infoWidget: PaymentFeesMessageBox(
-                        feesSat: prepareSnapshot.data!.feesSat.toInt(),
-                      ),
+                      infoWidget: PaymentFeesMessageBox(feesSat: prepareSnapshot.data!.feesSat.toInt()),
                       isBitcoinPayment: true,
                     ),
                   ),
@@ -206,9 +187,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     );
   }
 
-  BlocBuilder<CurrencyCubit, CurrencyState> _buildForm(
-    OnchainPaymentLimitsResponse onchainPaymentLimits,
-  ) {
+  BlocBuilder<CurrencyCubit, CurrencyState> _buildForm(OnchainPaymentLimitsResponse onchainPaymentLimits) {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
 
@@ -216,11 +195,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
       builder: (BuildContext context, CurrencyState currencyState) {
         return Container(
           decoration: ShapeDecoration(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12),
-              ),
-            ),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
             color: themeData.customData.surfaceBgColor,
           ),
           padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
@@ -239,9 +214,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                   maxLength: 90,
                   maxLengthEnforcement: MaxLengthEnforcement.enforced,
                   decoration: InputDecoration(
-                    prefixIconConstraints: BoxConstraints.tight(
-                      const Size(16, 56),
-                    ),
+                    prefixIconConstraints: BoxConstraints.tight(const Size(16, 56)),
                     prefixIcon: const SizedBox.shrink(),
                     contentPadding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
                     border: const OutlineInputBorder(),
@@ -275,9 +248,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
                   padding: const EdgeInsets.only(top: 12.0),
                   child: AutoSizeText(
                     texts.invoice_min_payment_limit(
-                      currencyState.bitcoinCurrency.format(
-                        onchainPaymentLimits.receive.minSat.toInt(),
-                      ),
+                      currencyState.bitcoinCurrency.format(onchainPaymentLimits.receive.minSat.toInt()),
                     ),
                     style: paymentLimitInformationTextStyle,
                     maxLines: 1,
@@ -318,10 +289,7 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     return;
   }
 
-  String? validatePayment(
-    int amount,
-    OnchainPaymentLimitsResponse onchainPaymentLimits,
-  ) {
+  String? validatePayment(int amount, OnchainPaymentLimitsResponse onchainPaymentLimits) {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: (int amount, bool outgoing) => _validateSwap(amount, outgoing, onchainPaymentLimits),
@@ -330,19 +298,10 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     ).validateIncoming(amount);
   }
 
-  void _validateSwap(
-    int amount,
-    bool outgoing,
-    OnchainPaymentLimitsResponse onchainPaymentLimits,
-  ) {
+  void _validateSwap(int amount, bool outgoing, OnchainPaymentLimitsResponse onchainPaymentLimits) {
     final AccountState accountState = context.read<AccountCubit>().state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
-    return chainSwapCubit.validateSwap(
-      BigInt.from(amount),
-      outgoing,
-      onchainPaymentLimits,
-      balance,
-    );
+    return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, onchainPaymentLimits, balance);
   }
 }

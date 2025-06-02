@@ -18,10 +18,7 @@ class _AnimatedLogoState extends State<AnimatedLogo> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: duration,
-    )..forward(from: 0.0);
+    _controller = AnimationController(vsync: this, duration: duration)..forward(from: 0.0);
 
     _animation = IntTween(begin: 0, end: frameCount).animate(_controller);
 

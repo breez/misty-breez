@@ -31,34 +31,35 @@ class FeeBreakdown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-        border: Border.all(
-          color: themeData.colorScheme.onSurface.withValues(alpha: .4),
-        ),
+        border: Border.all(color: themeData.colorScheme.onSurface.withValues(alpha: .4)),
         color: themeData.customData.surfaceBgColor,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (feeDetails is PreparePayOnchainResponse) ...<Widget>[
-            SenderAmount(amountSat: (feeDetails.receiverAmountSat + feeDetails.totalFeesSat).toInt()),
-            BoltzServiceFee(boltzServiceFee: (feeDetails.totalFeesSat - feeDetails.claimFeesSat).toInt()),
-            TransactionFee(txFeeSat: feeDetails.claimFeesSat.toInt()),
-            RecipientAmount(amountSat: feeDetails.receiverAmountSat.toInt()),
-          ] else if (feeDetails is PrepareRefundResponse && refundAmountSat != null) ...<Widget>[
-            SenderAmount(amountSat: refundAmountSat!),
-            TransactionFee(txFeeSat: feeDetails.txFeeSat.toInt()),
-            RecipientAmount(amountSat: refundAmountSat! - (feeDetails.txFeeSat).toInt()),
-          ],
-        ].expand((Widget widget) sync* {
-          yield widget;
-          yield const Divider(
-            height: 8.0,
-            color: Color.fromRGBO(40, 59, 74, 0.5),
-            indent: 16.0,
-            endIndent: 16.0,
-          );
-        }).toList()
-          ..removeLast(),
+        children:
+            <Widget>[
+                if (feeDetails is PreparePayOnchainResponse) ...<Widget>[
+                  SenderAmount(amountSat: (feeDetails.receiverAmountSat + feeDetails.totalFeesSat).toInt()),
+                  BoltzServiceFee(
+                    boltzServiceFee: (feeDetails.totalFeesSat - feeDetails.claimFeesSat).toInt(),
+                  ),
+                  TransactionFee(txFeeSat: feeDetails.claimFeesSat.toInt()),
+                  RecipientAmount(amountSat: feeDetails.receiverAmountSat.toInt()),
+                ] else if (feeDetails is PrepareRefundResponse && refundAmountSat != null) ...<Widget>[
+                  SenderAmount(amountSat: refundAmountSat!),
+                  TransactionFee(txFeeSat: feeDetails.txFeeSat.toInt()),
+                  RecipientAmount(amountSat: refundAmountSat! - (feeDetails.txFeeSat).toInt()),
+                ],
+              ].expand((Widget widget) sync* {
+                yield widget;
+                yield const Divider(
+                  height: 8.0,
+                  color: Color.fromRGBO(40, 59, 74, 0.5),
+                  indent: 16.0,
+                  endIndent: 16.0,
+                );
+              }).toList()
+              ..removeLast(),
       ),
     );
   }

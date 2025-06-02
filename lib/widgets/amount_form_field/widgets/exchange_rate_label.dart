@@ -9,11 +9,7 @@ class ExchangeRateLabel extends StatelessWidget {
   final ValueNotifier<double?> exchangeRateNotifier;
   final Animation<Color?>? colorAnimation;
 
-  const ExchangeRateLabel({
-    required this.exchangeRateNotifier,
-    this.colorAnimation,
-    super.key,
-  });
+  const ExchangeRateLabel({required this.exchangeRateNotifier, this.colorAnimation, super.key});
 
   @override
   Widget build(BuildContext context) {

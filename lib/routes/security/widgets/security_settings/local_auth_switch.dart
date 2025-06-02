@@ -42,10 +42,7 @@ class LocalAuthSwitch extends StatelessWidget {
         final bool localAuthEnabled = state.biometricType != BiometricType.none;
 
         return SimpleSwitch(
-          text: _getBiometricTypeLabel(
-            context,
-            localAuthEnabled ? state.biometricType : availableOption,
-          ),
+          text: _getBiometricTypeLabel(context, localAuthEnabled ? state.biometricType : availableOption),
           switchValue: localAuthEnabled,
           onChanged: (bool value) => _onBiometricToggled(context, value),
         );
@@ -60,25 +57,27 @@ class LocalAuthSwitch extends StatelessWidget {
     if (switchEnabled) {
       _logger.info('Attempting to enable biometric authentication');
 
-      authService.authenticateWithBiometrics(updateLockStateOnFailure: false).then(
-        (AuthResult authResult) {
-          if (authResult.success) {
-            _logger.info('Biometric authentication successful, enabling');
-            authService.enableBiometricAuth();
-          } else {
-            _logger.warning('Biometric authentication failed, not enabling');
-            _logger.warning('Reason: ${authResult.errorMessage}');
-            authService.disableBiometricAuth();
-          }
-        },
-        onError: (Object error) {
-          _logger.severe('Error during biometric authentication: $error');
-          authService.disableBiometricAuth();
-          if (context.mounted) {
-            showFlushbar(context, message: ExceptionHandler.extractMessage(error, context.texts()));
-          }
-        },
-      );
+      authService
+          .authenticateWithBiometrics(updateLockStateOnFailure: false)
+          .then(
+            (AuthResult authResult) {
+              if (authResult.success) {
+                _logger.info('Biometric authentication successful, enabling');
+                authService.enableBiometricAuth();
+              } else {
+                _logger.warning('Biometric authentication failed, not enabling');
+                _logger.warning('Reason: ${authResult.errorMessage}');
+                authService.disableBiometricAuth();
+              }
+            },
+            onError: (Object error) {
+              _logger.severe('Error during biometric authentication: $error');
+              authService.disableBiometricAuth();
+              if (context.mounted) {
+                showFlushbar(context, message: ExceptionHandler.extractMessage(error, context.texts()));
+              }
+            },
+          );
     } else {
       _logger.info('Disabling biometric authentication');
       authService.disableBiometricAuth();
@@ -86,10 +85,7 @@ class LocalAuthSwitch extends StatelessWidget {
   }
 
   /// Gets a human-readable label for the biometric type
-  String _getBiometricTypeLabel(
-    BuildContext context,
-    BiometricType authenticationOption,
-  ) {
+  String _getBiometricTypeLabel(BuildContext context, BiometricType authenticationOption) {
     final BreezTranslations texts = context.texts();
 
     switch (authenticationOption) {

@@ -10,11 +10,7 @@ class RefundItemCardAction extends StatelessWidget {
   final RefundableSwap refundableSwap;
   final String lastRefundTxId;
 
-  const RefundItemCardAction({
-    required this.refundableSwap,
-    required this.lastRefundTxId,
-    super.key,
-  });
+  const RefundItemCardAction({required this.refundableSwap, required this.lastRefundTxId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,24 +29,19 @@ class RefundItemCardAction extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             backgroundColor: themeData.primaryColor,
             elevation: 0.0,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            ),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
           ),
           onPressed: lastRefundTxId.isEmpty || allowRebroadcast
               ? () {
-                  Navigator.of(context).pushNamed(
-                    RefundPage.routeName,
-                    arguments: refundableSwap,
-                  );
+                  Navigator.of(context).pushNamed(RefundPage.routeName, arguments: refundableSwap);
                 }
               : null,
           child: Text(
             lastRefundTxId.isNotEmpty
                 ? allowRebroadcast
-                    // TODO(erdemyerebasmaz): Add message to Breez-Translations
-                    ? 'REBROADCAST'
-                    : texts.get_refund_action_broadcasted
+                      // TODO(erdemyerebasmaz): Add message to Breez-Translations
+                      ? 'REBROADCAST'
+                      : texts.get_refund_action_broadcasted
                 : texts.get_refund_action_continue,
             style: themeData.textTheme.labelLarge,
           ),

@@ -6,12 +6,7 @@ class RefundState {
   final String? error;
   final bool rebroadcastEnabled;
 
-  RefundState({
-    this.refundables,
-    this.refundTxId,
-    this.error = '',
-    this.rebroadcastEnabled = false,
-  });
+  RefundState({this.refundables, this.refundTxId, this.error = '', this.rebroadcastEnabled = false});
 
   RefundState.initial() : this();
 

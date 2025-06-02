@@ -140,11 +140,7 @@ class LnUrlPayService {
 
     final Map<String, String> headers = <String, String>{'Content-Type': 'application/json'};
     final http.Response response = await _client
-        .post(
-          uri,
-          body: jsonEncode(body),
-          headers: headers,
-        )
+        .post(uri, body: jsonEncode(body), headers: headers)
         .timeout(timeout ?? _defaultTimeout);
 
     return _processResponse(response);
@@ -158,11 +154,7 @@ class LnUrlPayService {
 
     final Map<String, String> headers = <String, String>{'Content-Type': 'application/json'};
     final http.Response response = await _client
-        .delete(
-          uri,
-          body: jsonEncode(body),
-          headers: headers,
-        )
+        .delete(uri, body: jsonEncode(body), headers: headers)
         .timeout(timeout ?? _defaultTimeout);
 
     return _processResponse(response);

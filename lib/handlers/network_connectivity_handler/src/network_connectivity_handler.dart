@@ -80,11 +80,7 @@ class NetworkConnectivityHandler extends Handler {
     return Flushbar<dynamic>(
       isDismissible: false,
       flushbarPosition: FlushbarPosition.TOP,
-      icon: Icon(
-        Icons.warning_amber_outlined,
-        size: 28.0,
-        color: themeData.colorScheme.error,
-      ),
+      icon: Icon(Icons.warning_amber_outlined, size: 28.0, color: themeData.colorScheme.error),
       messageText: Text(
         context.texts().no_connection_flushbar_title,
         style: snackBarStyle,

@@ -22,9 +22,7 @@ class PaymentInfoMessageBox extends StatelessWidget {
               textAlign: TextAlign.center,
               text: TextSpan(
                 text: message,
-                style: themeData.textTheme.titleLarge?.copyWith(
-                  color: themeData.colorScheme.error,
-                ),
+                style: themeData.textTheme.titleLarge?.copyWith(color: themeData.colorScheme.error),
                 children: <InlineSpan>[
                   TextSpan(
                     text: 'here',
@@ -37,18 +35,14 @@ class PaymentInfoMessageBox extends StatelessWidget {
                   ),
                   TextSpan(
                     text: '.',
-                    style: themeData.textTheme.titleLarge?.copyWith(
-                      color: themeData.colorScheme.error,
-                    ),
+                    style: themeData.textTheme.titleLarge?.copyWith(color: themeData.colorScheme.error),
                   ),
                 ],
               ),
             )
           : Text(
               message,
-              style: themeData.textTheme.titleLarge?.copyWith(
-                color: themeData.colorScheme.error,
-              ),
+              style: themeData.textTheme.titleLarge?.copyWith(color: themeData.colorScheme.error),
               textAlign: TextAlign.center,
             ),
     );

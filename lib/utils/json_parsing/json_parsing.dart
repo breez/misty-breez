@@ -6,11 +6,7 @@ final Logger _logger = Logger('JsonParsingUtils');
 class JsonParsingUtils {
   /// Parses a dynamic value to BigInt, handling both string and integer inputs
   /// If [defaultValue] is not provided, BigInt.zero will be used as default
-  static BigInt parseToBigInt(
-    dynamic value, {
-    required String fieldName,
-    BigInt? defaultValue,
-  }) {
+  static BigInt parseToBigInt(dynamic value, {required String fieldName, BigInt? defaultValue}) {
     final BigInt defaultVal = defaultValue ?? BigInt.zero;
 
     try {
@@ -34,11 +30,7 @@ class JsonParsingUtils {
 
   /// Parses a dynamic value to int, handling both string and integer inputs
   /// If [defaultValue] is not provided, 0 will be used as default
-  static int parseToInt(
-    dynamic value, {
-    required String fieldName,
-    int? defaultValue,
-  }) {
+  static int parseToInt(dynamic value, {required String fieldName, int? defaultValue}) {
     final int defaultVal = defaultValue ?? 0;
 
     try {

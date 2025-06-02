@@ -67,16 +67,12 @@ class WebhookRequestBuilder {
   /// @param webhookUrl The URL to unregister or recover
   /// @return A properly formatted and signed unregister/recover request
   /// @throws Exception if message signing fails
-  Future<UnregisterRecoverLnurlPayRequest> buildUnregisterRecoverRequest({
-    required String webhookUrl,
-  }) async {
+  Future<UnregisterRecoverLnurlPayRequest> buildUnregisterRecoverRequest({required String webhookUrl}) async {
     try {
       _logger.info('Building unregister/recover request for webhook: $webhookUrl');
 
       // Build the signed request data
-      final SignedRequestData requestData = await _buildSignedRequestData(
-        webhookUrl: webhookUrl,
-      );
+      final SignedRequestData requestData = await _buildSignedRequestData(webhookUrl: webhookUrl);
 
       // Create and return the final request object
       final UnregisterRecoverLnurlPayRequest request = UnregisterRecoverLnurlPayRequest(
@@ -133,9 +129,6 @@ class WebhookRequestBuilder {
     // Sign the message
     final String signature = await messageSigner.signMessage(message);
 
-    return SignedRequestData(
-      timestamp: timestamp,
-      signature: signature,
-    );
+    return SignedRequestData(timestamp: timestamp, signature: signature);
   }
 }

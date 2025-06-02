@@ -12,7 +12,7 @@ enum LnAddressStatus {
   success,
 
   /// Operation failed
-  error
+  error,
 }
 
 /// Represents the state of a Lightning Address in the application.
@@ -72,24 +72,14 @@ class LnAddressState {
   /// Returns a new [LnAddressState] with error set to null
   /// and all other fields maintaining their existing values.
   LnAddressState clearError() {
-    return LnAddressState(
-      lnurl: lnurl,
-      lnAddress: lnAddress,
-      status: status,
-      updateStatus: updateStatus,
-    );
+    return LnAddressState(lnurl: lnurl, lnAddress: lnAddress, status: status, updateStatus: updateStatus);
   }
 
   /// Creates a copy of this state with update status reset to initial
   ///
   /// Useful for clearing previous update operation results.
   LnAddressState clearUpdateStatus() {
-    return LnAddressState(
-      lnurl: lnurl,
-      lnAddress: lnAddress,
-      status: status,
-      error: error,
-    );
+    return LnAddressState(lnurl: lnurl, lnAddress: lnAddress, status: status, error: error);
   }
 
   /// Determines if this state has a valid Lightning Address
@@ -160,12 +150,6 @@ class LnAddressState {
 
   @override
   int get hashCode {
-    return Object.hash(
-      lnurl,
-      lnAddress,
-      status,
-      updateStatus,
-      error,
-    );
+    return Object.hash(lnurl, lnAddress, status, updateStatus, error);
   }
 }

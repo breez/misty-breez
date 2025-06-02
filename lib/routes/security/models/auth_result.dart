@@ -14,9 +14,5 @@ class AuthResult {
   /// [success] Whether the authentication was successful.
   /// [errorMessage] Error message if authentication failed.
   /// [clearOnSuccess] Whether to clear the PIN input field on success.
-  const AuthResult({
-    required this.success,
-    this.errorMessage,
-    this.clearOnSuccess = false,
-  });
+  const AuthResult({required this.success, this.errorMessage, this.clearOnSuccess = false});
 }

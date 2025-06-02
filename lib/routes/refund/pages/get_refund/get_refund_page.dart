@@ -19,18 +19,13 @@ class GetRefundPage extends StatelessWidget {
     final BreezTranslations texts = context.texts();
 
     return Scaffold(
-      appBar: AppBar(
-        leading: const back_button.BackButton(),
-        title: Text(texts.get_refund_title),
-      ),
+      appBar: AppBar(leading: const back_button.BackButton(), title: Text(texts.get_refund_title)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: SingleChildScrollView(
           child: BlocBuilder<RefundCubit, RefundState>(
             builder: (BuildContext context, RefundState refundState) {
-              return RefundableSwapList(
-                refundables: refundState.refundables ?? <RefundableSwap>[],
-              );
+              return RefundableSwapList(refundables: refundState.refundables ?? <RefundableSwap>[]);
             },
           ),
         ),

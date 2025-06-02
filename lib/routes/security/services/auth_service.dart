@@ -49,25 +49,17 @@ class AuthService {
       }
 
       _logger.warning('PIN validation failed: incorrect PIN');
-      return AuthResult(
-        success: false,
-        errorMessage: _texts.lock_screen_pin_incorrect,
-      );
+      return AuthResult(success: false, errorMessage: _texts.lock_screen_pin_incorrect);
     } catch (e) {
       _logger.severe('PIN validation error: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: _texts.lock_screen_pin_match_exception,
-      );
+      return AuthResult(success: false, errorMessage: _texts.lock_screen_pin_match_exception);
     }
   }
 
   /// Authenticates using biometrics
   ///
   /// Returns an [AuthResult] with the authentication outcome
-  Future<AuthResult> authenticateWithBiometrics({
-    bool updateLockStateOnFailure = true,
-  }) async {
+  Future<AuthResult> authenticateWithBiometrics({bool updateLockStateOnFailure = true}) async {
     _logger.fine('Attempting biometric authentication');
 
     try {
@@ -82,10 +74,7 @@ class AuthService {
       }
 
       _logger.warning('Biometric authentication failed');
-      return AuthResult(
-        success: false,
-        errorMessage: _texts.lock_screen_pin_incorrect,
-      );
+      return AuthResult(success: false, errorMessage: _texts.lock_screen_pin_incorrect);
     } catch (e) {
       _logger.severe('Biometric authentication error: $e');
       rethrow;

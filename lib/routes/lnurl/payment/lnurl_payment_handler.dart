@@ -17,10 +17,7 @@ Future<LNURLPageResult?> handlePayRequest(
   final NavigatorState navigator = Navigator.of(context);
   final PrepareLnUrlPayResponse? prepareResponse = await navigator.pushNamed<PrepareLnUrlPayResponse?>(
     LnUrlPaymentPage.routeName,
-    arguments: LnUrlPaymentArguments(
-      requestData: requestData,
-      bip353Address: bip353Address,
-    ),
+    arguments: LnUrlPaymentArguments(requestData: requestData, bip353Address: bip353Address),
   );
   if (prepareResponse == null || !context.mounted) {
     return Future<LNURLPageResult?>.value();
@@ -42,22 +39,13 @@ Future<LNURLPageResult?> handlePayRequest(
     if (result is LnUrlPayResult) {
       if (result is LnUrlPayResult_EndpointSuccess) {
         _logger.info('LNURL payment success, action: ${result.data}');
-        pageResult = LNURLPageResult(
-          protocol: LnUrlProtocol.pay,
-          successAction: result.data.successAction,
-        );
+        pageResult = LNURLPageResult(protocol: LnUrlProtocol.pay, successAction: result.data.successAction);
       } else if (result is LnUrlPayResult_PayError) {
         _logger.info('LNURL payment for ${result.data.paymentHash} failed: ${result.data.reason}');
-        pageResult = LNURLPageResult(
-          protocol: LnUrlProtocol.pay,
-          error: result.data.reason,
-        );
+        pageResult = LNURLPageResult(protocol: LnUrlProtocol.pay, error: result.data.reason);
       } else if (result is LnUrlPayResult_EndpointError) {
         _logger.info('LNURL payment failed: ${result.data.reason}');
-        pageResult = LNURLPageResult(
-          protocol: LnUrlProtocol.pay,
-          error: result.data.reason,
-        );
+        pageResult = LNURLPageResult(protocol: LnUrlProtocol.pay, error: result.data.reason);
       }
     }
 

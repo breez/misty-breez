@@ -10,16 +10,10 @@ class ConnectivityState {
   bool get hasNetworkConnection =>
       connectivityResult != null &&
       (!connectivityResult!.contains(ConnectivityResult.none) ||
-          connectivityResult!.every(
-            (ConnectivityResult result) => result == ConnectivityResult.vpn,
-          ));
+          connectivityResult!.every((ConnectivityResult result) => result == ConnectivityResult.vpn));
 
-  ConnectivityState copyWith({
-    List<ConnectivityResult>? connectivityResult,
-  }) {
-    return ConnectivityState(
-      connectivityResult: connectivityResult ?? this.connectivityResult,
-    );
+  ConnectivityState copyWith({List<ConnectivityResult>? connectivityResult}) {
+    return ConnectivityState(connectivityResult: connectivityResult ?? this.connectivityResult);
   }
 
   @override

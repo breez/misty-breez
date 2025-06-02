@@ -24,11 +24,8 @@ Future<dynamic> showRedeemingFundsSheet(
     isDismissible: false,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (BuildContext context) => RedeemFundsSheet(
-      amountSats: amountSats,
-      requestData: requestData,
-      onFinish: onFinish,
-    ),
+    builder: (BuildContext context) =>
+        RedeemFundsSheet(amountSats: amountSats, requestData: requestData, onFinish: onFinish),
   );
 }
 
@@ -69,9 +66,7 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
   void _startWithdrawProcess() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _lnurlWithdrawFuture = _lnurlWithdraw().then(
-          _processResultWithAnimation,
-        );
+        _lnurlWithdrawFuture = _lnurlWithdraw().then(_processResultWithAnimation);
       });
     });
   }
@@ -129,16 +124,14 @@ class RedeemFundsSheetState extends State<RedeemFundsSheet> with SingleTickerPro
                       LoadingAnimatedText(
                         loadingMessage: texts.lnurl_withdraw_dialog_wait,
                         textStyle: themeData.dialogTheme.contentTextStyle!.copyWith(
-                          color:
-                              themeData.isLightTheme ? themeData.textTheme.labelLarge!.color : Colors.white,
+                          color: themeData.isLightTheme
+                              ? themeData.textTheme.labelLarge!.color
+                              : Colors.white,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
-                      Image.asset(
-                        themeData.customData.loaderAssetPath,
-                        gaplessPlayback: true,
-                      ),
+                      Image.asset(themeData.customData.loaderAssetPath, gaplessPlayback: true),
                     ],
                   ),
                 ],

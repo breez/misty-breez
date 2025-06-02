@@ -10,10 +10,7 @@ class DefaultProfile {
   final String color;
   final String animal;
 
-  const DefaultProfile(
-    this.color,
-    this.animal,
-  );
+  const DefaultProfile(this.color, this.animal);
 
   String buildName(Locale locale) {
     switch (locale.languageCode) {
@@ -47,10 +44,7 @@ DefaultProfile generateDefaultProfile({BreezTranslations? locale}) {
   final ProfileColor randomColor = colors.elementAt(random.nextInt(colors.length));
   final ProfileAnimal randomAnimal = animals.elementAt(random.nextInt(animals.length));
 
-  return DefaultProfile(
-    randomColor.name(texts),
-    randomAnimal.name(texts),
-  );
+  return DefaultProfile(randomColor.name(texts), randomAnimal.name(texts));
 }
 
 DefaultProfile generateEnglishDefaultProfile(String colorKey, String animalKey) {
@@ -66,10 +60,7 @@ DefaultProfile generateEnglishDefaultProfile(String colorKey, String animalKey) 
     orElse: () => ProfileAnimal.values.first,
   );
 
-  return DefaultProfile(
-    color.name(enTexts),
-    animal.name(enTexts),
-  );
+  return DefaultProfile(color.name(enTexts), animal.name(enTexts));
 }
 
 /// Verifies if a profile name is in English

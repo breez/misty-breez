@@ -57,9 +57,7 @@ class PaymentsFilterCalendar extends StatelessWidget {
                   })
                 : ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                        texts.payments_filter_message_loading_transactions,
-                      ),
+                      content: Text(texts.payments_filter_message_loading_transactions),
                       behavior: SnackBarBehavior.floating,
                     ),
                   ),

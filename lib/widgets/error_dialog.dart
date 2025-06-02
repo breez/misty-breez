@@ -5,11 +5,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-Future<void> promptError(
-  BuildContext context, {
-  required Widget body,
-  String? title,
-}) {
+Future<void> promptError(BuildContext context, {required Widget body, String? title}) {
   final BreezTranslations texts = context.texts();
   final ThemeData themeData = Theme.of(context);
 
@@ -30,10 +26,7 @@ Future<void> promptError(
         content: SingleChildScrollView(child: body),
         actions: <Widget>[
           TextButton(
-            child: Text(
-              texts.error_dialog_default_action_ok,
-              style: themeData.primaryTextTheme.labelLarge,
-            ),
+            child: Text(texts.error_dialog_default_action_ok, style: themeData.primaryTextTheme.labelLarge),
             onPressed: () {
               logger.info('Dialog ${texts.error_dialog_default_action_yes} button pressed');
               Navigator.of(context).pop();
@@ -45,11 +38,7 @@ Future<void> promptError(
   );
 }
 
-Future<bool?> promptAreYouSure(
-  BuildContext context, {
-  required Widget body,
-  String? title,
-}) {
+Future<bool?> promptAreYouSure(BuildContext context, {required Widget body, String? title}) {
   final BreezTranslations texts = context.texts();
   final ThemeData themeData = Theme.of(context);
 
@@ -69,20 +58,14 @@ Future<bool?> promptAreYouSure(
         content: SingleChildScrollView(child: body),
         actions: <Widget>[
           TextButton(
-            child: Text(
-              texts.error_dialog_default_action_no,
-              style: themeData.primaryTextTheme.labelLarge,
-            ),
+            child: Text(texts.error_dialog_default_action_no, style: themeData.primaryTextTheme.labelLarge),
             onPressed: () {
               logger.info('Dialog ${texts.error_dialog_default_action_no} button pressed');
               Navigator.of(context).pop(false);
             },
           ),
           TextButton(
-            child: Text(
-              texts.error_dialog_default_action_yes,
-              style: themeData.primaryTextTheme.labelLarge,
-            ),
+            child: Text(texts.error_dialog_default_action_yes, style: themeData.primaryTextTheme.labelLarge),
             onPressed: () {
               logger.info('Dialog ${texts.error_dialog_default_action_yes} button pressed');
               Navigator.of(context).pop(true);

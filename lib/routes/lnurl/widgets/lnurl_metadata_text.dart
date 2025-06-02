@@ -19,10 +19,7 @@ class _LNURLMetadataTextState extends State<LNURLMetadataText> {
     final ThemeData themeData = Theme.of(context);
 
     return Container(
-      constraints: const BoxConstraints(
-        maxHeight: 120,
-        minWidth: double.infinity,
-      ),
+      constraints: const BoxConstraints(maxHeight: 120, minWidth: double.infinity),
       child: Scrollbar(
         controller: _scrollController,
         radius: const Radius.circular(16.0),

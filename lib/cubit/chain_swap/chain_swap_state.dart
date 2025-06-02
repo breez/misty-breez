@@ -8,12 +8,6 @@ class ChainSwapState {
 
   ChainSwapState.initial() : this();
 
-  ChainSwapState copyWith({
-    List<SendChainSwapFeeOption>? feeOptions,
-    String? error,
-  }) =>
-      ChainSwapState(
-        feeOptions: feeOptions ?? this.feeOptions,
-        error: error ?? this.error,
-      );
+  ChainSwapState copyWith({List<SendChainSwapFeeOption>? feeOptions, String? error}) =>
+      ChainSwapState(feeOptions: feeOptions ?? this.feeOptions, error: error ?? this.error);
 }

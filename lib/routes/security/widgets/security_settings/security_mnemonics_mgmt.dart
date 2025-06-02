@@ -54,16 +54,10 @@ class _SecurityMnemonicsManagementState extends State<SecurityMnemonicsManagemen
                 isVerified
                     ? texts.mnemonics_confirmation_display_backup_phrase
                     : texts.mnemonics_confirmation_verify_backup_phrase,
-                style: themeData.primaryTextTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                ),
+                style: themeData.primaryTextTheme.titleMedium?.copyWith(color: Colors.white),
                 maxLines: 1,
               ),
-              trailing: const Icon(
-                Icons.keyboard_arrow_right,
-                color: Colors.white,
-                size: 30.0,
-              ),
+              trailing: const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
               onTap: () => _handleMnemonicsTap(context, isVerified),
             );
           },
@@ -86,20 +80,13 @@ class _SecurityMnemonicsManagementState extends State<SecurityMnemonicsManagemen
 
       if (!isVerified) {
         _logger.info('Navigating to mnemonic confirmation page');
-        Navigator.pushNamed(
-          context,
-          MnemonicsConfirmationPage.routeName,
-          arguments: accountMnemonic,
-        );
+        Navigator.pushNamed(context, MnemonicsConfirmationPage.routeName, arguments: accountMnemonic);
       } else {
         _logger.info('Navigating to mnemonics view page');
         Navigator.push(
           context,
           FadeInRoute<void>(
-            builder: (BuildContext context) => MnemonicsPage(
-              mnemonics: accountMnemonic,
-              viewMode: true,
-            ),
+            builder: (BuildContext context) => MnemonicsPage(mnemonics: accountMnemonic, viewMode: true),
           ),
         );
       }

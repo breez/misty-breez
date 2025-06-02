@@ -12,11 +12,7 @@ class CurrencyConverterBottomSheet extends StatefulWidget {
   final Function(String string) onConvert;
   final String? Function(int amount) validatorFn;
 
-  const CurrencyConverterBottomSheet({
-    required this.onConvert,
-    required this.validatorFn,
-    super.key,
-  });
+  const CurrencyConverterBottomSheet({required this.onConvert, required this.validatorFn, super.key});
 
   @override
   State<CurrencyConverterBottomSheet> createState() => _CurrencyConverterBottomSheetState();
@@ -51,10 +47,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
 
   void _setupAnimation() {
     final ThemeData themeData = Theme.of(context);
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     // Loop back to start and stop
     _animationController?.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
@@ -64,32 +57,27 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
       }
     });
 
-    _colorAnimation = ColorTween(
-      begin: themeData.primaryTextTheme.titleSmall!.color!.withValues(alpha: .7),
-      end: themeData.textTheme.headlineMedium!.color,
-    ).animate(_animationController!)
-      ..addListener(() {
-        setState(() {});
-      });
+    _colorAnimation =
+        ColorTween(
+          begin: themeData.primaryTextTheme.titleSmall!.color!.withValues(alpha: .7),
+          end: themeData.textTheme.headlineMedium!.color,
+        ).animate(_animationController!)..addListener(() {
+          setState(() {});
+        });
   }
 
   void _fetchExchangeRates() {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
-    currencyCubit.fetchExchangeRates().catchError(
-      (Object value) {
-        if (mounted) {
-          final BreezTranslations texts = context.texts();
-          setState(() {
-            Navigator.pop(context);
-            showFlushbar(
-              context,
-              message: texts.currency_converter_dialog_error_exchange_rate,
-            );
-          });
-        }
-        return <String, Rate>{};
-      },
-    );
+    currencyCubit.fetchExchangeRates().catchError((Object value) {
+      if (mounted) {
+        final BreezTranslations texts = context.texts();
+        setState(() {
+          Navigator.pop(context);
+          showFlushbar(context, message: texts.currency_converter_dialog_error_exchange_rate);
+        });
+      }
+      return <String, Rate>{};
+    });
   }
 
   void _startExchangeRateRefreshTimer() {
@@ -117,9 +105,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
     final ThemeData themeData = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: BlocBuilder<CurrencyCubit, CurrencyState>(
           builder: (BuildContext context, CurrencyState state) {
@@ -140,10 +126,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                     margin: const EdgeInsets.only(top: 8.0),
                     width: 40.0,
                     height: 6.5,
-                    decoration: BoxDecoration(
-                      color: Colors.white12,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
+                    decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(50)),
                   ),
                 ),
                 Padding(
@@ -167,12 +150,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                     });
                   },
                 ),
-                const Divider(
-                  height: 32.0,
-                  color: Colors.white12,
-                  indent: 16.0,
-                  endIndent: 16.0,
-                ),
+                const Divider(height: 32.0, color: Colors.white12, indent: 16.0, endIndent: 16.0),
                 FiatInputField(
                   formKey: _formKey,
                   controller: _fiatAmountController,
@@ -181,9 +159,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                   validatorFn: widget.validatorFn,
                 ),
                 const SizedBox(height: 8.0),
-                SatEquivalentLabel(
-                  controller: _fiatAmountController,
-                ),
+                SatEquivalentLabel(controller: _fiatAmountController),
                 ExchangeRateLabel(
                   exchangeRateNotifier: _exchangeRateNotifier,
                   colorAnimation: _colorAnimation,
@@ -191,10 +167,7 @@ class _CurrencyConverterBottomSheetState extends State<CurrencyConverterBottomSh
                 const SizedBox(height: 8.0),
                 Align(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 16.0,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                     child: SingleButtonBottomBar(
                       text: texts.currency_converter_dialog_action_done,
                       expand: true,

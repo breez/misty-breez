@@ -31,12 +31,7 @@ class NumPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        ..._buildDigitRows(),
-        _buildBottomRow(),
-      ],
-    );
+    return Column(children: <Widget>[..._buildDigitRows(), _buildBottomRow()]);
   }
 
   /// Builds the rows for digits 1-9
@@ -48,10 +43,7 @@ class NumPad extends StatelessWidget {
           children: List<Widget>.generate(
             3,
             (int colIndex) => Expanded(
-              child: DigitButton(
-                digit: '${colIndex + 1 + 3 * rowIndex}',
-                onPressed: onDigitPressed,
-              ),
+              child: DigitButton(digit: '${colIndex + 1 + 3 * rowIndex}', onPressed: onDigitPressed),
             ),
           ),
         ),
@@ -65,22 +57,13 @@ class NumPad extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: DigitButton(
-              icon: lhsActionKey.icon,
-              onPressed: (_) => onActionKeyPressed(lhsActionKey),
-            ),
+            child: DigitButton(icon: lhsActionKey.icon, onPressed: (_) => onActionKeyPressed(lhsActionKey)),
           ),
           Expanded(
-            child: DigitButton(
-              digit: '0',
-              onPressed: onDigitPressed,
-            ),
+            child: DigitButton(digit: '0', onPressed: onDigitPressed),
           ),
           Expanded(
-            child: DigitButton(
-              icon: rhsActionKey.icon,
-              onPressed: (_) => onActionKeyPressed(rhsActionKey),
-            ),
+            child: DigitButton(icon: rhsActionKey.icon, onPressed: (_) => onActionKeyPressed(rhsActionKey)),
           ),
         ],
       ),

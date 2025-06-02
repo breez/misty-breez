@@ -31,8 +31,6 @@ class UserProfileState {
   }
 
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'profileSettings': profileSettings.toJson(),
-    };
+    return <String, dynamic>{'profileSettings': profileSettings.toJson()};
   }
 }

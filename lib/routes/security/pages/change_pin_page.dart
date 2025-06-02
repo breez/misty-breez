@@ -44,9 +44,7 @@ class _ChangePinPageState extends State<ChangePinPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const back_button.BackButton(),
-      ),
+      appBar: AppBar(leading: const back_button.BackButton()),
       body: PinCode(
         label: _getLabelText(),
         validatePin: (String pin) => _handlePinEntry(pin),
@@ -109,10 +107,7 @@ class _ChangePinPageState extends State<ChangePinPage> {
         _firstPinCode = '';
         _currentState = _PinEntryState.initial;
       });
-      return AuthResult(
-        success: false,
-        errorMessage: texts.security_and_backup_new_pin_do_not_match,
-      );
+      return AuthResult(success: false, errorMessage: texts.security_and_backup_new_pin_do_not_match);
     }
 
     try {
@@ -130,17 +125,11 @@ class _ChangePinPageState extends State<ChangePinPage> {
         return const AuthResult(success: true);
       } else {
         // texts.security_and_backup_error_saving_pin,
-        return const AuthResult(
-          success: false,
-          errorMessage: 'Failed to save PIN.',
-        );
+        return const AuthResult(success: false, errorMessage: 'Failed to save PIN.');
       }
     } catch (e) {
       _logger.severe('Error saving PIN: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: 'Failed to save PIN: $e',
-      );
+      return AuthResult(success: false, errorMessage: 'Failed to save PIN: $e');
     }
   }
 }

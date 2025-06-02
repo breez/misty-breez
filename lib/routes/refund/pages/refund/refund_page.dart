@@ -44,10 +44,7 @@ class RefundPageState extends State<RefundPage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        leading: const back_button.BackButton(),
-        title: Text(texts.get_refund_title),
-      ),
+      appBar: AppBar(leading: const back_button.BackButton(), title: Text(texts.get_refund_title)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32),
@@ -55,11 +52,7 @@ class RefundPageState extends State<RefundPage> {
             children: <Widget>[
               Container(
                 decoration: ShapeDecoration(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12),
-                    ),
-                  ),
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                   color: themeData.customData.surfaceBgColor,
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),

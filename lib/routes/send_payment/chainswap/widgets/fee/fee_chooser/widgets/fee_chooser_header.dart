@@ -36,21 +36,16 @@ class _FeeChooserHeaderState extends State<FeeChooserHeader> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Row(
-          children: List<FeeOptionButton>.generate(
-            widget.feeOptions.length,
-            (int index) {
-              final FeeOption feeOption = widget.feeOptions.elementAt(index);
-              return FeeOptionButton(
-                index: index,
-                text: feeOption.getDisplayName(texts),
-                isAffordable: feeOption.isAffordable(
-                  balanceSat: accountState.walletInfo!.balanceSat.toInt(),
-                ),
-                isSelected: widget.selectedFeeIndex == index,
-                onSelect: () => widget.onSelect(index),
-              );
-            },
-          ),
+          children: List<FeeOptionButton>.generate(widget.feeOptions.length, (int index) {
+            final FeeOption feeOption = widget.feeOptions.elementAt(index);
+            return FeeOptionButton(
+              index: index,
+              text: feeOption.getDisplayName(texts),
+              isAffordable: feeOption.isAffordable(balanceSat: accountState.walletInfo!.balanceSat.toInt()),
+              isSelected: widget.selectedFeeIndex == index,
+              onSelect: () => widget.onSelect(index),
+            );
+          }),
         ),
       ],
     );

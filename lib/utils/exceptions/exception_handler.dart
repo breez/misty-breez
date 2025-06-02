@@ -16,11 +16,7 @@ class ExceptionHandler {
   /// [texts] Translations for localized error messages
   /// [defaultErrorMsg] Optional default error message if extraction fails
   /// Returns a user-friendly error message
-  static String extractMessage(
-    Object exception,
-    BreezTranslations texts, {
-    String? defaultErrorMsg,
-  }) {
+  static String extractMessage(Object exception, BreezTranslations texts, {String? defaultErrorMsg}) {
     _logger.info('Extracting exception message: $exception');
 
     if (exception is AnyhowException) {
@@ -192,10 +188,7 @@ class ExceptionHandler {
   /// [texts] Translations for localized error messages
   /// [originalMessage] The original error message
   /// Returns a localized error message
-  static String _localizedExceptionMessage(
-    BreezTranslations texts,
-    String originalMessage,
-  ) {
+  static String _localizedExceptionMessage(BreezTranslations texts, String originalMessage) {
     _logger.info('Localizing exception message: $originalMessage');
 
     final String messageToLower = originalMessage.toLowerCase();

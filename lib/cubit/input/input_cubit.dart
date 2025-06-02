@@ -18,10 +18,7 @@ class InputCubit extends Cubit<InputState> {
 
   final StreamController<InputData> _decodeInvoiceController = StreamController<InputData>();
 
-  InputCubit(
-    this._breezSdkLiquid,
-    this._lightningLinks,
-  ) : super(const InputState.empty()) {
+  InputCubit(this._breezSdkLiquid, this._lightningLinks) : super(const InputState.empty()) {
     _initializeInputCubit();
   }
 
@@ -38,8 +35,9 @@ class InputCubit extends Cubit<InputState> {
   Stream<InputState?> _watchIncomingInvoices() {
     _logger.info('watchIncomingInvoices');
     return Rx.merge(<Stream<InputData>>[
-      _decodeInvoiceController.stream
-          .doOnData((InputData event) => _logger.info('decodeInvoiceController: $event')),
+      _decodeInvoiceController.stream.doOnData(
+        (InputData event) => _logger.info('decodeInvoiceController: $event'),
+      ),
       _lightningLinks.linksNotifications
           .map((String data) => InputData(data: data, source: InputSource.hyperlink))
           .doOnData((InputData event) => _logger.info('lightningLinks: $event')),

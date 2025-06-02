@@ -21,10 +21,7 @@ class InputHandler extends Handler {
   TransparentPageRoute<dynamic>? _loaderRoute;
   bool _handlingRequest = false;
 
-  InputHandler(
-    this.firstPaymentItemKey,
-    this.scaffoldController,
-  );
+  InputHandler(this.firstPaymentItemKey, this.scaffoldController);
 
   @override
   void init(HandlerContextProvider<StatefulWidget> contextProvider) {
@@ -60,18 +57,18 @@ class InputHandler extends Handler {
         .then((dynamic result) => handleResult(result))
         .whenComplete(() => _handlingRequest = false)
         .onError((Object? error, _) {
-      _logger.severe('Input state error', error);
-      _handlingRequest = false;
-      _setLoading(false);
-      if (error != null) {
-        final BuildContext? context = contextProvider?.getBuildContext();
-        if (context != null && context.mounted) {
-          showFlushbar(context, message: ExceptionHandler.extractMessage(error, context.texts()));
-        } else {
-          _logger.info('Skipping handling of error: $error because context is null');
-        }
-      }
-    });
+          _logger.severe('Input state error', error);
+          _handlingRequest = false;
+          _setLoading(false);
+          if (error != null) {
+            final BuildContext? context = contextProvider?.getBuildContext();
+            if (context != null && context.mounted) {
+              showFlushbar(context, message: ExceptionHandler.extractMessage(error, context.texts()));
+            } else {
+              _logger.info('Skipping handling of error: $error because context is null');
+            }
+          }
+        });
   }
 
   Future<dynamic> handleInputData(InputState inputState) async {
@@ -85,11 +82,7 @@ class InputHandler extends Handler {
     if (inputState is LnInvoiceInputState) {
       return handleLnInvoice(context, inputState.lnInvoice);
     } else if (inputState is LnOfferInputState) {
-      return handleLnOffer(
-        context,
-        inputState.lnOffer,
-        bip353Address: inputState.bip353Address,
-      );
+      return handleLnOffer(context, inputState.lnOffer, bip353Address: inputState.bip353Address);
     } else if (inputState is LnUrlPayInputState) {
       return handlePayRequest(
         context,
@@ -147,11 +140,7 @@ class InputHandler extends Handler {
     });
   }
 
-  Future<dynamic> handleLnOffer(
-    BuildContext context,
-    LNOffer lnOffer, {
-    String? bip353Address,
-  }) async {
+  Future<dynamic> handleLnOffer(BuildContext context, LNOffer lnOffer, {String? bip353Address}) async {
     _logger.info('handle LNOffer ${lnOffer.toFormattedString()}');
     final NavigatorState navigator = Navigator.of(context);
     final LnOfferPaymentArguments arguments = LnOfferPaymentArguments(
@@ -192,10 +181,7 @@ class InputHandler extends Handler {
 
   Future<dynamic> handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
     _logger.fine('Handle Bitcoin Address $inputState');
-    return await Navigator.of(context).pushNamed(
-      SendChainSwapPage.routeName,
-      arguments: inputState.data,
-    );
+    return await Navigator.of(context).pushNamed(SendChainSwapPage.routeName, arguments: inputState.data);
   }
 
   void handleResult(dynamic result) {

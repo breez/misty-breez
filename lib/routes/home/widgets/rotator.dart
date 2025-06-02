@@ -19,9 +19,10 @@ class _RotatorState extends State<Rotator> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    _animation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      _animationController,
-    ); //use Tween animation here, to animate between the values of 1.0 & 2.5.
+    _animation = Tween<double>(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(_animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
     _animation.addListener(() {
       //here, a listener that rebuilds our widget tree when animation.value changes
       setState(() {});
@@ -43,9 +44,6 @@ class _RotatorState extends State<Rotator> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return RotationTransition(
-      turns: _animation,
-      child: widget.child,
-    );
+    return RotationTransition(turns: _animation, child: widget.child);
   }
 }

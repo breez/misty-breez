@@ -37,10 +37,7 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        leading: const back_button.BackButton(),
-        title: Text(texts.reverse_swap_title),
-      ),
+      appBar: AppBar(leading: const back_button.BackButton(), title: Text(texts.reverse_swap_title)),
       body: BlocBuilder<PaymentLimitsCubit, PaymentLimitsState>(
         builder: (BuildContext context, PaymentLimitsState snapshot) {
           if (snapshot.hasError) {
@@ -88,11 +85,11 @@ class _SendChainSwapPageState extends State<SendChainSwapPage> {
                   },
                 )
               : snapshot.lightningPaymentLimits == null
-                  ? const SizedBox.shrink()
-                  : SingleButtonBottomBar(
-                      text: texts.withdraw_funds_action_next,
-                      onPressed: _prepareSendChainSwap,
-                    );
+              ? const SizedBox.shrink()
+              : SingleButtonBottomBar(
+                  text: texts.withdraw_funds_action_next,
+                  onPressed: _prepareSendChainSwap,
+                );
         },
       ),
     );

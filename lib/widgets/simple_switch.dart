@@ -25,20 +25,13 @@ class SimpleSwitch extends StatelessWidget {
     return ListTile(
       title: AutoSizeText(
         text,
-        style: const TextStyle(
-          color: Colors.white,
-        ),
+        style: const TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
         stepGranularity: 0.1,
         group: group,
       ),
-      trailing: trailing ??
-          Switch(
-            value: switchValue,
-            activeColor: Colors.white,
-            onChanged: onChanged,
-          ),
+      trailing: trailing ?? Switch(value: switchValue, activeColor: Colors.white, onChanged: onChanged),
       onTap: onTap,
     );
   }

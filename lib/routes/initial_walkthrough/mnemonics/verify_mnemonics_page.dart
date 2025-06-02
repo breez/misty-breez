@@ -80,9 +80,7 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                 errorText: _hasError
                     ? Text(
                         texts.backup_phrase_generation_verification_failed,
-                        style: themeData.textTheme.headlineMedium?.copyWith(
-                          fontSize: 12,
-                        ),
+                        style: themeData.textTheme.headlineMedium?.copyWith(fontSize: 12),
                       )
                     : const SizedBox.shrink(),
               ),
@@ -94,9 +92,7 @@ class VerifyMnemonicsPageState extends State<VerifyMnemonicsPage> {
                     _randomlySelectedIndexes[1] + 1,
                     _randomlySelectedIndexes[2] + 1,
                   ),
-                  style: mnemonicSeedInformationTextStyle.copyWith(
-                    color: BreezColors.white[300],
-                  ),
+                  style: mnemonicSeedInformationTextStyle.copyWith(color: BreezColors.white[300]),
                   textAlign: TextAlign.center,
                 ),
               ),

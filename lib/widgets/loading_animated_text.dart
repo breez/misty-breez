@@ -48,21 +48,18 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
     final ThemeData themeData = Theme.of(context);
     return RichText(
       text: TextSpan(
-        style: widget.textStyle ??
-            themeData.textTheme.bodyMedium?.copyWith(
-              color: themeData.colorScheme.onSecondary,
-            ),
+        style:
+            widget.textStyle ??
+            themeData.textTheme.bodyMedium?.copyWith(color: themeData.colorScheme.onSecondary),
         text: widget.loadingMessage,
         children: textElements
-          ..addAll(
-            <TextSpan>[
-              TextSpan(text: loadingDots),
-              TextSpan(
-                text: paddingDots,
-                style: const TextStyle(color: Colors.transparent),
-              ),
-            ],
-          ),
+          ..addAll(<TextSpan>[
+            TextSpan(text: loadingDots),
+            TextSpan(
+              text: paddingDots,
+              style: const TextStyle(color: Colors.transparent),
+            ),
+          ]),
       ),
       textAlign: widget.textAlign ?? TextAlign.center,
     );

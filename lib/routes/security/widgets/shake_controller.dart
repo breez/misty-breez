@@ -11,10 +11,7 @@ class ShakeController {
   ///
   /// [vsync] A ticker provider for animations
   ShakeController({required TickerProvider vsync}) {
-    _controller = AnimationController(
-      vsync: vsync,
-      duration: const Duration(milliseconds: 500),
-    );
+    _controller = AnimationController(vsync: vsync, duration: const Duration(milliseconds: 500));
   }
 
   /// The animation controller
@@ -43,11 +40,7 @@ class ShakeWidget extends StatelessWidget {
   ///
   /// [controller] Controls the shake animation
   /// [child] The widget to animate
-  const ShakeWidget({
-    required this.controller,
-    required this.child,
-    super.key,
-  });
+  const ShakeWidget({required this.controller, required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +48,7 @@ class ShakeWidget extends StatelessWidget {
       animation: controller.controller,
       builder: (BuildContext context, Widget? child) {
         final double offset = sin(controller.controller.value * 10) * 10;
-        return Transform.translate(
-          offset: Offset(offset, 0),
-          child: child,
-        );
+        return Transform.translate(offset: Offset(offset, 0), child: child);
       },
       child: child,
     );

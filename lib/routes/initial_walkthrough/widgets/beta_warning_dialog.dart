@@ -26,9 +26,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
     final ThemeData themeData = Theme.of(context);
 
     return Theme(
-      data: themeData.copyWith(
-        unselectedWidgetColor: themeData.canvasColor,
-      ),
+      data: themeData.copyWith(unselectedWidgetColor: themeData.canvasColor),
       child: AlertDialog(
         titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
         title: Text(texts.beta_warning_title),
@@ -41,10 +39,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
         actions: <Widget>[
           TextButton(
             onPressed: () => exit(0),
-            child: Text(
-              texts.beta_warning_action_exit,
-              style: themeData.primaryTextTheme.labelLarge,
-            ),
+            child: Text(texts.beta_warning_action_exit, style: themeData.primaryTextTheme.labelLarge),
           ),
           TextButton(
             onPressed: (() {
@@ -56,10 +51,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
                 });
               }
             }),
-            child: Text(
-              texts.beta_warning_action_continue,
-              style: themeData.primaryTextTheme.labelLarge,
-            ),
+            child: Text(texts.beta_warning_action_continue, style: themeData.primaryTextTheme.labelLarge),
           ),
         ],
       ),
@@ -75,9 +67,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: Text(
           texts.beta_warning_message,
-          style: themeData.primaryTextTheme.displaySmall!.copyWith(
-            fontSize: 16,
-          ),
+          style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16),
         ),
       ),
       Padding(
@@ -85,9 +75,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
         child: Row(
           children: <Widget>[
             Theme(
-              data: themeData.copyWith(
-                unselectedWidgetColor: themeData.textTheme.labelLarge!.color,
-              ),
+              data: themeData.copyWith(unselectedWidgetColor: themeData.textTheme.labelLarge!.color),
               child: Checkbox(
                 activeColor: themeData.canvasColor,
                 value: _isUnderstood,
@@ -100,9 +88,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
             ),
             Text(
               texts.beta_warning_understand,
-              style: themeData.primaryTextTheme.displaySmall!.copyWith(
-                fontSize: 16,
-              ),
+              style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16),
             ),
           ],
         ),
@@ -114,13 +100,8 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
           child: Text(
             texts.beta_warning_understand_confirmation,
             style: themeData.primaryTextTheme.displaySmall!
-                .copyWith(
-                  fontSize: 16,
-                )
-                .copyWith(
-                  fontSize: 12.0,
-                  color: Colors.red,
-                ),
+                .copyWith(fontSize: 16)
+                .copyWith(fontSize: 12.0, color: Colors.red),
           ),
         ),
       ),

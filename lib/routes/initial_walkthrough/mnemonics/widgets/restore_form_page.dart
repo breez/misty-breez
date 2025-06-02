@@ -41,10 +41,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
     super.initState();
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
-    MnemonicUtils.tryPopulateTextFieldsFromText(
-      widget.initialWords.join(' '),
-      widget.textEditingControllers,
-    );
+    MnemonicUtils.tryPopulateTextFieldsFromText(widget.initialWords.join(' '), widget.textEditingControllers);
   }
 
   @override
@@ -69,11 +66,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
               contentPadding: const EdgeInsets.all(16),
               backgroundColor: warningBoxColor,
               borderColor: warningStyle.color,
-              child: Text(
-                texts.enter_backup_phrase_error,
-                style: warningStyle,
-                textAlign: TextAlign.center,
-              ),
+              child: Text(texts.enter_backup_phrase_error, style: warningStyle, textAlign: TextAlign.center),
             ),
           ),
         ],

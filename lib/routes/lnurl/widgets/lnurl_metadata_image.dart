@@ -7,11 +7,7 @@ class LNURLMetadataImage extends StatelessWidget {
   final String base64String;
   final double imageSize;
 
-  const LNURLMetadataImage({
-    required this.base64String,
-    this.imageSize = 128,
-    super.key,
-  });
+  const LNURLMetadataImage({required this.base64String, this.imageSize = 128, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +22,7 @@ class LNURLMetadataImage extends StatelessWidget {
         maxHeight: imageSize,
         maxWidth: imageSize,
       ),
-      child: Image.memory(
-        imageBytes,
-        width: imageSize,
-        fit: BoxFit.cover,
-      ),
+      child: Image.memory(imageBytes, width: imageSize, fit: BoxFit.cover),
     );
   }
 }

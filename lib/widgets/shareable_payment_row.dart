@@ -52,16 +52,15 @@ class ShareablePaymentRow extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return Theme(
-      data: themeData.copyWith(
-        dividerColor: dividerColor ?? themeData.customData.paymentListBgColorLight,
-      ),
+      data: themeData.copyWith(dividerColor: dividerColor ?? themeData.customData.paymentListBgColorLight),
       child: ExpansionTile(
         dense: true,
         iconColor: isExpanded ? Colors.transparent : Colors.white,
         collapsedIconColor: Colors.white,
         initiallyExpanded: isExpanded,
         tilePadding: tilePadding,
-        title: titleWidget ??
+        title:
+            titleWidget ??
             AutoSizeText(
               title,
               style: titleTextStyle ?? themeData.primaryTextTheme.headlineMedium,
@@ -82,16 +81,17 @@ class ShareablePaymentRow extends StatelessWidget {
                     child: GestureDetector(
                       onTap: isURL
                           ? () => ExternalBrowserService.launchLink(
-                                context,
-                                linkAddress: urlValue ?? sharedValue,
-                              )
+                              context,
+                              linkAddress: urlValue ?? sharedValue,
+                            )
                           : null,
                       child: Text(
                         sharedValue,
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.clip,
                         maxLines: 4,
-                        style: childrenTextStyle ??
+                        style:
+                            childrenTextStyle ??
                             themeData.primaryTextTheme.displaySmall!.copyWith(
                               fontSize: 12.0,
                               fontWeight: FontWeight.w500,
@@ -116,9 +116,7 @@ class ShareablePaymentRow extends StatelessWidget {
                           tooltip: texts.payment_details_dialog_copy_action(title),
                           iconSize: 20.0,
                           color: Colors.white,
-                          icon: const Icon(
-                            IconData(0xe90b, fontFamily: 'icomoon'),
-                          ),
+                          icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
                           onPressed: () {
                             ServiceInjector().deviceClient.setClipboardText(sharedValue);
                             if (shouldPop) {

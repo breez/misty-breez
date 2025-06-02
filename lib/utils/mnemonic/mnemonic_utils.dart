@@ -4,10 +4,7 @@ import 'package:misty_breez/utils/constants/app_constants.dart';
 class MnemonicUtils {
   static const int wordCount = 12;
 
-  static bool tryPopulateTextFieldsFromText(
-    String? text,
-    List<TextEditingController> controllers,
-  ) {
+  static bool tryPopulateTextFieldsFromText(String? text, List<TextEditingController> controllers) {
     if (text == null || !text.contains(' ')) {
       return false;
     }

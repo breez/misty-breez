@@ -210,10 +210,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
     try {
       final bool authenticated = await _auth.authenticate(
         localizedReason: localizedReason,
-        options: const l_auth.AuthenticationOptions(
-          biometricOnly: true,
-          useErrorDialogs: false,
-        ),
+        options: const l_auth.AuthenticationOptions(biometricOnly: true, useErrorDialogs: false),
         authMessages: const <l_auth_android.AuthMessages>[
           l_auth_android.AndroidAuthMessages(),
           IOSAuthMessages(),
@@ -260,11 +257,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
   Future<void> _loadMnemonicVerificationStatus() async {
     try {
       final bool isVerified = await MnemonicVerificationStatusPreferences.isVerificationComplete();
-      emit(
-        state.copyWith(
-          mnemonicStatus: isVerified ? MnemonicStatus.verified : MnemonicStatus.unverified,
-        ),
-      );
+      emit(state.copyWith(mnemonicStatus: isVerified ? MnemonicStatus.verified : MnemonicStatus.unverified));
       _logger.info('Mnemonic verification status loaded: ${isVerified ? 'verified' : 'unverified'}');
     } catch (e) {
       _logger.severe('Error loading mnemonic verification status: $e');

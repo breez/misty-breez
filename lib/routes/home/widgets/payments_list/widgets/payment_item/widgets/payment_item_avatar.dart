@@ -22,10 +22,7 @@ class PaymentItemAvatar extends StatelessWidget {
     Widget avatarChild;
 
     if (base64String?.isNotEmpty ?? false) {
-      avatarChild = LNURLMetadataImage(
-        base64String: base64String!,
-        imageSize: radius,
-      );
+      avatarChild = LNURLMetadataImage(base64String: base64String!, imageSize: radius);
     } else {
       final String title = paymentData.title;
       if (title == texts.payment_info_title_unknown || paymentData.details.hasBolt12Offer) {
@@ -43,20 +40,16 @@ class PaymentItemAvatar extends StatelessWidget {
           paymentData.status == PaymentState.refundPending
               ? Icons.sync_alt
               : paymentData.isRefunded || paymentData.status == PaymentState.refundable
-                  ? Icons.close_rounded
-                  : paymentData.paymentType == PaymentType.receive
-                      ? Icons.add_rounded
-                      : Icons.remove_rounded,
+              ? Icons.close_rounded
+              : paymentData.paymentType == PaymentType.receive
+              ? Icons.add_rounded
+              : Icons.remove_rounded,
           size: radius,
           color: const Color(0xb3303234),
         );
       }
     }
 
-    return CircleAvatar(
-      radius: radius,
-      backgroundColor: Colors.white,
-      child: avatarChild,
-    );
+    return CircleAvatar(radius: radius, backgroundColor: Colors.white, child: avatarChild);
   }
 }

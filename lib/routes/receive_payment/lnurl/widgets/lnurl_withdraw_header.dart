@@ -43,18 +43,12 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
         children: <Widget>[
           Text(
             'Redeeming funds from',
-            style: themeData.primaryTextTheme.displaySmall!.copyWith(
-              fontSize: 16,
-              color: Colors.white70,
-            ),
+            style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 16, color: Colors.white70),
             textAlign: TextAlign.center,
           ),
           Text(
             domain,
-            style: themeData.primaryTextTheme.headlineMedium!.copyWith(
-              fontSize: 18,
-              color: Colors.white,
-            ),
+            style: themeData.primaryTextTheme.headlineMedium!.copyWith(fontSize: 18, color: Colors.white),
             textAlign: TextAlign.center,
           ),
           GestureDetector(
@@ -70,15 +64,11 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
               });
             },
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minWidth: double.infinity,
-              ),
+              constraints: const BoxConstraints(minWidth: double.infinity),
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: balanceAmountTextStyle.copyWith(
-                    color: themeData.colorScheme.onSurface,
-                  ),
+                  style: balanceAmountTextStyle.copyWith(color: themeData.colorScheme.onSurface),
                   text: _showFiatCurrency && fiatConversion != null
                       ? fiatConversion.format(
                           widget.amountSat,
@@ -95,9 +85,7 @@ class _LnWithdrawHeaderState extends State<LnWithdrawHeader> {
                       text: _showFiatCurrency && fiatConversion != null
                           ? ''
                           : ' ${currencyState.bitcoinCurrency.displayName}',
-                      style: balanceCurrencyTextStyle.copyWith(
-                        color: themeData.colorScheme.onSurface,
-                      ),
+                      style: balanceCurrencyTextStyle.copyWith(color: themeData.colorScheme.onSurface),
                     ),
                   ],
                 ),

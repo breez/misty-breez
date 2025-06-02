@@ -27,9 +27,7 @@ class PaymentReceivedSheetState extends State<PaymentReceivedSheet> {
     // Close the bottom sheet after 2.25 seconds
     Future<void>.delayed(PaymentSheetTiming.popDelay, () {
       if (mounted) {
-        Navigator.of(context).popUntil(
-          (Route<dynamic> route) => route.settings.name == Home.routeName,
-        );
+        Navigator.of(context).popUntil((Route<dynamic> route) => route.settings.name == Home.routeName);
       }
     });
   }

@@ -24,12 +24,8 @@ class PermissionsState {
   factory PermissionsState.initial() => const PermissionsState(notificationStatus: PermissionStatus.unknown);
 
   /// Creates a copy of this state with the given values
-  PermissionsState copyWith({
-    PermissionStatus? notificationStatus,
-  }) {
-    return PermissionsState(
-      notificationStatus: notificationStatus ?? this.notificationStatus,
-    );
+  PermissionsState copyWith({PermissionStatus? notificationStatus}) {
+    return PermissionsState(notificationStatus: notificationStatus ?? this.notificationStatus);
   }
 
   /// Whether notification permissions are granted

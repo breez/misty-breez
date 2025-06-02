@@ -39,16 +39,8 @@ class AppThemeManagerState extends State<AppThemeManager> {
         }
       },
       themes: <AppTheme>[
-        AppTheme(
-          id: 'dark',
-          data: breezDarkTheme,
-          description: 'Dark Theme',
-        ),
-        AppTheme(
-          id: 'light',
-          data: breezLightTheme,
-          description: 'Blue Theme',
-        ),
+        AppTheme(id: 'dark', data: breezDarkTheme, description: 'Dark Theme'),
+        AppTheme(id: 'light', data: breezLightTheme, description: 'Blue Theme'),
       ],
       child: FutureBuilder<void>(
         future: loadThemeFromDiskFuture,

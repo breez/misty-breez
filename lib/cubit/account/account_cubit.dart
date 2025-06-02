@@ -13,9 +13,7 @@ final Logger _logger = Logger('AccountCubit');
 class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> {
   final BreezSDKLiquid breezSdkLiquid;
 
-  AccountCubit(
-    this.breezSdkLiquid,
-  ) : super(AccountState.initial()) {
+  AccountCubit(this.breezSdkLiquid) : super(AccountState.initial()) {
     hydrate();
 
     _listenAccountChanges();
@@ -24,16 +22,14 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
 
   void _listenAccountChanges() {
     _logger.info('Listening to account changes');
-    breezSdkLiquid.getInfoResponseStream.distinct().listen(
-      (GetInfoResponse getInfoResponse) {
-        final AccountState newState = state.copyWith(
-          walletInfo: getInfoResponse.walletInfo,
-          blockchainInfo: getInfoResponse.blockchainInfo,
-        );
-        _logger.info('AccountState changed: $newState');
-        emit(newState);
-      },
-    );
+    breezSdkLiquid.getInfoResponseStream.distinct().listen((GetInfoResponse getInfoResponse) {
+      final AccountState newState = state.copyWith(
+        walletInfo: getInfoResponse.walletInfo,
+        blockchainInfo: getInfoResponse.blockchainInfo,
+      );
+      _logger.info('AccountState changed: $newState');
+      emit(newState);
+    });
   }
 
   void _listenInitialSyncEvent() {

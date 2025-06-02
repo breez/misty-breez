@@ -26,10 +26,7 @@ class RecipientAmount extends StatelessWidget {
           AutoSizeText(
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
             'To receive:',
-            style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-              fontSize: 18.0,
-              color: Colors.white,
-            ),
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
             maxLines: 1,
             minFontSize: minFont.minFontSize,
             stepGranularity: 0.1,
@@ -47,9 +44,7 @@ class RecipientAmount extends StatelessWidget {
                   reverse: true,
                   child: AutoSizeText(
                     fiatConversion == null
-                        ? texts.sweep_all_coins_amount_no_fiat(
-                            BitcoinCurrency.sat.format(amountSat),
-                          )
+                        ? texts.sweep_all_coins_amount_no_fiat(BitcoinCurrency.sat.format(amountSat))
                         : texts.sweep_all_coins_amount_with_fiat(
                             BitcoinCurrency.sat.format(amountSat),
                             fiatConversion.format(amountSat),

@@ -10,12 +10,7 @@ class PaymentItem extends StatefulWidget {
   final bool _firstItem;
   final GlobalKey firstPaymentItemKey;
 
-  const PaymentItem(
-    this.paymentData,
-    this._firstItem,
-    this.firstPaymentItemKey, {
-    super.key,
-  });
+  const PaymentItem(this.paymentData, this._firstItem, this.firstPaymentItemKey, {super.key});
 
   @override
   State<PaymentItem> createState() => _PaymentItemState();
@@ -60,10 +55,7 @@ class _PaymentItemState extends State<PaymentItem> {
                         ),
                   child: isPaymentItemNew
                       ? FlipTransition(
-                          PaymentItemAvatar(
-                            widget.paymentData,
-                            radius: 16,
-                          ),
+                          PaymentItemAvatar(widget.paymentData, radius: 16),
                           const SuccessAvatar(radius: 16),
                           radius: 16,
                           onComplete: () {
@@ -85,10 +77,7 @@ class _PaymentItemState extends State<PaymentItem> {
                 ),
                 trailing: PaymentItemAmount(widget.paymentData),
                 onTap: () {
-                  showPaymentDetailsSheet(
-                    context,
-                    paymentData: widget.paymentData,
-                  );
+                  showPaymentDetailsSheet(context, paymentData: widget.paymentData);
                 },
               ),
             ],

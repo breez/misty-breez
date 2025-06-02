@@ -76,9 +76,7 @@ class NonRefundedRefundablesWarningAction extends StatelessWidget {
       onTap: () {
         _logger.info('Redirecting user to refund page.');
         if (context.mounted) {
-          Navigator.of(context).pushNamed(
-            GetRefundPage.routeName,
-          );
+          Navigator.of(context).pushNamed(GetRefundPage.routeName);
         }
       },
     );
@@ -97,11 +95,7 @@ class VerifyMnemonicWarningAction extends StatelessWidget {
         _logger.info('Redirecting user to mnemonics confirmation page.');
         final String? accountMnemonic = await ServiceInjector().credentialsManager.restoreMnemonic();
         if (context.mounted && accountMnemonic != null) {
-          Navigator.pushNamed(
-            context,
-            MnemonicsConfirmationPage.routeName,
-            arguments: accountMnemonic,
-          );
+          Navigator.pushNamed(context, MnemonicsConfirmationPage.routeName, arguments: accountMnemonic);
         }
       },
     );

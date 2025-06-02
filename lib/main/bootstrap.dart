@@ -19,61 +19,61 @@ import 'package:shared_preference_app_group/shared_preference_app_group.dart';
 
 final Logger _logger = Logger('Bootstrap');
 
-typedef AppBuilder = Widget Function(
-  ServiceInjector serviceInjector,
-  SdkConnectivityCubit sdkConnectivityCubit,
-);
+typedef AppBuilder =
+    Widget Function(ServiceInjector serviceInjector, SdkConnectivityCubit sdkConnectivityCubit);
 
 Future<void> bootstrap(AppBuilder builder) async {
   // runZonedGuarded wrapper is required to log Dart errors.
-  runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await _precacheSvgImages();
-    SystemChrome.setPreferredOrientations(
-      <DeviceOrientation>[DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
-    );
-    // iOS Extension requirement
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      SharedPreferenceAppGroup.setAppGroup(
-        'group.F7R2LZH3W5.com.breez.misty',
-      );
-    }
-
-    // Initialize library
-    await _initializeBreezSdkLiquid();
-    final ServiceInjector injector = ServiceInjector();
-    final BreezLogger breezLogger = injector.breezLogger;
-    breezLogger.registerBreezSdkLiquidLogs(injector.breezSdkLiquid);
-    BreezDateUtils.setupLocales();
-    if (Firebase.apps.isEmpty) {
-      _logger.info('List of Firebase apps: ${Firebase.apps}');
-      await Firebase.initializeApp(
-        name: 'breez-technology',
-        // ignore: undefined_identifier
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-
-    await HydratedBlocStorage().initialize();
-
-    final SdkConnectivityCubit sdkConnectivityCubit = SdkConnectivityCubit(
-      breezSdkLiquid: injector.breezSdkLiquid,
-      credentialsManager: injector.credentialsManager,
-    );
-    final bool isOnboardingComplete = await OnboardingPreferences.isOnboardingComplete();
-    if (isOnboardingComplete) {
-      _logger.info('Reconnect if secure storage has mnemonic.');
-      final String? mnemonic = await injector.credentialsManager.restoreMnemonic();
-      if (mnemonic != null) {
-        await sdkConnectivityCubit.reconnect(mnemonic: mnemonic);
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await _precacheSvgImages();
+      SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+      // iOS Extension requirement
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        SharedPreferenceAppGroup.setAppGroup('group.F7R2LZH3W5.com.breez.misty');
       }
-    }
-    runApp(builder(injector, sdkConnectivityCubit));
-  }, (Object error, StackTrace stackTrace) async {
-    if (error is! FlutterErrorDetails) {
-      _logger.severe('FlutterError: $error', error, stackTrace);
-    }
-  });
+
+      // Initialize library
+      await _initializeBreezSdkLiquid();
+      final ServiceInjector injector = ServiceInjector();
+      final BreezLogger breezLogger = injector.breezLogger;
+      breezLogger.registerBreezSdkLiquidLogs(injector.breezSdkLiquid);
+      BreezDateUtils.setupLocales();
+      if (Firebase.apps.isEmpty) {
+        _logger.info('List of Firebase apps: ${Firebase.apps}');
+        await Firebase.initializeApp(
+          name: 'breez-technology',
+          // ignore: undefined_identifier
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
+
+      await HydratedBlocStorage().initialize();
+
+      final SdkConnectivityCubit sdkConnectivityCubit = SdkConnectivityCubit(
+        breezSdkLiquid: injector.breezSdkLiquid,
+        credentialsManager: injector.credentialsManager,
+      );
+      final bool isOnboardingComplete = await OnboardingPreferences.isOnboardingComplete();
+      if (isOnboardingComplete) {
+        _logger.info('Reconnect if secure storage has mnemonic.');
+        final String? mnemonic = await injector.credentialsManager.restoreMnemonic();
+        if (mnemonic != null) {
+          await sdkConnectivityCubit.reconnect(mnemonic: mnemonic);
+        }
+      }
+      runApp(builder(injector, sdkConnectivityCubit));
+    },
+    (Object error, StackTrace stackTrace) async {
+      if (error is! FlutterErrorDetails) {
+        _logger.severe('FlutterError: $error', error, stackTrace);
+      }
+    },
+  );
 }
 
 Future<void> _initializeBreezSdkLiquid() async {

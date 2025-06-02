@@ -25,11 +25,7 @@ class LockScreen extends StatefulWidget {
   ///
   /// [authorizedAction] The action to perform after successful authentication
   /// [autoBiometrics] Whether to attempt biometric authentication automatically (default: true)
-  const LockScreen({
-    required this.authorizedAction,
-    this.autoBiometrics = true,
-    super.key,
-  });
+  const LockScreen({required this.authorizedAction, this.autoBiometrics = true, super.key});
 
   @override
   State<LockScreen> createState() => _LockScreenState();
@@ -111,10 +107,7 @@ class _LockScreenState extends State<LockScreen> {
   /// [pin] The PIN code to validate
   ///
   /// Returns the result of PIN validation
-  Future<AuthResult> _validatePin(
-    BuildContext context,
-    String pin,
-  ) async {
+  Future<AuthResult> _validatePin(BuildContext context, String pin) async {
     if (_isAuthenticating) {
       return const AuthResult(success: false, errorMessage: 'Authentication in progress');
     }
@@ -137,10 +130,7 @@ class _LockScreenState extends State<LockScreen> {
       return result;
     } catch (e) {
       _logger.severe('PIN validation error: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: texts.lock_screen_pin_match_exception,
-      );
+      return AuthResult(success: false, errorMessage: texts.lock_screen_pin_match_exception);
     } finally {
       if (mounted) {
         setState(() => _isAuthenticating = false);
@@ -177,10 +167,7 @@ class _LockScreenState extends State<LockScreen> {
       return result;
     } catch (e) {
       _logger.severe('Biometric authentication error: $e');
-      return AuthResult(
-        success: false,
-        errorMessage: texts.lock_screen_pin_match_exception,
-      );
+      return AuthResult(success: false, errorMessage: texts.lock_screen_pin_match_exception);
     } finally {
       if (mounted) {
         setState(() => _isAuthenticating = false);

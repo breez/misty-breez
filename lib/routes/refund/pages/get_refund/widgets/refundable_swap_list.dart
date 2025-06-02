@@ -14,9 +14,7 @@ class RefundableSwapList extends StatelessWidget {
     if (refundables.isEmpty) {
       final BreezTranslations texts = context.texts();
 
-      return Center(
-        child: Text(texts.get_refund_no_refundable_items),
-      );
+      return Center(child: Text(texts.get_refund_no_refundable_items));
     }
 
     return ListView.builder(

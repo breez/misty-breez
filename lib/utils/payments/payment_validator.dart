@@ -22,11 +22,7 @@ class PaymentValidator {
   /// [validatePayment] The function that performs the validation
   /// [currency] The Bitcoin currency unit to use for formatting
   /// [texts] Translation strings for error messages
-  const PaymentValidator({
-    required this.validatePayment,
-    required this.currency,
-    required this.texts,
-  });
+  const PaymentValidator({required this.validatePayment, required this.currency, required this.texts});
 
   /// Validates an incoming payment
   ///
@@ -78,9 +74,7 @@ class PaymentValidator {
     } else if (e is InsufficientLocalBalanceError) {
       return texts.invoice_payment_validator_error_insufficient_local_balance;
     } else {
-      return texts.invoice_payment_validator_error_unknown(
-        ExceptionHandler.extractMessage(e, texts),
-      );
+      return texts.invoice_payment_validator_error_unknown(ExceptionHandler.extractMessage(e, texts));
     }
   }
 }

@@ -112,46 +112,41 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                   },
                 )
               : snapshot.lightningPaymentLimits == null
-                  ? const SizedBox.shrink()
-                  : prepareResponseFuture == null && receivePaymentResponseFuture == null
-                      ? SingleButtonBottomBar(
-                          stickToBottom: true,
-                          text: texts.invoice_action_create,
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              _createInvoice();
-                            }
-                          },
-                        )
-                      : FutureBuilder<PrepareReceiveResponse>(
-                          future: prepareResponseFuture,
-                          builder: (
-                            BuildContext context,
-                            AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
-                          ) {
-                            if (prepareSnapshot.hasData) {
-                              return FutureBuilder<ReceivePaymentResponse>(
-                                future: receivePaymentResponseFuture,
-                                builder: (
-                                  BuildContext context,
-                                  AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot,
-                                ) {
-                                  if (receiveSnapshot.hasData) {
-                                    return SingleButtonBottomBar(
-                                      stickToBottom: true,
-                                      text: texts.qr_code_dialog_action_close,
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    );
-                                  }
-                                  return const SizedBox.shrink();
-                                },
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          },
-                        );
+              ? const SizedBox.shrink()
+              : prepareResponseFuture == null && receivePaymentResponseFuture == null
+              ? SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: texts.invoice_action_create,
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      _createInvoice();
+                    }
+                  },
+                )
+              : FutureBuilder<PrepareReceiveResponse>(
+                  future: prepareResponseFuture,
+                  builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
+                    if (prepareSnapshot.hasData) {
+                      return FutureBuilder<ReceivePaymentResponse>(
+                        future: receivePaymentResponseFuture,
+                        builder:
+                            (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
+                              if (receiveSnapshot.hasData) {
+                                return SingleButtonBottomBar(
+                                  stickToBottom: true,
+                                  text: texts.qr_code_dialog_action_close,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                );
         },
       ),
     );
@@ -165,11 +160,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
       builder: (BuildContext context, CurrencyState currencyState) {
         return Container(
           decoration: ShapeDecoration(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12),
-              ),
-            ),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
             color: themeData.customData.surfaceBgColor,
           ),
           padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
@@ -187,9 +178,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                   maxLength: 90,
                   maxLengthEnforcement: MaxLengthEnforcement.enforced,
                   decoration: InputDecoration(
-                    prefixIconConstraints: BoxConstraints.tight(
-                      const Size(16, 56),
-                    ),
+                    prefixIconConstraints: BoxConstraints.tight(const Size(16, 56)),
                     prefixIcon: const SizedBox.shrink(),
                     contentPadding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
                     border: const OutlineInputBorder(),
@@ -224,9 +213,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                   padding: const EdgeInsets.only(top: 12.0),
                   child: AutoSizeText(
                     texts.invoice_min_payment_limit(
-                      currencyState.bitcoinCurrency.format(
-                        lightningPaymentLimits.receive.minSat.toInt(),
-                      ),
+                      currencyState.bitcoinCurrency.format(lightningPaymentLimits.receive.minSat.toInt()),
                     ),
                     style: paymentLimitInformationTextStyle,
                     maxLines: 1,
@@ -247,10 +234,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
 
     return FutureBuilder<PrepareReceiveResponse>(
       future: prepareResponseFuture,
-      builder: (
-        BuildContext context,
-        AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot,
-      ) {
+      builder: (BuildContext context, AsyncSnapshot<PrepareReceiveResponse> prepareSnapshot) {
         if (prepareSnapshot.hasError) {
           return ScrollableErrorMessageWidget(
             showIcon: true,
@@ -263,10 +247,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
         if (prepareSnapshot.hasData) {
           return FutureBuilder<ReceivePaymentResponse>(
             future: receivePaymentResponseFuture,
-            builder: (
-              BuildContext context,
-              AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot,
-            ) {
+            builder: (BuildContext context, AsyncSnapshot<ReceivePaymentResponse> receiveSnapshot) {
               if (receiveSnapshot.hasError) {
                 return ScrollableErrorMessageWidget(
                   showIcon: true,
@@ -279,11 +260,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
               if (receiveSnapshot.hasData) {
                 return Container(
                   decoration: ShapeDecoration(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                     color: themeData.customData.surfaceBgColor,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
@@ -292,9 +269,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
                       snapshot: receiveSnapshot,
                       destination: receiveSnapshot.data?.destination,
                       paymentLabel: texts.receive_payment_method_lightning_invoice,
-                      infoWidget: PaymentFeesMessageBox(
-                        feesSat: prepareSnapshot.data!.feesSat.toInt(),
-                      ),
+                      infoWidget: PaymentFeesMessageBox(feesSat: prepareSnapshot.data!.feesSat.toInt()),
                     ),
                   ),
                 );
@@ -339,10 +314,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     });
   }
 
-  String? validatePayment(
-    int amount,
-    LightningPaymentLimitsResponse lightningPaymentLimits,
-  ) {
+  String? validatePayment(int amount, LightningPaymentLimitsResponse lightningPaymentLimits) {
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     return PaymentValidator(
       validatePayment: (int amount, bool outgoing) =>
@@ -352,11 +324,7 @@ class ReceiveLightningPaymentPageState extends State<ReceiveLightningPaymentPage
     ).validateIncoming(amount);
   }
 
-  void _validatePayment(
-    int amount,
-    bool outgoing,
-    LightningPaymentLimitsResponse lightningPaymentLimits,
-  ) {
+  void _validatePayment(int amount, bool outgoing, LightningPaymentLimitsResponse lightningPaymentLimits) {
     final AccountState accountState = context.read<AccountCubit>().state;
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final LnUrlService lnUrlService = Provider.of<LnUrlService>(context, listen: false);

@@ -43,9 +43,7 @@ class DestinationQRWidget extends StatelessWidget {
       children: <Widget>[
         GestureDetector(
           onLongPress: onLongPress,
-          child: DestinationQRImage(
-            destination: destination,
-          ),
+          child: DestinationQRImage(destination: destination),
         ),
         DestinationActions(
           snapshot: snapshot,
@@ -57,10 +55,7 @@ class DestinationQRWidget extends StatelessWidget {
           DestinationInformation(lnAddress: lnAddress!),
         ],
         if (infoWidget != null) ...<Widget>[
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: infoWidget,
-          ),
+          SizedBox(width: MediaQuery.of(context).size.width, child: infoWidget),
         ],
       ],
     );

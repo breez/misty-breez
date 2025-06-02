@@ -39,9 +39,7 @@ class BoltzServiceFee extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               reverse: true,
               child: AutoSizeText(
-                texts.reverse_swap_confirmation_boltz_fee_value(
-                  BitcoinCurrency.sat.format(boltzServiceFee),
-                ),
+                texts.reverse_swap_confirmation_boltz_fee_value(BitcoinCurrency.sat.format(boltzServiceFee)),
                 style: themeData.primaryTextTheme.displaySmall!.copyWith(
                   fontSize: 18.0,
                   color: themeData.colorScheme.error.withValues(alpha: .4),

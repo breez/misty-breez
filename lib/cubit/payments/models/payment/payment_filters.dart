@@ -12,12 +12,7 @@ class PaymentFilters implements Exception {
   final int? toTimestamp;
   final String? assetTicker;
 
-  PaymentFilters({
-    this.filters = PaymentType.values,
-    this.fromTimestamp,
-    this.toTimestamp,
-    this.assetTicker,
-  });
+  PaymentFilters({this.filters = PaymentType.values, this.fromTimestamp, this.toTimestamp, this.assetTicker});
 
   PaymentFilters.initial() : this();
 
@@ -98,11 +93,11 @@ class PaymentFilters implements Exception {
 
   @override
   int get hashCode => Object.hash(
-        filters?.map((PaymentType type) => type.hashCode).toList() ?? <dynamic>[],
-        fromTimestamp,
-        toTimestamp,
-        assetTicker,
-      );
+    filters?.map((PaymentType type) => type.hashCode).toList() ?? <dynamic>[],
+    fromTimestamp,
+    toTimestamp,
+    assetTicker,
+  );
 
   @override
   bool operator ==(Object other) {

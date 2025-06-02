@@ -5,11 +5,7 @@ class WithdrawFundsPolicy {
   final BigInt minValue;
   final BigInt maxValue;
 
-  const WithdrawFundsPolicy(
-    this.withdrawKind,
-    this.minValue,
-    this.maxValue,
-  );
+  const WithdrawFundsPolicy(this.withdrawKind, this.minValue, this.maxValue);
 
   @override
   String toString() {

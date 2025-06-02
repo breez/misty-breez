@@ -43,11 +43,7 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
-                child: Icon(
-                  Icons.warning,
-                  size: 100.0,
-                  color: Theme.of(context).iconTheme.color,
-                ),
+                child: Icon(Icons.warning, size: 100.0, color: Theme.of(context).iconTheme.color),
               ),
             ),
           if (widget.title != null && widget.title!.isNotEmpty)
@@ -55,10 +51,7 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
               padding: const EdgeInsets.only(bottom: 4.0),
               child: AutoSizeText(
                 widget.title!,
-                style: widget.titleStyle ??
-                    themeData.textTheme.labelMedium!.copyWith(
-                      fontSize: 18.0,
-                    ),
+                style: widget.titleStyle ?? themeData.textTheme.labelMedium!.copyWith(fontSize: 18.0),
                 textAlign: TextAlign.left,
                 maxLines: 1,
               ),
@@ -66,10 +59,7 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
           Padding(
             padding: widget.contentPadding,
             child: Container(
-              constraints: const BoxConstraints(
-                maxHeight: 200,
-                minWidth: double.infinity,
-              ),
+              constraints: const BoxConstraints(maxHeight: 200, minWidth: double.infinity),
               child: Scrollbar(
                 controller: _scrollController,
                 radius: const Radius.circular(16.0),
@@ -78,10 +68,7 @@ class _ScrollableErrorMessageWidgetState extends State<ScrollableErrorMessageWid
                   controller: _scrollController,
                   child: AutoSizeText(
                     widget.message,
-                    style: widget.errorTextStyle ??
-                        themeData.errorTextStyle.copyWith(
-                          fontSize: 16.0,
-                        ),
+                    style: widget.errorTextStyle ?? themeData.errorTextStyle.copyWith(fontSize: 16.0),
                     textAlign: widget.message.length > 40 && !widget.message.contains('\n')
                         ? TextAlign.start
                         : TextAlign.left,

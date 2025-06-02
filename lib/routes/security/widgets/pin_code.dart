@@ -82,12 +82,7 @@ class _PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     return SafeArea(
       child: Column(
         children: <Widget>[
-          Flexible(
-            flex: 20,
-            child: Center(
-              child: _buildLogo(size),
-            ),
-          ),
+          Flexible(flex: 20, child: Center(child: _buildLogo(size))),
           Flexible(
             flex: 30,
             child: Column(
@@ -98,9 +93,7 @@ class _PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
                 Text(
                   _errorMessage,
                   textAlign: TextAlign.center,
-                  style: themeData.textTheme.headlineMedium?.copyWith(
-                    fontSize: 12,
-                  ),
+                  style: themeData.textTheme.headlineMedium?.copyWith(fontSize: 12),
                 ),
               ],
             ),
@@ -129,17 +122,11 @@ class _PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       return SvgPicture.asset(
         widget.logoAsset!,
         width: size.width / 3,
-        colorFilter: const ColorFilter.mode(
-          Colors.white,
-          BlendMode.srcATop,
-        ),
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcATop),
       );
     }
 
-    return Image.asset(
-      widget.logoAsset!,
-      width: size.width / 3,
-    );
+    return Image.asset(widget.logoAsset!, width: size.width / 3);
   }
 
   /// Builds the masked PIN digits display
@@ -152,9 +139,7 @@ class _PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
           widget.pinLength,
           (int index) => Padding(
             padding: const EdgeInsets.all(8.0),
-            child: DigitMasked(
-              filled: _pinCode.length > index,
-            ),
+            child: DigitMasked(filled: _pinCode.length > index),
           ),
         ),
       ),

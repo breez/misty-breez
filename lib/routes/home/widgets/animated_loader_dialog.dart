@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
-AlertDialog createAnimatedLoaderDialog(
-  BuildContext context,
-  String text, {
-  bool withOKButton = true,
-}) {
+AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool withOKButton = true}) {
   final ThemeData themeData = Theme.of(context);
   final BreezTranslations texts = context.texts();
   final NavigatorState navigator = Navigator.of(context);
@@ -24,11 +20,7 @@ AlertDialog createAnimatedLoaderDialog(
           textStyle: themeData.dialogTheme.contentTextStyle,
           textAlign: TextAlign.center,
         ),
-        Image.asset(
-          themeData.customData.loaderAssetPath,
-          height: 64.0,
-          gaplessPlayback: true,
-        ),
+        Image.asset(themeData.customData.loaderAssetPath, height: 64.0, gaplessPlayback: true),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: withOKButton

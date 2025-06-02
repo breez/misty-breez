@@ -5,16 +5,10 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
   final RegExp _pattern = RegExp(r'[^\d*]');
 
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     final String raw = newValue.text.replaceAll(_pattern, '');
     if (raw.isEmpty) {
-      return newValue.copyWith(
-        text: '',
-        selection: const TextSelection.collapsed(offset: 0),
-      );
+      return newValue.copyWith(text: '', selection: const TextSelection.collapsed(offset: 0));
     }
 
     int value;
@@ -24,10 +18,7 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
       value = 0;
     }
 
-    final String formatted = BitcoinCurrency.sat.format(
-      value,
-      includeDisplayName: false,
-    );
+    final String formatted = BitcoinCurrency.sat.format(value, includeDisplayName: false);
 
     final int diff = formatted.length - oldValue.text.length;
     int newOffset = newValue.selection.start;

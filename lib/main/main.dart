@@ -9,13 +9,7 @@ export 'hydrated_bloc_storage.dart';
 
 void main() {
   bootstrap(
-    (
-      ServiceInjector injector,
-      SdkConnectivityCubit sdkConnectivityCubit,
-    ) =>
-        App(
-      injector: injector,
-      sdkConnectivityCubit: sdkConnectivityCubit,
-    ),
+    (ServiceInjector injector, SdkConnectivityCubit sdkConnectivityCubit) =>
+        App(injector: injector, sdkConnectivityCubit: sdkConnectivityCubit),
   );
 }

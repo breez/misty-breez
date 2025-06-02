@@ -80,11 +80,7 @@ class WalletConnectivityHandler extends Handler {
     return Flushbar<dynamic>(
       isDismissible: false,
       flushbarPosition: FlushbarPosition.TOP,
-      icon: Icon(
-        Icons.warning_amber_outlined,
-        size: 28.0,
-        color: Theme.of(context).colorScheme.error,
-      ),
+      icon: Icon(Icons.warning_amber_outlined, size: 28.0, color: Theme.of(context).colorScheme.error),
       messageText: Text(
         context.texts().handler_channel_connection_message,
         style: snackBarStyle,
@@ -100,9 +96,7 @@ class WalletConnectivityHandler extends Handler {
                 child: SizedBox(
                   height: 24.0,
                   width: 24.0,
-                  child: CircularProgressIndicator(
-                    color: themeData.colorScheme.error,
-                  ),
+                  child: CircularProgressIndicator(color: themeData.colorScheme.error),
                 ),
               );
             }
@@ -120,9 +114,7 @@ class WalletConnectivityHandler extends Handler {
               },
               child: AutoSizeText(
                 context.texts().no_connection_flushbar_action_retry,
-                style: snackBarStyle.copyWith(
-                  color: themeData.colorScheme.error,
-                ),
+                style: snackBarStyle.copyWith(color: themeData.colorScheme.error),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,

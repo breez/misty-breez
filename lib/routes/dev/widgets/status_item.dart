@@ -8,12 +8,7 @@ class StatusItem extends StatelessWidget {
   final String value;
   final void Function()? onLongPressed;
 
-  StatusItem({
-    required this.label,
-    required this.value,
-    this.onLongPressed,
-    super.key,
-  });
+  StatusItem({required this.label, required this.value, this.onLongPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +23,7 @@ class StatusItem extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8.0),
             child: AutoSizeText(
               label,
-              style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
+              style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
               maxLines: 1,
               group: labelAutoSizeGroup,
             ),
@@ -42,10 +34,7 @@ class StatusItem extends StatelessWidget {
               reverse: true,
               child: AutoSizeText(
                 value,
-                style: themeData.primaryTextTheme.displaySmall!.copyWith(
-                  fontSize: 18.0,
-                  color: Colors.white,
-                ),
+                style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 18.0, color: Colors.white),
                 textAlign: TextAlign.left,
                 maxLines: 1,
                 group: labelAutoSizeGroup,

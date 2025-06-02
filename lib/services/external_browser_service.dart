@@ -18,10 +18,7 @@ class ExternalBrowserService {
   /// [context] The build context for UI elements
   /// [linkAddress] The URL to open in the browser
   /// Returns a Future that completes when the browser is launched
-  static Future<void> launchLink(
-    BuildContext context, {
-    required String linkAddress,
-  }) async {
+  static Future<void> launchLink(BuildContext context, {required String linkAddress}) async {
     final BreezTranslations texts = context.texts();
     final ThemeData themeData = Theme.of(context);
     final NavigatorState navigator = Navigator.of(context);

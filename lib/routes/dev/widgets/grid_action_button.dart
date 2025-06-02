@@ -24,18 +24,13 @@ class GridActionButton extends StatelessWidget {
     final MinFontSize minFont = MinFontSize(context);
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minHeight: 48.0,
-        minWidth: 138.0,
-      ),
+      constraints: const BoxConstraints(minHeight: 48.0, minWidth: 138.0),
       child: Tooltip(
         message: tooltip,
         child: OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.white),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
           icon: Icon(icon, size: 20.0),
           label: AutoSizeText(

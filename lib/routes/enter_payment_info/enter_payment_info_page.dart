@@ -67,9 +67,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: SingleChildScrollView(
-          child: _buildContentContainer(texts, themeData),
-        ),
+        child: SingleChildScrollView(child: _buildContentContainer(texts, themeData)),
       ),
       bottomNavigationBar: _buildBottomBar(texts),
     );
@@ -79,20 +77,11 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
   Widget _buildContentContainer(BreezTranslations texts, ThemeData themeData) {
     return Container(
       decoration: ShapeDecoration(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(12),
-          ),
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
         color: themeData.customData.surfaceBgColor,
       ),
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-      child: Column(
-        children: <Widget>[
-          _buildForm(texts, themeData),
-          _buildActionButtons(texts),
-        ],
-      ),
+      child: Column(children: <Widget>[_buildForm(texts, themeData), _buildActionButtons(texts)]),
     );
   }
 
@@ -108,9 +97,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
             controller: _paymentInfoController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              prefixIconConstraints: BoxConstraints.tight(
-                const Size(16, 56),
-              ),
+              prefixIconConstraints: BoxConstraints.tight(const Size(16, 56)),
               prefixIcon: const SizedBox.shrink(),
               contentPadding: EdgeInsets.zero,
               hintText: 'Invoice | Lightning Address | BTC Address | LNURL',
@@ -119,9 +106,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
               helper: Text(
                 // TODO(erdemyerebasmaz): Add messages to Breez-Translations
                 'Paste or scan payee information.',
-                style: FieldTextStyle.labelStyle.copyWith(
-                  fontSize: 13.0,
-                ),
+                style: FieldTextStyle.labelStyle.copyWith(fontSize: 13.0),
               ),
             ),
             style: FieldTextStyle.textStyle,
@@ -141,17 +126,11 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Expanded(
-            child: PaymentInfoPasteButton(
-              onPressed: _onPastePressed,
-              textGroup: _textGroup,
-            ),
+            child: PaymentInfoPasteButton(onPressed: _onPastePressed, textGroup: _textGroup),
           ),
           const SizedBox(width: 32.0),
           Expanded(
-            child: PaymentInfoScanButton(
-              onPressed: _scanBarcode,
-              textGroup: _textGroup,
-            ),
+            child: PaymentInfoScanButton(onPressed: _scanBarcode, textGroup: _textGroup),
           ),
         ],
       ),
@@ -197,10 +176,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     Focus.maybeOf(context)?.unfocus();
 
     // Navigate to QR scan page
-    final String? barcode = await Navigator.pushNamed<String>(
-      context,
-      QRScanView.routeName,
-    );
+    final String? barcode = await Navigator.pushNamed<String>(context, QRScanView.routeName);
 
     // Handle the scan result
     if (!mounted) {
@@ -208,10 +184,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     }
 
     if (barcode == null || barcode.isEmpty) {
-      showFlushbar(
-        context,
-        message: texts.qr_code_not_detected_error,
-      );
+      showFlushbar(context, message: texts.qr_code_not_detected_error);
       return;
     }
 
@@ -233,9 +206,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
     String errMsg = '';
 
     try {
-      final InputType inputType = await inputCubit.parseInput(
-        input: _paymentInfoController.text,
-      );
+      final InputType inputType = await inputCubit.parseInput(input: _paymentInfoController.text);
 
       // Check for unsupported input types
       if (unsupportedInputTypeChecks.any((TypeCheck check) => check(inputType))) {
@@ -287,10 +258,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
         Navigator.pop(context);
 
         // Process the input
-        inputCubit.addIncomingInput(
-          _paymentInfoController.text.trim(),
-          InputSource.inputField,
-        );
+        inputCubit.addIncomingInput(_paymentInfoController.text.trim(), InputSource.inputField);
       }
     } catch (error) {
       _logger.warning('Error processing payment info: ${error.toString()}', error);
@@ -330,11 +298,7 @@ class PaymentInfoPasteButton extends StatelessWidget {
   final AutoSizeGroup? textGroup;
 
   /// Creates a PaymentInfoPasteButton.
-  const PaymentInfoPasteButton({
-    required this.onPressed,
-    this.textGroup,
-    super.key,
-  });
+  const PaymentInfoPasteButton({required this.onPressed, this.textGroup, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -342,23 +306,15 @@ class PaymentInfoPasteButton extends StatelessWidget {
     final MinFontSize minFont = MinFontSize(context);
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minHeight: 48.0,
-        minWidth: 138.0,
-      ),
+      constraints: const BoxConstraints(minHeight: 48.0, minWidth: 138.0),
       child: Tooltip(
         message: texts.bottom_action_bar_enter_payment_info,
         child: OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.white),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          icon: const Icon(
-            Icons.paste,
-            size: 20.0,
-          ),
+          icon: const Icon(Icons.paste, size: 20.0),
           label: AutoSizeText(
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
             'PASTE',
@@ -393,11 +349,7 @@ class PaymentInfoScanButton extends StatelessWidget {
   final AutoSizeGroup? textGroup;
 
   /// Creates a PaymentInfoScanButton.
-  const PaymentInfoScanButton({
-    required this.onPressed,
-    this.textGroup,
-    super.key,
-  });
+  const PaymentInfoScanButton({required this.onPressed, this.textGroup, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -406,18 +358,13 @@ class PaymentInfoScanButton extends StatelessWidget {
     final MinFontSize minFont = MinFontSize(context);
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minHeight: 48.0,
-        minWidth: 138.0,
-      ),
+      constraints: const BoxConstraints(minHeight: 48.0, minWidth: 138.0),
       child: Tooltip(
         message: texts.enter_payment_info_page_scan_tooltip,
         child: OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.white),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
           icon: Image(
             image: const AssetImage('assets/icons/qr_scan.png'),

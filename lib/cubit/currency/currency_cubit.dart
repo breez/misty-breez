@@ -21,27 +21,20 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin<CurrencyStat
   }
 
   void _initializeCurrencyCubit() {
-    breezSdkLiquid.getInfoResponseStream.first.then(
-      (GetInfoResponse getInfoResponse) {
-        listFiatCurrencies();
-        fetchExchangeRates();
-      },
-    );
+    breezSdkLiquid.getInfoResponseStream.first.then((GetInfoResponse getInfoResponse) {
+      listFiatCurrencies();
+      fetchExchangeRates();
+    });
   }
 
   void listFiatCurrencies() {
-    breezSdkLiquid.instance!.listFiatCurrencies().then(
-      (List<FiatCurrency> fiatCurrencies) {
-        emit(
-          state.copyWith(
-            fiatCurrenciesData: _sortedFiatCurrenciesList(
-              fiatCurrencies,
-              state.preferredCurrencies,
-            ),
-          ),
-        );
-      },
-    );
+    breezSdkLiquid.instance!.listFiatCurrencies().then((List<FiatCurrency> fiatCurrencies) {
+      emit(
+        state.copyWith(
+          fiatCurrenciesData: _sortedFiatCurrenciesList(fiatCurrencies, state.preferredCurrencies),
+        ),
+      );
+    });
   }
 
   List<FiatCurrency> _sortedFiatCurrenciesList(
@@ -67,8 +60,10 @@ class CurrencyCubit extends Cubit<CurrencyState> with HydratedMixin<CurrencyStat
 
   Future<Map<String, Rate>> fetchExchangeRates() async {
     final List<Rate> rates = await breezSdkLiquid.instance!.fetchFiatRates();
-    final Map<String, Rate> exchangeRates =
-        rates.fold<Map<String, Rate>>(<String, Rate>{}, (Map<String, Rate> map, Rate rate) {
+    final Map<String, Rate> exchangeRates = rates.fold<Map<String, Rate>>(<String, Rate>{}, (
+      Map<String, Rate> map,
+      Rate rate,
+    ) {
       map[rate.coin] = rate;
       return map;
     });

@@ -27,10 +27,7 @@ class PaymentFilterExporter extends StatelessWidget {
           padding: const EdgeInsets.only(),
           child: PopupMenuButton<PaymentFilterChoice>(
             color: themeData.customData.paymentListBgColorLight,
-            icon: Icon(
-              Icons.more_vert,
-              color: themeData.paymentItemTitleTextStyle.color,
-            ),
+            icon: Icon(Icons.more_vert, color: themeData.paymentItemTitleTextStyle.color),
             padding: EdgeInsets.zero,
             offset: const Offset(12, 24),
             onSelected: _select,
@@ -38,10 +35,7 @@ class PaymentFilterExporter extends StatelessWidget {
               PopupMenuItem<PaymentFilterChoice>(
                 height: 36,
                 value: PaymentFilterChoice(() => _exportPayments(context)),
-                child: Text(
-                  texts.payments_filter_action_export,
-                  style: themeData.textTheme.labelLarge,
-                ),
+                child: Text(texts.payments_filter_action_export, style: themeData.textTheme.labelLarge),
               ),
             ],
           ),
@@ -68,23 +62,25 @@ class PaymentFilterExporter extends StatelessWidget {
     try {
       if (paymentsState.paymentFilters.fromTimestamp != null ||
           paymentsState.paymentFilters.toTimestamp != null) {
-        final DateTime startDate =
-            DateTime.fromMillisecondsSinceEpoch(paymentsState.paymentFilters.fromTimestamp!);
-        final DateTime endDate =
-            DateTime.fromMillisecondsSinceEpoch(paymentsState.paymentFilters.toTimestamp!);
-        filePath =
-            await CsvExporter(currencyState.fiatId, paymentsState, startDate: startDate, endDate: endDate)
-                .export();
+        final DateTime startDate = DateTime.fromMillisecondsSinceEpoch(
+          paymentsState.paymentFilters.fromTimestamp!,
+        );
+        final DateTime endDate = DateTime.fromMillisecondsSinceEpoch(
+          paymentsState.paymentFilters.toTimestamp!,
+        );
+        filePath = await CsvExporter(
+          currencyState.fiatId,
+          paymentsState,
+          startDate: startDate,
+          endDate: endDate,
+        ).export();
       } else {
         filePath = await CsvExporter(currencyState.fiatId, paymentsState).export();
       }
       if (loaderRoute.isActive) {
         navigator.removeRoute(loaderRoute);
       }
-      final ShareParams shareParams = ShareParams(
-        title: 'Payments',
-        files: <XFile>[XFile(filePath)],
-      );
+      final ShareParams shareParams = ShareParams(title: 'Payments', files: <XFile>[XFile(filePath)]);
       SharePlus.instance.share(shareParams);
     } catch (error) {
       {
@@ -95,10 +91,7 @@ class PaymentFilterExporter extends StatelessWidget {
         if (!context.mounted) {
           return;
         }
-        showFlushbar(
-          context,
-          message: texts.payments_filter_action_export_failed,
-        );
+        showFlushbar(context, message: texts.payments_filter_action_export_failed);
       }
     } finally {
       if (loaderRoute.isActive) {

@@ -38,12 +38,9 @@ mixin AutoLockMixin<T extends StatefulWidget> on State<T> {
 
     _logger.info('Lock state changed to locked, showing lock screen');
 
-    Navigator.of(context, rootNavigator: true).push(
-      FadeInRoute<void>(
-        builder: (_) => const LockScreen(
-          authorizedAction: AuthorizedAction.popPage,
-        ),
-      ),
-    );
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push(FadeInRoute<void>(builder: (_) => const LockScreen(authorizedAction: AuthorizedAction.popPage)));
   }
 }

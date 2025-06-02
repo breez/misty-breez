@@ -15,10 +15,7 @@ class UsernameInputFormatter extends TextInputFormatter {
   static final RegExp _consecutiveDotsRegExp = RegExp(r'\.\.');
 
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     // Fix for backspace bug: Always allow deletion operations
     if (newValue.text.length < oldValue.text.length) {
       return newValue;

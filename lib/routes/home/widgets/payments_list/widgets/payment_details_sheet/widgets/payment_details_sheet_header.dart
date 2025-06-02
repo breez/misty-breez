@@ -7,10 +7,7 @@ import 'package:misty_breez/theme/theme.dart';
 class PaymentDetailsSheetHeader extends StatefulWidget {
   final PaymentData paymentData;
 
-  const PaymentDetailsSheetHeader({
-    required this.paymentData,
-    super.key,
-  });
+  const PaymentDetailsSheetHeader({required this.paymentData, super.key});
 
   @override
   State<PaymentDetailsSheetHeader> createState() => _PaymentDetailsSheetHeaderState();
@@ -33,10 +30,7 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
                   maxHeight: 128,
                   maxWidth: 128,
                 ),
-                child: PaymentItemAvatar(
-                  widget.paymentData,
-                  radius: 64.0,
-                ),
+                child: PaymentItemAvatar(widget.paymentData, radius: 64.0),
               ),
             ),
           ),
@@ -55,10 +49,7 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
               widget.paymentData.status == PaymentState.refundable) ...<Widget>[
             const Padding(
               padding: EdgeInsets.only(top: 8),
-              child: Chip(
-                label: Text('FAILED'),
-                backgroundColor: Colors.red,
-              ),
+              child: Chip(label: Text('FAILED'), backgroundColor: Colors.red),
             ),
           ],
         ],

@@ -10,10 +10,7 @@ import 'package:misty_breez/theme/theme.dart';
 class PaymentItemTitle extends StatelessWidget {
   final PaymentData paymentData;
 
-  const PaymentItemTitle(
-    this.paymentData, {
-    super.key,
-  });
+  const PaymentItemTitle(this.paymentData, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +22,6 @@ class PaymentItemTitle extends StatelessWidget {
       final UserProfileState userProfileState = userProfileCubit.state;
       title = '${userProfileState.profileSettings.name}';
     }
-    return Text(
-      title,
-      style: Theme.of(context).paymentItemTitleTextStyle,
-      overflow: TextOverflow.ellipsis,
-    );
+    return Text(title, style: Theme.of(context).paymentItemTitleTextStyle, overflow: TextOverflow.ellipsis);
   }
 }

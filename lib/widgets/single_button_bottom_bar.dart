@@ -48,18 +48,13 @@ class SingleButtonBottomBar extends StatelessWidget {
         mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
         children: <Widget>[
           ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: 48.0,
-              minWidth: 168.0,
-            ),
+            constraints: const BoxConstraints(minHeight: 48.0, minWidth: 168.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: themeData.primaryColor,
                 elevation: 0.0,
                 disabledBackgroundColor: themeData.disabledColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                 minimumSize: expand ? Size(screenWidth, 48) : null,
               ),
               onPressed: (enabled && !loading) ? onPressed : null,
@@ -72,11 +67,7 @@ class SingleButtonBottomBar extends StatelessWidget {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                  : AutoSizeText(
-                      text,
-                      maxLines: 1,
-                      style: themeData.textTheme.labelLarge,
-                    ),
+                  : AutoSizeText(text, maxLines: 1, style: themeData.textTheme.labelLarge),
             ),
           ),
         ],

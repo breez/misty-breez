@@ -31,14 +31,12 @@ class FiatBalanceText extends StatelessWidget {
 
     return TextButton(
       style: ButtonStyle(
-        overlayColor: WidgetStateProperty.resolveWith<Color?>(
-          (Set<WidgetState> states) {
-            if (<WidgetState>{WidgetState.focused, WidgetState.hovered}.any(states.contains)) {
-              return themeData.customData.paymentListBgColor;
-            }
-            return null;
-          },
-        ),
+        overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+          if (<WidgetState>{WidgetState.focused, WidgetState.hovered}.any(states.contains)) {
+            return themeData.customData.paymentListBgColor;
+          }
+          return null;
+        }),
       ),
       onPressed: () => _changeFiatCurrency(context),
       child: Text(
@@ -58,10 +56,7 @@ class FiatBalanceText extends StatelessWidget {
     }
   }
 
-  FiatConversion? nextValidFiatConversion(
-    CurrencyState currencyState,
-    AccountState accountState,
-  ) {
+  FiatConversion? nextValidFiatConversion(CurrencyState currencyState, AccountState accountState) {
     final double? exchangeRate = currencyState.fiatExchangeRate;
     if (exchangeRate == null) {
       return null;
@@ -81,10 +76,7 @@ class FiatBalanceText extends StatelessWidget {
     return null;
   }
 
-  bool isAboveMinAmount(
-    CurrencyState currencyState,
-    AccountState accountState,
-  ) {
+  bool isAboveMinAmount(CurrencyState currencyState, AccountState accountState) {
     final FiatConversion? fiatConversion = currencyState.fiatConversion();
     if (fiatConversion == null) {
       return false;

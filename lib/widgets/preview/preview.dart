@@ -7,10 +7,7 @@ export 'fill_view_port_column_scroll_view.dart';
 class Preview extends StatefulWidget {
   final List<Widget> children;
 
-  const Preview(
-    this.children, {
-    super.key,
-  });
+  const Preview(this.children, {super.key});
 
   @override
   State<Preview> createState() => _PreviewState();
@@ -33,9 +30,7 @@ class _PreviewState extends State<Preview> {
                   final int rows = constraints.maxHeight ~/ 8;
                   return GridView.builder(
                     itemCount: cols * rows + cols,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: cols,
-                    ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: cols),
                     itemBuilder: (BuildContext context, int index) {
                       final bool oddRow = (index ~/ cols).isOdd;
                       final bool oddCol = (index % cols).isOdd;
@@ -53,26 +48,15 @@ class _PreviewState extends State<Preview> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     const Text('Theme:'),
-                    TextButton(
-                      onPressed: () => _changeTheme(null),
-                      child: const Text('None'),
-                    ),
-                    TextButton(
-                      onPressed: () => _changeTheme(breezLightTheme),
-                      child: const Text('Light'),
-                    ),
-                    TextButton(
-                      onPressed: () => _changeTheme(breezDarkTheme),
-                      child: const Text('Dark'),
-                    ),
+                    TextButton(onPressed: () => _changeTheme(null), child: const Text('None')),
+                    TextButton(onPressed: () => _changeTheme(breezLightTheme), child: const Text('Light')),
+                    TextButton(onPressed: () => _changeTheme(breezDarkTheme), child: const Text('Dark')),
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 48.0),
-                child: FillViewPortColumnScrollView(
-                  children: widget.children,
-                ),
+                child: FillViewPortColumnScrollView(children: widget.children),
               ),
             ],
           ),

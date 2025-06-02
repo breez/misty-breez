@@ -71,10 +71,7 @@ class QRScanViewState extends State<QRScanView> {
               children: <Widget>[
                 Expanded(
                   flex: 5,
-                  child: MobileScanner(
-                    key: qrKey,
-                    controller: cameraController,
-                  ),
+                  child: MobileScanner(key: qrKey, controller: cameraController),
                 ),
               ],
             ),
@@ -86,18 +83,10 @@ class QRScanViewState extends State<QRScanView> {
                 Positioned(
                   right: 10,
                   top: 5,
-                  child: ImagePickerButton(
-                    cameraController: cameraController,
-                    onDetect: onDetect,
-                  ),
+                  child: ImagePickerButton(cameraController: cameraController, onDetect: onDetect),
                 ),
                 if (defaultTargetPlatform == TargetPlatform.iOS) ...<Widget>[
-                  const Positioned(
-                    bottom: 30.0,
-                    right: 0,
-                    left: 0,
-                    child: QRScanCancelButton(),
-                  ),
+                  const Positioned(bottom: 30.0, right: 0, left: 0, child: QRScanCancelButton()),
                 ],
               ],
             ),
@@ -112,11 +101,7 @@ class ImagePickerButton extends StatelessWidget {
   final MobileScannerController cameraController;
   final void Function(BarcodeCapture capture) onDetect;
 
-  const ImagePickerButton({
-    required this.cameraController,
-    required this.onDetect,
-    super.key,
-  });
+  const ImagePickerButton({required this.cameraController, required this.onDetect, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -127,22 +112,17 @@ class ImagePickerButton extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 32, 24, 0),
       icon: SvgPicture.asset(
         'assets/icons/image.svg',
-        colorFilter: const ColorFilter.mode(
-          Colors.white,
-          BlendMode.srcATop,
-        ),
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcATop),
         width: 32,
         height: 32,
       ),
       onPressed: () async {
         final ImagePicker picker = ImagePicker();
 
-        final XFile? image = await picker.pickImage(source: ImageSource.gallery).catchError(
-          (Object err) {
-            _logger.warning('Failed to pick image', err);
-            return null;
-          },
-        );
+        final XFile? image = await picker.pickImage(source: ImageSource.gallery).catchError((Object err) {
+          _logger.warning('Failed to pick image', err);
+          return null;
+        });
 
         if (image == null) {
           return;
@@ -151,18 +131,16 @@ class ImagePickerButton extends StatelessWidget {
         final String filePath = image.path;
         _logger.info('Picked image: $filePath');
 
-        final BarcodeCapture? barcodes = await cameraController.analyzeImage(filePath).catchError(
-          (Object err) {
-            _logger.warning('Failed to analyze image', err);
-            return null;
-          },
-        );
+        final BarcodeCapture? barcodes = await cameraController.analyzeImage(filePath).catchError((
+          Object err,
+        ) {
+          _logger.warning('Failed to analyze image', err);
+          return null;
+        });
 
         if (barcodes == null) {
           _logger.info('No QR code found in image');
-          scaffoldMessenger.showSnackBar(
-            SnackBar(content: Text(texts.qr_scan_gallery_failed)),
-          );
+          scaffoldMessenger.showSnackBar(SnackBar(content: Text(texts.qr_scan_gallery_failed)));
         } else {
           onDetect(barcodes);
         }
@@ -185,14 +163,9 @@ class QRScanCancelButton extends StatelessWidget {
           border: Border.all(color: Colors.white.withValues(alpha: .8)),
         ),
         child: TextButton(
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 35),
-          ),
+          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 35)),
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            texts.qr_scan_action_cancel,
-            style: const TextStyle(color: Colors.white),
-          ),
+          child: Text(texts.qr_scan_action_cancel, style: const TextStyle(color: Colors.white)),
         ),
       ),
     );

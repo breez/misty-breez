@@ -26,14 +26,12 @@ class PlaceholderBalanceTextState extends State<PlaceholderBalanceText> {
       highlightColor: themeData.customData.paymentListBgColor.withValues(alpha: .5),
       child: TextButton(
         style: ButtonStyle(
-          overlayColor: WidgetStateProperty.resolveWith<Color?>(
-            (Set<WidgetState> states) {
-              if (<WidgetState>{WidgetState.focused, WidgetState.hovered}.any(states.contains)) {
-                return themeData.customData.paymentListBgColor;
-              }
-              return null;
-            },
-          ),
+          overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+            if (<WidgetState>{WidgetState.focused, WidgetState.hovered}.any(states.contains)) {
+              return themeData.customData.paymentListBgColor;
+            }
+            return null;
+          }),
         ),
         onPressed: () {},
         child: RichText(

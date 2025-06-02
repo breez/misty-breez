@@ -32,9 +32,7 @@ class RegisterButton extends StatelessWidget {
           backgroundColor: themeData.primaryColor,
           elevation: 0.0,
           disabledBackgroundColor: themeData.disabledColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         ),
         onPressed: walkthroughService.registerWallet,
         child: Semantics(
