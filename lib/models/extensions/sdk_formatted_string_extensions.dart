@@ -120,7 +120,23 @@ extension SendDestinationFormatter on SendDestination {
         bip353Address: final String? bip353Address,
         payerNote: final String? payerNote,
       ) =>
-        'BOLT12 Offer: ${offer.toFormattedString()}, Amount: $receiverAmountSat sats${bip353Address != null ? ' (resolved from $bip353Address)' : ''}${payerNote != null ? ' with note $payerNote' : ''}',
+        'BOLT12 Offer: ${offer.toFormattedString()}, Amount: $receiverAmountSat sats${bip353Address != null ? ' (resolved from $bip353Address)' : ''}${payerNote != null ? ' with note: "$payerNote"' : ''}',
+    };
+  }
+}
+
+extension PayAmountFormatter on PayAmount {
+  String toFormattedString() {
+    return switch (this) {
+      PayAmount_Bitcoin(receiverAmountSat: final BigInt receiverAmountSat) =>
+        'Bitcoin(receiverAmountSat: $receiverAmountSat)',
+      PayAmount_Asset(
+        assetId: final String assetId,
+        receiverAmount: final double receiverAmount,
+        estimateAssetFees: final bool? estimateAssetFees,
+      ) =>
+        'Asset(assetId: $assetId, receiverAmount: $receiverAmount, estimateAssetFees: $estimateAssetFees)',
+      PayAmount_Drain() => 'Drain',
     };
   }
 }
@@ -128,7 +144,9 @@ extension SendDestinationFormatter on SendDestination {
 extension PrepareSendResponseFormatter on PrepareSendResponse {
   String toFormattedString() =>
       'PrepareSendResponse('
-      'destination: $destination, '
-      'feesSat: $feesSat'
+      'destination: ${destination.toFormattedString()}, '
+      'amount: ${amount != null ? amount!.toFormattedString() : 'N/A'}, '
+      'feesSat: ${feesSat ?? 'N/A'}, '
+      'estimatedAssetFees: ${estimatedAssetFees ?? 'N/A'}'
       ')';
 }
