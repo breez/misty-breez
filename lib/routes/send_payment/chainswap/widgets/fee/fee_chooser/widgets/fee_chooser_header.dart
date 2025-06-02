@@ -41,7 +41,11 @@ class _FeeChooserHeaderState extends State<FeeChooserHeader> {
             return FeeOptionButton(
               index: index,
               text: feeOption.getDisplayName(texts),
-              isAffordable: feeOption.isAffordable(balanceSat: accountState.walletInfo!.balanceSat.toInt()),
+              isAffordable: feeOption.isAffordable(
+                balanceSat: feeOption is RefundFeeOption
+                    ? widget.amountSat
+                    : accountState.walletInfo!.balanceSat.toInt(),
+              ),
               isSelected: widget.selectedFeeIndex == index,
               onSelect: () => widget.onSelect(index),
             );
