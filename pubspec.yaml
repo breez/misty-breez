@@ -74,8 +74,8 @@ dependencies:
   email_validator: ^3.0.0
   extended_image: ^10.0.1
   ffi: ^2.1.4
-  firebase_core: ^3.13.0
-  firebase_messaging: ^15.2.5
+  firebase_core: ^3.13.1
+  firebase_messaging: ^15.2.6
   flutter_bloc: ^9.1.1
   flutter_cache_manager: ^3.4.1
   flutter_fgbg: ^0.7.1
@@ -93,7 +93,7 @@ dependencies:
   image_cropper: ^9.1.0
   image_picker: ^1.1.2
   ini: ^2.1.0
-  intl: <0.20.2 # intl is pinned to version 0.19.0 by flutter_localizations from the flutter SDK.
+  intl: ^0.20.2
   local_auth: ^2.3.0
   local_auth_android: ^1.0.49
   local_auth_darwin: ^1.4.3
@@ -126,7 +126,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.4.15
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   test: <1.26.0 # test ^1.26.0 depends on test_api 0.7.5
   test_api: <0.7.5 # test_api is pinned to version 0.7.4 by flutter_test from the flutter SDK.
 

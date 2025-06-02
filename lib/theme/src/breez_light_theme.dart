@@ -41,7 +41,7 @@ final ThemeData breezLightTheme = ThemeData(
       systemNavigationBarContrastEnforced: false,
     ),
   ),
-  dialogTheme: DialogTheme(
+  dialogTheme: DialogThemeData(
     titleTextStyle: TextStyle(
       color: BreezColors.grey[600],
       fontSize: 20.5,
@@ -55,7 +55,7 @@ final ThemeData breezLightTheme = ThemeData(
   ),
   dividerColor: const Color(0x33ffffff),
   cardColor: BreezColors.blue[500], // will be replaced with CardTheme.color
-  cardTheme: CardTheme(color: BreezColors.blue[500]),
+  cardTheme: CardThemeData(color: BreezColors.blue[500]),
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
     titleSmall: TextStyle(

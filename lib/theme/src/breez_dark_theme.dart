@@ -40,7 +40,7 @@ final ThemeData breezDarkTheme = ThemeData(
       systemNavigationBarContrastEnforced: false,
     ),
   ),
-  dialogTheme: const DialogTheme(
+  dialogTheme: const DialogThemeData(
     titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
     contentTextStyle: TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),
     backgroundColor: Color.fromRGBO(10, 20, 40, 1),
@@ -50,7 +50,7 @@ final ThemeData breezDarkTheme = ThemeData(
   ),
   dividerColor: const Color(0x337aa5eb),
   cardColor: const Color(0xFF121212), // will be replaced with CardTheme.color
-  cardTheme: const CardTheme(color: Color(0xFF121212)),
+  cardTheme: const CardThemeData(color: Color(0xFF121212)),
   highlightColor: const Color(0xFF0085fb),
   textTheme: const TextTheme(
     titleSmall: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
