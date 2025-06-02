@@ -88,13 +88,7 @@ class RefundPageState extends State<RefundPage> {
           swapAddress: widget.swapInfo.swapAddress,
           toAddress: _addressController.text,
         );
-        navigator.push(
-          FadeInRoute<void>(
-            builder: (_) => RefundConfirmationPage(
-              refundParams: refundParams,
-            ),
-          ),
-        );
+        navigator.push(FadeInRoute<void>(builder: (_) => RefundConfirmationPage(refundParams: refundParams)));
       } catch (error) {
         if (loaderRoute.isActive) {
           navigator.removeRoute(loaderRoute);
