@@ -29,18 +29,17 @@ class SyncManager {
 
     // Force a sync after Network is back
     // TODO(erdemyerebasmaz): Liquid SDK - This sync should happen on SDK layer after re-establishing connection
-    _networkSubscription = Connectivity().onConnectivityChanged.skip(1).listen(
-      (List<ConnectivityResult> event) async {
-        final bool hasNetworkConnection = !(event.contains(ConnectivityResult.none) ||
-            event.every(
-              (ConnectivityResult result) => result == ConnectivityResult.vpn,
-            ));
-        if (hasNetworkConnection) {
-          _logger.info('Re-established network connection.');
-          await _sync();
-        }
-      },
-    );
+    _networkSubscription = Connectivity().onConnectivityChanged.skip(1).listen((
+      List<ConnectivityResult> event,
+    ) async {
+      final bool hasNetworkConnection =
+          !(event.contains(ConnectivityResult.none) ||
+              event.every((ConnectivityResult result) => result == ConnectivityResult.vpn));
+      if (hasNetworkConnection) {
+        _logger.info('Re-established network connection.');
+        await _sync();
+      }
+    });
     _logger.info('Subscribed to network events.');
   }
 

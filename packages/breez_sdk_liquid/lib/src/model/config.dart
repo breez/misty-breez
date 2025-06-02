@@ -17,9 +17,7 @@ class AppConfig {
 
   AppConfig._({required this.sdkConfig});
 
-  static Future<AppConfig> instance({
-    ServiceInjector? serviceInjector,
-  }) async {
+  static Future<AppConfig> instance({ServiceInjector? serviceInjector}) async {
     _logger.info('Getting Config instance');
     if (_instance == null) {
       _logger.info('Creating Config instance');
@@ -39,19 +37,12 @@ class AppConfig {
     if (breezApiKey.isEmpty) {
       throw Exception('API_KEY is not set in environment variables');
     }
-    return liquid_sdk.defaultConfig(
-      network: network,
-      breezApiKey: breezApiKey,
-    );
+    return liquid_sdk.defaultConfig(network: network, breezApiKey: breezApiKey);
   }
 
-  static Future<liquid_sdk.Config> getSDKConfig(
-    liquid_sdk.Config defaultConf,
-  ) async {
+  static Future<liquid_sdk.Config> getSDKConfig(liquid_sdk.Config defaultConf) async {
     _logger.info('Getting SDK config');
-    return defaultConf.copyWith(
-      workingDir: await _workingDir(),
-    );
+    return defaultConf.copyWith(workingDir: await _workingDir());
   }
 
   static Future<String> _workingDir() async {
