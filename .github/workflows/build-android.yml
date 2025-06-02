@@ -158,7 +158,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: 3.29.2
+          flutter-version: 3.32.1
           cache: true
 
       - name: Set up just
