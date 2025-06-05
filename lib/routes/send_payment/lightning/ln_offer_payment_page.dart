@@ -158,12 +158,11 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
 
       final String comment = widget.comment ?? _descriptionController.text;
 
-      final PrepareSendRequest prepareSendRequest = PrepareSendRequest(
+      final PrepareSendRequest req = PrepareSendRequest(
         destination: destination,
         amount: payAmount,
         comment: comment,
       );
-      final PrepareSendRequest req = prepareSendRequest;
 
       final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(req: req);
       setState(() {
