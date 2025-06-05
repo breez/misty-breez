@@ -92,7 +92,7 @@ class LnInvoiceInputState extends InputState {
           source == other.source;
 
   @override
-  int get hashCode => lnInvoice.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(lnInvoice, source);
 }
 
 class LnOfferInputState extends InputState {
@@ -104,7 +104,7 @@ class LnOfferInputState extends InputState {
 
   @override
   String toString() {
-    return 'LnOfferInputState{lnInvoice: $lnOffer, source: $source}';
+    return 'LnOfferInputState{lnInvoice: $lnOffer, bip353Address: $bip353Address, source: $source}';
   }
 
   @override
@@ -113,10 +113,11 @@ class LnOfferInputState extends InputState {
       other is LnOfferInputState &&
           runtimeType == other.runtimeType &&
           lnOffer == other.lnOffer &&
+          bip353Address == other.bip353Address &&
           source == other.source;
 
   @override
-  int get hashCode => lnOffer.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(lnOffer, bip353Address, source);
 }
 
 class LnUrlPayInputState extends InputState {
@@ -128,7 +129,7 @@ class LnUrlPayInputState extends InputState {
 
   @override
   String toString() {
-    return 'LnUrlPayInputState{data: ${data.toFormattedString()}, source: $source}';
+    return 'LnUrlPayInputState{data: ${data.toFormattedString()}, bip353Address: $bip353Address, source: $source}';
   }
 
   @override
@@ -137,10 +138,11 @@ class LnUrlPayInputState extends InputState {
       other is LnUrlPayInputState &&
           runtimeType == other.runtimeType &&
           data == other.data &&
+          bip353Address == other.bip353Address &&
           source == other.source;
 
   @override
-  int get hashCode => data.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(data, bip353Address, source);
 }
 
 class LnUrlWithdrawInputState extends InputState {
@@ -163,7 +165,7 @@ class LnUrlWithdrawInputState extends InputState {
           source == other.source;
 
   @override
-  int get hashCode => data.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(data, source);
 }
 
 class LnUrlAuthInputState extends InputState {
@@ -186,7 +188,7 @@ class LnUrlAuthInputState extends InputState {
           source == other.source;
 
   @override
-  int get hashCode => data.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(data, source);
 }
 
 class LnUrlErrorInputState extends InputState {
@@ -209,7 +211,7 @@ class LnUrlErrorInputState extends InputState {
           source == other.source;
 
   @override
-  int get hashCode => data.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(data, source);
 }
 
 class NodeIdInputState extends InputState {
@@ -232,7 +234,7 @@ class NodeIdInputState extends InputState {
           source == other.source;
 
   @override
-  int get hashCode => nodeId.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(nodeId, source);
 }
 
 class BitcoinAddressInputState extends InputState {
@@ -255,7 +257,7 @@ class BitcoinAddressInputState extends InputState {
           source == other.source;
 
   @override
-  int get hashCode => data.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(data, source);
 }
 
 class UrlInputState extends InputState {
@@ -278,5 +280,5 @@ class UrlInputState extends InputState {
           source == other.source;
 
   @override
-  int get hashCode => url.hashCode ^ source.hashCode;
+  int get hashCode => Object.hash(url, source);
 }
