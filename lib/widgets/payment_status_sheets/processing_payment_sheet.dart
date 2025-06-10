@@ -146,14 +146,15 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   }
 
   void _handleLiquidPayment(SendPaymentResponse payResult, Completer<bool> paymentCompleter) {
-    if (payResult.payment.status == PaymentState.pending ||
-        payResult.payment.status == PaymentState.complete) {
+    final PaymentState paymentStatus = payResult.payment.status;
+    if (paymentStatus == PaymentState.pending || paymentStatus == PaymentState.complete) {
+      final String? paymentDestination = payResult.payment.destination;
       _logger.info(
-        'Payment sent!${payResult.payment.destination?.isNotEmpty == true ? ' Destination: ${payResult.payment.destination}' : ''}',
+        'Payment sent!${paymentDestination?.isNotEmpty == true ? ' Destination: $paymentDestination' : ''}',
       );
       paymentCompleter.complete(true);
     } else {
-      _logger.warning('Payment failed! Status: ${payResult.payment.status}');
+      _logger.warning('Payment failed! Status: $paymentStatus');
       paymentCompleter.complete(false);
     }
   }
@@ -172,8 +173,9 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
           (p.status == PaymentState.complete ||
               (p.details is PaymentDetails_Liquid && p.status == PaymentState.pending)),
       onData: (Payment p) {
+        final String? paymentDestination = p.destination;
         _logger.info(
-          'Outgoing payment detected!${p.destination?.isNotEmpty == true ? ' Destination: ${p.destination}' : ''}',
+          'Outgoing payment detected!${paymentDestination?.isNotEmpty == true ? ' Destination: $paymentDestination' : ''}',
         );
         paymentCompleter.complete(true);
       },
