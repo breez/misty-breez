@@ -125,7 +125,10 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     _logger.info('Tracking outgoing payments for destination: $expectedDestination');
 
     _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
-      paymentFilter: (Payment p) => p.status == PaymentState.complete && p.destination == expectedDestination,
+      paymentFilter: (Payment p) =>
+          p.destination == expectedDestination &&
+          (p.status == PaymentState.complete ||
+              (p.details is PaymentDetails_Liquid && p.status == PaymentState.pending)),
       onData: (Payment p) {
         _logger.info(
           'Outgoing payment detected!${p.destination?.isNotEmpty == true ? 'Destination: ${p.destination}' : ''}',
