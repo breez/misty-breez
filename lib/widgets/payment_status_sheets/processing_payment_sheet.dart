@@ -145,6 +145,19 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
         });
   }
 
+  void _handleLiquidPayment(SendPaymentResponse payResult, Completer<bool> paymentCompleter) {
+    if (payResult.payment.status == PaymentState.pending ||
+        payResult.payment.status == PaymentState.complete) {
+      _logger.info(
+        'Payment sent!${payResult.payment.destination?.isNotEmpty == true ? ' Destination: ${payResult.payment.destination}' : ''}',
+      );
+      paymentCompleter.complete(true);
+    } else {
+      _logger.warning('Payment failed! Status: ${payResult.payment.status}');
+      paymentCompleter.complete(false);
+    }
+  }
+
   void _handleLnPayment(SendPaymentResponse payResult, Completer<bool> paymentCompleter) {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
     _trackPaymentEventsSubscription?.cancel();
@@ -169,19 +182,6 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
         paymentCompleter.complete(false);
       },
     );
-  }
-
-  void _handleLiquidPayment(SendPaymentResponse payResult, Completer<bool> paymentCompleter) {
-    if (payResult.payment.status == PaymentState.pending ||
-        payResult.payment.status == PaymentState.complete) {
-      _logger.info(
-        'Payment sent!${payResult.payment.destination?.isNotEmpty == true ? ' Destination: ${payResult.payment.destination}' : ''}',
-      );
-      paymentCompleter.complete(true);
-    } else {
-      _logger.warning('Payment failed!');
-      paymentCompleter.complete(false);
-    }
   }
 
   void _showSuccessAndClose([dynamic payResult]) {
