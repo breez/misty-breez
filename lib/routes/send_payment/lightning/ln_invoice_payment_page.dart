@@ -44,6 +44,7 @@ class LnPaymentPageState extends State<LnPaymentPage> {
         final BreezTranslations texts = context.texts();
         Navigator.pop(context);
         showFlushbar(context, message: texts.payment_request_zero_amount_not_supported);
+        return;
       }
 
       setState(() {
