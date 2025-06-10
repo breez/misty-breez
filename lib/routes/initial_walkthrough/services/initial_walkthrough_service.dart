@@ -32,10 +32,6 @@ class InitialWalkthroughService {
   /// Starts the wallet registration process after confirming with user.
   Future<void> registerWallet() async {
     _logger.info("Let's Breez!");
-    if (!await _confirmBetaDisclaimer()) {
-      return;
-    }
-
     await _connect();
   }
 
@@ -48,17 +44,6 @@ class InitialWalkthroughService {
     }
 
     await _connect(mnemonic: mnemonic);
-  }
-
-  /// Prompts the user with a beta disclaimer and requests confirmation.
-  Future<bool> _confirmBetaDisclaimer() async {
-    return await showDialog<bool>(
-          useRootNavigator: false,
-          context: _context,
-          barrierDismissible: false,
-          builder: (_) => const BetaWarningDialog(),
-        ) ??
-        false;
   }
 
   /// Gets the mnemonic seed from user input.
