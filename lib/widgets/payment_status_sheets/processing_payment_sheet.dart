@@ -116,30 +116,13 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
   }
 
   void _trackLnPaymentEvents(SendPaymentResponse payResult) {
-    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-    _trackPaymentEventsSubscription?.cancel();
-
     final Completer<bool> paymentCompleter = Completer<bool>();
 
-    final String? expectedDestination = payResult.payment.destination;
-    _logger.info('Tracking outgoing payments for destination: $expectedDestination');
-
-    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
-      paymentFilter: (Payment p) =>
-          p.destination == expectedDestination &&
-          (p.status == PaymentState.complete ||
-              (p.details is PaymentDetails_Liquid && p.status == PaymentState.pending)),
-      onData: (Payment p) {
-        _logger.info(
-          'Outgoing payment detected!${p.destination?.isNotEmpty == true ? 'Destination: ${p.destination}' : ''}',
-        );
-        paymentCompleter.complete(true);
-      },
-      onError: (Object e) {
-        _logger.warning('Failed to track outgoing payments.', e);
-        paymentCompleter.complete(false);
-      },
-    );
+    if (payResult.payment.details is PaymentDetails_Liquid) {
+      _handleLiquidPayment(payResult, paymentCompleter);
+    } else {
+      _handleLnPayment(payResult, paymentCompleter);
+    }
 
     // Wait at least 30 seconds for PaymentSucceeded event for LN payments, then show payment success sheet.
     final Future<void> timeoutFuture = Future<void>.delayed(timeoutDuration);
@@ -160,6 +143,45 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
             _onPaymentFailure();
           }
         });
+  }
+
+  void _handleLnPayment(SendPaymentResponse payResult, Completer<bool> paymentCompleter) {
+    final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+    _trackPaymentEventsSubscription?.cancel();
+
+    final String? expectedDestination = payResult.payment.destination;
+    _logger.info('Tracking outgoing payments for destination: $expectedDestination');
+
+    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
+      paymentFilter: (Payment p) =>
+          p.paymentType == PaymentType.send &&
+          p.destination == expectedDestination &&
+          (p.status == PaymentState.complete ||
+              (p.details is PaymentDetails_Liquid && p.status == PaymentState.pending)),
+      onData: (Payment p) {
+        _logger.info(
+          'Outgoing payment detected!${p.destination?.isNotEmpty == true ? ' Destination: ${p.destination}' : ''}',
+        );
+        paymentCompleter.complete(true);
+      },
+      onError: (Object e) {
+        _logger.warning('Failed to track outgoing payments.', e);
+        paymentCompleter.complete(false);
+      },
+    );
+  }
+
+  void _handleLiquidPayment(SendPaymentResponse payResult, Completer<bool> paymentCompleter) {
+    if (payResult.payment.status == PaymentState.pending ||
+        payResult.payment.status == PaymentState.complete) {
+      _logger.info(
+        'Payment sent!${payResult.payment.destination?.isNotEmpty == true ? ' Destination: ${payResult.payment.destination}' : ''}',
+      );
+      paymentCompleter.complete(true);
+    } else {
+      _logger.warning('Payment failed!');
+      paymentCompleter.complete(false);
+    }
   }
 
   void _showSuccessAndClose([dynamic payResult]) {
