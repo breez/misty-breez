@@ -170,8 +170,7 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       paymentFilter: (Payment p) =>
           p.paymentType == PaymentType.send &&
           p.destination == expectedDestination &&
-          (p.status == PaymentState.complete ||
-              (p.details is PaymentDetails_Liquid && p.status == PaymentState.pending)),
+          p.status == PaymentState.complete,
       onData: (Payment p) {
         final String? paymentDestination = p.destination;
         _logger.info(
