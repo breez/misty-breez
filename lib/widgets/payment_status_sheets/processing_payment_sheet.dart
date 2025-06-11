@@ -224,7 +224,8 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
 
     if (widget.promptError) {
       _promptErrorDialog(err, texts);
-    } else if (err is FrbException || err is PaymentError_PaymentTimeout) {
+      // TODO(erdemyerebasmaz): PaymentError::Generic is added because timeouts by Boltz are currently thrown as PaymentError::Generic by the SDK.
+    } else if (err is FrbException || err is PaymentError_PaymentTimeout || err is PaymentError_Generic) {
       _showErrorFlushbar(err, texts);
     }
   }
