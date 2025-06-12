@@ -111,17 +111,22 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   @override
   void dispose() {
+    _cancelTrackingPaymentEvents();
+    super.dispose();
+  }
+
+  void _cancelTrackingPaymentEvents() {
     if (_trackPaymentEventsSubscription != null) {
       _trackPaymentEventsSubscription?.cancel();
       _logger.info('Cancelled tracking payment events for ${widget.paymentLabel}.');
     }
-    super.dispose();
   }
 
   void _onPaymentFinished(bool isSuccess) {
     if (!mounted) {
       return;
     }
+    _cancelTrackingPaymentEvents();
     if (isSuccess) {
       showPaymentReceivedSheet(context);
     } else {
