@@ -101,7 +101,7 @@ class CredentialsManager {
       }
       return <File>[mnemonicFile];
     } catch (e) {
-      throw e.toString();
+      rethrow;
     }
   }
 }
