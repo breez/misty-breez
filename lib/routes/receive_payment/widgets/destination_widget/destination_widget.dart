@@ -111,9 +111,9 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     super.dispose();
   }
 
-  void _cancelTrackingPaymentEvents() {
+  Future<void> _cancelTrackingPaymentEvents() async {
     if (_trackPaymentEventsSubscription != null) {
-      _trackPaymentEventsSubscription?.cancel();
+      await _trackPaymentEventsSubscription?.cancel();
       _logger.info('Cancelled tracking payment events for ${widget.paymentLabel}.');
     }
   }
