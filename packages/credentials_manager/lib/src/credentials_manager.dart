@@ -26,8 +26,8 @@ class CredentialsManager {
 
   Future<String?> restoreBreezApiKey() async {
     try {
-      final String? mnemonicStr = await keyChain.read(accountApiKey);
-      return mnemonicStr;
+      final String? breezApiKey = await keyChain.read(accountApiKey);
+      return breezApiKey;
     } catch (err) {
       throw Exception(err.toString());
     }
