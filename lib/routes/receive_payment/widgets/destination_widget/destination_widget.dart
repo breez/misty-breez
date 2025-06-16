@@ -14,9 +14,6 @@ export 'widgets/widgets.dart';
 
 final Logger _logger = Logger('DestinationWidget');
 
-// Delay to allow user interaction before showing "Payment Received!" sheet.
-const Duration lnAddressTrackingDelay = Duration(milliseconds: 1600);
-
 class DestinationWidget extends StatefulWidget {
   final AsyncSnapshot<ReceivePaymentResponse>? snapshot;
   final String? destination;
@@ -63,7 +60,6 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   Future<bool Function(Payment)?> _buildPaymentFilter(String? expectedDestination) async {
     if (widget.lnAddress != null) {
-      await Future<void>.delayed(lnAddressTrackingDelay);
       _logger.info('Tracking incoming payments to Lightning Address.');
       return (Payment p) =>
           p.paymentType == PaymentType.receive &&
@@ -111,17 +107,22 @@ class _DestinationWidgetState extends State<DestinationWidget> {
 
   @override
   void dispose() {
+    _cancelTrackingPaymentEvents();
+    super.dispose();
+  }
+
+  Future<void> _cancelTrackingPaymentEvents() async {
     if (_trackPaymentEventsSubscription != null) {
-      _trackPaymentEventsSubscription?.cancel();
+      await _trackPaymentEventsSubscription?.cancel();
       _logger.info('Cancelled tracking payment events for ${widget.paymentLabel}.');
     }
-    super.dispose();
   }
 
   void _onPaymentFinished(bool isSuccess) {
     if (!mounted) {
       return;
     }
+    _cancelTrackingPaymentEvents();
     if (isSuccess) {
       showPaymentReceivedSheet(context);
     } else {

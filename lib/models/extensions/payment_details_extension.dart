@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/utils/utils.dart';
@@ -252,7 +254,7 @@ extension PaymentDetailsFormatter on PaymentDetails {
           'bolt12Offer: ${details.bolt12Offer ?? "N/A"}, '
           'paymentHash: ${details.paymentHash ?? "N/A"}, '
           'destinationPubkey: ${details.destinationPubkey ?? "N/A"}, '
-          'lnurlInfo: ${details.lnurlInfo ?? "N/A"}, '
+          'lnurlInfo: ${details.lnurlInfo?.toFormattedString() ?? "N/A"}, '
           'bip353Address: ${details.bip353Address ?? "N/A"}, '
           'claimTxId: ${details.claimTxId ?? "N/A"}, '
           'refundTxId: ${details.refundTxId ?? "N/A"}, '
@@ -265,6 +267,8 @@ extension PaymentDetailsFormatter on PaymentDetails {
           'description: ${details.description}, '
           'assetId: ${details.assetId}, '
           'assetInfo: ${details.assetInfo ?? "N/A"}'
+          'lnurlInfo: ${details.lnurlInfo?.toFormattedString() ?? "N/A"}, '
+          'bip353Address: ${details.bip353Address ?? "N/A"}, '
           ')';
     } else if (this is PaymentDetails_Bitcoin) {
       final PaymentDetails_Bitcoin details = this as PaymentDetails_Bitcoin;
@@ -281,6 +285,54 @@ extension PaymentDetailsFormatter on PaymentDetails {
           ')';
     } else {
       return 'Unknown PaymentDetails';
+    }
+  }
+}
+
+extension LnUrlInfoFormatter on LnUrlInfo {
+  String toFormattedString() {
+    return 'LnUrlInfo('
+        'lnAddress: $lnAddress, '
+        'lnurlPayDomain: $lnurlPayDomain, '
+        'lnurlPayComment: $lnurlPayComment, '
+        'lnurlPayMetadata: ${_parseMetadata()}, '
+        'lnurlPaySuccessAction: ${_safeJsonEncode(lnurlPaySuccessAction?.toJson())}, '
+        'lnurlPayUnprocessedSuccessAction: ${_safeJsonEncode(lnurlPayUnprocessedSuccessAction?.toJson())}, '
+        'lnurlWithdrawEndpoint: $lnurlWithdrawEndpoint, '
+        ')';
+  }
+
+  String _parseMetadata() {
+    if (lnurlPayMetadata == null || lnurlPayMetadata!.isEmpty) {
+      return 'null';
+    }
+
+    try {
+      final List<dynamic> parsed = jsonDecode(lnurlPayMetadata!);
+      final Map<String, String> metadata = <String, String>{};
+
+      for (int i = 0; i < parsed.length; i++) {
+        final String item = parsed[i];
+        if (item is List && item.length >= 2) {
+          metadata[item[0].toString()] = item[1].toString();
+        }
+      }
+
+      return metadata.toString();
+    } catch (e) {
+      return 'parse_error: ${lnurlPayMetadata!.substring(0, 50)}...';
+    }
+  }
+
+  String _safeJsonEncode(Map<String, dynamic>? data) {
+    if (data == null) {
+      return 'null';
+    }
+
+    try {
+      return jsonEncode(data);
+    } catch (e) {
+      return 'encoding_error: ${e.toString()}';
     }
   }
 }
