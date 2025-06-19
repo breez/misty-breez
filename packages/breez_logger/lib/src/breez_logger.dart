@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
@@ -15,10 +16,7 @@ class BreezLogger {
 
     if (kDebugMode) {
       Logger.root.onRecord.listen((LogRecord record) {
-        // Dart analyzer doesn't understand that here we are in debug mode so we have to use kDebugMode again
-        if (kDebugMode) {
-          print(_recordToString(record));
-        }
+        _printWrapped(_recordToString(record));
       });
     }
 
@@ -40,6 +38,18 @@ class BreezLogger {
         _logger.severe('Failed to get device info', error);
       },
     );
+  }
+
+  /// Prints long text by splitting it into chunks of 800 characters to avoid
+  /// Dart's print buffer limitations in debug console output.
+  void _printWrapped(String text) {
+    // Latter part of the regex is to avoid splitting words
+    final RegExp pattern = RegExp(r'.{1,800}(?=\s|$)|.{1,800}');
+    pattern.allMatches(text).forEach((RegExpMatch match) {
+      if (kDebugMode) {
+        print(match.group(0));
+      }
+    });
   }
 
   void _createSessionLogFile() async {
@@ -115,10 +125,47 @@ class BreezLogger {
     }
   }
 
-  String _recordToString(LogRecord record) =>
-      '[${record.loggerName}] {${record.level.name}} (${_formatTime(record.time)}) : ${record.message}'
-      "${record.error != null ? "\n${record.error}" : ""}"
-      "${record.stackTrace != null ? "\n${record.stackTrace}" : ""}";
+  String _recordToString(LogRecord record) {
+    final String header = '[${record.loggerName}] {${record.level.name}} (${_formatTime(record.time)})';
+    final String message = _formatMessage(record.message);
+    final String error = record.error != null ? '\nERROR: ${record.error}' : '';
+    final String stack = record.stackTrace != null ? '\nSTACK: ${record.stackTrace}' : '';
+
+    return '$header: $message$error$stack';
+  }
+
+  /// Formats log messages by detecting and pretty-printing embedded JSON.
+  String _formatMessage(String message) {
+    final int jsonStart = _findFirstJsonStart(message);
+    if (jsonStart == -1) {
+      return message;
+    }
+
+    final String prefix = message.substring(0, jsonStart);
+    final String jsonPart = message.substring(jsonStart);
+
+    try {
+      final dynamic parsed = jsonDecode(jsonPart);
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      return '$prefix\n${encoder.convert(parsed)}';
+    } catch (e) {
+      return message;
+    }
+  }
+
+  /// Finds the first occurrence of JSON start characters ('{' or '[') in a string.
+  int _findFirstJsonStart(String message) {
+    final int brace = message.indexOf('{');
+    final int bracket = message.indexOf('[');
+
+    if (brace == -1) {
+      return bracket;
+    }
+    if (bracket == -1) {
+      return brace;
+    }
+    return brace < bracket ? brace : bracket;
+  }
 
   String _formatTime(DateTime time) => time.toUtc().toIso8601String();
 }
