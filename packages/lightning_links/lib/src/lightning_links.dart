@@ -20,6 +20,7 @@ class LightningLinksService {
     Rx.merge(<Stream<String?>>[
       appLinks.getInitialLinkString().asStream(),
       appLinks.stringLinkStream,
+      appLinks.uriLinkStream.map((Uri uri) => uri.toString()),
     ]).where((String? link) => _isValidLink(link)).listen((String? link) => _handleLink(link));
   }
 
@@ -28,6 +29,7 @@ class LightningLinksService {
       return false;
     }
     const List<String> validPrefixes = <String>[
+      'mistybreez:',
       'breez:',
       'lightning:',
       'lnurlc:',

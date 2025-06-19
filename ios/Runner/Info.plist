@@ -40,6 +40,8 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
 			<key>CFBundleURLName</key>
 			<string>lightning.link</string>
 			<key>CFBundleURLSchemes</key>
@@ -62,6 +64,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>breez</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.breez.misty</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>mistybreez</string>
 			</array>
 		</dict>
 	</array>
