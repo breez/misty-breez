@@ -3,9 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:misty_breez/cubit/account/distinct_get_info_response.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
 export 'account_state.dart';
+export 'get_info_response_extension.dart';
 export 'onboarding_preferences.dart';
 
 final Logger _logger = Logger('AccountCubit');
@@ -21,15 +23,21 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
   }
 
   void _listenAccountChanges() {
+    _logger.info('Initial AccountState: $state');
     _logger.info('Listening to account changes');
-    breezSdkLiquid.getInfoResponseStream.distinct().listen((GetInfoResponse getInfoResponse) {
-      final AccountState newState = state.copyWith(
-        walletInfo: getInfoResponse.walletInfo,
-        blockchainInfo: getInfoResponse.blockchainInfo,
-      );
-      _logger.info('AccountState changed: $newState');
-      emit(newState);
-    });
+    breezSdkLiquid.getInfoResponseStream
+        .map((GetInfoResponse e) => DistinctGetInfoResponse(e))
+        .distinct()
+        .map((DistinctGetInfoResponse e) => e.inner)
+        .listen((GetInfoResponse getInfoResponse) {
+          getInfoResponse.logChanges(state);
+          emit(
+            state.copyWith(
+              walletInfo: getInfoResponse.walletInfo,
+              blockchainInfo: getInfoResponse.blockchainInfo,
+            ),
+          );
+        });
   }
 
   void _listenInitialSyncEvent() {
