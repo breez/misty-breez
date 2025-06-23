@@ -8,7 +8,9 @@ import 'package:misty_breez/widgets/back_button.dart' as back_button;
 class ReceivePaymentPage extends StatefulWidget {
   static const String routeName = '/receive_payment';
 
-  const ReceivePaymentPage({super.key});
+  final int? initialPageIndex;
+
+  const ReceivePaymentPage({this.initialPageIndex, super.key});
 
   @override
   State<ReceivePaymentPage> createState() => _ReceivePaymentPageState();
@@ -26,9 +28,17 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   bool _hasLnAddressStateError = false;
   bool _hasAmountlessBtcAddressError = false;
 
-  int _currentPageIndex = ReceiveLightningAddressPage.pageIndex;
+  late int _currentPageIndex;
   bool _showInvoicePage = false;
   bool _showBtcPaymentRequestPage = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _currentPageIndex = widget.initialPageIndex ?? ReceiveLightningAddressPage.pageIndex;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

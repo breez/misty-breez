@@ -21,7 +21,10 @@ class AmountlessBtcAddressWarningBox extends StatelessWidget {
           // Redirect to Amountless BTC Address Page after AmountlessBtcState error is resolved
           Future<void>.microtask(() {
             if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(ReceivePaymentPage.routeName);
+              Navigator.of(context).pushReplacementNamed(
+                ReceivePaymentPage.routeName,
+                arguments: ReceiveAmountlessBitcoinAddressPage.pageIndex,
+              );
             }
           });
           return const SizedBox.shrink();
