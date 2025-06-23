@@ -214,7 +214,7 @@ class PaymentDetailsSheet extends StatelessWidget {
                                 unblindingData: paymentData.unblindingData,
                               ),
                             ],
-                            if (claimTxId.isNotEmpty) ...<Widget>[
+                            if (claimTxId.isNotEmpty && claimTxId != paymentData.txId) ...<Widget>[
                               PaymentDetailsSheetTxId(
                                 txId: claimTxId,
                                 unblindingData: paymentData.unblindingData,
