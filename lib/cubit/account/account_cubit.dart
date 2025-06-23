@@ -7,6 +7,7 @@ import 'package:misty_breez/cubit/account/distinct_get_info_response.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
 export 'account_state.dart';
+export 'get_info_response_extension.dart';
 export 'onboarding_preferences.dart';
 
 final Logger _logger = Logger('AccountCubit');
@@ -29,12 +30,13 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
         .distinct()
         .map((DistinctGetInfoResponse e) => e.inner)
         .listen((GetInfoResponse getInfoResponse) {
-          final AccountState newState = state.copyWith(
-            walletInfo: getInfoResponse.walletInfo,
-            blockchainInfo: getInfoResponse.blockchainInfo,
+          getInfoResponse.logChanges(state);
+          emit(
+            state.copyWith(
+              walletInfo: getInfoResponse.walletInfo,
+              blockchainInfo: getInfoResponse.blockchainInfo,
+            ),
           );
-          _logger.info('AccountState changed: $newState');
-          emit(newState);
         });
   }
 
