@@ -67,10 +67,7 @@ class ReceiveAmountlessBitcoinAddressPageState extends State<ReceiveAmountlessBi
     }
 
     if (amountlessBtcState.hasValidAddress) {
-      return AmountlessBtcAddressSuccessView(
-        address: amountlessBtcState.address!,
-        estimateFees: amountlessBtcState.estimateFees,
-      );
+      return AmountlessBtcAddressSuccessView(amountlessBtcState);
     }
 
     return const SizedBox.shrink();
@@ -86,10 +83,9 @@ class ReceiveAmountlessBitcoinAddressPageState extends State<ReceiveAmountlessBi
 }
 
 class AmountlessBtcAddressSuccessView extends StatelessWidget {
-  final String address;
-  final int? estimateFees;
+  final AmountlessBtcState amountlessBtcState;
 
-  const AmountlessBtcAddressSuccessView({required this.address, super.key, this.estimateFees});
+  const AmountlessBtcAddressSuccessView(this.amountlessBtcState, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +106,9 @@ class AmountlessBtcAddressSuccessView extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   DestinationWidget(
-                    destination: address,
+                    destination: amountlessBtcState.address,
                     paymentLabel: texts.receive_payment_method_btc_address,
-                    infoWidget: AmountlessBtcAddressMessageBox(estimateFees: estimateFees),
+                    infoWidget: AmountlessBtcAddressMessageBox(amountlessBtcState),
                     isBitcoinPayment: true,
                   ),
                 ],
@@ -174,9 +170,9 @@ class AmountlessBtcAddressErrorView extends StatelessWidget {
 }
 
 class AmountlessBtcAddressMessageBox extends StatelessWidget {
-  final int? estimateFees;
+  final AmountlessBtcState amountlessBtcState;
 
-  const AmountlessBtcAddressMessageBox({super.key, this.estimateFees});
+  const AmountlessBtcAddressMessageBox(this.amountlessBtcState, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -195,25 +191,35 @@ class AmountlessBtcAddressMessageBox extends StatelessWidget {
           return const CenteredLoader();
         }
 
-        final String limitsMessage = _formatAmountlessBtcMessage(context, snapshot, estimateFees);
+        final String limitsMessage = _formatAmountlessBtcMessage(context, snapshot, amountlessBtcState);
         return PaymentInfoMessageBox(message: limitsMessage);
       },
     );
   }
 
-  String _formatAmountlessBtcMessage(BuildContext context, PaymentLimitsState snapshot, int? estimateFees) {
+  String _formatAmountlessBtcMessage(
+    BuildContext context,
+    PaymentLimitsState snapshot,
+    AmountlessBtcState amountlessBtcState,
+  ) {
     final BreezTranslations texts = context.texts();
     final CurrencyState currencyState = context.read<CurrencyCubit>().state;
 
     final Limits limits = snapshot.onchainPaymentLimits!.receive;
     final String minReceivableFormatted = currencyState.bitcoinCurrency.format(limits.minSat.toInt());
     final String maxReceivableFormatted = currencyState.bitcoinCurrency.format(limits.maxSat.toInt());
-
     String message =
         '${texts.payment_limits_message(minReceivableFormatted, maxReceivableFormatted)} This address can be used only once.';
-    if (estimateFees != null && estimateFees != 0) {
-      final String estimateFeesFormatted = currencyState.bitcoinCurrency.format(estimateFees);
-      message += ' An estimated fee of $estimateFeesFormatted will be applied on the received amount.';
+
+    final int estimateBaseFeeSat = amountlessBtcState.estimateBaseFeeSat!;
+    final String estimateBaseFeeSatFormatted = currencyState.bitcoinCurrency.format(estimateBaseFeeSat);
+    final double? proportionalFee = amountlessBtcState.estimateProportionalFee;
+    if (proportionalFee != null) {
+      message +=
+          ' An estimated base of $proportionalFee% with a minimum of $estimateBaseFeeSatFormatted will be applied on the received amount.';
+    } else {
+      message +=
+          ' An estimated base fee of $estimateBaseFeeSatFormatted will be applied on the received amount.';
     }
 
     // TODO(erdemyerebasmaz): Add specific message for amountless BTC address to Breez-Translations
