@@ -74,6 +74,9 @@ class BitcoinCurrencyFormatter {
   /// Returns the amount in satoshis
   int parse(String amount, BitcoinCurrency currency) {
     _logger.fine('Parsing "$amount" in ${currency.displayName}');
+    if (amount.isEmpty) {
+      return 0;
+    }
 
     switch (currency) {
       case BitcoinCurrency.btc:
