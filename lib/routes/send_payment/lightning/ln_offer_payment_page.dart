@@ -553,8 +553,8 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
     final CurrencyState currencyState = currencyCubit.state;
     final int amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
 
-    final PrepareSendResponse? prepareResponse = await Navigator.of(context).push<PrepareSendResponse?>(
-      FadeInRoute<PrepareSendResponse?>(
+    final SendPaymentRequest? sendPaymentRequest = await Navigator.of(context).push<SendPaymentRequest?>(
+      FadeInRoute<SendPaymentRequest?>(
         builder: (_) => BlocProvider<PaymentLimitsCubit>(
           create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
           child: LnOfferPaymentPage(
@@ -567,11 +567,11 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
         ),
       ),
     );
-    if (prepareResponse == null || !context.mounted) {
+    if (sendPaymentRequest == null || !context.mounted) {
       return Future<void>.value();
     }
     if (mounted) {
-      Navigator.pop(context, prepareResponse);
+      Navigator.pop(context, sendPaymentRequest);
     }
   }
 
