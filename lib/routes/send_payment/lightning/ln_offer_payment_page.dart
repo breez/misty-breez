@@ -414,13 +414,16 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                     ),
                                   ],
                                 ],
-                                LnUrlPaymentComment(
-                                  isConfirmation: widget.isConfirmation,
-                                  enabled: _isFormEnabled,
-                                  descriptionController: _descriptionController,
-                                  descriptionFocusNode: _descriptionFocusNode,
-                                  maxCommentLength: 255,
-                                ),
+                                if (!(widget.isConfirmation &&
+                                    _descriptionController.text.isEmpty)) ...<Widget>[
+                                  LnUrlPaymentComment(
+                                    isConfirmation: widget.isConfirmation,
+                                    enabled: _isFormEnabled,
+                                    descriptionController: _descriptionController,
+                                    descriptionFocusNode: _descriptionFocusNode,
+                                    maxCommentLength: 255,
+                                  ),
+                                ],
                               ].expand((Widget widget) sync* {
                                 yield widget;
                                 yield const Divider(
