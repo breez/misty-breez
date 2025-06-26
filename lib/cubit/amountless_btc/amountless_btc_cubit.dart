@@ -29,12 +29,23 @@ class AmountlessBtcCubit extends Cubit<AmountlessBtcState> {
       final ReceivePaymentRequest req = ReceivePaymentRequest(prepareResponse: prepareResp);
       final ReceivePaymentResponse resp = await _breezSdkLiquid.instance!.receivePayment(req: req);
 
-      final int estimateFees = prepareResp.feesSat.toInt();
+      final String address = resp.destination;
+      final int estimateBaseFeeSat = prepareResp.feesSat.toInt();
+      final double? estimateProportionalFee = prepareResp.swapperFeerate;
+
       _logger.info(
-        'Successfully generated amountless BTC address: ${resp.destination}, estimated fees: $estimateFees sats',
+        'Successfully generated amountless BTC address: $address, '
+        'estimated base fees: $estimateBaseFeeSat sats, '
+        'estimate proportional fees: $estimateProportionalFee%',
       );
 
-      emit(AmountlessBtcState(address: resp.destination, estimateFees: estimateFees));
+      emit(
+        AmountlessBtcState(
+          address: address,
+          estimateBaseFeeSat: estimateBaseFeeSat,
+          estimateProportionalFee: estimateProportionalFee,
+        ),
+      );
     } catch (e) {
       _logger.severe('Failed to generate amountless BTC address', e);
       emit(AmountlessBtcState(error: e));
