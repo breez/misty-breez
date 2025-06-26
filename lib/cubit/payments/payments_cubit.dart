@@ -70,10 +70,16 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
     }
   }
 
-  Future<SendPaymentResponse> sendPayment(PrepareSendResponse prepareResponse) async {
+  Future<SendPaymentResponse> sendPayment({
+    required PrepareSendResponse prepareResponse,
+    String? payerNote,
+  }) async {
     _logger.info('sendPayment\nSending payment for ${prepareResponse.toFormattedString()}');
     try {
-      final SendPaymentRequest req = SendPaymentRequest(prepareResponse: prepareResponse);
+      final SendPaymentRequest req = SendPaymentRequest(
+        prepareResponse: prepareResponse,
+        payerNote: payerNote,
+      );
       return await _breezSdkLiquid.instance!.sendPayment(req: req);
     } catch (e) {
       _logger.severe('sendPayment\nError sending payment', e);

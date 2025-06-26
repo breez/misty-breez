@@ -108,11 +108,11 @@ class InputHandler extends Handler {
   Future<dynamic> handleLnInvoice(BuildContext context, LNInvoice lnInvoice) async {
     _logger.info('handle LnInvoice ${lnInvoice.toFormattedString()}');
     final NavigatorState navigator = Navigator.of(context);
-    final PrepareSendResponse? prepareResponse = await navigator.pushNamed<PrepareSendResponse?>(
+    final SendPaymentRequest? sendPaymentRequest = await navigator.pushNamed<SendPaymentRequest?>(
       LnPaymentPage.routeName,
       arguments: lnInvoice,
     );
-    if (prepareResponse == null || !context.mounted) {
+    if (sendPaymentRequest == null || !context.mounted) {
       return Future<dynamic>.value();
     }
 
@@ -122,7 +122,7 @@ class InputHandler extends Handler {
       isLnPayment: true,
       paymentFunc: () async {
         final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-        return await paymentsCubit.sendPayment(prepareResponse);
+        return await paymentsCubit.sendPayment(prepareResponse: sendPaymentRequest.prepareResponse);
       },
     ).then((dynamic result) {
       // TODO(erdemyerebasmaz): Handle SendPaymentResponse results, return a SendPaymentResult to be handled by handleResult()
@@ -147,11 +147,11 @@ class InputHandler extends Handler {
       lnOffer: lnOffer,
       bip353Address: bip353Address,
     );
-    final PrepareSendResponse? prepareResponse = await navigator.pushNamed<PrepareSendResponse?>(
+    final SendPaymentRequest? sendPaymentRequest = await navigator.pushNamed<SendPaymentRequest?>(
       LnOfferPaymentPage.routeName,
       arguments: arguments,
     );
-    if (prepareResponse == null || !context.mounted) {
+    if (sendPaymentRequest == null || !context.mounted) {
       return Future<dynamic>.value();
     }
 
@@ -161,7 +161,10 @@ class InputHandler extends Handler {
       isLnPayment: true,
       paymentFunc: () async {
         final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-        return await paymentsCubit.sendPayment(prepareResponse);
+        return await paymentsCubit.sendPayment(
+          prepareResponse: sendPaymentRequest.prepareResponse,
+          payerNote: sendPaymentRequest.payerNote,
+        );
       },
     ).then((dynamic result) {
       // TODO(erdemyerebasmaz): Handle SendPaymentResponse results, return a SendPaymentResult to be handled by handleResult()

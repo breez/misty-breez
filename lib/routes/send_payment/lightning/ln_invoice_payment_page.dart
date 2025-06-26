@@ -206,7 +206,10 @@ class LnPaymentPageState extends State<LnPaymentPage> {
               text: texts.ln_payment_action_send,
               enabled: _prepareResponse != null && errorMessage.isEmpty,
               onPressed: () async {
-                Navigator.pop(context, _prepareResponse);
+                final SendPaymentRequest sendPaymentRequest = SendPaymentRequest(
+                  prepareResponse: _prepareResponse!,
+                );
+                Navigator.pop(context, sendPaymentRequest);
               },
             ),
     );
