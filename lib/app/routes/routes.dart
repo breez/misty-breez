@@ -49,7 +49,7 @@ Route<dynamic>? onGenerateRoute({
                   return FadeInRoute<void>(
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: const ReceivePaymentPage(),
+                      child: ReceivePaymentPage(initialPageIndex: settings.arguments as int?),
                     ),
                     settings: settings,
                   );
