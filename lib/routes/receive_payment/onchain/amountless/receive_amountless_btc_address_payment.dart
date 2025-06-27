@@ -216,10 +216,9 @@ class AmountlessBtcAddressMessageBox extends StatelessWidget {
     final double? proportionalFee = amountlessBtcState.estimateProportionalFee;
     if (proportionalFee != null) {
       message +=
-          ' An estimated base of $proportionalFee% with a minimum of $estimateBaseFeeSatFormatted will be applied on the received amount.';
+          ' An estimated fee of $proportionalFee% with a minimum of $estimateBaseFeeSatFormatted will be applied on the received amount.';
     } else {
-      message +=
-          ' An estimated base fee of $estimateBaseFeeSatFormatted will be applied on the received amount.';
+      message += ' An estimated fee of $estimateBaseFeeSatFormatted will be applied on the received amount.';
     }
 
     // TODO(erdemyerebasmaz): Add specific message for amountless BTC address to Breez-Translations
