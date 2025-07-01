@@ -98,7 +98,7 @@ Route<dynamic>? onGenerateRoute({
                     settings: settings,
                   );
                 case LnPaymentPage.routeName:
-                  return FadeInRoute<PrepareSendResponse?>(
+                  return FadeInRoute<SendPaymentRequest?>(
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: LnPaymentPage(lnInvoice: settings.arguments as LNInvoice),
@@ -106,7 +106,7 @@ Route<dynamic>? onGenerateRoute({
                     settings: settings,
                   );
                 case LnOfferPaymentPage.routeName:
-                  return FadeInRoute<PrepareSendResponse?>(
+                  return FadeInRoute<SendPaymentRequest?>(
                     builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
                       create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
                       child: LnOfferPaymentPage(

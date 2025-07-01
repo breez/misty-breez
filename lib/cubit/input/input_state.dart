@@ -104,7 +104,7 @@ class LnOfferInputState extends InputState {
 
   @override
   String toString() {
-    return 'LnOfferInputState{lnInvoice: $lnOffer, bip353Address: $bip353Address, source: $source}';
+    return 'LnOfferInputState{lnOffer: ${lnOffer.toFormattedString()}, bip353Address: $bip353Address, source: $source}';
   }
 
   @override

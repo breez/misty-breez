@@ -39,6 +39,7 @@ extension PaymentDetailsToJson on PaymentDetails {
         'destinationPubkey': details.destinationPubkey,
         'lnurlInfo': details.lnurlInfo?.toJson(),
         'bip353Address': details.bip353Address,
+        'payerNote': details.payerNote,
         'claimTxId': details.claimTxId,
         'refundTxId': details.refundTxId,
         'refundTxAmountSat': details.refundTxAmountSat?.toString(),
@@ -51,6 +52,7 @@ extension PaymentDetailsToJson on PaymentDetails {
         'assetInfo': details.assetInfo?.toJson(),
         'lnurlInfo': details.lnurlInfo?.toJson(),
         'bip353Address': details.bip353Address,
+        'payerNote': details.payerNote,
       },
       bitcoin: (PaymentDetails_Bitcoin details) => <String, dynamic>{
         'type': 'bitcoin',
@@ -84,6 +86,7 @@ extension PaymentDetailsFromJson on PaymentDetails {
           destinationPubkey: json['destinationPubkey'] as String?,
           lnurlInfo: json['lnurlInfo'] != null ? LnUrlInfoFromJson.fromJson(json['lnurlInfo']) : null,
           bip353Address: json['bip353Address'] as String?,
+          payerNote: json['payerNote'] as String?,
           claimTxId: json['claimTxId'] as String?,
           refundTxId: json['refundTxId'] as String?,
           refundTxAmountSat: json['refundTxAmountSat'] != null
@@ -99,6 +102,7 @@ extension PaymentDetailsFromJson on PaymentDetails {
           assetInfo: json['assetInfo'] != null ? AssetInfoFromJson.fromJson(json['assetInfo']) : null,
           lnurlInfo: json['lnurlInfo'] != null ? LnUrlInfoFromJson.fromJson(json['lnurlInfo']) : null,
           bip353Address: json['bip353Address'] as String?,
+          payerNote: json['payerNote'] as String?,
         );
 
       case 'bitcoin':
@@ -139,6 +143,7 @@ extension PaymentDetailsExtension on PaymentDetails {
                     o.destinationPubkey == current.destinationPubkey &&
                     (o.lnurlInfo?.toJson() == current.lnurlInfo?.toJson()) &&
                     o.bip353Address == current.bip353Address &&
+                    o.payerNote == current.payerNote &&
                     o.claimTxId == current.claimTxId &&
                     o.refundTxId == current.refundTxId &&
                     o.refundTxAmountSat == current.refundTxAmountSat;
@@ -150,7 +155,8 @@ extension PaymentDetailsExtension on PaymentDetails {
                     o.assetId == current.assetId &&
                     (o.assetInfo?.toJson() == current.assetInfo?.toJson()) &&
                     (o.lnurlInfo?.toJson() == current.lnurlInfo?.toJson()) &&
-                    o.bip353Address == current.bip353Address;
+                    o.bip353Address == current.bip353Address &&
+                    o.payerNote == current.payerNote;
               },
               bitcoin: (PaymentDetails_Bitcoin o) {
                 final PaymentDetails_Bitcoin current = this as PaymentDetails_Bitcoin;
@@ -183,12 +189,19 @@ extension PaymentDetailsHashCode on PaymentDetails {
         o.destinationPubkey,
         o.lnurlInfo?.toJson(),
         o.bip353Address,
+        o.payerNote,
         o.claimTxId,
         o.refundTxId,
         o.refundTxAmountSat,
       ),
-      liquid: (PaymentDetails_Liquid o) =>
-          Object.hash(o.destination, o.description, o.assetId, o.assetInfo?.toJson()),
+      liquid: (PaymentDetails_Liquid o) => Object.hash(
+        o.destination,
+        o.description,
+        o.assetId,
+        o.assetInfo?.toJson(),
+        o.bip353Address,
+        o.payerNote,
+      ),
       bitcoin: (PaymentDetails_Bitcoin o) => Object.hash(
         o.swapId,
         o.bitcoinAddress,
@@ -256,6 +269,7 @@ extension PaymentDetailsFormatter on PaymentDetails {
           'destinationPubkey: ${details.destinationPubkey ?? "N/A"}, '
           'lnurlInfo: ${details.lnurlInfo?.toFormattedString() ?? "N/A"}, '
           'bip353Address: ${details.bip353Address ?? "N/A"}, '
+          'payerNote: ${details.payerNote ?? "N/A"}, '
           'claimTxId: ${details.claimTxId ?? "N/A"}, '
           'refundTxId: ${details.refundTxId ?? "N/A"}, '
           'refundTxAmountSat: ${details.refundTxAmountSat ?? "N/A"}'
@@ -269,6 +283,7 @@ extension PaymentDetailsFormatter on PaymentDetails {
           'assetInfo: ${details.assetInfo ?? "N/A"}'
           'lnurlInfo: ${details.lnurlInfo?.toFormattedString() ?? "N/A"}, '
           'bip353Address: ${details.bip353Address ?? "N/A"}, '
+          'payerNote: ${details.payerNote ?? "N/A"}, '
           ')';
     } else if (this is PaymentDetails_Bitcoin) {
       final PaymentDetails_Bitcoin details = this as PaymentDetails_Bitcoin;

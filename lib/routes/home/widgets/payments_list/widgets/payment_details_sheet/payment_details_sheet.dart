@@ -82,6 +82,14 @@ class PaymentDetailsSheet extends StatelessWidget {
         ) ??
         '';
 
+    final String payerNote =
+        paymentData.details.map(
+          lightning: (PaymentDetails_Lightning details) => details.payerNote,
+          liquid: (PaymentDetails_Liquid details) => details.payerNote,
+          orElse: () => null,
+        ) ??
+        '';
+
     final LnUrlInfo? lnurlInfo = paymentData.details.map(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
       liquid: (PaymentDetails_Liquid details) => details.lnurlInfo,
@@ -175,6 +183,9 @@ class PaymentDetailsSheet extends StatelessWidget {
                             ],
                             if (lnAddress.isNotEmpty) ...<Widget>[
                               PaymentDetailsSheetLnUrlLnAddress(lnAddress: lnAddress),
+                            ],
+                            if (payerNote.isNotEmpty) ...<Widget>[
+                              PaymentDetailsSheetPayerNote(payerNote: payerNote),
                             ],
                             if (lnurlPayComment.isNotEmpty) ...<Widget>[
                               PaymentDetailsSheetLnUrlPayComment(payComment: lnurlPayComment),

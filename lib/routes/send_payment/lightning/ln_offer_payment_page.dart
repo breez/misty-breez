@@ -156,13 +156,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
           ? const PayAmount_Drain()
           : PayAmount_Bitcoin(receiverAmountSat: BigInt.from(amountSat));
 
-      final String comment = widget.comment ?? _descriptionController.text;
-
-      final PrepareSendRequest req = PrepareSendRequest(
-        destination: destination,
-        amount: payAmount,
-        comment: comment,
-      );
+      final PrepareSendRequest req = PrepareSendRequest(destination: destination, amount: payAmount);
 
       final PrepareSendResponse response = await paymentsCubit.prepareSendPayment(req: req);
       setState(() {
@@ -420,13 +414,16 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                     ),
                                   ],
                                 ],
-                                LnUrlPaymentComment(
-                                  isConfirmation: widget.isConfirmation,
-                                  enabled: _isFormEnabled,
-                                  descriptionController: _descriptionController,
-                                  descriptionFocusNode: _descriptionFocusNode,
-                                  maxCommentLength: 255,
-                                ),
+                                if (!(widget.isConfirmation &&
+                                    _descriptionController.text.isEmpty)) ...<Widget>[
+                                  LnUrlPaymentComment(
+                                    isConfirmation: widget.isConfirmation,
+                                    enabled: _isFormEnabled,
+                                    descriptionController: _descriptionController,
+                                    descriptionFocusNode: _descriptionFocusNode,
+                                    maxCommentLength: 255,
+                                  ),
+                                ],
                               ].expand((Widget widget) sync* {
                                 yield widget;
                                 yield const Divider(
@@ -479,7 +476,12 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
               stickToBottom: true,
               text: texts.ln_payment_action_send,
               onPressed: () async {
-                Navigator.pop(context, _prepareResponse);
+                final String comment = widget.comment ?? _descriptionController.text;
+                final SendPaymentRequest sendPaymentRequest = SendPaymentRequest(
+                  prepareResponse: _prepareResponse!,
+                  payerNote: comment,
+                );
+                Navigator.pop(context, sendPaymentRequest);
               },
             )
           : const SizedBox.shrink(),
@@ -554,8 +556,8 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
     final CurrencyState currencyState = currencyCubit.state;
     final int amountSat = currencyState.bitcoinCurrency.parse(_amountController.text);
 
-    final PrepareSendResponse? prepareResponse = await Navigator.of(context).push<PrepareSendResponse?>(
-      FadeInRoute<PrepareSendResponse?>(
+    final SendPaymentRequest? sendPaymentRequest = await Navigator.of(context).push<SendPaymentRequest?>(
+      FadeInRoute<SendPaymentRequest?>(
         builder: (_) => BlocProvider<PaymentLimitsCubit>(
           create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
           child: LnOfferPaymentPage(
@@ -568,11 +570,11 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
         ),
       ),
     );
-    if (prepareResponse == null || !context.mounted) {
+    if (sendPaymentRequest == null || !context.mounted) {
       return Future<void>.value();
     }
     if (mounted) {
-      Navigator.pop(context, prepareResponse);
+      Navigator.pop(context, sendPaymentRequest);
     }
   }
 
