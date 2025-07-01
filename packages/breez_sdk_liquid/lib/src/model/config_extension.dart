@@ -12,6 +12,7 @@ extension ConfigCopyWith on Config {
     String? breezApiKey,
     List<ExternalInputParser>? externalInputParsers,
     String? syncServiceUrl,
+    BigInt? onchainFeeRateLeewaySat,
     List<AssetMetadata>? assetMetadata,
     String? sideswapApiKey,
   }) {
@@ -26,6 +27,7 @@ extension ConfigCopyWith on Config {
       externalInputParsers: externalInputParsers ?? this.externalInputParsers,
       syncServiceUrl: syncServiceUrl ?? this.syncServiceUrl,
       useDefaultExternalInputParsers: true,
+      onchainFeeRateLeewaySat: onchainFeeRateLeewaySat ?? this.onchainFeeRateLeewaySat,
       assetMetadata: assetMetadata ?? this.assetMetadata,
       sideswapApiKey: sideswapApiKey ?? this.sideswapApiKey,
     );
