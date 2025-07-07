@@ -167,6 +167,12 @@ class PaymentData {
     final Map<String, dynamic> metadataMap = getLnurlPayMetadata(details);
     return metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
   }
+
+  String? get swapId => details.map(
+    bitcoin: (PaymentDetails_Bitcoin details) => details.swapId,
+    lightning: (PaymentDetails_Lightning details) => details.swapId,
+    orElse: () => null,
+  );
 }
 
 class _PaymentDataFactory {
