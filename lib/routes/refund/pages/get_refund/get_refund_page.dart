@@ -20,14 +20,11 @@ class GetRefundPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(leading: const back_button.BackButton(), title: Text(texts.get_refund_title)),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        child: SingleChildScrollView(
-          child: BlocBuilder<RefundCubit, RefundState>(
-            builder: (BuildContext context, RefundState refundState) {
-              return RefundableSwapList(refundables: refundState.refundables ?? <RefundableSwap>[]);
-            },
-          ),
+      body: SingleChildScrollView(
+        child: BlocBuilder<RefundCubit, RefundState>(
+          builder: (BuildContext context, RefundState refundState) {
+            return RefundableSwapList(refundables: refundState.refundables ?? <RefundableSwap>[]);
+          },
         ),
       ),
     );
