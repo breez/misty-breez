@@ -8,8 +8,9 @@ import 'package:misty_breez/utils/utils.dart';
 
 class TransactionFee extends StatelessWidget {
   final int txFeeSat;
+  final bool nonTransparent;
 
-  const TransactionFee({required this.txFeeSat, super.key});
+  const TransactionFee({required this.txFeeSat, this.nonTransparent = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class TransactionFee extends StatelessWidget {
             texts.sweep_all_coins_label_transaction_fee,
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
-              color: Colors.white.withValues(alpha: .4),
+              color: Colors.white.withValues(alpha: nonTransparent ? 1 : .4),
             ),
             maxLines: 1,
             minFontSize: minFont.minFontSize,
@@ -42,7 +43,8 @@ class TransactionFee extends StatelessWidget {
                 texts.sweep_all_coins_fee(BitcoinCurrency.sat.format(txFeeSat)),
                 style: themeData.primaryTextTheme.displaySmall!.copyWith(
                   fontSize: 18.0,
-                  color: themeData.colorScheme.error.withValues(alpha: .4),
+                  color: themeData.colorScheme.error.withValues(alpha: nonTransparent ? 1 : .4),
+                  fontWeight: nonTransparent ? FontWeight.w500 : null,
                 ),
                 textAlign: TextAlign.right,
                 maxLines: 1,
