@@ -13,7 +13,7 @@ import 'package:misty_breez/widgets/widgets.dart';
 
 class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
   static const String routeName = '/receive_bitcoin_address';
-  static const int pageIndex = 2;
+  static const int pageIndex = 3;
 
   const ReceiveBitcoinAddressPaymentPage({super.key});
 
