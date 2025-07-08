@@ -10,8 +10,9 @@ import 'package:misty_breez/utils/utils.dart';
 
 class SenderAmount extends StatelessWidget {
   final int amountSat;
+  final String? title;
 
-  const SenderAmount({required this.amountSat, super.key});
+  const SenderAmount({required this.amountSat, this.title, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class SenderAmount extends StatelessWidget {
         children: <Widget>[
           AutoSizeText(
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
-            'To send:',
+            title ?? 'To send:',
             style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
             maxLines: 1,
             minFontSize: minFont.minFontSize,
