@@ -176,11 +176,13 @@ class ExceptionHandler {
     final RegExp messageRegex = RegExp(r'((?<=message: ")(.*)(?=.*"))');
     final RegExp causedByRegex = RegExp(r'((?<=Caused by: )(.*)(?=.*))');
     final RegExp reasonRegex = RegExp(r'((?<=FAILURE_REASON_)(.*)(?=.*))');
+    final RegExp jsonErrorRegex = RegExp(r'JSON\(Error\("([^"]+)"');
 
     return innerMessageRegex.stringMatch(content) ??
         messageRegex.stringMatch(content) ??
         causedByRegex.stringMatch(content) ??
-        reasonRegex.stringMatch(content);
+        reasonRegex.stringMatch(content) ??
+        jsonErrorRegex.firstMatch(content)?.group(1);
   }
 
   /// Maps error messages to localized strings

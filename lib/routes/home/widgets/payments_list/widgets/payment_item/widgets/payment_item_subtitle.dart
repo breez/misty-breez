@@ -41,6 +41,14 @@ class PaymentItemSubtitle extends StatelessWidget {
             style: subtitleTextStyle.copyWith(color: themeData.customData.pendingTextColor),
           ),
         ],
+        if (paymentData.status == PaymentState.waitingFeeAcceptance) ...<Widget>[
+          Text(
+            ' (Pending Approval)',
+            style: subtitleTextStyle.copyWith(
+              color: themeData.isLightTheme ? Colors.red : themeData.colorScheme.error,
+            ),
+          ),
+        ],
       ],
     );
   }
