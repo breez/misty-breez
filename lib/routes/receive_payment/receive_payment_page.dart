@@ -28,7 +28,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
 
   int _currentPageIndex = ReceiveLightningAddressPage.pageIndex;
   bool _showInvoicePage = false;
-  bool _showBtcInvoicePage = false;
+  bool _showBtcPaymentRequestPage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +59,9 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
             }
 
             final bool canReturnToAmountlessBtcPage = !_hasAmountlessBtcAddressError;
-            if (_showBtcInvoicePage && canReturnToAmountlessBtcPage) {
+            if (_showBtcPaymentRequestPage && canReturnToAmountlessBtcPage) {
               setState(() {
-                _showBtcInvoicePage = false;
+                _showBtcPaymentRequestPage = false;
               });
               return;
             }
@@ -79,7 +79,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
             alignment: Alignment.center,
             icon: const Icon(Icons.edit_note_rounded, size: 24.0),
             // TODO(erdemyerebasmaz): Add message to Breez-Translations
-            tooltip: 'Specify amount for invoice',
+            tooltip: 'Specify amount for payment request',
             onPressed: () {
               if (_currentPageIndex == ReceiveLightningAddressPage.pageIndex) {
                 setState(() {
@@ -87,7 +87,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
                 });
               } else if (_currentPageIndex == ReceiveAmountlessBitcoinAddressPage.pageIndex) {
                 setState(() {
-                  _showBtcInvoicePage = true;
+                  _showBtcPaymentRequestPage = true;
                 });
               }
             },
@@ -123,7 +123,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     // Redirect to BTC Invoice page if amountless BTC Address page is opened
     // - when Amountless BTC Address state had errors
     if (_currentPaymentMethod == PaymentMethod.bitcoinAddress) {
-      final bool shouldRedirect = _showBtcInvoicePage || _hasAmountlessBtcAddressError;
+      final bool shouldRedirect = _showBtcPaymentRequestPage || _hasAmountlessBtcAddressError;
       return shouldRedirect
           ? ReceiveBitcoinAddressPaymentPage.pageIndex
           : ReceiveAmountlessBitcoinAddressPage.pageIndex;
@@ -146,7 +146,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     Future<void>.microtask(() async {
       setState(() {
         _showInvoicePage = false;
-        _showBtcInvoicePage = false;
+        _showBtcPaymentRequestPage = false;
         _currentPageIndex = _getPageIndexForPaymentMethod(newMethod);
       });
     });
