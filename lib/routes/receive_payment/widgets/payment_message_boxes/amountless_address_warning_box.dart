@@ -44,11 +44,7 @@ class AmountlessBtcAddressWarningBox extends StatelessWidget {
               contentPadding: const EdgeInsets.all(16.0),
               child: RichText(
                 text: TextSpan(
-                  text: ExceptionHandler.extractMessage(
-                    state.error!,
-                    texts,
-                    defaultErrorMsg: 'Failed to generate amountless Bitcoin address.',
-                  ),
+                  text: ExceptionHandler.extractMessage(state.error!, texts),
                   style: themeData.textTheme.bodyLarge?.copyWith(color: themeData.colorScheme.error),
                   children: <InlineSpan>[
                     TextSpan(
