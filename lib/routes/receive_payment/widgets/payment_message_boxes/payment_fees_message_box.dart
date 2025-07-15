@@ -8,8 +8,9 @@ import 'package:misty_breez/utils/utils.dart';
 
 class PaymentFeesMessageBox extends StatelessWidget {
   final int feesSat;
+  final bool isBitcoinPayment;
 
-  const PaymentFeesMessageBox({required this.feesSat, super.key});
+  const PaymentFeesMessageBox({required this.feesSat, this.isBitcoinPayment = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +20,26 @@ class PaymentFeesMessageBox extends StatelessWidget {
   String _formatFeesMessage(BuildContext context, int feesSat) {
     final BreezTranslations texts = context.texts();
 
+    final PermissionsCubit permissionsCubit = context.read<PermissionsCubit>();
+    final bool hasNotificationPermission = permissionsCubit.state.hasNotificationPermission;
+    final String warningMessage = hasNotificationPermission ? '' : ' ${texts.payment_fees_warning_message}';
+
     if (feesSat == 0) {
-      return texts.payment_fees_warning_message;
+      return warningMessage.trim();
     }
 
     final CurrencyCubit currencyCubit = context.read<CurrencyCubit>();
     final CurrencyState currencyState = currencyCubit.state;
     final String formattedFees = currencyState.bitcoinCurrency.format(feesSat);
     final FiatConversion? fiatConversion = currencyState.fiatConversion();
-    if (fiatConversion == null) {
-      return texts.payment_fees_message(formattedFees);
-    } else {
-      return texts.payment_fees_message_with_fiat(formattedFees, fiatConversion.format(feesSat));
-    }
+
+    final String feeText = fiatConversion == null
+        ? formattedFees
+        : '$formattedFees (${fiatConversion.format(feesSat)})';
+
+    final String paymentType = isBitcoinPayment ? 'payment request' : 'invoice';
+
+    // TODO(erdemyerebasmaz): Add message to Breez-Translations
+    return 'A fee of $feeText is applied to this $paymentType.$warningMessage';
   }
 }
