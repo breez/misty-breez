@@ -164,8 +164,6 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
     return BlocBuilder<AmountlessBtcCubit, AmountlessBtcState>(
       builder: (BuildContext context, AmountlessBtcState state) {
         final FetchPaymentProposedFeesResponse? proposedFees = state.proposedFeesMap[swapId];
-        final bool isLoadingFees = state.isReviewingFees;
-        final bool hasError = state.hasError;
 
         return Card(
           color: themeData.customData.surfaceBgColor,
@@ -174,7 +172,7 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
             children: <Widget>[
               if (proposedFees != null) ...<Widget>[
                 _buildFeeDetails(proposedFees),
-              ] else if (isLoadingFees) ...<Widget>[
+              ] else if (state.isLoadingFees) ...<Widget>[
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -192,7 +190,7 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
                     ),
                   ),
                 ),
-              ] else if (hasError) ...<Widget>[_buildErrorState(state.error)],
+              ] else if (state.hasError) ...<Widget>[_buildErrorState(state.error)],
             ],
           ),
         );
@@ -329,7 +327,7 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
 
     return BlocBuilder<AmountlessBtcCubit, AmountlessBtcState>(
       builder: (BuildContext context, AmountlessBtcState state) {
-        final bool isRetrying = state.isReviewingFees;
+        final bool isRetrying = state.isLoadingFees;
 
         return GestureDetector(
           behavior: HitTestBehavior.translucent,

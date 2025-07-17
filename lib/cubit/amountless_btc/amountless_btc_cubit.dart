@@ -81,7 +81,7 @@ class AmountlessBtcCubit extends Cubit<AmountlessBtcState> {
     try {
       _logger.info('Fetching payment proposed fees for swap ID: $swapId');
 
-      emit(state.copyWith(isReviewingFees: true));
+      emit(state.copyWith(isLoadingFees: true));
 
       final FetchPaymentProposedFeesRequest request = FetchPaymentProposedFeesRequest(swapId: swapId);
 
@@ -99,10 +99,10 @@ class AmountlessBtcCubit extends Cubit<AmountlessBtcState> {
           Map<String, FetchPaymentProposedFeesResponse>.from(state.proposedFeesMap);
       updatedProposedFeesMap[swapId] = response;
 
-      emit(state.copyWith(proposedFeesMap: updatedProposedFeesMap, isReviewingFees: false));
+      emit(state.copyWith(proposedFeesMap: updatedProposedFeesMap, isLoadingFees: false));
     } catch (e) {
       _logger.severe('Failed to fetch payment proposed fees for $swapId', e);
-      emit(state.copyWith(error: e, isReviewingFees: false));
+      emit(state.copyWith(error: e, isLoadingFees: false));
     }
   }
 
@@ -185,7 +185,7 @@ class AmountlessBtcCubit extends Cubit<AmountlessBtcState> {
         paymentsWaitingFeeAcceptance: <Payment>[],
         proposedFeesMap: <String, FetchPaymentProposedFeesResponse>{},
         isLoadingPayments: false,
-        isReviewingFees: false,
+        isLoadingFees: false,
       ),
     );
   }

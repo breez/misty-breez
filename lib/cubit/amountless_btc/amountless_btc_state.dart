@@ -10,7 +10,7 @@ class AmountlessBtcState {
   final List<Payment> paymentsWaitingFeeAcceptance;
   final Map<String, FetchPaymentProposedFeesResponse> proposedFeesMap;
   final bool isLoadingPayments;
-  final bool isReviewingFees;
+  final bool isLoadingFees;
 
   const AmountlessBtcState({
     this.address,
@@ -21,7 +21,7 @@ class AmountlessBtcState {
     this.paymentsWaitingFeeAcceptance = const <Payment>[],
     this.proposedFeesMap = const <String, FetchPaymentProposedFeesResponse>{},
     this.isLoadingPayments = false,
-    this.isReviewingFees = false,
+    this.isLoadingFees = false,
   });
 
   AmountlessBtcState.initial() : this();
@@ -35,7 +35,7 @@ class AmountlessBtcState {
     List<Payment>? paymentsWaitingFeeAcceptance,
     Map<String, FetchPaymentProposedFeesResponse>? proposedFeesMap,
     bool? isLoadingPayments,
-    bool? isReviewingFees,
+    bool? isLoadingFees,
   }) => AmountlessBtcState(
     address: address ?? this.address,
     estimateBaseFeeSat: estimateBaseFeeSat ?? this.estimateBaseFeeSat,
@@ -45,7 +45,7 @@ class AmountlessBtcState {
     paymentsWaitingFeeAcceptance: paymentsWaitingFeeAcceptance ?? this.paymentsWaitingFeeAcceptance,
     proposedFeesMap: proposedFeesMap ?? this.proposedFeesMap,
     isLoadingPayments: isLoadingPayments ?? this.isLoadingPayments,
-    isReviewingFees: isReviewingFees ?? this.isReviewingFees,
+    isLoadingFees: isLoadingFees ?? this.isLoadingFees,
   );
 
   bool get hasValidAddress => address != null && address!.isNotEmpty;
@@ -64,7 +64,7 @@ class AmountlessBtcState {
       'paymentsWaitingCount: ${paymentsWaitingFeeAcceptance.length}, '
       'proposedFeesCount: ${proposedFeesMap.length}, '
       'isLoadingPayments: $isLoadingPayments, '
-      'isReviewingFees: $isReviewingFees'
+      'isLoadingFees: $isLoadingFees'
       ')';
 
   @override
@@ -81,7 +81,7 @@ class AmountlessBtcState {
         other.paymentsWaitingFeeAcceptance == paymentsWaitingFeeAcceptance &&
         other.proposedFeesMap == proposedFeesMap &&
         other.isLoadingPayments == isLoadingPayments &&
-        other.isReviewingFees == isReviewingFees;
+        other.isLoadingFees == isLoadingFees;
   }
 
   @override
@@ -94,6 +94,6 @@ class AmountlessBtcState {
     paymentsWaitingFeeAcceptance,
     proposedFeesMap,
     isLoadingPayments,
-    isReviewingFees,
+    isLoadingFees,
   );
 }
