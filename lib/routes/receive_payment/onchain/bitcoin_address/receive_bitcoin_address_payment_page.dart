@@ -13,7 +13,7 @@ import 'package:misty_breez/widgets/widgets.dart';
 
 class ReceiveBitcoinAddressPaymentPage extends StatefulWidget {
   static const String routeName = '/receive_bitcoin_address';
-  static const int pageIndex = 2;
+  static const int pageIndex = 3;
 
   const ReceiveBitcoinAddressPaymentPage({super.key});
 
@@ -69,10 +69,21 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
             return const CenteredLoader();
           }
 
+          final bool hasAmountlessStateError = context.select<AmountlessBtcCubit, bool>(
+            (AmountlessBtcCubit cubit) => cubit.state.hasError,
+          );
+
           return prepareResponseFuture == null
               ? Padding(
-                  padding: const EdgeInsets.only(top: 32.0, bottom: 40.0),
-                  child: SingleChildScrollView(child: _buildForm(onchainPaymentLimits)),
+                  padding: const EdgeInsets.only(top: 32, bottom: 40.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        _buildForm(onchainPaymentLimits),
+                        _buildAmountlessAddressWarnings(hasAmountlessStateError: hasAmountlessStateError),
+                      ],
+                    ),
+                  ),
                 )
               : _buildQRCode();
         },
@@ -306,5 +317,13 @@ class _ReceiveBitcoinAddressPaymentPageState extends State<ReceiveBitcoinAddress
     final int balance = accountState.walletInfo!.balanceSat.toInt();
     final ChainSwapCubit chainSwapCubit = context.read<ChainSwapCubit>();
     return chainSwapCubit.validateSwap(BigInt.from(amount), outgoing, onchainPaymentLimits, balance);
+  }
+
+  Widget _buildAmountlessAddressWarnings({required bool hasAmountlessStateError}) {
+    if (hasAmountlessStateError) {
+      return const AmountlessBtcAddressWarningBox();
+    }
+
+    return const SizedBox.shrink();
   }
 }
