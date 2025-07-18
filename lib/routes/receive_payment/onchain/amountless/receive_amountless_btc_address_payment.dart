@@ -188,7 +188,9 @@ class AmountlessBtcAddressMessageBox extends StatelessWidget {
         }
 
         final String limitsMessage = _formatAmountlessBtcMessage(context, snapshot, amountlessBtcState);
-        return PaymentInfoMessageBox(message: limitsMessage);
+        const String feeInfoUrl =
+            'https://sdk-doc-liquid.breez.technology/guide/base_fees.html#receiving-from-a-btc-address';
+        return PaymentInfoMessageBox(message: limitsMessage, linkUrl: feeInfoUrl);
       },
     );
   }
@@ -204,20 +206,8 @@ class AmountlessBtcAddressMessageBox extends StatelessWidget {
     final Limits limits = snapshot.onchainPaymentLimits!.receive;
     final String minReceivableFormatted = currencyState.bitcoinCurrency.format(limits.minSat.toInt());
     final String maxReceivableFormatted = currencyState.bitcoinCurrency.format(limits.maxSat.toInt());
-    String message =
-        '${texts.payment_limits_message(minReceivableFormatted, maxReceivableFormatted)} This address can be used only once.';
-
-    final int estimateBaseFeeSat = amountlessBtcState.estimateBaseFeeSat!;
-    final String estimateBaseFeeSatFormatted = currencyState.bitcoinCurrency.format(estimateBaseFeeSat);
-    final double? proportionalFee = amountlessBtcState.estimateProportionalFee;
-    if (proportionalFee != null) {
-      message +=
-          ' An estimated fee of $proportionalFee% with a minimum of $estimateBaseFeeSatFormatted will be applied on the received amount.';
-    } else {
-      message += ' An estimated fee of $estimateBaseFeeSatFormatted will be applied on the received amount.';
-    }
-
-    // TODO(erdemyerebasmaz): Add specific message for amountless BTC address to Breez-Translations
-    return message;
+    // TODO(erdemyerebasmaz): Add fee info message to Breez-Translations.
+    final String feeInfoMsg = 'Receiving funds incurs a fee as specified';
+    return '${texts.payment_limits_message(minReceivableFormatted, maxReceivableFormatted)} This address can be used only once. $feeInfoMsg ';
   }
 }
