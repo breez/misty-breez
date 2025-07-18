@@ -8,7 +8,7 @@ import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 const String feeInfoUrl =
-    'https://sdk-doc-liquid.breez.technology/guide/end-user_fees.html#receiving-lightning-payments';
+    'https://sdk-doc-liquid.breez.technology/guide/base_fees.html#receiving-lightning-payments';
 
 class PaymentLimitsMessageBox extends StatelessWidget {
   const PaymentLimitsMessageBox({super.key});
