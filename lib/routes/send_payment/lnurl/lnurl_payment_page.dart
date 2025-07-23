@@ -555,8 +555,8 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
         _isFormEnabled = false;
       });
     } else if (rawMaxSat != null && rawMaxSat < effectiveMinSat) {
-      final String networkLimit = currencyState.bitcoinCurrency.format(effectiveMinSat);
-      message = texts.invoice_payment_validator_error_payment_below_invoice_limit(networkLimit);
+      final String networkLimit = currencyState.bitcoinCurrency.format(rawMaxSat);
+      message = texts.invoice_payment_validator_error_payment_exceeded_limit(networkLimit);
       setState(() {
         _isFormEnabled = false;
       });
