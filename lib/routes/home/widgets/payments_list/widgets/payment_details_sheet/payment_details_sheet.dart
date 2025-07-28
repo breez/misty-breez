@@ -177,7 +177,9 @@ class PaymentDetailsSheet extends StatelessWidget {
                               paymentData: paymentData,
                               labelAutoSizeGroup: _labelGroup,
                             ),
-                            if (paymentData.status == PaymentState.pending && expiryDate != null) ...<Widget>[
+                            if ((paymentData.status == PaymentState.pending ||
+                                    paymentData.status == PaymentState.waitingFeeAcceptance) &&
+                                expiryDate != null) ...<Widget>[
                               PaymentDetailsSheetExpiry(
                                 expiryDate: expiryDate,
                                 labelAutoSizeGroup: _labelGroup,
