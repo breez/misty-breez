@@ -19,7 +19,6 @@ class PaymentInfoMessageBox extends StatelessWidget {
       contentPadding: const EdgeInsets.all(16.0),
       child: linkUrl != null
           ? RichText(
-              textAlign: TextAlign.center,
               text: TextSpan(
                 text: message,
                 style: themeData.textTheme.titleLarge?.copyWith(color: themeData.colorScheme.error),
@@ -43,7 +42,6 @@ class PaymentInfoMessageBox extends StatelessWidget {
           : Text(
               message,
               style: themeData.textTheme.titleLarge?.copyWith(color: themeData.colorScheme.error),
-              textAlign: TextAlign.center,
             ),
     );
   }
