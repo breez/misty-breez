@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 class PaymentDetailsSheetHeader extends StatefulWidget {
@@ -210,15 +212,19 @@ class _PaymentDetailsSheetHeaderState extends State<PaymentDetailsSheetHeader> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Center(
-            child: Text(
-              'Expect fee variation depending on network usage.',
-              style: themeData.textTheme.bodySmall?.copyWith(
-                color: themeData.colorScheme.onSurface.withValues(alpha: 0.7),
-                fontStyle: FontStyle.italic,
-                fontSize: 13.5,
+          Expanded(
+            child: Center(
+              child: AutoSizeText(
+                'Expect fee variation depending on network usage.',
+                style: themeData.textTheme.bodySmall?.copyWith(
+                  color: themeData.colorScheme.onSurface.withValues(alpha: 0.7),
+                  fontStyle: FontStyle.italic,
+                  fontSize: 13.5,
+                ),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+                textAlign: TextAlign.left,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
           SizedBox(
