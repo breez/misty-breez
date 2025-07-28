@@ -34,12 +34,12 @@ class AmountlessBtcAddressMessageBox extends StatelessWidget {
         final String limitsMessage = _formatAmountlessBtcMessage(context, snapshot, amountlessBtcState);
         const String feeInfoUrl =
             'https://sdk-doc-liquid.breez.technology/guide/base_fees.html#receiving-from-a-btc-address';
+
         return WarningBox(
           boxPadding: EdgeInsets.zero,
           backgroundColor: themeData.colorScheme.error.withValues(alpha: .1),
           contentPadding: const EdgeInsets.all(16.0),
           child: RichText(
-            textAlign: TextAlign.center,
             text: TextSpan(
               text: limitsMessage,
               style: themeData.textTheme.titleLarge?.copyWith(color: themeData.colorScheme.error),
