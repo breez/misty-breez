@@ -15,6 +15,7 @@ extension ConfigCopyWith on Config {
     BigInt? onchainFeeRateLeewaySat,
     List<AssetMetadata>? assetMetadata,
     String? sideswapApiKey,
+    bool? useMagicRoutingHints,
   }) {
     return Config(
       liquidExplorer: liquidExplorer ?? this.liquidExplorer,
@@ -30,6 +31,7 @@ extension ConfigCopyWith on Config {
       onchainFeeRateLeewaySat: onchainFeeRateLeewaySat ?? this.onchainFeeRateLeewaySat,
       assetMetadata: assetMetadata ?? this.assetMetadata,
       sideswapApiKey: sideswapApiKey ?? this.sideswapApiKey,
+      useMagicRoutingHints: useMagicRoutingHints ?? this.useMagicRoutingHints,
     );
   }
 }
