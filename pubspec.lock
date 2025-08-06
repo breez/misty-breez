@@ -136,7 +136,7 @@ packages:
       path: "../breez-sdk-liquid/packages/dart"
       relative: true
     source: path
-    version: "0.10.1"
+    version: "0.10.3"
   breez_translations:
     dependency: "direct main"
     description:
@@ -566,7 +566,7 @@ packages:
       path: "../breez-sdk-liquid/packages/flutter"
       relative: true
     source: path
-    version: "0.10.1"
+    version: "0.10.3"
   flutter_cache_manager:
     dependency: "direct main"
     description:
