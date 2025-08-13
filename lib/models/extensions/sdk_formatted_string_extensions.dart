@@ -130,11 +130,12 @@ extension PayAmountFormatter on PayAmount {
       PayAmount_Bitcoin(receiverAmountSat: final BigInt receiverAmountSat) =>
         'Bitcoin(receiverAmountSat: $receiverAmountSat)',
       PayAmount_Asset(
-        assetId: final String assetId,
+        toAsset: final String toAsset,
         receiverAmount: final double receiverAmount,
         estimateAssetFees: final bool? estimateAssetFees,
+        fromAsset: final String? fromAsset,
       ) =>
-        'Asset(assetId: $assetId, receiverAmount: $receiverAmount, estimateAssetFees: $estimateAssetFees)',
+        'Asset(toAsset: $toAsset, receiverAmount: $receiverAmount, estimateAssetFees: $estimateAssetFees, fromAsset: $fromAsset)',
       PayAmount_Drain() => 'Drain',
     };
   }
