@@ -8,6 +8,7 @@ import breez_sdk_liquid.defaultConfig
 import breez_sdk_liquid_notification.ForegroundService
 import breez_sdk_liquid_notification.NotificationHelper.Companion.registerNotificationChannels
 import com.breez.breez_sdk_liquid.SdkLogInitializer
+import com.breez.breez_sdk_liquid.SdkLogListener
 import com.breez.misty.utils.FlutterSecuredStorageHelper.Companion.readSecuredValue
 import io.flutter.util.PathUtils
 import org.tinylog.kotlin.Logger
@@ -23,22 +24,33 @@ class BreezForegroundService : ForegroundService() {
             "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg"
     }
 
+    private var listener: SdkLogListener? = null
+
     override fun onCreate() {
         super.onCreate()
         Logger.tag(TAG).debug { "Creating Breez foreground service..." }
         registerNotificationChannels(applicationContext, DEFAULT_CLICK_ACTION)
-        val listener = SdkLogInitializer.initializeListener()
-        listener.subscribe(serviceScope) { l: LogEntry ->
-            when (l.level) {
-                "ERROR" -> Logger.tag(TAG).error { l.line }
-                "WARN" -> Logger.tag(TAG).warn { l.line }
-                "INFO" -> Logger.tag(TAG).info { l.line }
-                "DEBUG" -> Logger.tag(TAG).debug { l.line }
-                "TRACE" -> Logger.tag(TAG).trace { l.line }
+        listener = SdkLogInitializer.initializeListener()
+        listener?.let {
+            it.subscribe(serviceScope) { l: LogEntry ->
+                when (l.level) {
+                    "ERROR" -> Logger.tag(TAG).error { l.line }
+                    "WARN" -> Logger.tag(TAG).warn { l.line }
+                    "INFO" -> Logger.tag(TAG).info { l.line }
+                    "DEBUG" -> Logger.tag(TAG).debug { l.line }
+                    // Ignore TRACE logs, they get filtered out by the logger
+                }
             }
+            setServiceLogger(it)
         }
-        setServiceLogger(listener)
         Logger.tag(TAG).debug { "Breez foreground service created." }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Logger.tag(TAG).debug { "Destroying Breez foreground service..." }
+        listener?.unsubscribe(serviceScope)
+        listener = null
     }
 
     override fun getConnectRequest(): ConnectRequest? {
