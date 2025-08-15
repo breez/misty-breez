@@ -160,6 +160,11 @@ jobs:
           flutter-version: 3.32.8
           cache: true
 
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.4'
+
       - name: Set up just
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         uses: extractions/setup-just@v3
