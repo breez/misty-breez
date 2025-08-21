@@ -7,7 +7,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
-import 'package:misty_breez/utils/utils.dart';
+import 'package:misty_breez/utils/exceptions/exception_handler.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 export 'widgets/widgets.dart';
@@ -39,44 +39,40 @@ class DestinationWidget extends StatefulWidget {
 }
 
 class _DestinationWidgetState extends State<DestinationWidget> {
-  StreamSubscription<Payment>? _trackPaymentEventsSubscription;
+  StreamSubscription<Payment>? _trackIncomingPaymentsSubscription;
 
-  Future<void> _trackPaymentEvents({String? expectedDestination}) async {
+  Future<void> _trackIncomingPayments() async {
     final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
-    _trackPaymentEventsSubscription?.cancel();
+    _trackIncomingPaymentsSubscription?.cancel();
 
-    final bool Function(Payment)? paymentFilter = await _buildPaymentFilter(expectedDestination);
-    if (paymentFilter == null) {
+    final PaymentTrackingConfig? trackingConfig = await _buildTrackingConfig();
+
+    if (trackingConfig == null) {
       _logger.warning('Skipping tracking payment events.');
       return;
     }
 
-    _trackPaymentEventsSubscription = paymentsCubit.trackPaymentEvents(
-      paymentFilter: paymentFilter,
+    _trackIncomingPaymentsSubscription = await paymentsCubit.trackIncomingPayments(
+      trackingConfig: trackingConfig,
       onData: _onTrackPaymentSucceed,
       onError: _onTrackPaymentError,
     );
   }
 
-  Future<bool Function(Payment)?> _buildPaymentFilter(String? expectedDestination) async {
+  Future<PaymentTrackingConfig?> _buildTrackingConfig() async {
     if (widget.lnAddress != null) {
       _logger.info('Tracking incoming payments to Lightning Address.');
-      return (Payment p) =>
-          p.paymentType == PaymentType.receive &&
-          p.details is PaymentDetails_Lightning &&
-          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+      return PaymentTrackingConfig(lnAddress: widget.lnAddress);
     }
 
-    if (expectedDestination != null) {
-      _logger.info('Tracking incoming payments to destination: $expectedDestination');
-      // TODO(erdemyerebasmaz): Cleanup isBitcoinPayment workaround once SDK includes destination or swap ID on resulting payment.
-      // Depends on: https://github.com/breez/breez-sdk-liquid/issues/913
-      // Treat any incoming BTC payment as valid until we can match it via destination (BIP21 URI) or swap ID.
-      return (Payment p) =>
-          (widget.isBitcoinPayment
-              ? p.details is PaymentDetails_Bitcoin
-              : p.destination == expectedDestination) &&
-          (p.status == PaymentState.pending || p.status == PaymentState.complete);
+    if (widget.destination != null) {
+      _logger.info(
+        'Tracking incoming ${widget.isBitcoinPayment ? 'BTC' : 'LN'} payments to destination: ${widget.destination}',
+      );
+      return PaymentTrackingConfig(
+        expectedDestination: widget.destination,
+        isBitcoinPayment: widget.isBitcoinPayment,
+      );
     }
 
     _logger.warning('Missing destination or LN Address.');
@@ -102,19 +98,19 @@ class _DestinationWidgetState extends State<DestinationWidget> {
   @override
   void initState() {
     super.initState();
-    _trackPaymentEvents(expectedDestination: widget.destination);
+    _trackIncomingPayments();
   }
 
   @override
   void dispose() {
-    _cancelTrackingPaymentEvents();
+    _cancelTrackingIncomingPayments();
     super.dispose();
   }
 
-  Future<void> _cancelTrackingPaymentEvents() async {
-    if (_trackPaymentEventsSubscription != null) {
-      await _trackPaymentEventsSubscription?.cancel();
-      _logger.info('Cancelled tracking payment events for ${widget.paymentLabel}.');
+  Future<void> _cancelTrackingIncomingPayments() async {
+    if (_trackIncomingPaymentsSubscription != null) {
+      await _trackIncomingPaymentsSubscription?.cancel();
+      _logger.info('Cancelled tracking incoming payments for ${widget.paymentLabel}.');
     }
   }
 
@@ -122,7 +118,7 @@ class _DestinationWidgetState extends State<DestinationWidget> {
     if (!mounted) {
       return;
     }
-    _cancelTrackingPaymentEvents();
+    _cancelTrackingIncomingPayments();
     if (isSuccess) {
       showPaymentReceivedSheet(context);
     } else {

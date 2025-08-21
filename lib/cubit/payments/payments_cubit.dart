@@ -60,6 +60,29 @@ class PaymentsCubit extends Cubit<PaymentsState> with HydratedMixin<PaymentsStat
         .listen((Payment payment) => onData.call(payment), onError: onError);
   }
 
+  Future<StreamSubscription<Payment>> trackIncomingPayments({
+    required PaymentTrackingConfig trackingConfig,
+    required void Function(Payment) onData,
+    void Function(Object)? onError,
+  }) async {
+    final Set<String> excludedIds = await _getExistingPaymentIds();
+
+    final PaymentTrackingFilter paymentFilter = PaymentTrackingFilter(
+      trackingConfig: trackingConfig,
+      excludedIds: excludedIds,
+    );
+
+    return _breezSdkLiquid.paymentsStream
+        .expand((List<Payment> payments) => payments)
+        .where(paymentFilter.passes)
+        .listen(onData, onError: onError);
+  }
+
+  Future<Set<String>> _getExistingPaymentIds() async {
+    final List<Payment> payments = await _breezSdkLiquid.paymentsStream.take(1).first;
+    return payments.map((Payment p) => p.trackingId).where((String id) => id.isNotEmpty).toSet();
+  }
+
   Future<PrepareSendResponse> prepareSendPayment({required PrepareSendRequest req}) async {
     _logger.info('prepareSendPayment\nPreparing send payment for destination: ${req.destination}');
     try {
