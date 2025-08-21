@@ -151,7 +151,8 @@ extension PaymentEventExtension on liquid_sdk.SdkEvent {
         this is liquid_sdk.SdkEvent_PaymentRefunded ||
         this is liquid_sdk.SdkEvent_PaymentRefundPending ||
         this is liquid_sdk.SdkEvent_PaymentSucceeded ||
-        this is liquid_sdk.SdkEvent_PaymentWaitingConfirmation;
+        this is liquid_sdk.SdkEvent_PaymentWaitingConfirmation ||
+        this is liquid_sdk.SdkEvent_PaymentWaitingFeeAcceptance;
   }
 }
 
