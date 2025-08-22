@@ -31,12 +31,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: 🏗️ Check-out misty-breez repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with: 
           path: 'misty_breez'
 
       - name: 🏗️ Setup breez-sdk-liquid repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: 'breez/breez-sdk-liquid'
           ssh-key: ${{ secrets.REPO_SSH_KEY }}
