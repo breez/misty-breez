@@ -10,6 +10,8 @@ import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
 
+export 'export_payments.dart';
+
 final Logger _logger = Logger('CsvExporter');
 
 /// Exports payment data to CSV format.
