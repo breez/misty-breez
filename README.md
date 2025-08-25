@@ -30,7 +30,6 @@ Misty Breez is the simplest self-custodial app for sending and receiving Lightni
 For de-googled devices running GrapheneOS or similar, please install an APK that fits your device architecture from our [latest release](https://github.com/breez/misty-breez/releases).
 
 ## Coming Soon
-- [ ] Receive to a BTC address w/o specifying an amount
 - [ ] Auto-complete Lightning addresses from history 
 
 ## For Developers
