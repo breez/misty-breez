@@ -173,6 +173,9 @@ class PaymentData {
     lightning: (PaymentDetails_Lightning details) => details.swapId,
     orElse: () => null,
   );
+
+  String get preimage =>
+      details.map(lightning: (PaymentDetails_Lightning details) => details.preimage, orElse: () => '') ?? '';
 }
 
 class _PaymentDataFactory {

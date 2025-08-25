@@ -1,6 +1,7 @@
 export 'a11y/min_font_size.dart';
 export 'constants/app_constants.dart';
 export 'constants/wordlist.dart';
+export 'csv_exporter/csv_exporter.dart';
 export 'currency/bitcoin_currency_formatter.dart';
 export 'currency/currency_formatter.dart';
 export 'currency/fiat_conversion.dart';
