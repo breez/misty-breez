@@ -111,8 +111,8 @@ extension PaymentDetailsFromJson on PaymentDetails {
           bitcoinAddress: json['bitcoinAddress'] as String,
           description: json['description'] as String,
           autoAcceptedFees: json['autoAcceptedFees'] as bool,
-          liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int?,
-          bitcoinExpirationBlockheight: json['bitcoinExpirationBlockheight'] as int?,
+          liquidExpirationBlockheight: json['liquidExpirationBlockheight'] as int,
+          bitcoinExpirationBlockheight: json['bitcoinExpirationBlockheight'] as int,
           claimTxId: json['claimTxId'] as String?,
           refundTxId: json['refundTxId'] as String?,
           refundTxAmountSat: json['refundTxAmountSat'] != null
@@ -292,8 +292,8 @@ extension PaymentDetailsFormatter on PaymentDetails {
           'bitcoinAddress: ${details.bitcoinAddress}, '
           'description: ${details.description}, '
           'autoAcceptedFees: ${details.autoAcceptedFees}, '
-          'liquidExpirationBlockheight: ${details.liquidExpirationBlockheight ?? "N/A"}, '
-          'bitcoinExpirationBlockheight: ${details.bitcoinExpirationBlockheight ?? "N/A"}, '
+          'liquidExpirationBlockheight: ${details.liquidExpirationBlockheight}, '
+          'bitcoinExpirationBlockheight: ${details.bitcoinExpirationBlockheight}, '
           'claimTxId: ${details.claimTxId ?? "N/A"}, '
           'refundTxId: ${details.refundTxId ?? "N/A"}, '
           'refundTxAmountSat: ${details.refundTxAmountSat ?? "N/A"}'
