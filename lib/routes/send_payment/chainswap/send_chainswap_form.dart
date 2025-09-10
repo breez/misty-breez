@@ -157,7 +157,7 @@ class _SendChainSwapFormState extends State<SendChainSwapForm> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Switch(
                 value: widget.isDrain,
-                activeColor: Colors.white,
+                activeThumbColor: Colors.white,
                 activeTrackColor: themeData.primaryColor,
                 onChanged: (bool value) async {
                   setState(() {

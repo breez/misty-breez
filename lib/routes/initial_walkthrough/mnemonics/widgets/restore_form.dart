@@ -77,7 +77,7 @@ class RestoreFormState extends State<RestoreForm> {
                 color: Colors.white,
                 constraints: BoxConstraints(minWidth: 180, maxWidth: 180, maxHeight: 180),
               ),
-              itemBuilder: <BuildContext, String>(BuildContext context, dynamic suggestion) {
+              itemBuilder: <BuildContext_, String_>(BuildContext context, dynamic suggestion) {
                 return Container(
                   decoration: const BoxDecoration(
                     border: Border(bottom: BorderSide(width: 0.5, color: Color.fromRGBO(5, 93, 235, 1.0))),
@@ -87,7 +87,7 @@ class RestoreFormState extends State<RestoreForm> {
                   ),
                 );
               },
-              onSuggestionSelected: <String>(dynamic suggestion) {
+              onSuggestionSelected: <String_>(dynamic suggestion) {
                 widget.textEditingControllers[itemIndex].text = suggestion;
                 if (itemIndex + 1 < focusNodes.length) {
                   focusNodes[itemIndex + 1].requestFocus();

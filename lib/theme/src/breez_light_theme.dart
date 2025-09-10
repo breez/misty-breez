@@ -19,7 +19,7 @@ final ThemeData breezLightTheme = ThemeData(
     sizeConstraints: BoxConstraints(minHeight: 64, minWidth: 64),
   ),
   canvasColor: BreezColors.blue[500],
-  bottomAppBarTheme: const BottomAppBarTheme(elevation: 0, color: Color(0xFF0085fb)),
+  bottomAppBarTheme: const BottomAppBarThemeData(elevation: 0, color: Color(0xFF0085fb)),
   appBarTheme: AppBarTheme(
     centerTitle: false,
     backgroundColor: BreezColors.blue[500],

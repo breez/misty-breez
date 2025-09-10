@@ -31,7 +31,7 @@ class SimpleSwitch extends StatelessWidget {
         stepGranularity: 0.1,
         group: group,
       ),
-      trailing: trailing ?? Switch(value: switchValue, activeColor: Colors.white, onChanged: onChanged),
+      trailing: trailing ?? Switch(value: switchValue, activeThumbColor: Colors.white, onChanged: onChanged),
       onTap: onTap,
     );
   }

@@ -358,7 +358,7 @@ class LnOfferPaymentPageState extends State<LnOfferPaymentPage> {
                                           padding: const EdgeInsets.only(bottom: 8.0),
                                           child: Switch(
                                             value: _isDrain,
-                                            activeColor: Colors.white,
+                                            activeThumbColor: Colors.white,
                                             activeTrackColor: themeData.primaryColor,
                                             onChanged: (bool value) async {
                                               setState(() {
