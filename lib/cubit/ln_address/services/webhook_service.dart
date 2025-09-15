@@ -87,7 +87,7 @@ class WebhookService {
   /// Registers a webhook with timeout handling.
   Future<void> _registerWebhook(String webhookUrl, Duration timeout) async {
     try {
-      final BindingLiquidSdk? sdk = _breezSdkLiquid.instance;
+      final BreezSdkLiquid? sdk = _breezSdkLiquid.instance;
       if (sdk == null) {
         throw RegisterWebhookException('Breez SDK not initialized');
       }

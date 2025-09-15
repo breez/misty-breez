@@ -78,7 +78,7 @@ Future<void> bootstrap(AppBuilder builder) async {
 
 Future<void> _initializeBreezSdkLiquid() async {
   try {
-    await liquid_sdk.initialize();
+    await liquid_sdk.FlutterBreezLiquid.init();
   } catch (error, stackTrace) {
     _logger.severe('Failed to initialize Breez SDK - Liquid: $error', error, stackTrace);
     runApp(BootstrapErrorPage(error: error, stackTrace: stackTrace));

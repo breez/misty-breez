@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/models.dart';
 
 class PaymentsState {
   final List<PaymentData> payments;
@@ -17,7 +16,7 @@ class PaymentsState {
     // This is a workaround to only include BTC assets in the unfiltered payments.
     // If Misty is to support multi-assets then this prefilter should be removed.
     final List<PaymentData>? prefilteredPayments = payments?.where((PaymentData paymentData) {
-      final String? paymentAssetTicker = paymentData.details.map(
+      final String? paymentAssetTicker = paymentData.details.maybeMap(
         liquid: (PaymentDetails_Liquid details) => details.assetInfo?.ticker ?? '',
         orElse: () => null,
       );
@@ -49,7 +48,7 @@ class PaymentsState {
       final bool passTypeFilter =
           typeFilterSet == null || typeFilterSet.contains(paymentData.paymentType.name);
 
-      final String? paymentAssetTicker = paymentData.details.map(
+      final String? paymentAssetTicker = paymentData.details.maybeMap(
         liquid: (PaymentDetails_Liquid details) => details.assetInfo?.ticker ?? '',
         orElse: () => null,
       );

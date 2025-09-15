@@ -147,13 +147,13 @@ class PaymentData {
             details.equals(other.details);
   }
 
-  int get refundTxAmountSat => details.map(
+  int get refundTxAmountSat => details.maybeMap(
     bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxAmountSat?.toInt() ?? 0,
     lightning: (PaymentDetails_Lightning details) => details.refundTxAmountSat?.toInt() ?? 0,
     orElse: () => 0,
   );
 
-  String? get refundTxId => details.map(
+  String? get refundTxId => details.maybeMap(
     bitcoin: (PaymentDetails_Bitcoin details) => details.refundTxId,
     lightning: (PaymentDetails_Lightning details) => details.refundTxId,
     orElse: () => null,
@@ -168,14 +168,15 @@ class PaymentData {
     return metadataMap['image/png;base64'] ?? metadataMap['image/jpeg;base64'];
   }
 
-  String? get swapId => details.map(
+  String? get swapId => details.maybeMap(
     bitcoin: (PaymentDetails_Bitcoin details) => details.swapId,
     lightning: (PaymentDetails_Lightning details) => details.swapId,
     orElse: () => null,
   );
 
   String get preimage =>
-      details.map(lightning: (PaymentDetails_Lightning details) => details.preimage, orElse: () => '') ?? '';
+      details.maybeMap(lightning: (PaymentDetails_Lightning details) => details.preimage, orElse: () => '') ??
+      '';
 }
 
 class _PaymentDataFactory {
@@ -185,7 +186,7 @@ class _PaymentDataFactory {
   _PaymentDataFactory(this._payment, this._texts);
 
   String _title() {
-    final String? bip353Address = _payment.details.map(
+    final String? bip353Address = _payment.details.maybeMap(
       lightning: (PaymentDetails_Lightning details) => details.bip353Address,
       liquid: (PaymentDetails_Liquid details) => details.bip353Address,
       orElse: () => null,
@@ -195,7 +196,7 @@ class _PaymentDataFactory {
       return bip353Address!;
     }
 
-    final LnUrlInfo? lnurlInfo = _payment.details.map(
+    final LnUrlInfo? lnurlInfo = _payment.details.maybeMap(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
       liquid: (PaymentDetails_Liquid details) => details.lnurlInfo,
       orElse: () => null,
@@ -227,7 +228,7 @@ class _PaymentDataFactory {
   }
 
   String? _getDescriptionFromDetails() {
-    return _payment.details.map(
+    return _payment.details.maybeMap(
       lightning: (PaymentDetails_Lightning details) => details.description,
       bitcoin: (PaymentDetails_Bitcoin details) => details.description,
       liquid: (PaymentDetails_Liquid details) => details.description,
@@ -246,7 +247,7 @@ class _PaymentDataFactory {
 }
 
 Map<String, dynamic> getLnurlPayMetadata(PaymentDetails details) {
-  final String? lnurlPayMetadata = details.map(
+  final String? lnurlPayMetadata = details.maybeMap(
     lightning: (PaymentDetails_Lightning details) => details.lnurlInfo?.lnurlPayMetadata,
     orElse: () => null,
   );

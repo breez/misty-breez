@@ -48,34 +48,34 @@ class PaymentDetailsSheet extends StatelessWidget {
     final AccountState accountState = accountCubit.state;
     final ThemeData themeData = Theme.of(context);
 
-    final String? invoice = paymentData.details.map(
+    final String? invoice = paymentData.details.maybeMap(
       lightning: (PaymentDetails_Lightning details) => details.invoice,
       orElse: () => null,
     );
 
-    final String destinationPubkey = paymentData.details.map(
+    final String destinationPubkey = paymentData.details.maybeMap(
       lightning: (PaymentDetails_Lightning details) => details.destinationPubkey ?? '',
       orElse: () => '',
     );
 
-    final String paymentPreimage = paymentData.details.map(
+    final String paymentPreimage = paymentData.details.maybeMap(
       lightning: (PaymentDetails_Lightning details) => details.preimage ?? '',
       orElse: () => '',
     );
 
-    final String swapId = paymentData.details.map(
+    final String swapId = paymentData.details.maybeMap(
       bitcoin: (PaymentDetails_Bitcoin details) => details.swapId,
       lightning: (PaymentDetails_Lightning details) => details.swapId,
       orElse: () => '',
     );
 
-    final String claimTxId = paymentData.details.map(
+    final String claimTxId = paymentData.details.maybeMap(
       bitcoin: (PaymentDetails_Bitcoin details) => details.claimTxId ?? '',
       orElse: () => '',
     );
 
     final String bip353Address =
-        paymentData.details.map(
+        paymentData.details.maybeMap(
           lightning: (PaymentDetails_Lightning details) => details.bip353Address,
           liquid: (PaymentDetails_Liquid details) => details.bip353Address,
           orElse: () => null,
@@ -83,14 +83,14 @@ class PaymentDetailsSheet extends StatelessWidget {
         '';
 
     final String payerNote =
-        paymentData.details.map(
+        paymentData.details.maybeMap(
           lightning: (PaymentDetails_Lightning details) => details.payerNote,
           liquid: (PaymentDetails_Liquid details) => details.payerNote,
           orElse: () => null,
         ) ??
         '';
 
-    final LnUrlInfo? lnurlInfo = paymentData.details.map(
+    final LnUrlInfo? lnurlInfo = paymentData.details.maybeMap(
       lightning: (PaymentDetails_Lightning details) => details.lnurlInfo,
       liquid: (PaymentDetails_Liquid details) => details.lnurlInfo,
       orElse: () => null,

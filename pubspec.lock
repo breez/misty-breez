@@ -130,13 +130,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  breez_liquid:
-    dependency: "direct overridden"
-    description:
-      path: "../breez-sdk-liquid/packages/dart"
-      relative: true
-    source: path
-    version: "0.10.3"
   breez_translations:
     dependency: "direct main"
     description:
@@ -242,14 +235,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
-  cli_util:
-    dependency: transitive
-    description:
-      name: cli_util
-      sha256: ff6785f7e9e3c38ac98b2fb035701789de90154024a75b6cb926445e83197d1c
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.2"
   clock:
     dependency: transitive
     description:
@@ -262,10 +247,10 @@ packages:
     dependency: transitive
     description:
       name: code_builder
-      sha256: "0ec10bf4a89e4c613960bf1e8b42c64127021740fb21640c29c909826a5eea3e"
+      sha256: "11654819532ba94c34de52ff5feb52bd81cba1de00ef2ed622fd50295f9d4243"
       url: "https://pub.dev"
     source: hosted
-    version: "4.10.1"
+    version: "4.11.0"
   collection:
     dependency: transitive
     description:
@@ -443,14 +428,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  ffigen:
-    dependency: transitive
-    description:
-      name: ffigen
-      sha256: "72d732c33557fc0ca9b46379d3deff2dadbdc539696dc0b270189e2989be20ef"
-      url: "https://pub.dev"
-    source: hosted
-    version: "18.1.0"
   file:
     dependency: transitive
     description:
@@ -563,7 +540,7 @@ packages:
   flutter_breez_liquid:
     dependency: "direct main"
     description:
-      path: "../breez-sdk-liquid/packages/flutter"
+      path: "../breez-sdk-liquid/packages/flutter_breez_liquid"
       relative: true
     source: path
     version: "0.10.3"
@@ -650,11 +627,12 @@ packages:
   flutter_keyboard_visibility:
     dependency: transitive
     description:
-      name: flutter_keyboard_visibility
-      sha256: "4983655c26ab5b959252ee204c2fffa4afeb4413cd030455194ec0caa3b8e7cb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.4.1"
+      path: flutter_keyboard_visibility
+      ref: "63da8c50a5be71a2c06e988cd1993a89b9873a1c"
+      resolved-ref: "63da8c50a5be71a2c06e988cd1993a89b9873a1c"
+      url: "https://github.com/Crucialjun/flutter_keyboard_visibility"
+    source: git
+    version: "6.0.0"
   flutter_keyboard_visibility_linux:
     dependency: transitive
     description:
@@ -789,8 +767,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "4a494322762af9f30820f3c63aba784d46b86b69"
-      resolved-ref: "4a494322762af9f30820f3c63aba784d46b86b69"
+      ref: "2766f3c3c64339e6beb0a0eea258de408383d0c7"
+      resolved-ref: "2766f3c3c64339e6beb0a0eea258de408383d0c7"
       url: "https://github.com/breez/flutter_typeahead.git"
     source: git
     version: "4.0.0"
@@ -1043,10 +1021,10 @@ packages:
     dependency: transitive
     description:
       name: leak_tracker
-      sha256: "8dcda04c3fc16c14f48a7bb586d4be1f0d1572731b6d81d51772ef47c02081e0"
+      sha256: "33e2e26bdd85a0112ec15400c8cbffea70d0f9c3407491f672a2fad47915e2de"
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.1"
+    version: "11.0.2"
   leak_tracker_flutter_testing:
     dependency: transitive
     description:
@@ -1423,14 +1401,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.2"
   rxdart:
     dependency: "direct main"
     description:
@@ -1760,10 +1730,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: dbdd48a5b6a6fe9c7d75099bd2d03f9da9393f8d51a0d250301debbcecd552d2
+      sha256: "07cffecb7d68cbc6437cd803d5f11a86fe06736735c3dfe46ff73bcb0f958eed"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.19"
+    version: "6.3.21"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1940,14 +1910,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.3"
-  yaml_edit:
-    dependency: transitive
-    description:
-      name: yaml_edit
-      sha256: fb38626579fb345ad00e674e2af3a5c9b0cc4b9bfb8fd7f7ff322c7c9e62aef5
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.2"
 sdks:
   dart: ">=3.9.0 <4.0.0"
   flutter: ">=3.35.0"

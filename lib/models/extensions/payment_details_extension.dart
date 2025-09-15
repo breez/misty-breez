@@ -4,29 +4,9 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/utils/utils.dart';
 
-// TODO(erdemyerebasmaz): Ensure that any changes to [PaymentDetails] are reflected here on each extension.
-extension PaymentDetailsMapExtension on PaymentDetails {
-  T map<T>({
-    required T Function() orElse,
-    T Function(PaymentDetails_Bitcoin details)? bitcoin,
-    T Function(PaymentDetails_Lightning details)? lightning,
-    T Function(PaymentDetails_Liquid details)? liquid,
-  }) {
-    if (this is PaymentDetails_Bitcoin) {
-      return bitcoin != null ? bitcoin(this as PaymentDetails_Bitcoin) : orElse();
-    } else if (this is PaymentDetails_Lightning) {
-      return lightning != null ? lightning(this as PaymentDetails_Lightning) : orElse();
-    } else if (this is PaymentDetails_Liquid) {
-      return liquid != null ? liquid(this as PaymentDetails_Liquid) : orElse();
-    } else {
-      return orElse();
-    }
-  }
-}
-
 extension PaymentDetailsToJson on PaymentDetails {
   Map<String, dynamic>? toJson() {
-    return map(
+    return maybeMap(
       lightning: (PaymentDetails_Lightning details) => <String, dynamic>{
         'type': 'lightning',
         'swapId': details.swapId,
@@ -130,7 +110,7 @@ extension PaymentDetailsExtension on PaymentDetails {
   bool equals(PaymentDetails other) {
     return identical(this, other) ||
         other.runtimeType == runtimeType &&
-            other.map(
+            other.maybeMap(
               lightning: (PaymentDetails_Lightning o) {
                 final PaymentDetails_Lightning current = this as PaymentDetails_Lightning;
                 return o.swapId == current.swapId &&
@@ -177,7 +157,7 @@ extension PaymentDetailsExtension on PaymentDetails {
 
 extension PaymentDetailsHashCode on PaymentDetails {
   int calculateHashCode() {
-    return map(
+    return maybeMap(
       lightning: (PaymentDetails_Lightning o) => Object.hash(
         o.swapId,
         o.description,
@@ -224,7 +204,7 @@ extension PaymentDetailsExpiryDate on PaymentDetails {
       return null;
     }
 
-    final int? expiryBlockheight = map(
+    final int? expiryBlockheight = maybeMap(
       bitcoin: (PaymentDetails_Bitcoin details) => details.bitcoinExpirationBlockheight,
       lightning: (PaymentDetails_Lightning details) => details.liquidExpirationBlockheight,
       orElse: () => null,
@@ -234,7 +214,7 @@ extension PaymentDetailsExpiryDate on PaymentDetails {
       return null;
     }
 
-    final int? currentTip = map(
+    final int? currentTip = maybeMap(
       bitcoin: (_) => blockchainInfo.bitcoinTip,
       lightning: (_) => blockchainInfo.liquidTip,
       orElse: () => null,
@@ -244,7 +224,7 @@ extension PaymentDetailsExpiryDate on PaymentDetails {
       return null;
     }
 
-    return map(
+    return maybeMap(
       bitcoin: (_) =>
           BreezDateUtils.bitcoinBlockDiffToDate(blockHeight: currentTip, expiryBlock: expiryBlockheight),
       lightning: (_) =>
@@ -539,7 +519,7 @@ extension AesSuccessActionDataFromJson on AesSuccessActionData {
 
 extension PaymentDetailsBolt12Offer on PaymentDetails {
   bool get hasBolt12Offer {
-    return map(
+    return maybeMap(
       lightning: (PaymentDetails_Lightning details) =>
           details.bolt12Offer != null && details.bolt12Offer!.isNotEmpty,
       orElse: () => false,
