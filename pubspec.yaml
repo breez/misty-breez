@@ -85,7 +85,7 @@ dependencies:
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
-      ref: 4a494322762af9f30820f3c63aba784d46b86b69
+      ref: 2766f3c3c64339e6beb0a0eea258de408383d0c7
   hex: ^0.2.0
   http: ^1.4.0
   hydrated_bloc: ^10.1.1
