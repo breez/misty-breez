@@ -131,9 +131,17 @@ dev_dependencies:
   test_api: ^0.7.6
 
 dependency_overrides:
-  # Comment-out to work with breez-sdk-liquid from git repository
+  # Use local path during development:
   flutter_breez_liquid:
     path: ../breez-sdk-liquid/packages/flutter_breez_liquid
+
+  # --- OR ---
+
+  # Use published Git repo instead of local path:
+  # flutter_breez_liquid:
+  #   git:
+  #     url: https://github.com/breez/breez-sdk-liquid-flutter
+  #     ref: v0.11.3-dev5
 
 flutter:
   uses-material-design: true
