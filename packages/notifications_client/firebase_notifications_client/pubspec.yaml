@@ -8,6 +8,6 @@ environment:
 resolution: workspace
 
 dependencies:
-  firebase_messaging: ^15.2.6
+  firebase_messaging: ^16.0.2
   logging: ^1.3.0
   rxdart: ^0.28.0

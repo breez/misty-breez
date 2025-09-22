@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
 
   bip39: ^1.0.6
-  connectivity_plus: ^6.1.4
+  connectivity_plus: ^7.0.0
   breez_sdk_liquid:
     path: ../breez_sdk_liquid
   credentials_manager:
