@@ -24,17 +24,18 @@ subprojects {
         }
 
         Integer pluginCompileSdk = project.android.compileSdk
-        if ((project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library")) && pluginCompileSdk != null && pluginCompileSdk < 31) {
+        if ((project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library")) && pluginCompileSdk != null && pluginCompileSdk < 34) {
             project.logger.error(
                     "Warning: Overriding 'compileSdkVersion' version on Flutter plugin '${project.name}' from "
                             + pluginCompileSdk
-                            + " to 35 (to work around https://issuetracker.google.com/issues/199180389)."
+                            + " to 36 (to meet AndroidX dependency requirements)."
+                            + "\nSeveral AndroidX dependencies (fragment, lifecycle, core, etc.) now require compileSdk 34 or higher."
                             + "\nIf a new version of '${project.name}' is not available, consider filing an issue against '${project.name}'"
-                            + " to increase their compileSdkVersion to the latest (otherwise try updating to the latest version)."
+                            + " to increase their compileSdkVersion to at least 34 (preferably 36 for latest compatibility)."
             )
             project.android {
-                compileSdkVersion 35
-                buildToolsVersion "35.0.0"
+                compileSdkVersion 36
+                buildToolsVersion "36.0.0"
             }
         }
     }

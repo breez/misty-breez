@@ -14,7 +14,7 @@ class SyncManager {
   StreamSubscription<List<ConnectivityResult>>? _networkSubscription;
   DateTime _lastSync = DateTime.fromMillisecondsSinceEpoch(0);
 
-  final BindingLiquidSdk? wallet;
+  final BreezSdkLiquid? wallet;
 
   SyncManager(this.wallet);
 

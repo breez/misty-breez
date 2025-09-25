@@ -149,7 +149,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
   Future<String?> _getBolt12Offer() async {
     try {
-      final BindingLiquidSdk sdkInstance = breezSdkLiquid.instance!;
+      final BreezSdkLiquid sdkInstance = breezSdkLiquid.instance!;
       const PrepareReceiveRequest prepareReq = PrepareReceiveRequest(
         paymentMethod: PaymentMethod.bolt12Offer,
       );

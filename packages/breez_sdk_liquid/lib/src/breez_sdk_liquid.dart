@@ -19,9 +19,9 @@ class BreezSDKLiquid {
     didCompleteInitialSyncStream = _didCompleteInitialSyncController.stream.take(1);
   }
 
-  liquid_sdk.BindingLiquidSdk? _instance;
+  liquid_sdk.BreezSdkLiquid? _instance;
 
-  liquid_sdk.BindingLiquidSdk? get instance => _instance;
+  liquid_sdk.BreezSdkLiquid? get instance => _instance;
 
   Future<void> connect({required liquid_sdk.ConnectRequest req}) async {
     try {
@@ -47,18 +47,18 @@ class BreezSDKLiquid {
     _instance = null;
   }
 
-  Future<void> _fetchWalletData(liquid_sdk.BindingLiquidSdk sdk) async {
+  Future<void> _fetchWalletData(liquid_sdk.BreezSdkLiquid sdk) async {
     await _getInfo(sdk);
     await _listPayments(sdk: sdk);
   }
 
-  Future<liquid_sdk.GetInfoResponse> _getInfo(liquid_sdk.BindingLiquidSdk sdk) async {
+  Future<liquid_sdk.GetInfoResponse> _getInfo(liquid_sdk.BreezSdkLiquid sdk) async {
     final liquid_sdk.GetInfoResponse getInfoResponse = await sdk.getInfo();
     _getInfoResponseController.add(getInfoResponse);
     return getInfoResponse;
   }
 
-  Future<List<liquid_sdk.Payment>> _listPayments({required liquid_sdk.BindingLiquidSdk sdk}) async {
+  Future<List<liquid_sdk.Payment>> _listPayments({required liquid_sdk.BreezSdkLiquid sdk}) async {
     const liquid_sdk.ListPaymentsRequest req = liquid_sdk.ListPaymentsRequest();
     final List<liquid_sdk.Payment> paymentsList = await sdk.listPayments(req: req);
     _paymentsController.add(paymentsList);
@@ -86,7 +86,7 @@ class BreezSDKLiquid {
 
   Stream<liquid_sdk.SdkEvent>? _breezEventsStream;
 
-  void _initializeEventsStream(liquid_sdk.BindingLiquidSdk sdk) {
+  void _initializeEventsStream(liquid_sdk.BreezSdkLiquid sdk) {
     _breezEventsStream ??= sdk.addEventListener().asBroadcastStream();
   }
 
@@ -105,7 +105,7 @@ class BreezSDKLiquid {
   Stream<PaymentEvent> get paymentEventStream => _paymentEventStream.stream;
 
   /// Subscribes to SdkEvent's stream
-  void _subscribeToEventsStream(liquid_sdk.BindingLiquidSdk sdk) {
+  void _subscribeToEventsStream(liquid_sdk.BreezSdkLiquid sdk) {
     _breezEventsSubscription = _breezEventsStream?.listen((liquid_sdk.SdkEvent event) async {
       if (event.isPaymentEvent) {
         _paymentEventStream.add(PaymentEvent.fromSdkEvent(event));

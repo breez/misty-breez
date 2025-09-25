@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/models.dart';
 
 export 'amountless_btc_state.dart';
 
@@ -130,7 +129,7 @@ class AmountlessBtcCubit extends Cubit<AmountlessBtcState> {
 
       // Remove the payment from waiting list and proposed fees map
       final List<Payment> updatedPayments = state.paymentsWaitingFeeAcceptance.where((Payment payment) {
-        final String paymentSwapId = payment.details.map(
+        final String paymentSwapId = payment.details.maybeMap(
           bitcoin: (PaymentDetails_Bitcoin details) => details.swapId,
           lightning: (PaymentDetails_Lightning details) => details.swapId,
           orElse: () => '',

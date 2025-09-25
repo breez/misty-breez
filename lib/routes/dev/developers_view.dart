@@ -88,7 +88,7 @@ class _DevelopersViewState extends State<DevelopersView> {
   /// Loads the default BOLT12 offer
   Future<void> _loadBolt12Offer() async {
     try {
-      final BindingLiquidSdk sdk = ServiceInjector().breezSdkLiquid.instance!;
+      final BreezSdkLiquid sdk = ServiceInjector().breezSdkLiquid.instance!;
       const PrepareReceiveRequest prepareReq = PrepareReceiveRequest(
         paymentMethod: PaymentMethod.bolt12Offer,
       );
