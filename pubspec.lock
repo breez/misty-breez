@@ -133,9 +133,11 @@ packages:
   breez_liquid:
     dependency: "direct overridden"
     description:
-      path: "../breez-sdk-liquid/packages/dart"
-      relative: true
-    source: path
+      path: "."
+      ref: "v0.11.3"
+      resolved-ref: "4f3bd47ff1c0a17eb0877f760037d7065b496976"
+      url: "https://github.com/breez/breez-sdk-liquid-dart"
+    source: git
     version: "0.11.3"
   breez_translations:
     dependency: "direct main"
@@ -563,9 +565,11 @@ packages:
   flutter_breez_liquid:
     dependency: "direct main"
     description:
-      path: "../breez-sdk-liquid/packages/flutter"
-      relative: true
-    source: path
+      path: "."
+      ref: "v0.11.3"
+      resolved-ref: d133c9f2e8ac8e627b58d732ee87693a6995c06d
+      url: "https://github.com/breez/breez-sdk-liquid-flutter"
+    source: git
     version: "0.11.3"
   flutter_cache_manager:
     dependency: "direct main"

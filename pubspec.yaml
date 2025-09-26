@@ -133,9 +133,13 @@ dev_dependencies:
 dependency_overrides:
   # Comment-out to work with liquid-sdk from git repository
   breez_liquid:
-    path: ../breez-sdk-liquid/packages/dart
+    git:
+      url: https://github.com/breez/breez-sdk-liquid-dart
+      ref: v0.11.3
   flutter_breez_liquid:
-    path: ../breez-sdk-liquid/packages/flutter
+    git:
+      url: https://github.com/breez/breez-sdk-liquid-flutter
+      ref: v0.11.3
 
 flutter:
   uses-material-design: true
