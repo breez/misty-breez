@@ -227,14 +227,14 @@ jobs:
 
       - name: 📦 Install Breez Liquid SDK dependencies
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         run: |
           just clean
           just setup
 
       - name: Install flutter_rust_bridge_codegen dependencies
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         run: just frb
 
       - name: 🔒 Install SSH Key
@@ -248,12 +248,12 @@ jobs:
 
       - name: 🔨 Build Breez Liquid SDK Android bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         run: just build-uniffi-android
 
       - name: Generate Dart/Flutter bindings & Softlink C Headers
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
         run: just gen false
 
