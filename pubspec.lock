@@ -118,10 +118,10 @@ packages:
     dependency: transitive
     description:
       name: bloc
-      sha256: "52c10575f4445c61dd9e0cafcc6356fdd827c4c64dd7945ef3c4105f6b6ac189"
+      sha256: e18b8e7825e9921d67a6d256dba0b6015ece8a577eb0a411845c46a352994d78
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "9.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -540,12 +540,10 @@ packages:
   flutter_breez_liquid:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "v0.11.3-dev7"
-      resolved-ref: "70d72a5de09d5fa9cd114bb79796515eab92c2f1"
-      url: "https://github.com/breez/breez-sdk-liquid-flutter"
-    source: git
-    version: "0.11.3-dev7"
+      path: "../breez-sdk-liquid/packages/flutter_breez_liquid"
+      relative: true
+    source: path
+    version: "0.11.4"
   flutter_cache_manager:
     dependency: "direct main"
     description:
@@ -1447,10 +1445,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: a2608114b1ffdcbc9c120eb71a0e207c71da56202852d4aab8a5e30a82269e74
+      sha256: bd14436108211b0d4ee5038689a56d4ae3620fd72fd6036e113bf1345bc74d9e
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.12"
+    version: "2.4.13"
   shared_preferences_foundation:
     dependency: transitive
     description:
