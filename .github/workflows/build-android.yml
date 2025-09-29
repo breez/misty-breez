@@ -230,7 +230,7 @@ jobs:
         working-directory: breez-sdk-liquid/lib/bindings/langs/flutter/
         run: |
           just clean
-          just init
+          just setup
 
       - name: Install flutter_rust_bridge_codegen dependencies
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
