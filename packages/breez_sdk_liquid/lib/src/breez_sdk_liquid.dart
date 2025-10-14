@@ -10,13 +10,14 @@ class BreezSDKLiquid {
 
   factory BreezSDKLiquid() => _singleton;
 
-  late final Stream<void> didCompleteInitialSyncStream;
+  final StreamController<SyncStatus> _syncStatusController = BehaviorSubject<SyncStatus>.seeded(
+    SyncStatus.initial,
+  );
 
-  final StreamController<void> _didCompleteInitialSyncController = StreamController<void>.broadcast();
+  Stream<SyncStatus> get syncStatusStream => _syncStatusController.stream;
 
   BreezSDKLiquid._internal() {
     initializeLogStream();
-    didCompleteInitialSyncStream = _didCompleteInitialSyncController.stream.take(1);
   }
 
   liquid_sdk.BreezSdkLiquid? _instance;
@@ -112,10 +113,15 @@ class BreezSDKLiquid {
       } else if (event is liquid_sdk.SdkEvent_PaymentFailed) {
         _paymentEventStream.addError(event);
       }
-      await _fetchWalletData(sdk);
+
       if (event is liquid_sdk.SdkEvent_Synced) {
-        _didCompleteInitialSyncController.add(null);
+        _syncStatusController.add(SyncStatus.synced);
+      } else if (event is liquid_sdk.SdkEvent_SyncFailed) {
+        _syncStatusController.add(SyncStatus.failed);
+        return; // Don't fetch data if there are sync service instabilities
       }
+
+      await _fetchWalletData(sdk);
     });
   }
 
@@ -166,3 +172,5 @@ class PaymentEvent {
     return PaymentEvent(sdkEvent: event, payment: (event as dynamic).details);
   }
 }
+
+enum SyncStatus { initial, synced, failed }

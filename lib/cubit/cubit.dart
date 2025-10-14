@@ -14,4 +14,5 @@ export 'payments/payments_cubit.dart';
 export 'permissions/permissions_cubit.dart';
 export 'refund/refund_cubit.dart';
 export 'security/security_cubit.dart';
+export 'sync_service/sync_service_cubit.dart';
 export 'user_profile/user_profile_cubit.dart';

@@ -50,6 +50,9 @@ class App extends StatelessWidget {
           create: (BuildContext context) => AmountlessBtcCubit(injector.breezSdkLiquid),
         ),
         BlocProvider<PermissionsCubit>(create: (BuildContext context) => permissionsCubit),
+        BlocProvider<SyncServiceCubit>(
+          create: (BuildContext context) => SyncServiceCubit(injector.breezSdkLiquid),
+        ),
       ],
       child: Provider<LnUrlService>(
         create: (BuildContext context) => LnUrlService(injector.breezSdkLiquid),
