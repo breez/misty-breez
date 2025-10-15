@@ -77,7 +77,7 @@ class SyncServiceHandler extends Handler {
       icon: Icon(Icons.sync_problem, size: 28.0, color: themeData.colorScheme.error),
       messageText: Text(
         // TODO(erdemyerebasmaz): Add message to Breez-Translations
-        'Failed to sync.', // context.texts().sync_failed_flushbar_message,
+        'Sync service unavailable', // context.texts().sync_failed_flushbar_message,
         style: snackBarStyle,
         textAlign: TextAlign.center,
       ),
