@@ -42,7 +42,7 @@ class AccountCubit extends Cubit<AccountState> with HydratedMixin<AccountState> 
 
   void _listenInitialSyncEvent() {
     _logger.info('Listening to initial sync event.');
-    breezSdkLiquid.didCompleteInitialSyncStream.listen((_) {
+    breezSdkLiquid.syncStatusStream.firstWhere((SyncStatus status) => status == SyncStatus.synced).then((_) {
       _logger.info('Initial sync complete.');
       emit(state.copyWith(isRestoring: false, didCompleteInitialSync: true));
     });
