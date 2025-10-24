@@ -16,6 +16,7 @@ import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
+import 'package:pick_or_save/pick_or_save.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -175,13 +176,20 @@ class _DevelopersViewState extends State<DevelopersView> {
 
     try {
       final String zipPath = await WalletArchiveService.createLogsArchive();
-      final ShareParams shareParams = ShareParams(title: 'Logs', files: <XFile>[XFile(zipPath)]);
-      SharePlus.instance.share(shareParams);
-    } catch (e) {
-      _logger.severe('Failed to share logs: $e');
 
+      final List<String>? result = await PickOrSave().fileSaver(
+        params: FileSaverParams(
+          saveFiles: <SaveFileInfo>[SaveFileInfo(filePath: zipPath, fileName: 'misty-breez.logs.zip')],
+        ),
+      );
+      if (result == null) {
+        _logger.info('User cancelled save dialog.');
+        return;
+      }
+    } catch (e) {
+      _logger.severe('Failed to save logs: $e');
       if (mounted) {
-        _showErrorMessage('Failed to share logs: ${e.toString()}');
+        _showErrorMessage('Failed to save logs: ${e.toString()}');
       }
     } finally {
       _overlayManager.removeLoadingOverlay();

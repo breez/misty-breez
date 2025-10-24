@@ -74,6 +74,7 @@ dependencies:
   dotted_decoration: ^2.0.0
   email_validator: ^3.0.0
   extended_image: ^10.0.1
+  pick_or_save: ^2.2.4
   ffi: ^2.1.4
   firebase_core: ^4.1.1
   firebase_messaging: ^16.0.2
