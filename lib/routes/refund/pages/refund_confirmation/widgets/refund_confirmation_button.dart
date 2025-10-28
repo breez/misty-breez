@@ -35,12 +35,7 @@ class RefundConfirmationButton extends StatelessWidget {
         isBroadcast: true,
         paymentFunc: () async => await refundCubit.refund(req: req),
       ).then((dynamic result) {
-        // Navigate to home after handling the result
         if (context.mounted) {
-          Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
-
-          // Payment timeout doesn't necessarily mean the payment failed.
-          // We're popping to Home page to avoid user retries and duplicate payments.
           final ThemeData themeData = Theme.of(context);
           promptError(
             context,
