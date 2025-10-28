@@ -89,7 +89,7 @@ class ExceptionHandler {
     } else if (error is PaymentError_PairsNotFound) {
       message = 'Boltz did not return any pairs from the request';
     } else if (error is PaymentError_PaymentTimeout) {
-      message = 'The payment timed out';
+      message = 'Payment start could not be verified within the configured timeout';
     } else if (error is PaymentError_PersistError) {
       message = 'Could not store the swap details locally';
     } else if (error is PaymentError_SelfTransferNotSupported) {

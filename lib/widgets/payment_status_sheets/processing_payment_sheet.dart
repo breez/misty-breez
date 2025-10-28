@@ -219,14 +219,19 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       return;
     }
 
-    Navigator.of(context).pop(err);
     final BreezTranslations texts = getSystemAppLocalizations();
 
-    if (widget.promptError) {
-      _promptErrorDialog(err, texts);
-      // TODO(erdemyerebasmaz): PaymentError::Generic is added because timeouts by Boltz are currently thrown as PaymentError::Generic by the SDK.
-    } else if (err is FrbException || err is PaymentError_PaymentTimeout || err is PaymentError_Generic) {
-      _showErrorFlushbar(err, texts);
+    // Payment timeout doesn't necessarily mean the payment failed, so we show a dialog and navigate back to home
+    if (err is PaymentError_PaymentTimeout) {
+      _promptErrorDialogAndCloseSheet(err, texts);
+    } else {
+      Navigator.of(context).pop(err);
+      if (widget.promptError) {
+        _promptErrorDialog(err, texts);
+        // TODO(erdemyerebasmaz): PaymentError::Generic is added because timeouts by Boltz are currently thrown as PaymentError::Generic by the SDK.
+      } else if (err is FrbException || err is PaymentError_Generic) {
+        _showErrorFlushbar(err, texts);
+      }
     }
   }
 
@@ -245,6 +250,31 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
       title: texts.payment_failed_report_dialog_title,
       body: Text(ExceptionHandler.extractMessage(err, texts), style: themeData.dialogTheme.contentTextStyle),
     );
+  }
+
+  void _promptErrorDialogAndCloseSheet(
+    Object err,
+    BreezTranslations texts,
+  ) async {
+    final ThemeData themeData = Theme.of(context);
+    // Show the error dialog and wait for it to be dismissed
+    await promptError(
+      context,
+      title: texts.payment_failed_report_dialog_title,
+      body: Text(ExceptionHandler.extractMessage(err, texts), style: themeData.dialogTheme.contentTextStyle),
+    );
+    // After dialog is dismissed, close the sheet and navigate home
+    if (mounted) {
+      final NavigatorState navigator = Navigator.of(context);
+      if (widget.popToHomeOnCompletion) {
+        navigator.pushNamedAndRemoveUntil(
+          Home.routeName,
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        navigator.pop();
+      }
+    }
   }
 
   void _showErrorFlushbar(Object err, BreezTranslations texts) {
