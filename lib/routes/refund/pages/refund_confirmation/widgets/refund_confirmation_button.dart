@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
@@ -35,7 +34,7 @@ class RefundConfirmationButton extends StatelessWidget {
         isBroadcast: true,
         paymentFunc: () async => await refundCubit.refund(req: req),
       ).then((dynamic result) {
-        if (context.mounted) {
+        if (context.mounted && result != null) {
           final ThemeData themeData = Theme.of(context);
           promptError(
             context,

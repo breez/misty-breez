@@ -44,7 +44,7 @@ class SendChainSwapButton extends StatelessWidget {
         paymentFunc: () async => await chainSwapCubit.payOnchain(req: req),
       ).then((dynamic result) {
         // Navigate to home after handling the result
-        if (context.mounted) {
+        if (context.mounted && result != null) {
           Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
 
           // Payment timeout doesn't necessarily mean the payment failed.
