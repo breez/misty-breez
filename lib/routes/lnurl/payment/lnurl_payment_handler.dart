@@ -51,7 +51,9 @@ Future<LNURLPageResult?> handlePayRequest(
       }
     }
 
-    if (pageResult == null) {
+    if (result is PaymentError_PaymentTimeout) {
+      pageResult = null;
+    } else {
       _logger.warning('Error sending LNURL payment', result);
       pageResult = LNURLPageResult(error: result);
     }
@@ -72,7 +74,7 @@ Future<LNURLPageResult?> handlePayRequest(
             style: themeData.dialogTheme.contentTextStyle,
           ),
         );
-      } else if (pageResult.hasError) {
+      } else if (pageResult != null && pageResult.hasError) {
         showFlushbar(context, message: pageResult.errorMessage);
       }
     }
