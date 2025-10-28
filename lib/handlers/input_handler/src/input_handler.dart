@@ -140,7 +140,7 @@ class InputHandler extends Handler {
           final ThemeData themeData = Theme.of(context);
           promptError(
             context,
-            title: context.texts().payment_failed_report_dialog_title,
+            title: context.texts().unexpected_error_title,
             body: Text(
               ExceptionHandler.extractMessage(result, context.texts()),
               style: themeData.dialogTheme.contentTextStyle,
@@ -195,7 +195,7 @@ class InputHandler extends Handler {
           final ThemeData themeData = Theme.of(context);
           promptError(
             context,
-            title: context.texts().payment_failed_report_dialog_title,
+            title: context.texts().unexpected_error_title,
             body: Text(
               ExceptionHandler.extractMessage(result, context.texts()),
               style: themeData.dialogTheme.contentTextStyle,

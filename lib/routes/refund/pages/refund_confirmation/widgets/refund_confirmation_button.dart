@@ -44,7 +44,9 @@ class RefundConfirmationButton extends StatelessWidget {
           final ThemeData themeData = Theme.of(context);
           promptError(
             context,
-            title: context.texts().payment_failed_report_dialog_title,
+            title: (result is PaymentError_PaymentTimeout)
+                ? context.texts().unexpected_error_title
+                : context.texts().payment_failed_report_dialog_title,
             body: Text(
               ExceptionHandler.extractMessage(result, context.texts()),
               style: themeData.dialogTheme.contentTextStyle,
