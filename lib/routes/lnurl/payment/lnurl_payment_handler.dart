@@ -51,9 +51,7 @@ Future<LNURLPageResult?> handlePayRequest(
       }
     }
 
-    if (result is PaymentError_PaymentTimeout) {
-      pageResult = null;
-    } else {
+    if (pageResult == null) {
       _logger.warning('Error sending LNURL payment', result);
       pageResult = LNURLPageResult(error: result);
     }
@@ -64,7 +62,7 @@ Future<LNURLPageResult?> handlePayRequest(
 
       // Payment timeout doesn't necessarily mean the payment failed.
       // We're popping to Home page to avoid user retries and duplicate payments.
-      if (result is PaymentError_PaymentTimeout) {
+      if (result is LnUrlPayError_PaymentTimeout) {
         final ThemeData themeData = Theme.of(context);
         promptError(
           context,
@@ -74,7 +72,7 @@ Future<LNURLPageResult?> handlePayRequest(
             style: themeData.dialogTheme.contentTextStyle,
           ),
         );
-      } else if (pageResult != null && pageResult.hasError) {
+      } else if (pageResult.hasError) {
         showFlushbar(context, message: pageResult.errorMessage);
       }
     }
