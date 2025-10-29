@@ -128,7 +128,7 @@ class ExceptionHandler {
     } else if (error is LnUrlPayError_PaymentFailed) {
       message = 'Payment failed: ${error.err}';
     } else if (error is LnUrlPayError_PaymentTimeout) {
-      message = 'Payment timeout: ${error.err}';
+      message = 'Payment start could not be verified within the configured timeout';
     } else if (error is LnUrlPayError_RouteNotFound) {
       message = 'Route not found: ${error.err}';
     } else if (error is LnUrlPayError_RouteTooExpensive) {
