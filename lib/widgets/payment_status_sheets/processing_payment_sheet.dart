@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
@@ -18,7 +16,6 @@ final Logger _logger = Logger('ProcessingPaymentSheet');
 Future<dynamic> showProcessingPaymentSheet(
   BuildContext context, {
   required Future<dynamic> Function() paymentFunc,
-  bool promptError = false,
   bool popToHomeOnCompletion = true,
   bool isLnPayment = false,
   bool isLnUrlPayment = false,
@@ -33,7 +30,6 @@ Future<dynamic> showProcessingPaymentSheet(
       isLnPayment: isLnPayment,
       isLnUrlPayment: isLnUrlPayment,
       isBroadcast: isBroadcast,
-      promptError: promptError,
       popToHomeOnCompletion: popToHomeOnCompletion,
       paymentFunc: paymentFunc,
     ),
@@ -44,13 +40,11 @@ class ProcessingPaymentSheet extends StatefulWidget {
   final bool isLnPayment;
   final bool isLnUrlPayment;
   final bool isBroadcast;
-  final bool promptError;
   final bool popToHomeOnCompletion;
   final Future<dynamic> Function() paymentFunc;
 
   const ProcessingPaymentSheet({
     required this.paymentFunc,
-    this.promptError = false,
     this.popToHomeOnCompletion = true,
     this.isLnPayment = false,
     this.isLnUrlPayment = false,
@@ -220,14 +214,6 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     }
 
     Navigator.of(context).pop(err);
-    final BreezTranslations texts = getSystemAppLocalizations();
-
-    if (widget.promptError) {
-      _promptErrorDialog(err, texts);
-      // TODO(erdemyerebasmaz): PaymentError::Generic is added because timeouts by Boltz are currently thrown as PaymentError::Generic by the SDK.
-    } else if (err is FrbException || err is PaymentError_PaymentTimeout || err is PaymentError_Generic) {
-      _showErrorFlushbar(err, texts);
-    }
   }
 
   void _onPaymentFailure() {
@@ -236,20 +222,6 @@ class ProcessingPaymentSheetState extends State<ProcessingPaymentSheet> {
     }
     Navigator.of(context).pop();
     showFlushbar(context, message: getSystemAppLocalizations().payment_error_to_send_unknown_reason);
-  }
-
-  void _promptErrorDialog(Object err, BreezTranslations texts) {
-    final ThemeData themeData = Theme.of(context);
-    promptError(
-      context,
-      title: texts.payment_failed_report_dialog_title,
-      body: Text(ExceptionHandler.extractMessage(err, texts), style: themeData.dialogTheme.contentTextStyle),
-    );
-  }
-
-  void _showErrorFlushbar(Object err, BreezTranslations texts) {
-    final String message = ExceptionHandler.extractMessage(err, texts);
-    showFlushbar(context, message: texts.payment_error_to_send(message));
   }
 
   @override
