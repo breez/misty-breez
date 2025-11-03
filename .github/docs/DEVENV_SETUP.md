@@ -14,8 +14,7 @@ breez-sdk-liquid/
 │  ├─ bindings/
 │  ├─ core/
 ├─ packages/
-│  ├─ dart/
-│  ├─ flutter/
+│  ├─ flutter_breez_liquid/
 misty-breez/
 ├─ android/
 ├─ ios/
