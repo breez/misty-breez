@@ -13,12 +13,14 @@ breez-sdk-liquid/
 ├─ lib/
 │  ├─ bindings/
 │  ├─ core/
+│  ├─ ...
 ├─ packages/
-│  ├─ dart/
-│  ├─ flutter/
+│  ├─ flutter_breez_liquid/
+│  ├─ ...
 misty-breez/
 ├─ android/
 ├─ ios/
+├─ ...
 
 ```
 
