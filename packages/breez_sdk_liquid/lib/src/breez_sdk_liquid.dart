@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:rxdart/rxdart.dart';
 
 class BreezSDKLiquid {
@@ -15,8 +16,9 @@ class BreezSDKLiquid {
   final StreamController<void> _didCompleteInitialSyncController = StreamController<void>.broadcast();
 
   BreezSDKLiquid._internal() {
-    initializeLogStream();
-    didCompleteInitialSyncStream = _didCompleteInitialSyncController.stream.take(1);
+    // initializeLogStream();
+    didCompleteInitialSyncStream = _didCompleteInitialSyncController.stream
+        .take(1);
   }
 
   liquid_sdk.BreezSdkLiquid? _instance;
@@ -25,11 +27,22 @@ class BreezSDKLiquid {
 
   Future<void> connect({required liquid_sdk.ConnectRequest req}) async {
     try {
+      final BreezNwcService nwcService = BreezNwcService(
+        config: const NwcConfig(),
+      );
       _subscribeToLogStream();
-      _instance = await liquid_sdk.connect(req: req);
+      _instance = await liquid_sdk.connect(
+        req: req,
+        plugins: <ArcPlugin>[nwcService],
+      );
       _initializeEventsStream(_instance!);
       _subscribeToEventsStream(_instance!);
       await _fetchWalletData(_instance!);
+      print(
+        await nwcService.addConnection(
+          req: const AddConnectionRequest(name: 'test'),
+        ),
+      );
     } catch (e) {
       _instance = null;
       _unsubscribeFromSdkStreams();
