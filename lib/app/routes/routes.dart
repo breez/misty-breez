@@ -147,6 +147,11 @@ Route<dynamic>? onGenerateRoute({
                     builder: (BuildContext _) => const DevelopersView(),
                     settings: settings,
                   );
+                case NwcView.routeName:
+                  return FadeInRoute<void>(
+                    builder: (BuildContext _) => const NwcView(),
+                    settings: settings,
+                  );
                 case QRScanView.routeName:
                   return MaterialPageRoute<String>(
                     fullscreenDialog: true,
