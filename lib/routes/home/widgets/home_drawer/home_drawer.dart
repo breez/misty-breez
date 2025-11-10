@@ -56,6 +56,11 @@ class HomeDrawer extends StatelessWidget {
                       texts.home_drawer_item_title_security_and_backup,
                       'assets/icons/security.png',
                     ),
+                    const DrawerItemConfig(
+                      NwcView.routeName,
+                      'NWC', // TODO(yse): Use localization texts
+                      'assets/icons/security.png', // TODO(yse): Add custom icon
+                    ),
                     DrawerItemConfig(
                       DevelopersView.routeName,
                       texts.home_drawer_item_title_developers,
@@ -68,7 +73,9 @@ class HomeDrawer extends StatelessWidget {
                 ),
               ],
               (String routeName) {
-                Navigator.of(context).pushNamed(routeName).then((Object? message) {
+                Navigator.of(context).pushNamed(routeName).then((
+                  Object? message,
+                ) {
                   if (message != null && message is String && context.mounted) {
                     showFlushbar(context, message: message);
                   }
