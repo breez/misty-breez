@@ -210,7 +210,7 @@ class SecurityCubit extends Cubit<SecurityState> with HydratedMixin<SecurityStat
     try {
       final bool authenticated = await _auth.authenticate(
         localizedReason: localizedReason,
-        options: const l_auth.AuthenticationOptions(biometricOnly: true, useErrorDialogs: false),
+        biometricOnly: true,
         authMessages: const <l_auth_android.AuthMessages>[
           l_auth_android.AndroidAuthMessages(),
           IOSAuthMessages(),
