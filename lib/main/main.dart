@@ -1,15 +1,36 @@
-import 'package:misty_breez/app/app.dart';
-import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/main/main.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+import 'package:misty_breez/main/bootstrap_error_page.dart';
+import 'package:misty_breez/routes/mnemonic_display/mnemonic_display_page.dart';
 import 'package:service_injector/service_injector.dart';
 
 export 'bootstrap.dart';
 export 'bootstrap_error_page.dart';
 export 'hydrated_bloc_storage.dart';
 
+final Logger _logger = Logger('Bootstrap');
+
 void main() {
-  bootstrap(
-    (ServiceInjector injector, SdkConnectivityCubit sdkConnectivityCubit) =>
-        App(injector: injector, sdkConnectivityCubit: sdkConnectivityCubit),
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      try {
+        final String? mnemonic = await ServiceInjector().credentialsManager.restoreMnemonic();
+        if (mnemonic != null) {
+          runApp(MnemonicDisplayPage(mnemonic: mnemonic));
+        } else {
+          throw Exception('No credentials found in secure storage');
+        }
+      } catch (error, stackTrace) {
+        runApp(BootstrapErrorPage(error: error, stackTrace: stackTrace));
+      }
+    },
+    (Object error, StackTrace stackTrace) async {
+      if (error is! FlutterErrorDetails) {
+        _logger.severe('FlutterError: $error', error, stackTrace);
+      }
+    },
   );
 }
