@@ -47,6 +47,11 @@ class HomeDrawer extends StatelessWidget {
                 DrawerItemConfigGroup(
                   <DrawerItemConfig>[
                     DrawerItemConfig(
+                      NwcPage.routeName,
+                      'Nostr Wallet Connect',
+                      'assets/icons/nwc.png',
+                    ),
+                    DrawerItemConfig(
                       FiatCurrencySettings.routeName,
                       texts.home_drawer_item_title_fiat_currencies,
                       'assets/icons/fiat_currencies.png',
@@ -55,11 +60,6 @@ class HomeDrawer extends StatelessWidget {
                       SecuritySettings.routeName,
                       texts.home_drawer_item_title_security_and_backup,
                       'assets/icons/security.png',
-                    ),
-                    const DrawerItemConfig(
-                      NwcView.routeName,
-                      'NWC', // TODO(yse): Use localization texts
-                      'assets/icons/security.png', // TODO(yse): Add custom icon
                     ),
                     DrawerItemConfig(
                       DevelopersView.routeName,
