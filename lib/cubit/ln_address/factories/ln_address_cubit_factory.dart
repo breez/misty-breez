@@ -1,20 +1,21 @@
 import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/utils/webhooks/webhooks.dart';
 import 'package:service_injector/service_injector.dart';
 
 class LnAddressCubitFactory {
   static LnAddressCubit create(ServiceInjector injector, PermissionsCubit permissionsCubit) {
     final BreezSDKLiquid breezSdkLiquid = injector.breezSdkLiquid;
     final BreezPreferences breezPreferences = injector.breezPreferences;
-    final WebhookService webhookService = WebhookService(
+    final LnUrlWebhookService webhookService = LnUrlWebhookService(
       breezSdkLiquid,
       injector.notifications,
       permissionsCubit,
     );
 
     final MessageSigner messageSigner = MessageSigner(breezSdkLiquid);
-    final WebhookRequestBuilder requestBuilder = WebhookRequestBuilder(messageSigner);
+    final LnUrlWebhookRequestBuilder requestBuilder = LnUrlWebhookRequestBuilder(messageSigner);
     final UsernameResolver usernameResolver = UsernameResolver(breezPreferences);
     final LnUrlPayService lnAddressService = LnUrlPayService();
 

@@ -31,9 +31,7 @@ class BreezSDKLiquid {
       final liquid_sdk.ConnectResponse res = await liquid_sdk.connect(
         req: req,
         // TODO(yse): Add user-configurable NWC settings
-        pluginConfigs: const liquid_sdk.PluginConfigs(
-          nwc: liquid_sdk.NwcConfig(),
-        ),
+        pluginConfigs: const liquid_sdk.PluginConfigs(nwc: liquid_sdk.NwcConfig()),
       );
       _instance = res.sdk;
       _plugins = res.plugins;

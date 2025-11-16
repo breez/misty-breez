@@ -7,22 +7,15 @@ class ConnectionsList extends StatelessWidget {
   final double itemHeight;
   final Map<String, NwcConnection> connectionsList;
 
-  const ConnectionsList({
-    required this.connectionsList,
-    required this.itemHeight,
-    super.key,
-  });
+  const ConnectionsList({required this.connectionsList, required this.itemHeight, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<MapEntry<String, NwcConnection>> entries = connectionsList
-        .entries
-        .toList();
+    final List<MapEntry<String, NwcConnection>> entries = connectionsList.entries.toList();
     return SliverFixedExtentList(
       itemExtent: itemHeight + _kBottomPadding,
       delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) =>
-            ConnectionItem(entries[index].key, entries[index].value),
+        (BuildContext context, int index) => ConnectionItem(entries[index].key, entries[index].value),
         childCount: entries.length,
       ),
     );

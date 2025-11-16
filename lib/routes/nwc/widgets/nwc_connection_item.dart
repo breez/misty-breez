@@ -16,15 +16,10 @@ class NwcConnectionItem extends StatelessWidget {
       color: themeData.colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 12.0,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         title: Text(connection.name),
         onTap: () {
-          Navigator.of(
-            context,
-          ).pushNamed(NwcConnectionDetailPage.routeName, arguments: connection);
+          Navigator.of(context).pushNamed(NwcConnectionDetailPage.routeName, arguments: connection);
         },
       ),
     );

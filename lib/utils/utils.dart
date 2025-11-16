@@ -12,3 +12,5 @@ export 'json_parsing/json_parsing.dart';
 export 'mnemonic/mnemonic_utils.dart';
 export 'payments/payment_validator.dart';
 export 'ui/overlay_manager.dart';
+export 'futures/futures.dart';
+export 'webhooks/webhooks.dart';

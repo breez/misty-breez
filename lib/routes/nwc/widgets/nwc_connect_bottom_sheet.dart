@@ -8,31 +8,15 @@ import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 
-Future<dynamic> showNwcConnectBottomSheet(
-  BuildContext context, {
-  NwcCubit? nwcCubit,
-}) async {
+Future<dynamic> showNwcConnectBottomSheet(BuildContext context, {NwcCubit? nwcCubit}) async {
   final ThemeData themeData = Theme.of(context);
   return await showModalBottomSheet(
     context: context,
     backgroundColor: themeData.customData.paymentListBgColor,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12.0)),
-    ),
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
     isScrollControlled: true,
     builder: (BuildContext context) {
-      // Use existing cubit if provided, otherwise create a new one
-      if (nwcCubit != null) {
-        return BlocProvider<NwcCubit>.value(
-          value: nwcCubit,
-          child: const NwcConnectBottomSheet(),
-        );
-      }
-      return BlocProvider<NwcCubit>(
-        create: (BuildContext context) =>
-            NwcCubit(ServiceInjector().breezSdkLiquid),
-        child: const NwcConnectBottomSheet(),
-      );
+      return const NwcConnectBottomSheet();
     },
   );
 }
@@ -62,31 +46,21 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
     }
 
     final String name = _nameController.text.trim();
-    final String? connectionString = await context
-        .read<NwcCubit>()
-        .createConnection(name);
+    final String? connectionString = await context.read<NwcCubit>().createConnection(name);
 
     if (connectionString != null && mounted) {
       setState(() {
         _connectionString = connectionString;
       });
     } else if (mounted) {
-      showFlushbar(
-        context,
-        message: 'Failed to create connection',
-        duration: const Duration(seconds: 3),
-      );
+      showFlushbar(context, message: 'Failed to create connection', duration: const Duration(seconds: 3));
     }
   }
 
   void _copyConnectionString() {
     if (_connectionString != null) {
       ServiceInjector().deviceClient.setClipboardText(_connectionString!);
-      showFlushbar(
-        context,
-        message: 'Connection code copied',
-        duration: const Duration(seconds: 3),
-      );
+      showFlushbar(context, message: 'Connection code copied', duration: const Duration(seconds: 3));
     }
   }
 
@@ -95,9 +69,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
     final ThemeData themeData = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -116,14 +88,10 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                     decoration: InputDecoration(
                       labelText: 'Wallet Name',
                       errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: themeData.colorScheme.error,
-                        ),
+                        borderSide: BorderSide(color: themeData.colorScheme.error),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: themeData.colorScheme.error,
-                        ),
+                        borderSide: BorderSide(color: themeData.colorScheme.error),
                       ),
                       border: const OutlineInputBorder(),
                     ),
@@ -141,10 +109,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                 builder: (BuildContext context, NwcState state) {
                   return Align(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 16.0,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                       child: SingleButtonBottomBar(
                         text: 'CONNECT',
                         loading: state.isLoading,
@@ -175,11 +140,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         ),
                       ),
                       if (_isObscured)
-                        Positioned.fill(
-                          child: Container(
-                            color: Colors.black.withOpacity(0.32),
-                          ),
-                        ),
+                        Positioned.fill(child: Container(color: Colors.black.withOpacity(0.32))),
                       if (_isObscured)
                         FilledButton(
                           onPressed: () {
@@ -203,14 +164,9 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                       child: OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: Colors.white),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                        icon: const Icon(
-                          IconData(0xe90b, fontFamily: 'icomoon'),
-                          size: 20.0,
-                        ),
+                        icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
                         label: const Text('Copy'),
                         onPressed: _copyConnectionString,
                       ),
@@ -221,9 +177,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Colors.white),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           onPressed: () {
                             setState(() {
@@ -257,10 +211,7 @@ class _BottomSheetHandle extends StatelessWidget {
         margin: const EdgeInsets.only(top: 8.0),
         width: 40.0,
         height: 6.5,
-        decoration: BoxDecoration(
-          color: Colors.white24,
-          borderRadius: BorderRadius.circular(50),
-        ),
+        decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(50)),
       ),
     );
   }
@@ -279,10 +230,7 @@ class _BottomSheetTitle extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Text(
         title,
-        style: themeData.primaryTextTheme.headlineMedium!.copyWith(
-          fontSize: 18.0,
-          color: Colors.white,
-        ),
+        style: themeData.primaryTextTheme.headlineMedium!.copyWith(fontSize: 18.0, color: Colors.white),
         textAlign: TextAlign.left,
       ),
     );
