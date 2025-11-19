@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
-import 'package:misty_breez/routes/routes.dart';
-import 'package:misty_breez/theme/theme.dart';
 
 class ConnectionItem extends StatefulWidget {
   final String connectionName;

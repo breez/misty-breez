@@ -1,10 +1,18 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 
 class NwcConnectionModel {
   final String name;
   final String connectionString;
+  final PeriodicBudget? periodicBudget;
+  final int? expiryTimeSec;
+  final int createdAt;
 
-  const NwcConnectionModel({required this.name, required this.connectionString});
+  const NwcConnectionModel({
+    required this.name,
+    required this.connectionString,
+    required this.createdAt, this.periodicBudget,
+    this.expiryTimeSec,
+  });
 }
 
 class NwcState {

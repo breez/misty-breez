@@ -142,7 +142,4 @@ dependencies {
     /* Logging */
     implementation 'org.tinylog:tinylog-api-kotlin:2.6.2'
     implementation 'org.tinylog:tinylog-impl:2.6.2'
-
-    // Explicit dependency on flutter_breez_liquid plugin for accessing internal classes
-    implementation project(':flutter_breez_liquid')
 }

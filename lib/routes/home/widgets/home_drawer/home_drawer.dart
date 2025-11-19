@@ -46,7 +46,7 @@ class HomeDrawer extends StatelessWidget {
                 ]),
                 DrawerItemConfigGroup(
                   <DrawerItemConfig>[
-                    DrawerItemConfig(NwcPage.routeName, 'Nostr Wallet Connect', 'assets/icons/nwc.png'),
+                    const DrawerItemConfig(NwcPage.routeName, 'Nostr Wallet Connect', 'assets/icons/nwc.png'),
                     DrawerItemConfig(
                       FiatCurrencySettings.routeName,
                       texts.home_drawer_item_title_fiat_currencies,

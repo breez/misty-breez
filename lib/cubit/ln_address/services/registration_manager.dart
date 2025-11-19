@@ -23,7 +23,7 @@ class LnUrlRegistrationManager {
   final BreezPreferences breezPreferences;
   final LnUrlWebhookRequestBuilder requestBuilder;
   final UsernameResolver usernameResolver;
-  final LnUrlWebhookService webhookService;
+  final WebhookService webhookService;
 
   // Cached preference values
   String? _cachedWebhookUrl;
