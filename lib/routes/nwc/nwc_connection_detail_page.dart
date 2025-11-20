@@ -108,246 +108,243 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
 
-    return BlocProvider<NwcCubit>(
-      create: (BuildContext context) => NwcCubit(ServiceInjector().breezSdkLiquid),
-      child: BlocListener<NwcCubit, NwcState>(
-        listenWhen: (NwcState previous, NwcState current) {
-          return previous.isLoading && !current.isLoading && !_isEditMode && current.connections.isNotEmpty;
-        },
-        listener: (BuildContext context, NwcState state) {
-          final NwcConnectionModel updatedConnection = state.connections.firstWhere(
-            (NwcConnectionModel c) => c.name == _connection.name,
-            orElse: () => _connection,
-          );
-          setState(() {
-            _connection = updatedConnection;
-            _populateFormFieldsFromConnection();
-          });
-                },
-        child: Scaffold(
-          appBar: AppBar(leading: const back_button.BackButton(), title: Text(_connection.name)),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: themeData.customData.surfaceBgColor,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Connection Name',
-                            style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(_connection.name, style: themeData.textTheme.titleLarge),
-                        ],
-                      ),
+    return BlocListener<NwcCubit, NwcState>(
+      listenWhen: (NwcState previous, NwcState current) {
+        return previous.isLoading && !current.isLoading && !_isEditMode && current.connections.isNotEmpty;
+      },
+      listener: (BuildContext context, NwcState state) {
+        final NwcConnectionModel updatedConnection = state.connections.firstWhere(
+          (NwcConnectionModel c) => c.name == _connection.name,
+          orElse: () => _connection,
+        );
+        setState(() {
+          _connection = updatedConnection;
+          _populateFormFieldsFromConnection();
+        });
+      },
+      child: Scaffold(
+        appBar: AppBar(leading: const back_button.BackButton(), title: Text(_connection.name)),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: themeData.customData.surfaceBgColor,
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: themeData.customData.surfaceBgColor,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Connection URI',
-                            style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                          ),
-                          const SizedBox(height: 8),
-                          if (_isSecretVisible)
-                            SelectableText(
-                              _connection.connectionString,
-                              style: themeData.textTheme.bodyMedium?.copyWith(
-                                fontFamily: 'monospace',
-                                fontSize: 12,
-                              ),
-                            )
-                          else
-                            const SizedBox.shrink(),
-                          const SizedBox(height: 16),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(color: Colors.white),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSecretVisible = !_isSecretVisible;
-                                    });
-                                  },
-                                  child: Text(
-                                    _isSecretVisible ? 'Hide Connection Secret' : 'Show Connection Secret',
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton.icon(
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(color: Colors.white),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
-                                  label: const Text('Copy Connection Secret'),
-                                  onPressed: () => _copyConnectionString(context),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(color: Colors.white),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  onPressed: () => _showQRDialog(context),
-                                  child: const Text('Show QR'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Connection Name',
+                          style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(_connection.name, style: themeData.textTheme.titleLarge),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: themeData.customData.surfaceBgColor,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: themeData.customData.surfaceBgColor,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Connection URI',
+                          style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 8),
+                        if (_isSecretVisible)
+                          SelectableText(
+                            _connection.connectionString,
+                            style: themeData.textTheme.bodyMedium?.copyWith(
+                              fontFamily: 'monospace',
+                              fontSize: 12,
+                            ),
+                          )
+                        else
+                          const SizedBox.shrink(),
+                        const SizedBox(height: 16),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(
-                              'Periodic Balance',
-                              style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _maxBudgetController,
-                              keyboardType: TextInputType.number,
-                              enabled: _isEditMode,
-                              decoration: InputDecoration(
-                                labelText: 'Max Budget (sats)',
-                                border: const OutlineInputBorder(),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: themeData.colorScheme.error),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.white),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: themeData.colorScheme.error),
-                                ),
-                                disabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
+                                onPressed: () {
+                                  setState(() {
+                                    _isSecretVisible = !_isSecretVisible;
+                                  });
+                                },
+                                child: Text(
+                                  _isSecretVisible ? 'Hide Connection Secret' : 'Show Connection Secret',
                                 ),
                               ),
-                              validator: (String? value) {
-                                if (value != null &&
-                                    value.trim().isNotEmpty &&
-                                    int.tryParse(value.trim()) == null) {
-                                  return 'Please enter a valid number';
-                                }
-                                return null;
-                              },
                             ),
                             const SizedBox(height: 16),
-                            TextFormField(
-                              controller: _resetTimeController,
-                              keyboardType: TextInputType.number,
-                              enabled: _isEditMode,
-                              decoration: InputDecoration(
-                                labelText: 'Reset Time (seconds)',
-                                border: const OutlineInputBorder(),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: themeData.colorScheme.error),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.white),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: themeData.colorScheme.error),
-                                ),
-                                disabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
+                                icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
+                                label: const Text('Copy Connection Secret'),
+                                onPressed: () => _copyConnectionString(context),
                               ),
-                              validator: (String? value) {
-                                if (value != null &&
-                                    value.trim().isNotEmpty &&
-                                    int.tryParse(value.trim()) == null) {
-                                  return 'Please enter a valid number';
-                                }
-                                return null;
-                              },
                             ),
                             const SizedBox(height: 16),
-                            Text(
-                              'Expiry',
-                              style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _expiryTimeController,
-                              keyboardType: TextInputType.number,
-                              enabled: _isEditMode,
-                              decoration: InputDecoration(
-                                labelText: 'Expiry Time (seconds)',
-                                border: const OutlineInputBorder(),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: themeData.colorScheme.error),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.white),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: themeData.colorScheme.error),
-                                ),
-                                disabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
+                                onPressed: () => _showQRDialog(context),
+                                child: const Text('Show QR'),
                               ),
-                              validator: (String? value) {
-                                if (value != null &&
-                                    value.trim().isNotEmpty &&
-                                    int.tryParse(value.trim()) == null) {
-                                  return 'Please enter a valid number';
-                                }
-                                return null;
-                              },
-                            ),
-                            BlocBuilder<NwcCubit, NwcState>(
-                              builder: (BuildContext context, NwcState state) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: SingleButtonBottomBar(
-                                    text: _isEditMode ? 'SAVE' : 'EDIT',
-                                    expand: true,
-                                    loading: state.isLoading,
-                                    onPressed: _isEditMode ? _saveConnection : _toggleEditMode,
-                                  ),
-                                );
-                              },
                             ),
                           ],
                         ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: themeData.customData.surfaceBgColor,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Periodic Balance',
+                            style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _maxBudgetController,
+                            keyboardType: TextInputType.number,
+                            enabled: _isEditMode,
+                            decoration: InputDecoration(
+                              labelText: 'Max Budget (sats)',
+                              border: const OutlineInputBorder(),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              disabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                            ),
+                            validator: (String? value) {
+                              if (value != null &&
+                                  value.trim().isNotEmpty &&
+                                  int.tryParse(value.trim()) == null) {
+                                return 'Please enter a valid number';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _resetTimeController,
+                            keyboardType: TextInputType.number,
+                            enabled: _isEditMode,
+                            decoration: InputDecoration(
+                              labelText: 'Reset Time (seconds)',
+                              border: const OutlineInputBorder(),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              disabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                            ),
+                            validator: (String? value) {
+                              if (value != null &&
+                                  value.trim().isNotEmpty &&
+                                  int.tryParse(value.trim()) == null) {
+                                return 'Please enter a valid number';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Expiry',
+                            style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _expiryTimeController,
+                            keyboardType: TextInputType.number,
+                            enabled: _isEditMode,
+                            decoration: InputDecoration(
+                              labelText: 'Expiry Time (seconds)',
+                              border: const OutlineInputBorder(),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              disabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                            ),
+                            validator: (String? value) {
+                              if (value != null &&
+                                  value.trim().isNotEmpty &&
+                                  int.tryParse(value.trim()) == null) {
+                                return 'Please enter a valid number';
+                              }
+                              return null;
+                            },
+                          ),
+                          BlocBuilder<NwcCubit, NwcState>(
+                            builder: (BuildContext context, NwcState state) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: SingleButtonBottomBar(
+                                  text: _isEditMode ? 'SAVE' : 'EDIT',
+                                  expand: true,
+                                  loading: state.isLoading,
+                                  onPressed: _isEditMode ? _saveConnection : _toggleEditMode,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

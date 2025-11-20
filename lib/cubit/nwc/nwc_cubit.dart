@@ -14,8 +14,9 @@ final Logger _logger = Logger('NwcCubit');
 
 class NwcCubit extends Cubit<NwcState> {
   final BreezSDKLiquid breezSdkLiquid;
+  final NwcRegistrationManager nwcRegistrationManager;
 
-  NwcCubit(this.breezSdkLiquid) : super(NwcState.initial()) {
+  NwcCubit({required this.breezSdkLiquid, required this.nwcRegistrationManager}) : super(NwcState.initial()) {
     loadConnections();
   }
 
@@ -27,7 +28,13 @@ class NwcCubit extends Cubit<NwcState> {
       final BreezNwcService? nwcService = breezSdkLiquid.plugins?.nwc;
 
       if (nwcService == null) {
-        emit(state.copyWith(connections: <NwcConnectionModel>[], isLoading: false, error: 'NWC service is not available'));
+        emit(
+          state.copyWith(
+            connections: <NwcConnectionModel>[],
+            isLoading: false,
+            error: 'NWC service is not available',
+          ),
+        );
         return;
       }
 

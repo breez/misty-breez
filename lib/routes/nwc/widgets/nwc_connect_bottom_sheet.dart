@@ -16,15 +16,7 @@ Future<dynamic> showNwcConnectBottomSheet(BuildContext context, {NwcCubit? nwcCu
     backgroundColor: themeData.customData.paymentListBgColor,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
     isScrollControlled: true,
-    builder: (BuildContext context) {
-      if (nwcCubit != null) {
-        return BlocProvider<NwcCubit>.value(value: nwcCubit, child: const NwcConnectBottomSheet());
-      }
-      return BlocProvider<NwcCubit>(
-        create: (BuildContext context) => NwcCubit(ServiceInjector().breezSdkLiquid),
-        child: const NwcConnectBottomSheet(),
-      );
-    },
+    builder: (BuildContext context) => const NwcConnectBottomSheet(),
   );
 }
 

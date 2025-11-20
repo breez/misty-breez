@@ -6,7 +6,6 @@ import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
-import 'package:service_injector/service_injector.dart';
 
 class NwcPage extends StatefulWidget {
   static const String routeName = '/nwc';
@@ -19,11 +18,13 @@ class NwcPage extends StatefulWidget {
 
 class _NwcPageState extends State<NwcPage> {
   Timer? _refreshTimer;
-  NwcCubit? _nwcCubit;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startRefreshTimer();
+    });
   }
 
   @override
@@ -35,81 +36,72 @@ class _NwcPageState extends State<NwcPage> {
   void _startRefreshTimer() {
     _refreshTimer?.cancel();
     _refreshTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-      if (mounted && _nwcCubit != null) {
-        _nwcCubit!.loadConnections();
+      if (mounted) {
+        final NwcCubit nwcCubit = context.read<NwcCubit>();
+        nwcCubit.loadConnections();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NwcCubit>(
-      create: (BuildContext context) {
-        _nwcCubit = NwcCubit(ServiceInjector().breezSdkLiquid);
-        // Start timer after cubit is created
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _startRefreshTimer();
-        });
-        return _nwcCubit!;
-      },
-      child: Scaffold(
-        appBar: AppBar(leading: const back_button.BackButton(), title: const Text('Nostr Wallet Connect')),
-        body: BlocBuilder<NwcCubit, NwcState>(
-          builder: (BuildContext context, NwcState state) {
-            if (state.isLoading && state.connections.isEmpty) {
-              return const CenteredLoader(color: Colors.white);
-            }
+    return Scaffold(
+      appBar: AppBar(leading: const back_button.BackButton(), title: const Text('Nostr Wallet Connect')),
+      body: BlocBuilder<NwcCubit, NwcState>(
+        builder: (BuildContext context, NwcState state) {
+          if (state.isLoading && state.connections.isEmpty) {
+            return const CenteredLoader(color: Colors.white);
+          }
 
-            if (state.error != null && state.connections.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    state.error!,
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
+          if (state.error != null && state.connections.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  state.error!,
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
                 ),
-              );
-            }
-
-            return Column(
-              children: <Widget>[
-                Expanded(
-                  child: state.connections.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                const Icon(Icons.link_off, size: 64, color: Colors.grey),
-                                const SizedBox(height: 16),
-                                Text('No NWC connections', style: Theme.of(context).textTheme.titleLarge),
-                              ],
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.all(8.0),
-                          itemCount: state.connections.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return NwcConnectionItem(connection: state.connections[index]);
-                          },
-                        ),
-                ),
-                SingleButtonBottomBar(
-                  text: 'CONNECT',
-                  stickToBottom: true,
-                  onPressed: () {
-                    final NwcCubit nwcCubit = context.read<NwcCubit>();
-                    showNwcConnectBottomSheet(context, nwcCubit: nwcCubit);
-                  },
-                ),
-              ],
+              ),
             );
-          },
-        ),
+          }
+
+          return Column(
+            children: <Widget>[
+              Expanded(
+                child: state.connections.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              const Icon(Icons.link_off, size: 64, color: Colors.grey),
+                              const SizedBox(height: 16),
+                              Text('No NWC connections', style: Theme.of(context).textTheme.titleLarge),
+                            ],
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(8.0),
+                        itemCount: state.connections.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return NwcConnectionItem(connection: state.connections[index]);
+                        },
+                      ),
+              ),
+              SingleButtonBottomBar(
+                text: 'CONNECT',
+                stickToBottom: true,
+                onPressed: () {
+                  final NwcCubit nwcCubit = context.read<NwcCubit>();
+                  showNwcConnectBottomSheet(context, nwcCubit: nwcCubit);
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -13,11 +13,11 @@ class NwcCubitFactory {
       injector.notifications,
       permissionsCubit,
     );
-    final NwcRegistrationManager registrationManager = NwcRegistrationManager(
+    final NwcRegistrationManager nwcRegistrationManager = NwcRegistrationManager(
       requestBuilder: requestBuilder,
       webhookService: webhookService,
     );
 
-    return NwcCubit(breezSdkLiquid: breezSdkLiquid, registrationManager: registrationManager);
+    return NwcCubit(breezSdkLiquid: breezSdkLiquid, nwcRegistrationManager: nwcRegistrationManager);
   }
 }
