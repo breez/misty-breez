@@ -6,7 +6,6 @@ extension PaymentMethodExtension on PaymentMethod {
       case PaymentMethod.bolt12Offer:
         return 'BOLT 12 Offer';
       case PaymentMethod.bolt11Invoice:
-      case PaymentMethod.lightning:
         return 'Lightning';
       case PaymentMethod.bitcoinAddress:
         return 'BTC Address';
