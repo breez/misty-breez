@@ -4,8 +4,8 @@ publish_to: 'none'
 version: 0.2.1
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
-  flutter: ">=3.32.0"
+  sdk: '>=3.9.0 <4.0.0'
+  flutter: ">=3.35.1"
 
 workspace:
   # Feature Packages
@@ -63,7 +63,7 @@ dependencies:
       ref: 86d0d7e1c871a4ede69d867313d796089c956385
   csv: ^6.0.0
   connectivity_plus: ^7.0.0
-  device_info_plus: ^12.1.0
+  device_info_plus: ^12.2.0
   diacritic: ^0.1.6
   drag_and_drop_lists:
     git:
@@ -75,33 +75,33 @@ dependencies:
   email_validator: ^3.0.0
   extended_image: ^10.0.1
   ffi: ^2.1.4
-  firebase_core: ^4.1.1
-  firebase_messaging: ^16.0.2
+  firebase_core: ^4.2.1
+  firebase_messaging: ^16.0.4
   flutter_bloc: ^9.1.1
   flutter_cache_manager: ^3.4.1
   flutter_fgbg: ^0.7.1
   flutter_inappwebview: ^6.1.5
   flutter_secure_storage: ^9.2.4
-  flutter_svg: ^2.2.1
+  flutter_svg: ^2.2.2
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
       ref: 2766f3c3c64339e6beb0a0eea258de408383d0c7
   hex: ^0.2.0
-  http: ^1.5.0
+  http: ^1.6.0
   hydrated_bloc: ^10.1.1
   image: ^4.5.4
-  image_cropper: ^10.0.0+1
-  image_picker: ^1.1.2
+  image_cropper: ^11.0.0
+  image_picker: ^1.2.1
   ini: ^2.1.0
   intl: ^0.20.2
-  local_auth: ^2.3.0
-  local_auth_android: ^1.0.53
-  local_auth_darwin: ^1.6.1
+  local_auth: ^3.0.0
+  local_auth_android: ^2.0.2
+  local_auth_darwin: ^2.0.1
   logging: ^1.3.0
   lottie: ^3.3.2
-  mockito: <5.5.1
-  mobile_scanner: <7.0.1
+  mockito: ^5.5.1
+  mobile_scanner: ^7.1.3
   nested: any
   package_info_plus: ^9.0.0
   path: ^1.9.1
@@ -112,7 +112,7 @@ dependencies:
   provider: ^6.1.5+1
   qr_flutter: ^4.1.0
   rxdart: ^0.28.0
-  share_plus: ^12.0.0
+  share_plus: ^12.0.1
   shared_preferences: ^2.5.3
   shared_preference_app_group: ^1.1.1 # iOS Notification Service extension requirement to access shared preferences
   shimmer: ^3.0.0
@@ -126,10 +126,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: <2.8.0
+  build_runner: ^2.10.4
   flutter_lints: ^6.0.0
-  test: <1.26.3
-  test_api: <0.7.7
+  test: <1.27.0
+  test_api: <0.7.8
 
 dependency_overrides:
   # Use local path during development:
@@ -139,9 +139,9 @@ dependency_overrides:
   # --- OR ---
 
   # Use published Git repo instead of local path:
-  # flutter_breez_liquid:
-  #   git:
-  #     url: https://github.com/breez/breez-sdk-liquid-flutter
+#   flutter_breez_liquid:
+#     git:
+#       url: https://github.com/breez/breez-sdk-liquid-flutter
 #     ref: v0.11.3-dev7
 
 flutter:
