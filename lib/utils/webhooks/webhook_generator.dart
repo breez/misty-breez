@@ -1,8 +1,8 @@
+import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/utils/constants/app_constants.dart';
-import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:misty_breez/utils/futures/futures.dart';
 
 class GenerateWebhookUrlException implements Exception {

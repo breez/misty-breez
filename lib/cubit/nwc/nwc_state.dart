@@ -10,7 +10,8 @@ class NwcConnectionModel {
   const NwcConnectionModel({
     required this.name,
     required this.connectionString,
-    required this.createdAt, this.periodicBudget,
+    required this.createdAt,
+    this.periodicBudget,
     this.expiryTimeSec,
   });
 }
