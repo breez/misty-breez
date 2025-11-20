@@ -1,7 +1,6 @@
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
-import 'package:misty_breez/cubit/nwc/nwc_cubit.dart';
-import 'package:misty_breez/cubit/permissions/permissions_cubit.dart';
-import 'package:misty_breez/utils/webhooks/webhooks.dart';
+import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:service_injector/service_injector.dart';
 
 class NwcCubitFactory {
