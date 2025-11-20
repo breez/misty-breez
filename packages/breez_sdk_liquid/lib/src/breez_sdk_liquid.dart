@@ -20,13 +20,21 @@ class BreezSDKLiquid {
   }
 
   liquid_sdk.BreezSdkLiquid? _instance;
+  liquid_sdk.PluginServices? _plugins;
 
   liquid_sdk.BreezSdkLiquid? get instance => _instance;
+  liquid_sdk.PluginServices? get plugins => _plugins;
 
   Future<void> connect({required liquid_sdk.ConnectRequest req}) async {
     try {
       _subscribeToLogStream();
-      _instance = await liquid_sdk.connect(req: req);
+      final liquid_sdk.ConnectResponse res = await liquid_sdk.connect(
+        req: req,
+        // TODO(yse): Add user-configurable NWC settings
+        pluginConfigs: const liquid_sdk.PluginConfigs(nwc: liquid_sdk.NwcConfig()),
+      );
+      _instance = res.sdk;
+      _plugins = res.plugins;
       _initializeEventsStream(_instance!);
       _subscribeToEventsStream(_instance!);
       await _fetchWalletData(_instance!);

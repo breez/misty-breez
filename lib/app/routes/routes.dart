@@ -125,6 +125,31 @@ Route<dynamic>? onGenerateRoute({
                     ),
                     settings: settings,
                   );
+                case NwcPage.routeName:
+                  return FadeInRoute<void>(
+                    builder: (BuildContext context) => BlocProvider<NwcCubit>(
+                      create: (BuildContext context) =>
+                          NwcCubitFactory.create(ServiceInjector(), context.read<PermissionsCubit>()),
+                      child: const NwcPage(),
+                    ),
+                    settings: settings,
+                  );
+                case NwcConnectionDetailPage.routeName:
+                  final NwcConnectionModel connection = settings.arguments as NwcConnectionModel;
+                  return FadeInRoute<void>(
+                    builder: (BuildContext context) {
+                      // Try to reuse existing NwcCubit if it already exists in context (e.g., if the page is opened from NwcPage)
+                      final NwcCubit? maybeCubit = context.read<NwcCubit?>();
+                      return maybeCubit != null
+                          ? NwcConnectionDetailPage(connection: connection)
+                          : BlocProvider<NwcCubit>(
+                              create: (BuildContext context) =>
+                                  NwcCubitFactory.create(ServiceInjector(), context.read<PermissionsCubit>()),
+                              child: NwcConnectionDetailPage(connection: connection),
+                            );
+                    },
+                    settings: settings,
+                  );
                 case FiatCurrencySettings.routeName:
                   return FadeInRoute<void>(
                     builder: (BuildContext _) => const FiatCurrencySettings(),
