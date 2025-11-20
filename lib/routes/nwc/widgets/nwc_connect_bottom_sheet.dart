@@ -267,7 +267,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         ),
                       ),
                       if (_isObscured)
-                        Positioned.fill(child: Container(color: Colors.black.withOpacity(0.32))),
+                        Positioned.fill(child: Container(color: Colors.black.withValues(alpha: 0.32))),
                       if (_isObscured)
                         FilledButton(
                           onPressed: () {
