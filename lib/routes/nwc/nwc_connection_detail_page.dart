@@ -128,14 +128,6 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                           ),
-                            validator: (String? value) {
-                              if (value != null &&
-                                  value.trim().isNotEmpty &&
-                                  int.tryParse(value.trim()) == null) {
-                                return 'Please enter a valid number';
-                              }
-                              return null;
-                            },
                           icon: const Padding(
                             padding: EdgeInsets.only(right: 8.0),
                             child: Icon(Icons.qr_code, size: 20.0),
