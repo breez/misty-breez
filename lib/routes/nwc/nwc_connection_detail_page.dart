@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/receive_payment/widgets/destination_widget/widgets/compact_qr_image.dart';
+import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
@@ -137,17 +138,7 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                       color: themeData.customData.surfaceBgColor,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'Connection Name',
-                          style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(_connection.name, style: themeData.textTheme.titleLarge),
-                      ],
-                    ),
+                    child: StatusItem(label: 'Connection Name', value: _connection.name),
                   ),
                   const SizedBox(height: 16),
                   Container(
