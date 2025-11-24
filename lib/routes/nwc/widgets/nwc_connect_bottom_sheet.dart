@@ -8,20 +8,32 @@ import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
+import 'package:share_plus/share_plus.dart';
 
-Future<dynamic> showNwcConnectBottomSheet(BuildContext context, {NwcCubit? nwcCubit}) async {
+Future<dynamic> showNwcConnectBottomSheet(
+  BuildContext context, {
+  NwcCubit? nwcCubit,
+  NwcConnectionModel? existingConnection,
+}) async {
   final ThemeData themeData = Theme.of(context);
+  final NwcCubit activeCubit = nwcCubit ?? context.read<NwcCubit>();
+
   return await showModalBottomSheet(
     context: context,
     backgroundColor: themeData.customData.paymentListBgColor,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
     isScrollControlled: true,
-    builder: (BuildContext context) => const NwcConnectBottomSheet(),
+    builder: (BuildContext context) => BlocProvider<NwcCubit>.value(
+      value: activeCubit,
+      child: NwcConnectBottomSheet(existingConnection: existingConnection),
+    ),
   );
 }
 
 class NwcConnectBottomSheet extends StatefulWidget {
-  const NwcConnectBottomSheet({super.key});
+  final NwcConnectionModel? existingConnection;
+
+  const NwcConnectBottomSheet({this.existingConnection, super.key});
 
   @override
   State<NwcConnectBottomSheet> createState() => _NwcConnectBottomSheetState();
@@ -35,6 +47,28 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _connectionString;
   bool _isObscured = true;
+  bool _showBudgetFields = false;
+  bool _showExpiryFields = false;
+
+  bool get _isEditMode => widget.existingConnection != null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isEditMode) {
+      final NwcConnectionModel connection = widget.existingConnection!;
+      _nameController.text = connection.name;
+      if (connection.periodicBudget != null) {
+        _maxBudgetController.text = connection.periodicBudget!.maxBudgetSat.toString();
+        _resetTimeController.text = connection.periodicBudget!.resetTimeSec.toString();
+        _showBudgetFields = true;
+      }
+      if (connection.expiryTimeSec != null) {
+        _expiryTimeController.text = connection.expiryTimeSec.toString();
+        _showExpiryFields = true;
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -87,11 +121,83 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
     }
   }
 
+  Future<void> _editConnection() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final int? expiryTimeSec = _expiryTimeController.text.trim().isEmpty
+        ? null
+        : int.tryParse(_expiryTimeController.text.trim());
+
+    PeriodicBudgetRequest? periodicBudgetReq;
+    if (_maxBudgetController.text.trim().isNotEmpty || _resetTimeController.text.trim().isNotEmpty) {
+      final int? maxBudgetSatInt = _maxBudgetController.text.trim().isEmpty
+          ? null
+          : int.tryParse(_maxBudgetController.text.trim());
+      final int? resetTimeSec = _resetTimeController.text.trim().isEmpty
+          ? null
+          : int.tryParse(_resetTimeController.text.trim());
+
+      if (maxBudgetSatInt != null && resetTimeSec != null) {
+        periodicBudgetReq = PeriodicBudgetRequest(
+          maxBudgetSat: BigInt.from(maxBudgetSatInt),
+          resetTimeSec: resetTimeSec,
+        );
+      }
+    }
+
+    final bool success = await context.read<NwcCubit>().editConnection(
+      name: widget.existingConnection!.name,
+      expiryTimeSec: expiryTimeSec,
+      periodicBudgetReq: periodicBudgetReq,
+    );
+
+    if (success && mounted) {
+      Navigator.of(context).pop();
+      if (mounted) {
+        showFlushbar(
+          context,
+          message: 'Connection updated successfully',
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } else if (mounted) {
+      showFlushbar(context, message: 'Failed to update connection', duration: const Duration(seconds: 3));
+    }
+  }
+
   void _copyConnectionString() {
     if (_connectionString != null) {
       ServiceInjector().deviceClient.setClipboardText(_connectionString!);
       showFlushbar(context, message: 'Connection code copied', duration: const Duration(seconds: 3));
     }
+  }
+
+  void _shareConnectionString() {
+    if (_connectionString != null) {
+      final ShareParams shareParams = ShareParams(text: _connectionString!);
+      SharePlus.instance.share(shareParams);
+    }
+  }
+
+  void _toggleBudgetFields() {
+    setState(() {
+      _showBudgetFields = !_showBudgetFields;
+      if (!_showBudgetFields) {
+        _maxBudgetController.clear();
+        _resetTimeController.clear();
+      }
+    });
+  }
+
+  void _toggleExpiryFields() {
+    setState(() {
+      _showExpiryFields = !_showExpiryFields;
+      if (!_showExpiryFields) {
+        _expiryTimeController.clear();
+      }
+    });
   }
 
   @override
@@ -107,7 +213,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
           children: <Widget>[
             const _BottomSheetHandle(),
             if (_connectionString == null) ...<Widget>[
-              const _BottomSheetTitle(title: 'Connect a new app'),
+              _BottomSheetTitle(title: _isEditMode ? 'Edit Connection' : 'Connect a new app'),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
@@ -117,7 +223,8 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                     children: <Widget>[
                       TextFormField(
                         controller: _nameController,
-                        autofocus: true,
+                        autofocus: !_isEditMode,
+                        enabled: !_isEditMode,
                         decoration: InputDecoration(
                           labelText: 'Name',
                           hintText: 'Name of the app or purpose of the connection',
@@ -128,6 +235,9 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             borderSide: BorderSide(color: themeData.colorScheme.error),
                           ),
                           border: const OutlineInputBorder(),
+                          disabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
                         ),
                         validator: (String? value) {
                           if (value == null || value.trim().isEmpty) {
@@ -136,24 +246,27 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Periodic Balance',
-                        style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _maxBudgetController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: themeData.colorScheme.error),
+                      const Divider(),
+                      if (_showBudgetFields) ...<Widget>[
+                        Text(
+                          'Budget Renewal',
+                          style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _maxBudgetController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
                             labelText: 'Max Budget (Optional)',
                             hintText: 'Enter Budget in sats',
+                            border: const OutlineInputBorder(),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            ),
                           ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: themeData.colorScheme.error),
                           validator: (String? value) {
                             final String trimmedValue = value?.trim() ?? '';
                             final String resetTimeValue = _resetTimeController.text.trim();
@@ -168,8 +281,21 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             }
                             return null;
                           },
+                        ),
+                        const Divider(),
+                        TextFormField(
+                          controller: _resetTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
                             labelText: 'Reset Time (Optional)',
                             hintText: 'Enter Time in seconds',
+                            border: const OutlineInputBorder(),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            ),
                           ),
                           validator: (String? value) {
                             final String trimmedValue = value?.trim() ?? '';
@@ -197,50 +323,95 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             return null;
                           },
                         ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _resetTimeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: themeData.colorScheme.error),
+                        const Divider(),
+                      ],
+                      if (_showExpiryFields) ...<Widget>[
+                        Text(
+                          'Connection Expiration',
+                          style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _expiryTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
                             labelText: 'Expiry Time (Optional)',
                             hintText: 'Enter Time in seconds',
+                            border: const OutlineInputBorder(),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            ),
                           ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: themeData.colorScheme.error),
-                          ),
-                          label: Text(_showBudgetFields ? 'RESET BUDGET' : 'BUDGET'),
+                          validator: (String? value) {
+                            final String trimmedValue = value?.trim() ?? '';
+                            final String resetTimeValue = _resetTimeController.text.trim();
+
+                            if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
+                              return 'Please enter a valid number';
+                            }
+
+                            if (trimmedValue.isNotEmpty && resetTimeValue.isNotEmpty && _showBudgetFields) {
+                              final int? expiryTime = int.tryParse(trimmedValue);
+                              final int? resetTime = int.tryParse(resetTimeValue);
+                              if (expiryTime != null && resetTime != null && resetTime > expiryTime) {
+                                return 'Expiry time must be greater than reset time';
+                              }
+                            }
+
+                            return null;
+                          },
                         ),
-                        validator: (String? value) {
-                          if (value != null &&
-                              value.trim().isNotEmpty &&
-                              int.tryParse(value.trim()) == null) {
-                            return 'Please enter a valid number';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      Text('Expiry', style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70)),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _expiryTimeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: themeData.colorScheme.error),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: themeData.colorScheme.error),
-                          ),
-                          label: Text(_showExpiryFields ? 'RESET EXPIRY' : 'EXPIRY'),
-                        ),
-                      ),
+                        const Divider(),
+                      ],
                     ],
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 48.0),
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.white),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Icon(_showBudgetFields ? Icons.remove : Icons.add, size: 20.0),
+                          ),
+                          label: Text(_showBudgetFields ? 'RESET BUDGET' : 'BUDGET'),
+                          onPressed: _toggleBudgetFields,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 48.0),
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.white),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Icon(_showExpiryFields ? Icons.remove : Icons.add, size: 20.0),
+                          ),
+                          label: Text(_showExpiryFields ? 'RESET EXPIRY' : 'EXPIRY'),
+                          onPressed: _toggleExpiryFields,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 8.0),
@@ -250,10 +421,10 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                       child: SingleButtonBottomBar(
-                        text: 'CONNECT',
+                        text: _isEditMode ? 'SAVE' : 'CONNECT',
                         loading: state.isLoading,
                         expand: true,
-                        onPressed: _createConnection,
+                        onPressed: _isEditMode ? _editConnection : _createConnection,
                       ),
                     ),
                   );
@@ -303,38 +474,45 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                   right: 16.0,
                   bottom: MediaQuery.of(context).viewPadding.bottom,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Row(
                   children: <Widget>[
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        ),
-                        icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
-                        label: const Text('Copy Connection Secret'),
-                        onPressed: _copyConnectionString,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    if (!_isObscured)
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
+                    Expanded(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 48.0),
+                        child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Colors.white),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _isObscured = true;
-                            });
-                          },
-                          child: const Text('HIDE QR'),
+                          icon: const Padding(
+                            padding: EdgeInsets.only(right: 8.0),
+                            child: Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
+                          ),
+                          label: const Text('COPY'),
+                          onPressed: _copyConnectionString,
                         ),
                       ),
+                    ),
+                    const SizedBox(width: 16.0),
+                    Expanded(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 48.0),
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.white),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          ),
+                          icon: const Padding(
+                            padding: EdgeInsets.only(right: 8.0),
+                            child: Icon(IconData(0xe917, fontFamily: 'icomoon'), size: 20.0),
+                          ),
+                          label: const Text('SHARE'),
+                          onPressed: _shareConnectionString,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
