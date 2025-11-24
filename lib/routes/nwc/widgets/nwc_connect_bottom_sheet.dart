@@ -211,6 +211,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
                           ),
+                          label: Text(_showBudgetFields ? 'RESET BUDGET' : 'BUDGET'),
                         ),
                         validator: (String? value) {
                           if (value != null &&
@@ -235,6 +236,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
                           ),
+                          label: Text(_showExpiryFields ? 'RESET EXPIRY' : 'EXPIRY'),
                         ),
                       ),
                     ],
