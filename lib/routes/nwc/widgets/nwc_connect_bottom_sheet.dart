@@ -154,19 +154,49 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
+                          validator: (String? value) {
+                            final String trimmedValue = value?.trim() ?? '';
+                            final String resetTimeValue = _resetTimeController.text.trim();
+                            if (!_showBudgetFields) {
+                              return null;
+                            }
+                            if (trimmedValue.isEmpty && resetTimeValue.isNotEmpty) {
+                              return 'Enter max budget';
+                            }
+                            if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
+                              return 'Please enter a valid number';
+                            }
+                            return null;
+                          },
                             labelText: 'Reset Time (Optional)',
                             hintText: 'Enter Time in seconds',
                           ),
+                          validator: (String? value) {
+                            final String trimmedValue = value?.trim() ?? '';
+                            final String maxBudgetValue = _maxBudgetController.text.trim();
+                            final String expiryTimeValue = _expiryTimeController.text.trim();
+
+                            if (!_showBudgetFields) {
+                              return null;
+                            }
+                            if (trimmedValue.isEmpty && maxBudgetValue.isNotEmpty) {
+                              return 'Enter reset time';
+                            }
+                            if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
+                              return 'Please enter a valid number';
+                            }
+
+                            if (trimmedValue.isNotEmpty && expiryTimeValue.isNotEmpty) {
+                              final int? resetTime = int.tryParse(trimmedValue);
+                              final int? expiryTime = int.tryParse(expiryTimeValue);
+                              if (resetTime != null && expiryTime != null && resetTime > expiryTime) {
+                                return 'Reset time cannot be greater than expiry time';
+                              }
+                            }
+
+                            return null;
+                          },
                         ),
-                        validator: (String? value) {
-                          if (value != null &&
-                              value.trim().isNotEmpty &&
-                              int.tryParse(value.trim()) == null) {
-                            return 'Please enter a valid number';
-                          }
-                          return null;
-                        },
-                      ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _resetTimeController,
@@ -206,14 +236,6 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             borderSide: BorderSide(color: themeData.colorScheme.error),
                           ),
                         ),
-                        validator: (String? value) {
-                          if (value != null &&
-                              value.trim().isNotEmpty &&
-                              int.tryParse(value.trim()) == null) {
-                            return 'Please enter a valid number';
-                          }
-                          return null;
-                        },
                       ),
                     ],
                   ),
