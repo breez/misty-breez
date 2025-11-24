@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Checkout repository
         if:  ${{ inputs.use-published-plugins == 'true' && inputs.liquid-sdk-plugin-version == ''}}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: 'breez/breez-sdk-liquid-flutter'
 
@@ -111,7 +111,7 @@ jobs:
           echo "::endgroup::"
 
       - name: 🏗️ Check-out misty-breez repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: 'misty_breez'
 
@@ -211,7 +211,7 @@ jobs:
 
       - name: 🏗️ Setup breez-sdk-liquid repository
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: 'breez/breez-sdk-liquid'
           ssh-key: ${{ secrets.REPO_SSH_KEY }}
