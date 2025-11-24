@@ -132,21 +132,6 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                             padding: EdgeInsets.only(right: 8.0),
                             child: Icon(Icons.qr_code, size: 20.0),
                           ),
-                          BlocBuilder<NwcCubit, NwcState>(
-                            builder: (BuildContext context, NwcState state) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                child: SingleButtonBottomBar(
-                                  text: _isEditMode ? 'SAVE' : 'EDIT',
-                                  expand: true,
-                                  loading: state.isLoading,
-                                  onPressed: _isEditMode ? _saveConnection : _toggleEditMode,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
                           label: const Text('SHOW QR'),
                           onPressed: () => _showQRDialog(context),
                         ),
@@ -157,6 +142,16 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
               ),
             ),
           ),
+        ),
+        bottomNavigationBar: BlocBuilder<NwcCubit, NwcState>(
+          builder: (BuildContext context, NwcState state) {
+            return SingleButtonBottomBar(
+              text: 'EDIT CONNECTION',
+              expand: false,
+              loading: state.isLoading,
+              onPressed: _editConnection,
+            );
+          },
         ),
       ),
     );

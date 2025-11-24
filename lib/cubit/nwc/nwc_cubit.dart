@@ -58,7 +58,7 @@ class NwcCubit extends Cubit<NwcState> {
                   a.name.toLowerCase().compareTo(b.name.toLowerCase()),
             );
 
-      emit(state.copyWith(connections: connections, isLoading: false));
+      emit(NwcState(connections: connections));
     } catch (e) {
       _logger.severe('Failed to load NWC connections', e);
       emit(state.copyWith(isLoading: false, error: 'Failed to load connections: ${e.toString()}'));
