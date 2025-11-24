@@ -146,14 +146,16 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         controller: _maxBudgetController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: 'Max Budget (sats)',
-                          hintText: 'Optional',
                           border: const OutlineInputBorder(),
                           errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
+                            labelText: 'Max Budget (Optional)',
+                            hintText: 'Enter Budget in sats',
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
+                            labelText: 'Reset Time (Optional)',
+                            hintText: 'Enter Time in seconds',
                           ),
                         ),
                         validator: (String? value) {
@@ -170,11 +172,11 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         controller: _resetTimeController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: 'Reset Time (seconds)',
-                          hintText: 'Optional',
                           border: const OutlineInputBorder(),
                           errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
+                            labelText: 'Expiry Time (Optional)',
+                            hintText: 'Enter Time in seconds',
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
@@ -196,8 +198,6 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         controller: _expiryTimeController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: 'Expiry Time (seconds)',
-                          hintText: 'Optional',
                           border: const OutlineInputBorder(),
                           errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: themeData.colorScheme.error),
