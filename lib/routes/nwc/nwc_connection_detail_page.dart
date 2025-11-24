@@ -141,82 +141,38 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                     child: StatusItem(label: 'Connection Name', value: _connection.name),
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: themeData.customData.surfaceBgColor,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'Connection URI',
-                          style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                        ),
-                        const SizedBox(height: 8),
-                        if (_isSecretVisible)
-                          SelectableText(
-                            _connection.connectionString,
-                            style: themeData.textTheme.bodyMedium?.copyWith(
-                              fontFamily: 'monospace',
-                              fontSize: 12,
+                  if (_connection.periodicBudget != null || _connection.expiryTimeSec != null) ...<Widget>[
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: themeData.customData.surfaceBgColor,
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Connection Parameters',
+                            style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                          ),
+                          const SizedBox(height: 8),
+                          if (_connection.periodicBudget != null) ...<Widget>[
+                            StatusItem(
+                              label: 'Max Budget',
+                              value: '${_connection.periodicBudget!.maxBudgetSat} sats',
                             ),
-                          )
-                        else
-                          const SizedBox.shrink(),
-                        const SizedBox(height: 16),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.white),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isSecretVisible = !_isSecretVisible;
-                                  });
-                                },
-                                child: Text(
-                                  _isSecretVisible ? 'Hide Connection Secret' : 'Show Connection Secret',
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.white),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                ),
-                                icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
-                                label: const Text('Copy Connection Secret'),
-                                onPressed: () => _copyConnectionString(context),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.white),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                ),
-                                onPressed: () => _showQRDialog(context),
-                                child: const Text('Show QR'),
-                              ),
+                            StatusItem(
+                              label: 'Reset Time',
+                              value: '${_connection.periodicBudget!.resetTimeSec} seconds',
                             ),
                           ],
-                        ),
-                      ],
+                          if (_connection.expiryTimeSec != null)
+                            StatusItem(label: 'Expiry Time', value: '${_connection.expiryTimeSec} seconds'),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
+                  ],
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
