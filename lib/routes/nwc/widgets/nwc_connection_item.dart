@@ -9,6 +9,119 @@ class NwcConnectionItem extends StatelessWidget {
 
   const NwcConnectionItem({required this.connection, super.key});
 
+  Widget? _buildSubtitle(ThemeData themeData) {
+    final List<Widget> rows = <Widget>[];
+
+    if (connection.periodicBudget != null) {
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                child: Text(
+                  'Budget',
+                  style: themeData.textTheme.bodySmall?.copyWith(
+                    color: Colors.white60,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '${connection.periodicBudget!.maxBudgetSat} sats',
+                  style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Row(
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                child: Text(
+                  'Reset Time',
+                  style: themeData.textTheme.bodySmall?.copyWith(
+                    color: Colors.white60,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '${connection.periodicBudget!.resetTimeSec} seconds',
+                  style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (connection.expiryTimeSec != null) {
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Row(
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                child: Text(
+                  'Expiry',
+                  style: themeData.textTheme.bodySmall?.copyWith(
+                    color: Colors.white60,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '${connection.expiryTimeSec} seconds',
+                  style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows);
+  }
+
   Future<void> _deleteConnection(BuildContext context) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
@@ -52,7 +165,11 @@ class NwcConnectionItem extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        title: Text(connection.name),
+        title: Text(
+          connection.name,
+          style: themeData.textTheme.titleMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        subtitle: _buildSubtitle(themeData),
         trailing: IconButton(
           icon: const Icon(Icons.power_off_outlined),
           onPressed: () => _deleteConnection(context),
