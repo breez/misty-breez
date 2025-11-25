@@ -262,7 +262,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           controller: _maxBudgetController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            labelText: 'Max Budget (Optional)',
+                            labelText: 'Budget amount',
                             hintText: 'Enter Budget in sats',
                             border: const OutlineInputBorder(),
                             errorBorder: OutlineInputBorder(
@@ -279,7 +279,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                               return null;
                             }
                             if (trimmedValue.isEmpty && resetTimeValue.isNotEmpty) {
-                              return 'Enter max budget';
+                              return 'Enter budget amount';
                             }
                             if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
                               return 'Please enter a valid number';

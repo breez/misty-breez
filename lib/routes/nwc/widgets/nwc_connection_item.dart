@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/currency.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 
@@ -36,7 +37,7 @@ class NwcConnectionItem extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  '${connection.periodicBudget!.maxBudgetSat} sats',
+                  BitcoinCurrency.sat.format(connection.periodicBudget!.maxBudgetSat.toInt()),
                   style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -128,9 +129,9 @@ class NwcConnectionItem extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0.0),
-          title: const Text('Disconnect Connection'),
+          title: const Text('Are you sure you want to delete this connection?'),
           content: const Text(
-            'Are you sure you want to delete this connection? Connected apps will no longer be able to use this connection.',
+            'Connected apps will no longer be able to use this connection.',
           ),
           actions: <Widget>[
             TextButton(
