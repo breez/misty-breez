@@ -385,9 +385,12 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           ),
                           icon: Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: Icon(_showBudgetFields ? Icons.remove : Icons.add, size: 20.0),
+                            child: Icon(
+                              _showBudgetFields ? Icons.remove_circle_outline : Icons.add_circle_outline,
+                              size: 20.0,
+                            ),
                           ),
-                          label: Text(_showBudgetFields ? 'RESET BUDGET' : 'BUDGET'),
+                          label: const Text('BUDGET'),
                           onPressed: _toggleBudgetFields,
                         ),
                       ),
@@ -404,9 +407,12 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           ),
                           icon: Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: Icon(_showExpiryFields ? Icons.remove : Icons.add, size: 20.0),
+                            child: Icon(
+                              _showExpiryFields ? Icons.remove_circle_outline : Icons.add_circle_outline,
+                              size: 20.0,
+                            ),
                           ),
-                          label: Text(_showExpiryFields ? 'RESET EXPIRY' : 'EXPIRY'),
+                          label: const Text('EXPIRY'),
                           onPressed: _toggleExpiryFields,
                         ),
                       ),
