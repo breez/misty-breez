@@ -4,6 +4,7 @@ import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/currency.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
+import 'package:misty_breez/utils/date/breez_date_utils.dart';
 
 class NwcConnectionItem extends StatelessWidget {
   final NwcConnectionModel connection;
@@ -82,6 +83,8 @@ class NwcConnectionItem extends StatelessWidget {
     }
 
     if (connection.expiryTimeSec != null) {
+      final DateTime expiryDate = DateTime.now().add(Duration(seconds: connection.expiryTimeSec!));
+      final String formattedExpiry = BreezDateUtils.formatYearMonthDayHourMinuteSecond(expiryDate);
       rows.add(
         Padding(
           padding: const EdgeInsets.only(top: 6.0),
@@ -105,7 +108,7 @@ class NwcConnectionItem extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  '${connection.expiryTimeSec} seconds',
+                  formattedExpiry,
                   style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -130,9 +133,7 @@ class NwcConnectionItem extends StatelessWidget {
         return AlertDialog(
           contentPadding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0.0),
           title: const Text('Are you sure you want to delete this connection?'),
-          content: const Text(
-            'Connected apps will no longer be able to use this connection.',
-          ),
+          content: const Text('Connected apps will no longer be able to use this connection.'),
           actions: <Widget>[
             TextButton(
               child: const Text('CANCEL'),

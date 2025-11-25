@@ -5,6 +5,7 @@ import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
+import 'package:misty_breez/utils/date/breez_date_utils.dart';
 
 class NwcConnectionDetailPage extends StatefulWidget {
   static const String routeName = '/nwc/connection/detail';
@@ -92,7 +93,12 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                             ),
                           ],
                           if (_connection.expiryTimeSec != null)
-                            StatusItem(label: 'Expiry Time', value: '${_connection.expiryTimeSec} seconds'),
+                            StatusItem(
+                              label: 'Expiry Time',
+                              value: BreezDateUtils.formatYearMonthDayHourMinuteSecond(
+                                DateTime.now().add(Duration(seconds: _connection.expiryTimeSec!)),
+                              ),
+                            ),
                         ],
                       ),
                     ),
