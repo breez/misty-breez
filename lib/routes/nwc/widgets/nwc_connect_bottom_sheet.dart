@@ -39,16 +39,35 @@ class NwcConnectBottomSheet extends StatefulWidget {
   State<NwcConnectBottomSheet> createState() => _NwcConnectBottomSheetState();
 }
 
+enum _BudgetRenewalType { daily, weekly, monthly, yearly, never, custom }
+
+class _BudgetRenewalOption {
+  const _BudgetRenewalOption({required this.type, required this.label, required this.seconds});
+
+  final _BudgetRenewalType type;
+  final String label;
+  final int seconds;
+}
+
+const List<_BudgetRenewalOption> _presetBudgetRenewalOptions = <_BudgetRenewalOption>[
+  _BudgetRenewalOption(type: _BudgetRenewalType.daily, label: 'DAILY', seconds: 86400),
+  _BudgetRenewalOption(type: _BudgetRenewalType.weekly, label: 'WEEKLY', seconds: 604800),
+  _BudgetRenewalOption(type: _BudgetRenewalType.monthly, label: 'MONTHLY', seconds: 2592000),
+  _BudgetRenewalOption(type: _BudgetRenewalType.yearly, label: 'YEARLY', seconds: 31536000),
+  _BudgetRenewalOption(type: _BudgetRenewalType.never, label: 'NEVER', seconds: 0),
+];
+
 class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _maxBudgetController = TextEditingController();
-  final TextEditingController _resetTimeController = TextEditingController();
   final TextEditingController _expiryTimeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _connectionString;
   bool _isObscured = true;
   bool _showBudgetFields = false;
   bool _showExpiryFields = false;
+  _BudgetRenewalType? _selectedBudgetRenewal = _BudgetRenewalType.daily;
+  int? _customResetTimeSec;
 
   bool get _isEditMode => widget.existingConnection != null;
 
@@ -60,7 +79,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
       _nameController.text = connection.name;
       if (connection.periodicBudget != null) {
         _maxBudgetController.text = connection.periodicBudget!.maxBudgetSat.toString();
-        _resetTimeController.text = connection.periodicBudget!.resetTimeSec.toString();
+        _selectedBudgetRenewal = _resolveBudgetRenewalType(connection.periodicBudget!.resetTimeSec);
         _showBudgetFields = true;
       }
       if (connection.expiryTimeSec != null) {
@@ -74,7 +93,6 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
   void dispose() {
     _nameController.dispose();
     _maxBudgetController.dispose();
-    _resetTimeController.dispose();
     _expiryTimeController.dispose();
     super.dispose();
   }
@@ -90,13 +108,11 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
         : int.tryParse(_expiryTimeController.text.trim());
 
     PeriodicBudgetRequest? periodicBudgetReq;
-    if (_maxBudgetController.text.trim().isNotEmpty || _resetTimeController.text.trim().isNotEmpty) {
+    if (_showBudgetFields) {
       final int? maxBudgetSatInt = _maxBudgetController.text.trim().isEmpty
           ? null
           : int.tryParse(_maxBudgetController.text.trim());
-      final int? resetTimeSec = _resetTimeController.text.trim().isEmpty
-          ? null
-          : int.tryParse(_resetTimeController.text.trim());
+      final int? resetTimeSec = _selectedResetTimeSeconds;
 
       if (maxBudgetSatInt != null && resetTimeSec != null) {
         periodicBudgetReq = PeriodicBudgetRequest(
@@ -131,13 +147,11 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
         : int.tryParse(_expiryTimeController.text.trim());
 
     PeriodicBudgetRequest? periodicBudgetReq;
-    if (_maxBudgetController.text.trim().isNotEmpty || _resetTimeController.text.trim().isNotEmpty) {
+    if (_showBudgetFields) {
       final int? maxBudgetSatInt = _maxBudgetController.text.trim().isEmpty
           ? null
           : int.tryParse(_maxBudgetController.text.trim());
-      final int? resetTimeSec = _resetTimeController.text.trim().isEmpty
-          ? null
-          : int.tryParse(_resetTimeController.text.trim());
+      final int? resetTimeSec = _selectedResetTimeSeconds;
 
       if (maxBudgetSatInt != null && resetTimeSec != null) {
         periodicBudgetReq = PeriodicBudgetRequest(
@@ -186,7 +200,10 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
       _showBudgetFields = !_showBudgetFields;
       if (!_showBudgetFields) {
         _maxBudgetController.clear();
-        _resetTimeController.clear();
+        _selectedBudgetRenewal = _BudgetRenewalType.daily;
+        _customResetTimeSec = null;
+      } else {
+        _selectedBudgetRenewal ??= _BudgetRenewalType.daily;
       }
     });
   }
@@ -198,6 +215,53 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
         _expiryTimeController.clear();
       }
     });
+  }
+
+  List<DropdownMenuItem<_BudgetRenewalType>> _buildBudgetRenewalItems() {
+    final List<DropdownMenuItem<_BudgetRenewalType>> items = _presetBudgetRenewalOptions
+        .map(
+          (_BudgetRenewalOption option) =>
+              DropdownMenuItem<_BudgetRenewalType>(value: option.type, child: Text(option.label)),
+        )
+        .toList();
+
+    if (_customResetTimeSec != null &&
+        !_presetBudgetRenewalOptions.any((option) => option.seconds == _customResetTimeSec)) {
+      items.add(
+        DropdownMenuItem<_BudgetRenewalType>(
+          value: _BudgetRenewalType.custom,
+          child: Text('CUSTOM (${_customResetTimeSec}s)'),
+        ),
+      );
+    }
+
+    return items;
+  }
+
+  int? get _selectedResetTimeSeconds {
+    if (!_showBudgetFields || _selectedBudgetRenewal == null) {
+      return null;
+    }
+    if (_selectedBudgetRenewal == _BudgetRenewalType.custom) {
+      return _customResetTimeSec;
+    }
+    for (final _BudgetRenewalOption option in _presetBudgetRenewalOptions) {
+      if (option.type == _selectedBudgetRenewal) {
+        return option.seconds;
+      }
+    }
+    return null;
+  }
+
+  _BudgetRenewalType _resolveBudgetRenewalType(int resetTimeSec) {
+    for (final _BudgetRenewalOption option in _presetBudgetRenewalOptions) {
+      if (option.seconds == resetTimeSec) {
+        _customResetTimeSec = null;
+        return option.type;
+      }
+    }
+    _customResetTimeSec = resetTimeSec;
+    return _BudgetRenewalType.custom;
   }
 
   @override
@@ -274,11 +338,10 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           ),
                           validator: (String? value) {
                             final String trimmedValue = value?.trim() ?? '';
-                            final String resetTimeValue = _resetTimeController.text.trim();
                             if (!_showBudgetFields) {
                               return null;
                             }
-                            if (trimmedValue.isEmpty && resetTimeValue.isNotEmpty) {
+                            if (trimmedValue.isEmpty) {
                               return 'Enter budget amount';
                             }
                             if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
@@ -293,12 +356,12 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           indent: 16.0,
                           endIndent: 16.0,
                         ),
-                        TextFormField(
-                          controller: _resetTimeController,
-                          keyboardType: TextInputType.number,
+                        DropdownButtonFormField<_BudgetRenewalType>(
+                          value: _selectedBudgetRenewal,
+                          isExpanded: true,
                           decoration: InputDecoration(
-                            labelText: 'Reset Time (Optional)',
-                            hintText: 'Enter Time in seconds',
+                            labelText: 'Reset Interval',
+                            hintText: 'Choose how often the budget renews',
                             border: const OutlineInputBorder(),
                             errorBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: themeData.colorScheme.error),
@@ -307,25 +370,30 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                               borderSide: BorderSide(color: themeData.colorScheme.error),
                             ),
                           ),
-                          validator: (String? value) {
-                            final String trimmedValue = value?.trim() ?? '';
-                            final String maxBudgetValue = _maxBudgetController.text.trim();
-                            final String expiryTimeValue = _expiryTimeController.text.trim();
-
+                          items: _buildBudgetRenewalItems(),
+                          onChanged: (_BudgetRenewalType? value) {
+                            setState(() {
+                              _selectedBudgetRenewal = value;
+                              if (value != _BudgetRenewalType.custom) {
+                                _customResetTimeSec = null;
+                              }
+                            });
+                          },
+                          validator: (_) {
                             if (!_showBudgetFields) {
                               return null;
                             }
-                            if (trimmedValue.isEmpty && maxBudgetValue.isNotEmpty) {
-                              return 'Enter reset time';
+                            if (_maxBudgetController.text.trim().isEmpty) {
+                              return 'Enter budget amount first';
                             }
-                            if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
-                              return 'Please enter a valid number';
+                            final int? resetTime = _selectedResetTimeSeconds;
+                            if (resetTime == null) {
+                              return 'Select reset time';
                             }
-
-                            if (trimmedValue.isNotEmpty && expiryTimeValue.isNotEmpty) {
-                              final int? resetTime = int.tryParse(trimmedValue);
+                            final String expiryTimeValue = _expiryTimeController.text.trim();
+                            if (expiryTimeValue.isNotEmpty) {
                               final int? expiryTime = int.tryParse(expiryTimeValue);
-                              if (resetTime != null && expiryTime != null && resetTime > expiryTime) {
+                              if (expiryTime != null && resetTime > expiryTime) {
                                 return 'Reset time cannot be greater than expiry time';
                               }
                             }
@@ -356,7 +424,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           controller: _expiryTimeController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            labelText: 'Expiry Time (Optional)',
+                            labelText: 'Expiry Time',
                             hintText: 'Enter Time in seconds',
                             border: const OutlineInputBorder(),
                             errorBorder: OutlineInputBorder(
@@ -368,16 +436,15 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           ),
                           validator: (String? value) {
                             final String trimmedValue = value?.trim() ?? '';
-                            final String resetTimeValue = _resetTimeController.text.trim();
+                            final int? resetTime = _selectedResetTimeSeconds;
 
                             if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
                               return 'Please enter a valid number';
                             }
 
-                            if (trimmedValue.isNotEmpty && resetTimeValue.isNotEmpty && _showBudgetFields) {
+                            if (trimmedValue.isNotEmpty && resetTime != null && _showBudgetFields) {
                               final int? expiryTime = int.tryParse(trimmedValue);
-                              final int? resetTime = int.tryParse(resetTimeValue);
-                              if (expiryTime != null && resetTime != null && resetTime > expiryTime) {
+                              if (expiryTime != null && resetTime > expiryTime) {
                                 return 'Expiry time must be greater than reset time';
                               }
                             }
