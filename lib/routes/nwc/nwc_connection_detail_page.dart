@@ -6,6 +6,7 @@ import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:misty_breez/utils/date/breez_date_utils.dart';
+import 'package:misty_breez/models/currency.dart';
 
 class NwcConnectionDetailPage extends StatefulWidget {
   static const String routeName = '/nwc/connection/detail';
@@ -20,6 +21,23 @@ class NwcConnectionDetailPage extends StatefulWidget {
 
 class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
   late NwcConnectionModel _connection;
+
+  String? _formatResetInterval(int resetTimeSec) {
+    switch (resetTimeSec) {
+      case 0:
+        return null;
+      case 86400:
+        return 'day';
+      case 604800:
+        return 'week';
+      case 2592000:
+        return 'month';
+      case 31536000:
+        return 'year';
+      default:
+        return null;
+    }
+  }
 
   @override
   void initState() {
@@ -84,12 +102,16 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                           const SizedBox(height: 8),
                           if (_connection.periodicBudget != null) ...<Widget>[
                             StatusItem(
-                              label: 'Max Budget',
-                              value: '${_connection.periodicBudget!.maxBudgetSat} sats',
-                            ),
-                            StatusItem(
-                              label: 'Reset Time',
-                              value: '${_connection.periodicBudget!.resetTimeSec} seconds',
+                              label: 'Budget renewal',
+                              value: () {
+                                final String amount = BitcoinCurrency.sat.format(
+                                  _connection.periodicBudget!.maxBudgetSat.toInt(),
+                                );
+                                final String? interval = _formatResetInterval(
+                                  _connection.periodicBudget!.resetTimeSec,
+                                );
+                                return interval == null ? amount : '$amount / $interval';
+                              }(),
                             ),
                           ],
                           if (_connection.expiryTimeSec != null)

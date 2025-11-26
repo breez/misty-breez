@@ -11,10 +11,31 @@ class NwcConnectionItem extends StatelessWidget {
 
   const NwcConnectionItem({required this.connection, super.key});
 
+  String? _formatResetInterval(int resetTimeSec) {
+    switch (resetTimeSec) {
+      case 0:
+        return null;
+      case 86400:
+        return 'day';
+      case 604800:
+        return 'week';
+      case 2592000:
+        return 'month';
+      case 31536000:
+        return 'year';
+      default:
+        return null;
+    }
+  }
+
   Widget? _buildSubtitle(ThemeData themeData) {
     final List<Widget> rows = <Widget>[];
 
     if (connection.periodicBudget != null) {
+      final String amount = BitcoinCurrency.sat.format(connection.periodicBudget!.maxBudgetSat.toInt());
+      final String? interval = _formatResetInterval(connection.periodicBudget!.resetTimeSec);
+      final String budgetText = interval == null ? amount : '$amount / $interval';
+
       rows.add(
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
@@ -27,7 +48,7 @@ class NwcConnectionItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.0),
                 ),
                 child: Text(
-                  'Budget',
+                  'Budget renewal',
                   style: themeData.textTheme.bodySmall?.copyWith(
                     color: Colors.white60,
                     fontSize: 11,
@@ -38,42 +59,9 @@ class NwcConnectionItem extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  BitcoinCurrency.sat.format(connection.periodicBudget!.maxBudgetSat.toInt()),
+                  budgetText,
                   style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.only(top: 6.0),
-          child: Row(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-                child: Text(
-                  'Reset Time',
-                  style: themeData.textTheme.bodySmall?.copyWith(
-                    color: Colors.white60,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  '${connection.periodicBudget!.resetTimeSec} seconds',
-                  style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
-                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
               ),
             ],
