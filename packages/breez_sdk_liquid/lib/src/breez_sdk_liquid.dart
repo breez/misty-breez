@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
-import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
 class BreezSDKLiquid {
@@ -13,13 +12,11 @@ class BreezSDKLiquid {
 
   late final Stream<void> didCompleteInitialSyncStream;
 
-  final StreamController<void> _didCompleteInitialSyncController =
-      StreamController<void>.broadcast();
+  final StreamController<void> _didCompleteInitialSyncController = StreamController<void>.broadcast();
 
   BreezSDKLiquid._internal() {
     initializeLogStream();
-    didCompleteInitialSyncStream = _didCompleteInitialSyncController.stream
-        .take(1);
+    didCompleteInitialSyncStream = _didCompleteInitialSyncController.stream.take(1);
   }
 
   liquid_sdk.BreezSdkLiquid? _instance;
@@ -32,11 +29,7 @@ class BreezSDKLiquid {
     try {
       _subscribeToLogStream();
       _instance = await liquid_sdk.connect(req: req);
-      _nwc = await liquid_sdk.useNwcService(
-        sdk: _instance!,
-        // TODO(yse): Allow passing custom user config
-        config: const liquid_sdk.NwcConfig(),
-      );
+      _nwc = await _instance!.useNwcService(config: const liquid_sdk.NwcConfig());
       _initializeEventsStream(_instance!);
       _subscribeToEventsStream(_instance!);
       await _fetchWalletData(_instance!);
@@ -62,21 +55,15 @@ class BreezSDKLiquid {
     await _listPayments(sdk: sdk);
   }
 
-  Future<liquid_sdk.GetInfoResponse> _getInfo(
-    liquid_sdk.BreezSdkLiquid sdk,
-  ) async {
+  Future<liquid_sdk.GetInfoResponse> _getInfo(liquid_sdk.BreezSdkLiquid sdk) async {
     final liquid_sdk.GetInfoResponse getInfoResponse = await sdk.getInfo();
     _getInfoResponseController.add(getInfoResponse);
     return getInfoResponse;
   }
 
-  Future<List<liquid_sdk.Payment>> _listPayments({
-    required liquid_sdk.BreezSdkLiquid sdk,
-  }) async {
+  Future<List<liquid_sdk.Payment>> _listPayments({required liquid_sdk.BreezSdkLiquid sdk}) async {
     const liquid_sdk.ListPaymentsRequest req = liquid_sdk.ListPaymentsRequest();
-    final List<liquid_sdk.Payment> paymentsList = await sdk.listPayments(
-      req: req,
-    );
+    final List<liquid_sdk.Payment> paymentsList = await sdk.listPayments(req: req);
     _paymentsController.add(paymentsList);
     return paymentsList;
   }
@@ -90,12 +77,9 @@ class BreezSDKLiquid {
   /// Call once on your Dart entrypoint file, e.g.; `lib/main.dart`.
   void initializeLogStream() {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      _breezLogStream ??= const EventChannel('breez_sdk_liquid_logs')
-          .receiveBroadcastStream()
-          .map(
-            (dynamic log) =>
-                liquid_sdk.LogEntry(line: log['line'], level: log['level']),
-          );
+      _breezLogStream ??= const EventChannel('breez_sdk_liquid_logs').receiveBroadcastStream().map(
+        (dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']),
+      );
     } else {
       _breezLogStream ??= liquid_sdk.breezLogStream().asBroadcastStream();
     }
@@ -109,28 +93,23 @@ class BreezSDKLiquid {
     _breezEventsStream ??= sdk.addEventListener().asBroadcastStream();
   }
 
-  final StreamController<liquid_sdk.GetInfoResponse>
-  _getInfoResponseController = BehaviorSubject<liquid_sdk.GetInfoResponse>();
+  final StreamController<liquid_sdk.GetInfoResponse> _getInfoResponseController =
+      BehaviorSubject<liquid_sdk.GetInfoResponse>();
 
-  Stream<liquid_sdk.GetInfoResponse> get getInfoResponseStream =>
-      _getInfoResponseController.stream;
+  Stream<liquid_sdk.GetInfoResponse> get getInfoResponseStream => _getInfoResponseController.stream;
 
   final StreamController<List<liquid_sdk.Payment>> _paymentsController =
       BehaviorSubject<List<liquid_sdk.Payment>>();
 
-  Stream<List<liquid_sdk.Payment>> get paymentsStream =>
-      _paymentsController.stream;
+  Stream<List<liquid_sdk.Payment>> get paymentsStream => _paymentsController.stream;
 
-  final StreamController<PaymentEvent> _paymentEventStream =
-      StreamController<PaymentEvent>.broadcast();
+  final StreamController<PaymentEvent> _paymentEventStream = StreamController<PaymentEvent>.broadcast();
 
   Stream<PaymentEvent> get paymentEventStream => _paymentEventStream.stream;
 
   /// Subscribes to SdkEvent's stream
   void _subscribeToEventsStream(liquid_sdk.BreezSdkLiquid sdk) {
-    _breezEventsSubscription = _breezEventsStream?.listen((
-      liquid_sdk.SdkEvent event,
-    ) async {
+    _breezEventsSubscription = _breezEventsStream?.listen((liquid_sdk.SdkEvent event) async {
       if (event.isPaymentEvent) {
         _paymentEventStream.add(PaymentEvent.fromSdkEvent(event));
       } else if (event is liquid_sdk.SdkEvent_PaymentFailed) {

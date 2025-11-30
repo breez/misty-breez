@@ -39,8 +39,7 @@ class NwcCubit extends Cubit<NwcState> {
         return;
       }
 
-      final Map<String, NwcConnection> connectionsMap = await nwcService
-          .listConnections();
+      final Map<String, NwcConnection> connectionsMap = await nwcService.listConnections();
 
       final List<NwcConnectionModel> connections =
           connectionsMap.entries
@@ -49,7 +48,7 @@ class NwcCubit extends Cubit<NwcState> {
                   name: entry.key,
                   connectionString: entry.value.connectionString,
                   periodicBudget: entry.value.periodicBudget,
-                  expiryTimeSec: entry.value.expiryTimeSec,
+                  expiresAt: entry.value.expiresAt,
                   createdAt: entry.value.createdAt,
                 ),
               )
@@ -62,19 +61,14 @@ class NwcCubit extends Cubit<NwcState> {
       emit(NwcState(connections: connections));
     } catch (e) {
       _logger.severe('Failed to load NWC connections', e);
-      emit(
-        state.copyWith(
-          isLoading: false,
-          error: 'Failed to load connections: ${e.toString()}',
-        ),
-      );
+      emit(state.copyWith(isLoading: false, error: 'Failed to load connections: ${e.toString()}'));
     }
   }
 
   /// Creates a new NWC connection with the given name
   Future<String?> createConnection({
     required String name,
-    int? expiryTimeSec,
+    int? expiryTimeMins,
     PeriodicBudgetRequest? periodicBudgetReq,
   }) async {
     emit(state.copyWith(isLoading: true));
@@ -83,24 +77,17 @@ class NwcCubit extends Cubit<NwcState> {
       final BreezNwcService? nwcService = breezSdkLiquid.nwc;
 
       if (nwcService == null) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            error: 'NWC service is not available',
-          ),
-        );
+        emit(state.copyWith(isLoading: false, error: 'NWC service is not available'));
         return null;
       }
 
       final AddConnectionRequest request = AddConnectionRequest(
         name: name,
-        expiryTimeSec: expiryTimeSec,
+        expiryTimeMins: expiryTimeMins,
         periodicBudgetReq: periodicBudgetReq,
       );
 
-      final AddConnectionResponse response = await nwcService.addConnection(
-        req: request,
-      );
+      final AddConnectionResponse response = await nwcService.addConnection(req: request);
       final String connectionString = response.connection.connectionString;
 
       emit(state.copyWith(isLoading: false));
@@ -110,12 +97,7 @@ class NwcCubit extends Cubit<NwcState> {
       return connectionString;
     } catch (e) {
       _logger.severe('Failed to create NWC connection', e);
-      emit(
-        state.copyWith(
-          isLoading: false,
-          error: 'Failed to create connection: ${e.toString()}',
-        ),
-      );
+      emit(state.copyWith(isLoading: false, error: 'Failed to create connection: ${e.toString()}'));
       return null;
     }
   }
@@ -128,12 +110,7 @@ class NwcCubit extends Cubit<NwcState> {
       final BreezNwcService? nwcService = breezSdkLiquid.nwc;
 
       if (nwcService == null) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            error: 'NWC service is not available',
-          ),
-        );
+        emit(state.copyWith(isLoading: false, error: 'NWC service is not available'));
         return;
       }
 
@@ -144,20 +121,17 @@ class NwcCubit extends Cubit<NwcState> {
       await loadConnections();
     } catch (e) {
       _logger.severe('Failed to delete NWC connection', e);
-      emit(
-        state.copyWith(
-          isLoading: false,
-          error: 'Failed to delete connection: ${e.toString()}',
-        ),
-      );
+      emit(state.copyWith(isLoading: false, error: 'Failed to delete connection: ${e.toString()}'));
     }
   }
 
   /// Edits an NWC connection
   Future<bool> editConnection({
     required String name,
-    int? expiryTimeSec,
+    int? expiryTimeMins,
+    bool? removeExpiry,
     PeriodicBudgetRequest? periodicBudgetReq,
+    bool? removePeriodicBudget,
   }) async {
     emit(state.copyWith(isLoading: true));
 
@@ -165,19 +139,16 @@ class NwcCubit extends Cubit<NwcState> {
       final BreezNwcService? nwcService = breezSdkLiquid.nwc;
 
       if (nwcService == null) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            error: 'NWC service is not available',
-          ),
-        );
+        emit(state.copyWith(isLoading: false, error: 'NWC service is not available'));
         return false;
       }
 
       final EditConnectionRequest request = EditConnectionRequest(
         name: name,
-        expiryTimeSec: expiryTimeSec,
+        expiryTimeMins: expiryTimeMins,
+        removeExpiry: removeExpiry,
         periodicBudgetReq: periodicBudgetReq,
+        removePeriodicBudget: removePeriodicBudget,
       );
 
       await nwcService.editConnection(req: request);
@@ -189,12 +160,7 @@ class NwcCubit extends Cubit<NwcState> {
       return true;
     } catch (e) {
       _logger.severe('Failed to edit NWC connection', e);
-      emit(
-        state.copyWith(
-          isLoading: false,
-          error: 'Failed to edit connection: ${e.toString()}',
-        ),
-      );
+      emit(state.copyWith(isLoading: false, error: 'Failed to edit connection: ${e.toString()}'));
       return false;
     }
   }

@@ -22,17 +22,17 @@ class NwcConnectionDetailPage extends StatefulWidget {
 class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
   late NwcConnectionModel _connection;
 
-  String? _formatResetInterval(int resetTimeSec) {
-    switch (resetTimeSec) {
+  String? _formatResetInterval(int renewalTimeMins) {
+    switch (renewalTimeMins) {
       case 0:
         return null;
-      case 86400:
+      case 1440:
         return 'day';
-      case 604800:
+      case 10080:
         return 'week';
-      case 2592000:
+      case 43200:
         return 'month';
-      case 31536000:
+      case 525600:
         return 'year';
       default:
         return null;
@@ -85,7 +85,7 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                     child: StatusItem(label: 'Connection Name', value: _connection.name),
                   ),
                   const SizedBox(height: 16),
-                  if (_connection.periodicBudget != null || _connection.expiryTimeSec != null) ...<Widget>[
+                  if (_connection.periodicBudget != null || _connection.expiresAt != null) ...<Widget>[
                     Container(
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
@@ -107,18 +107,24 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                                 final String amount = BitcoinCurrency.sat.format(
                                   _connection.periodicBudget!.maxBudgetSat.toInt(),
                                 );
-                                final String? interval = _formatResetInterval(
-                                  _connection.periodicBudget!.resetTimeSec,
-                                );
-                                return interval == null ? amount : '$amount / $interval';
+                                if (_connection.periodicBudget!.renewsAt != null) {
+                                  final int renewalIntervalMins =
+                                      ((_connection.periodicBudget!.renewsAt! -
+                                                  _connection.periodicBudget!.updatedAt) /
+                                              60)
+                                          .round();
+                                  final String? interval = _formatResetInterval(renewalIntervalMins);
+                                  return interval == null ? amount : '$amount / $interval';
+                                }
+                                return amount;
                               }(),
                             ),
                           ],
-                          if (_connection.expiryTimeSec != null)
+                          if (_connection.expiresAt != null)
                             StatusItem(
                               label: 'Expiry Time',
                               value: BreezDateUtils.formatYearMonthDayHourMinuteSecond(
-                                DateTime.now().add(Duration(seconds: _connection.expiryTimeSec!)),
+                                DateTime.fromMillisecondsSinceEpoch(_connection.expiresAt! * 1000),
                               ),
                             ),
                         ],

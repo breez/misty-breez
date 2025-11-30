@@ -4,7 +4,7 @@ class NwcConnectionModel {
   final String name;
   final String connectionString;
   final PeriodicBudget? periodicBudget;
-  final int? expiryTimeSec;
+  final int? expiresAt;
   final int createdAt;
 
   const NwcConnectionModel({
@@ -12,7 +12,7 @@ class NwcConnectionModel {
     required this.connectionString,
     required this.createdAt,
     this.periodicBudget,
-    this.expiryTimeSec,
+    this.expiresAt,
   });
 }
 

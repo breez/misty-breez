@@ -11,17 +11,17 @@ class NwcConnectionItem extends StatelessWidget {
 
   const NwcConnectionItem({required this.connection, super.key});
 
-  String? _formatResetInterval(int resetTimeSec) {
-    switch (resetTimeSec) {
+  String? _formatResetInterval(int renewalTimeMins) {
+    switch (renewalTimeMins) {
       case 0:
         return null;
-      case 86400:
+      case 1440:
         return 'day';
-      case 604800:
+      case 10080:
         return 'week';
-      case 2592000:
+      case 43200:
         return 'month';
-      case 31536000:
+      case 525600:
         return 'year';
       default:
         return null;
@@ -33,7 +33,12 @@ class NwcConnectionItem extends StatelessWidget {
 
     if (connection.periodicBudget != null) {
       final String amount = BitcoinCurrency.sat.format(connection.periodicBudget!.maxBudgetSat.toInt());
-      final String? interval = _formatResetInterval(connection.periodicBudget!.resetTimeSec);
+      String? interval;
+      if (connection.periodicBudget!.renewsAt != null) {
+        final int renewalIntervalMins =
+            ((connection.periodicBudget!.renewsAt! - connection.periodicBudget!.updatedAt) / 60).round();
+        interval = _formatResetInterval(renewalIntervalMins);
+      }
       final String budgetText = interval == null ? amount : '$amount / $interval';
 
       rows.add(
@@ -70,8 +75,8 @@ class NwcConnectionItem extends StatelessWidget {
       );
     }
 
-    if (connection.expiryTimeSec != null) {
-      final DateTime expiryDate = DateTime.now().add(Duration(seconds: connection.expiryTimeSec!));
+    if (connection.expiresAt != null) {
+      final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
       final String formattedExpiry = BreezDateUtils.formatYearMonthDayHourMinuteSecond(expiryDate);
       rows.add(
         Padding(
