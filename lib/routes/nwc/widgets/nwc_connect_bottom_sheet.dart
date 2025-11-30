@@ -311,12 +311,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         },
                       ),
                       if (_showBudgetFields) ...<Widget>[
-                        const Divider(
-                          height: 8.0,
-                          color: Color.fromRGBO(40, 59, 74, 0.5),
-                          indent: 16.0,
-                          endIndent: 16.0,
-                        ),
+                        const SizedBox(height: 16.0),
                         Text(
                           'Budget Renewal',
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
@@ -350,12 +345,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             return null;
                           },
                         ),
-                        const Divider(
-                          height: 8.0,
-                          color: Color.fromRGBO(40, 59, 74, 0.5),
-                          indent: 16.0,
-                          endIndent: 16.0,
-                        ),
+                        const SizedBox(height: 16.0),
                         DropdownButtonFormField<_BudgetRenewalType>(
                           value: _selectedBudgetRenewal,
                           isExpanded: true,
@@ -401,20 +391,10 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             return null;
                           },
                         ),
-                        const Divider(
-                          height: 8.0,
-                          color: Color.fromRGBO(40, 59, 74, 0.5),
-                          indent: 16.0,
-                          endIndent: 16.0,
-                        ),
+                        const SizedBox(height: 16.0),
                       ],
                       if (_showExpiryFields) ...<Widget>[
-                        const Divider(
-                          height: 8.0,
-                          color: Color.fromRGBO(40, 59, 74, 0.5),
-                          indent: 16.0,
-                          endIndent: 16.0,
-                        ),
+                        const SizedBox(height: 16.0),
                         Text(
                           'Connection Expiration',
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
@@ -452,12 +432,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             return null;
                           },
                         ),
-                        const Divider(
-                          height: 8.0,
-                          color: Color.fromRGBO(40, 59, 74, 0.5),
-                          indent: 16.0,
-                          endIndent: 16.0,
-                        ),
+                        const SizedBox(height: 16.0),
                       ],
                     ],
                   ),
