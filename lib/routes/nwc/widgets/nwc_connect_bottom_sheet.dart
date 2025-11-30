@@ -316,7 +316,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           'Budget Renewal',
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _maxBudgetController,
                           keyboardType: TextInputType.number,
@@ -399,7 +399,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           'Connection Expiration',
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _expiryTimeController,
                           keyboardType: TextInputType.number,
