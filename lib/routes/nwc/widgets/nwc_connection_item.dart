@@ -76,32 +76,10 @@ class NwcConnectionItem extends StatelessWidget {
       rows.add(
         Padding(
           padding: const EdgeInsets.only(top: 6.0),
-          child: Row(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-                child: Text(
-                  'Expiry',
-                  style: themeData.textTheme.bodySmall?.copyWith(
-                    color: Colors.white60,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  formattedExpiry,
-                  style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+          child: Text(
+            'Connection will expire on $formattedExpiry.',
+            style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       );
