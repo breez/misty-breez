@@ -32,7 +32,8 @@ class NwcConnectionItem extends StatelessWidget {
     final List<Widget> rows = <Widget>[];
 
     if (connection.periodicBudget != null) {
-      final String amount = BitcoinCurrency.sat.format(connection.periodicBudget!.maxBudgetSat.toInt());
+      final int maxBudgetSat = connection.periodicBudget!.maxBudgetSat.toInt();
+      final String amount = BitcoinCurrency.sat.format(maxBudgetSat);
       String? interval;
       if (connection.periodicBudget!.renewsAt != null) {
         final int renewalIntervalMins =
@@ -83,6 +84,17 @@ class NwcConnectionItem extends StatelessWidget {
           padding: const EdgeInsets.only(top: 6.0),
           child: Text(
             'Connection will expire on $formattedExpiry.',
+            style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+    } else {
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Text(
+            'Connection will NEVER expire.',
             style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70, fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),

@@ -16,9 +16,63 @@ final Logger _logger = Logger('NwcCubit');
 class NwcCubit extends Cubit<NwcState> {
   final BreezSDKLiquid breezSdkLiquid;
   final NwcRegistrationManager nwcRegistrationManager;
+  StreamSubscription<NwcEvent>? _nwcEventSubscription;
 
   NwcCubit({required this.breezSdkLiquid, required this.nwcRegistrationManager}) : super(NwcState.initial()) {
     loadConnections();
+    _setupEventListener();
+  }
+
+  void _setupEventListener() {
+    final BreezNwcService? nwcService = breezSdkLiquid.nwc;
+    if (nwcService == null) {
+      _logger.warning('NWC service is not available, cannot set up event listener');
+      return;
+    }
+
+    _nwcEventSubscription?.cancel();
+    _nwcEventSubscription = nwcService.addEventListener().listen(
+      (NwcEvent event) {
+        _handleNwcEvent(event);
+      },
+      onError: (Object error) {
+        _logger.severe('Error in NWC event stream', error);
+      },
+    );
+  }
+
+  void _handleNwcEvent(NwcEvent event) {
+    _logger.info('Received NWC event: ${event.details} for connection: ${event.connectionName}');
+
+    if (event.details is NwcEventDetails_ConnectionExpired || event.details is NwcEventDetails_Disconnected) {
+      final String? connectionName = event.connectionName;
+      if (connectionName != null) {
+        _removeConnectionFromState(connectionName);
+      }
+    }
+  }
+
+  void _removeConnectionFromState(String connectionName) {
+    final bool connectionExists = state.connections.any(
+      (NwcConnectionModel connection) => connection.name == connectionName,
+    );
+
+    if (!connectionExists) {
+      _logger.fine('Connection "$connectionName" already removed from state');
+      return;
+    }
+
+    final List<NwcConnectionModel> updatedConnections = state.connections
+        .where((NwcConnectionModel connection) => connection.name != connectionName)
+        .toList();
+    emit(state.copyWith(connections: updatedConnections));
+    _logger.info('Removed connection "$connectionName" from state');
+  }
+
+  @override
+  Future<void> close() {
+    _nwcEventSubscription?.cancel();
+    return super.close();
   }
 
   /// Loads all NWC connections from the service
@@ -114,13 +168,14 @@ class NwcCubit extends Cubit<NwcState> {
         return;
       }
 
-      await nwcService.removeConnection(name: name);
+      _removeConnectionFromState(name);
 
-      emit(state.copyWith(isLoading: false));
+      await nwcService.removeConnection(name: name);
 
       await loadConnections();
     } catch (e) {
       _logger.severe('Failed to delete NWC connection', e);
+      await loadConnections();
       emit(state.copyWith(isLoading: false, error: 'Failed to delete connection: ${e.toString()}'));
     }
   }

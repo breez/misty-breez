@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:misty_breez/cubit/cubit.dart';
@@ -17,32 +15,6 @@ class NwcPage extends StatefulWidget {
 }
 
 class _NwcPageState extends State<NwcPage> {
-  Timer? _refreshTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startRefreshTimer();
-    });
-  }
-
-  @override
-  void dispose() {
-    _refreshTimer?.cancel();
-    super.dispose();
-  }
-
-  void _startRefreshTimer() {
-    _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-      if (mounted) {
-        final NwcCubit nwcCubit = context.read<NwcCubit>();
-        nwcCubit.loadConnections();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

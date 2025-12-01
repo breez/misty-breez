@@ -56,16 +56,31 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
 
     return BlocListener<NwcCubit, NwcState>(
       listenWhen: (NwcState previous, NwcState current) {
-        return previous.isLoading && !current.isLoading && current.connections.isNotEmpty;
+        if (previous.isLoading && !current.isLoading) {
+          return true;
+        }
+        final bool wasDeleted = !current.connections.any(
+          (NwcConnectionModel c) => c.name == _connection.name,
+        );
+        if (wasDeleted && !previous.connections.any((NwcConnectionModel c) => c.name == _connection.name)) {
+          return false;
+        }
+        return wasDeleted;
       },
       listener: (BuildContext context, NwcState state) {
-        final NwcConnectionModel updatedConnection = state.connections.firstWhere(
-          (NwcConnectionModel c) => c.name == _connection.name,
-          orElse: () => _connection,
-        );
-        setState(() {
-          _connection = updatedConnection;
-        });
+        final bool wasDeleted = !state.connections.any((NwcConnectionModel c) => c.name == _connection.name);
+        if (wasDeleted && mounted) {
+          Navigator.of(context).pop();
+          return;
+        }
+        final NwcConnectionModel? updatedConnection = state.connections
+            .cast<NwcConnectionModel?>()
+            .firstWhere((NwcConnectionModel? c) => c?.name == _connection.name, orElse: () => null);
+        if (updatedConnection != null && mounted) {
+          setState(() {
+            _connection = updatedConnection;
+          });
+        }
       },
       child: Scaffold(
         appBar: AppBar(leading: const back_button.BackButton(), title: Text(_connection.name)),
@@ -104,9 +119,8 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                             StatusItem(
                               label: 'Budget renewal',
                               value: () {
-                                final String amount = BitcoinCurrency.sat.format(
-                                  _connection.periodicBudget!.maxBudgetSat.toInt(),
-                                );
+                                final int maxBudgetSat = _connection.periodicBudget!.maxBudgetSat.toInt();
+                                final String amount = BitcoinCurrency.sat.format(maxBudgetSat);
                                 if (_connection.periodicBudget!.renewsAt != null) {
                                   final int renewalIntervalMins =
                                       ((_connection.periodicBudget!.renewsAt! -
@@ -120,13 +134,14 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
                               }(),
                             ),
                           ],
-                          if (_connection.expiresAt != null)
-                            StatusItem(
-                              label: 'Expiry Time',
-                              value: BreezDateUtils.formatYearMonthDayHourMinuteSecond(
-                                DateTime.fromMillisecondsSinceEpoch(_connection.expiresAt! * 1000),
-                              ),
-                            ),
+                          StatusItem(
+                            label: 'Expiry Time',
+                            value: _connection.expiresAt != null
+                                ? BreezDateUtils.formatYearMonthDayHourMinuteSecond(
+                                    DateTime.fromMillisecondsSinceEpoch(_connection.expiresAt! * 1000),
+                                  )
+                                : 'Never',
+                          ),
                         ],
                       ),
                     ),

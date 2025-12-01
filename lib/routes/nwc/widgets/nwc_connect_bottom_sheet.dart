@@ -50,17 +50,54 @@ class _BudgetRenewalOption {
 }
 
 const List<_BudgetRenewalOption> _presetBudgetRenewalOptions = <_BudgetRenewalOption>[
-  _BudgetRenewalOption(type: _BudgetRenewalType.daily, label: 'DAILY', minutes: 1440),
-  _BudgetRenewalOption(type: _BudgetRenewalType.weekly, label: 'WEEKLY', minutes: 10080),
-  _BudgetRenewalOption(type: _BudgetRenewalType.monthly, label: 'MONTHLY', minutes: 43200),
-  _BudgetRenewalOption(type: _BudgetRenewalType.yearly, label: 'YEARLY', minutes: 525600),
-  _BudgetRenewalOption(type: _BudgetRenewalType.never, label: 'NEVER', minutes: 0),
+  _BudgetRenewalOption(type: _BudgetRenewalType.daily, label: 'Daily', minutes: 1440),
+  _BudgetRenewalOption(type: _BudgetRenewalType.weekly, label: 'Weekly', minutes: 10080),
+  _BudgetRenewalOption(type: _BudgetRenewalType.monthly, label: 'Monthly', minutes: 43200),
+  _BudgetRenewalOption(type: _BudgetRenewalType.yearly, label: 'Yearly', minutes: 525600),
+  _BudgetRenewalOption(type: _BudgetRenewalType.never, label: 'Never', minutes: 0),
+];
+
+enum _BudgetAmountOption { tenK, hundredK, oneM, unlimited, custom }
+
+class _BudgetAmountOptionData {
+  const _BudgetAmountOptionData({required this.type, required this.label, this.sats});
+
+  final _BudgetAmountOption type;
+  final String label;
+  final int? sats; // null for unlimited
+}
+
+const List<_BudgetAmountOptionData> _presetBudgetAmountOptions = <_BudgetAmountOptionData>[
+  _BudgetAmountOptionData(type: _BudgetAmountOption.tenK, label: '10k sats', sats: 10000),
+  _BudgetAmountOptionData(type: _BudgetAmountOption.hundredK, label: '100k sats', sats: 100000),
+  _BudgetAmountOptionData(type: _BudgetAmountOption.oneM, label: '1M sats', sats: 1000000),
+  _BudgetAmountOptionData(type: _BudgetAmountOption.unlimited, label: 'Unlimited', sats: null),
+  _BudgetAmountOptionData(type: _BudgetAmountOption.custom, label: 'Custom', sats: null),
+];
+
+enum _ExpiryTimeOption { oneWeek, oneMonth, oneYear, never, custom }
+
+class _ExpiryTimeOptionData {
+  const _ExpiryTimeOptionData({required this.type, required this.label, this.minutes});
+
+  final _ExpiryTimeOption type;
+  final String label;
+  final int? minutes; // null for never
+}
+
+const List<_ExpiryTimeOptionData> _presetExpiryTimeOptions = <_ExpiryTimeOptionData>[
+  _ExpiryTimeOptionData(type: _ExpiryTimeOption.oneWeek, label: '1 week', minutes: 10080),
+  _ExpiryTimeOptionData(type: _ExpiryTimeOption.oneMonth, label: '1 month', minutes: 43200),
+  _ExpiryTimeOptionData(type: _ExpiryTimeOption.oneYear, label: '1 year', minutes: 525600),
+  _ExpiryTimeOptionData(type: _ExpiryTimeOption.never, label: 'Never', minutes: null),
+  _ExpiryTimeOptionData(type: _ExpiryTimeOption.custom, label: 'Custom', minutes: null),
 ];
 
 class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _maxBudgetController = TextEditingController();
   final TextEditingController _expiryTimeController = TextEditingController();
+  final TextEditingController _customRenewalTimeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _connectionString;
   bool _isObscured = true;
@@ -68,6 +105,9 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
   bool _showExpiryFields = false;
   _BudgetRenewalType? _selectedBudgetRenewal = _BudgetRenewalType.daily;
   int? _customRenewalTimeMins;
+  _BudgetAmountOption? _selectedBudgetAmount;
+  _ExpiryTimeOption? _selectedExpiryTime;
+  int? _customBudgetAmount;
 
   bool get _isEditMode => widget.existingConnection != null;
 
@@ -78,23 +118,39 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
       final NwcConnectionModel connection = widget.existingConnection!;
       _nameController.text = connection.name;
       if (connection.periodicBudget != null) {
-        _maxBudgetController.text = connection.periodicBudget!.maxBudgetSat.toString();
+        final int maxBudgetSat = connection.periodicBudget!.maxBudgetSat.toInt();
+        _selectedBudgetAmount = _resolveBudgetAmountOption(maxBudgetSat);
+        if (_selectedBudgetAmount == _BudgetAmountOption.custom) {
+          _customBudgetAmount = maxBudgetSat;
+          _maxBudgetController.text = maxBudgetSat.toString();
+        }
         if (connection.periodicBudget!.renewsAt != null) {
           final int renewalIntervalMins =
               ((connection.periodicBudget!.renewsAt! - connection.periodicBudget!.updatedAt) / 60).round();
           _selectedBudgetRenewal = _resolveBudgetRenewalType(renewalIntervalMins);
+          if (_selectedBudgetRenewal == _BudgetRenewalType.custom && _customRenewalTimeMins != null) {
+            _customRenewalTimeController.text = _customRenewalTimeMins.toString();
+          }
         } else {
           _selectedBudgetRenewal = _BudgetRenewalType.never;
         }
         _showBudgetFields = true;
+      } else {
+        _showBudgetFields = false;
       }
       if (connection.expiresAt != null) {
         final int now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         final int remainingMins = ((connection.expiresAt! - now) / 60).round();
         if (remainingMins > 0) {
-          _expiryTimeController.text = remainingMins.toString();
+          _selectedExpiryTime = _resolveExpiryTimeOption(remainingMins);
+          _showExpiryFields = true;
+        } else {
+          _selectedExpiryTime = _ExpiryTimeOption.never;
           _showExpiryFields = true;
         }
+      } else {
+        _selectedExpiryTime = _ExpiryTimeOption.never;
+        _showExpiryFields = false;
       }
     }
   }
@@ -104,6 +160,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
     _nameController.dispose();
     _maxBudgetController.dispose();
     _expiryTimeController.dispose();
+    _customRenewalTimeController.dispose();
     super.dispose();
   }
 
@@ -113,24 +170,22 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
     }
 
     final String name = _nameController.text.trim();
-    final int? expiryTimeMins = _expiryTimeController.text.trim().isEmpty
-        ? null
-        : int.tryParse(_expiryTimeController.text.trim());
+    final int? expiryTimeMins = _selectedExpiryTimeMinutes;
 
     PeriodicBudgetRequest? periodicBudgetReq;
     if (_showBudgetFields) {
-      final int? maxBudgetSatInt = _maxBudgetController.text.trim().isEmpty
-          ? null
-          : int.tryParse(_maxBudgetController.text.trim());
+      final int? maxBudgetSatInt = _selectedBudgetAmountSats;
       final int? renewalTimeMins = _selectedRenewalTimeMinutes;
 
-      if (maxBudgetSatInt != null && renewalTimeMins != null && renewalTimeMins > 0) {
-        periodicBudgetReq = PeriodicBudgetRequest(
-          maxBudgetSat: BigInt.from(maxBudgetSatInt),
-          renewalTimeMins: renewalTimeMins,
-        );
-      } else if (maxBudgetSatInt != null) {
-        periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
+      if (maxBudgetSatInt != null) {
+        if (renewalTimeMins != null && renewalTimeMins > 0) {
+          periodicBudgetReq = PeriodicBudgetRequest(
+            maxBudgetSat: BigInt.from(maxBudgetSatInt),
+            renewalTimeMins: renewalTimeMins,
+          );
+        } else {
+          periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
+        }
       }
     }
 
@@ -154,25 +209,38 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
       return;
     }
 
-    final int? expiryTimeMins = _expiryTimeController.text.trim().isEmpty
-        ? null
-        : int.tryParse(_expiryTimeController.text.trim());
+    final int? expiryTimeMins;
+    final bool? removeExpiry;
+    if (!_showExpiryFields) {
+      removeExpiry = widget.existingConnection!.expiresAt != null ? true : null;
+      expiryTimeMins = null;
+    } else if (_selectedExpiryTime == _ExpiryTimeOption.never) {
+      removeExpiry = widget.existingConnection!.expiresAt != null ? true : null;
+      expiryTimeMins = null;
+    } else {
+      expiryTimeMins = _selectedExpiryTimeMinutes;
+      removeExpiry = null;
+    }
 
     PeriodicBudgetRequest? periodicBudgetReq;
     bool? removePeriodicBudget;
     if (_showBudgetFields) {
-      final int? maxBudgetSatInt = _maxBudgetController.text.trim().isEmpty
-          ? null
-          : int.tryParse(_maxBudgetController.text.trim());
+      final int? maxBudgetSatInt = _selectedBudgetAmountSats;
       final int? renewalTimeMins = _selectedRenewalTimeMinutes;
 
-      if (maxBudgetSatInt != null && renewalTimeMins != null && renewalTimeMins > 0) {
-        periodicBudgetReq = PeriodicBudgetRequest(
-          maxBudgetSat: BigInt.from(maxBudgetSatInt),
-          renewalTimeMins: renewalTimeMins,
-        );
-      } else if (maxBudgetSatInt != null) {
-        periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
+      if (maxBudgetSatInt != null) {
+        if (renewalTimeMins != null && renewalTimeMins > 0) {
+          periodicBudgetReq = PeriodicBudgetRequest(
+            maxBudgetSat: BigInt.from(maxBudgetSatInt),
+            renewalTimeMins: renewalTimeMins,
+          );
+        } else {
+          periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
+        }
+      } else {
+        if (widget.existingConnection!.periodicBudget != null) {
+          removePeriodicBudget = true;
+        }
       }
     } else if (widget.existingConnection!.periodicBudget != null) {
       removePeriodicBudget = true;
@@ -181,7 +249,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
     final bool success = await context.read<NwcCubit>().editConnection(
       name: widget.existingConnection!.name,
       expiryTimeMins: expiryTimeMins,
-      removeExpiry: !_showExpiryFields && widget.existingConnection!.expiresAt != null,
+      removeExpiry: removeExpiry,
       periodicBudgetReq: periodicBudgetReq,
       removePeriodicBudget: removePeriodicBudget,
     );
@@ -221,8 +289,16 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
         _maxBudgetController.clear();
         _selectedBudgetRenewal = _BudgetRenewalType.daily;
         _customRenewalTimeMins = null;
+        _customRenewalTimeController.clear();
+        _selectedBudgetAmount = null;
+        _customBudgetAmount = null;
       } else {
-        _selectedBudgetRenewal ??= _BudgetRenewalType.daily;
+        if (widget.existingConnection?.periodicBudget == null) {
+          _selectedBudgetAmount = _BudgetAmountOption.unlimited;
+          _selectedBudgetRenewal = _BudgetRenewalType.never;
+        } else {
+          _selectedBudgetRenewal ??= _BudgetRenewalType.daily;
+        }
       }
     });
   }
@@ -232,6 +308,11 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
       _showExpiryFields = !_showExpiryFields;
       if (!_showExpiryFields) {
         _expiryTimeController.clear();
+        _selectedExpiryTime = null;
+      } else {
+        if (widget.existingConnection?.expiresAt == null) {
+          _selectedExpiryTime = _ExpiryTimeOption.never;
+        }
       }
     });
   }
@@ -262,6 +343,12 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
       return null;
     }
     if (_selectedBudgetRenewal == _BudgetRenewalType.custom) {
+      if (_customRenewalTimeMins == null) {
+        final String trimmedValue = _customRenewalTimeController.text.trim();
+        if (trimmedValue.isNotEmpty) {
+          return int.tryParse(trimmedValue);
+        }
+      }
       return _customRenewalTimeMins;
     }
     for (final _BudgetRenewalOption option in _presetBudgetRenewalOptions) {
@@ -273,14 +360,81 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
   }
 
   _BudgetRenewalType _resolveBudgetRenewalType(int renewalTimeMins) {
+    const int toleranceMins = 15;
     for (final _BudgetRenewalOption option in _presetBudgetRenewalOptions) {
-      if (option.minutes == renewalTimeMins) {
+      if ((option.minutes - renewalTimeMins).abs() <= toleranceMins) {
         _customRenewalTimeMins = null;
         return option.type;
       }
     }
     _customRenewalTimeMins = renewalTimeMins;
     return _BudgetRenewalType.custom;
+  }
+
+  _BudgetAmountOption _resolveBudgetAmountOption(int sats) {
+    for (final _BudgetAmountOptionData option in _presetBudgetAmountOptions) {
+      if (option.sats == sats) {
+        _customBudgetAmount = null;
+        return option.type;
+      }
+    }
+    _customBudgetAmount = sats;
+    return _BudgetAmountOption.custom;
+  }
+
+  _ExpiryTimeOption _resolveExpiryTimeOption(int minutes) {
+    for (final _ExpiryTimeOptionData option in _presetExpiryTimeOptions) {
+      if (option.minutes == minutes) {
+        return option.type;
+      }
+    }
+    if (minutes <= 0) {
+      return _ExpiryTimeOption.never;
+    }
+    return _ExpiryTimeOption.custom;
+  }
+
+  int? get _selectedBudgetAmountSats {
+    if (!_showBudgetFields || _selectedBudgetAmount == null) {
+      return null;
+    }
+    if (_selectedBudgetAmount == _BudgetAmountOption.unlimited) {
+      return null; // Unlimited
+    }
+    if (_selectedBudgetAmount == _BudgetAmountOption.custom) {
+      if (_customBudgetAmount == null) {
+        final String trimmedValue = _maxBudgetController.text.trim();
+        if (trimmedValue.isNotEmpty) {
+          return int.tryParse(trimmedValue);
+        }
+      }
+      return _customBudgetAmount;
+    }
+    for (final _BudgetAmountOptionData option in _presetBudgetAmountOptions) {
+      if (option.type == _selectedBudgetAmount) {
+        return option.sats;
+      }
+    }
+    return null;
+  }
+
+  int? get _selectedExpiryTimeMinutes {
+    if (!_showExpiryFields || _selectedExpiryTime == null) {
+      return null;
+    }
+    if (_selectedExpiryTime == _ExpiryTimeOption.never) {
+      return null;
+    }
+    if (_selectedExpiryTime == _ExpiryTimeOption.custom) {
+      // TODO(ayush): Custom not implemented yet
+      return null;
+    }
+    for (final _ExpiryTimeOptionData option in _presetExpiryTimeOptions) {
+      if (option.type == _selectedExpiryTime) {
+        return option.minutes;
+      }
+    }
+    return null;
   }
 
   @override
@@ -336,34 +490,106 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
                         ),
                         const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _maxBudgetController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Budget amount',
-                            hintText: 'Enter Budget in sats',
-                            border: const OutlineInputBorder(),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: DropdownButtonFormField<_BudgetAmountOption>(
+                                value: _selectedBudgetAmount,
+                                isExpanded: true,
+                                decoration: InputDecoration(
+                                  labelText: 'Budget Amount',
+                                  hintText: 'Select budget amount',
+                                  border: const OutlineInputBorder(),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: themeData.colorScheme.error),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: themeData.colorScheme.error),
+                                  ),
+                                ),
+                                items: _presetBudgetAmountOptions
+                                    .map(
+                                      (_BudgetAmountOptionData option) =>
+                                          DropdownMenuItem<_BudgetAmountOption>(
+                                            value: option.type,
+                                            child: Text(option.label),
+                                          ),
+                                    )
+                                    .toList(),
+                                onChanged: (_BudgetAmountOption? value) {
+                                  setState(() {
+                                    _selectedBudgetAmount = value;
+                                    if (value != _BudgetAmountOption.custom) {
+                                      _customBudgetAmount = null;
+                                      _maxBudgetController.clear();
+                                    }
+                                  });
+                                },
+                                validator: (_) {
+                                  if (!_showBudgetFields) {
+                                    return null;
+                                  }
+                                  if (_selectedBudgetAmount == null) {
+                                    return 'Select budget amount';
+                                  }
+                                  if (_selectedBudgetAmount == _BudgetAmountOption.custom) {
+                                    final String trimmedValue = _maxBudgetController.text.trim();
+                                    if (trimmedValue.isEmpty) {
+                                      return 'Enter custom budget amount';
+                                    }
+                                    if (int.tryParse(trimmedValue) == null) {
+                                      return 'Please enter a valid number';
+                                    }
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: _toggleBudgetFields,
+                              tooltip: 'Close',
                             ),
-                          ),
-                          validator: (String? value) {
-                            final String trimmedValue = value?.trim() ?? '';
-                            if (!_showBudgetFields) {
-                              return null;
-                            }
-                            if (trimmedValue.isEmpty) {
-                              return 'Enter budget amount';
-                            }
-                            if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
-                              return 'Please enter a valid number';
-                            }
-                            return null;
-                          },
+                          ],
                         ),
+                        if (_selectedBudgetAmount == _BudgetAmountOption.custom) ...<Widget>[
+                          const SizedBox(height: 16.0),
+                          TextFormField(
+                            controller: _maxBudgetController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Custom Budget Amount',
+                              hintText: 'Enter budget in sats',
+                              border: const OutlineInputBorder(),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                            ),
+                            validator: (String? value) {
+                              if (_selectedBudgetAmount != _BudgetAmountOption.custom) {
+                                return null;
+                              }
+                              final String trimmedValue = value?.trim() ?? '';
+                              if (trimmedValue.isEmpty) {
+                                return 'Enter custom budget amount';
+                              }
+                              if (int.tryParse(trimmedValue) == null) {
+                                return 'Please enter a valid number';
+                              }
+                              return null;
+                            },
+                            onChanged: (String value) {
+                              final int? parsedValue = int.tryParse(value.trim());
+                              setState(() {
+                                _customBudgetAmount = parsedValue;
+                              });
+                            },
+                          ),
+                        ],
                         const SizedBox(height: 16.0),
                         DropdownButtonFormField<_BudgetRenewalType>(
                           value: _selectedBudgetRenewal,
@@ -385,6 +611,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                               _selectedBudgetRenewal = value;
                               if (value != _BudgetRenewalType.custom) {
                                 _customRenewalTimeMins = null;
+                                _customRenewalTimeController.clear();
                               }
                             });
                           },
@@ -392,16 +619,9 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             if (!_showBudgetFields) {
                               return null;
                             }
-                            if (_maxBudgetController.text.trim().isEmpty) {
-                              return 'Enter budget amount first';
-                            }
                             final int? renewalTimeMins = _selectedRenewalTimeMinutes;
-                            if (renewalTimeMins == null) {
-                              return 'Select reset time';
-                            }
-                            final String expiryTimeValue = _expiryTimeController.text.trim();
-                            if (expiryTimeValue.isNotEmpty) {
-                              final int? expiryTimeMins = int.tryParse(expiryTimeValue);
+                            if (renewalTimeMins != null) {
+                              final int? expiryTimeMins = _selectedExpiryTimeMinutes;
                               if (expiryTimeMins != null && renewalTimeMins > expiryTimeMins) {
                                 return 'Reset time cannot be greater than expiry time';
                               }
@@ -410,6 +630,51 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                             return null;
                           },
                         ),
+                        if (_selectedBudgetRenewal == _BudgetRenewalType.custom) ...<Widget>[
+                          const SizedBox(height: 16.0),
+                          TextFormField(
+                            controller: _customRenewalTimeController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Custom Renewal Time',
+                              hintText: 'Enter renewal time in minutes',
+                              border: const OutlineInputBorder(),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themeData.colorScheme.error),
+                              ),
+                            ),
+                            validator: (String? value) {
+                              if (_selectedBudgetRenewal != _BudgetRenewalType.custom) {
+                                return null;
+                              }
+                              final String trimmedValue = value?.trim() ?? '';
+                              if (trimmedValue.isEmpty) {
+                                return 'Enter custom renewal time';
+                              }
+                              final int? parsedValue = int.tryParse(trimmedValue);
+                              if (parsedValue == null) {
+                                return 'Please enter a valid number';
+                              }
+                              if (parsedValue <= 0) {
+                                return 'Renewal time must be greater than 0';
+                              }
+                              final int? expiryTimeMins = _selectedExpiryTimeMinutes;
+                              if (expiryTimeMins != null && parsedValue > expiryTimeMins) {
+                                return 'Renewal time cannot be greater than expiry time';
+                              }
+                              return null;
+                            },
+                            onChanged: (String value) {
+                              final int? parsedValue = int.tryParse(value.trim());
+                              setState(() {
+                                _customRenewalTimeMins = parsedValue;
+                              });
+                            },
+                          ),
+                        ],
                         const SizedBox(height: 16.0),
                       ],
                       if (_showExpiryFields) ...<Widget>[
@@ -419,37 +684,69 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
                         ),
                         const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _expiryTimeController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Expiry Time',
-                            hintText: 'Enter Time in minutes',
-                            border: const OutlineInputBorder(),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: DropdownButtonFormField<_ExpiryTimeOption>(
+                                value: _selectedExpiryTime,
+                                isExpanded: true,
+                                decoration: InputDecoration(
+                                  labelText: 'Expiration Time',
+                                  hintText: 'Select expiration time',
+                                  border: const OutlineInputBorder(),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: themeData.colorScheme.error),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: themeData.colorScheme.error),
+                                  ),
+                                ),
+                                items: _presetExpiryTimeOptions
+                                    .map(
+                                      (_ExpiryTimeOptionData option) => DropdownMenuItem<_ExpiryTimeOption>(
+                                        value: option.type,
+                                        child: Text(option.label),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (_ExpiryTimeOption? value) {
+                                  setState(() {
+                                    _selectedExpiryTime = value;
+                                    if (value == _ExpiryTimeOption.custom) {
+                                      // Custom not implemented yet
+                                    }
+                                  });
+                                },
+                                validator: (_) {
+                                  if (!_showExpiryFields) {
+                                    return null;
+                                  }
+                                  if (_selectedExpiryTime == null) {
+                                    return 'Select expiration time';
+                                  }
+                                  if (_selectedExpiryTime == _ExpiryTimeOption.custom) {
+                                    return 'Custom expiration not implemented yet';
+                                  }
+                                  final int? renewalTimeMins = _selectedRenewalTimeMinutes;
+                                  final int? expiryTimeMins = _selectedExpiryTimeMinutes;
+                                  if (expiryTimeMins != null &&
+                                      renewalTimeMins != null &&
+                                      _showBudgetFields) {
+                                    if (renewalTimeMins > expiryTimeMins) {
+                                      return 'Expiry time must be greater than reset time';
+                                    }
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: themeData.colorScheme.error),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: _toggleExpiryFields,
+                              tooltip: 'Close',
                             ),
-                          ),
-                          validator: (String? value) {
-                            final String trimmedValue = value?.trim() ?? '';
-                            final int? renewalTimeMins = _selectedRenewalTimeMinutes;
-
-                            if (trimmedValue.isNotEmpty && int.tryParse(trimmedValue) == null) {
-                              return 'Please enter a valid number';
-                            }
-
-                            if (trimmedValue.isNotEmpty && renewalTimeMins != null && _showBudgetFields) {
-                              final int? expiryTimeMins = int.tryParse(trimmedValue);
-                              if (expiryTimeMins != null && renewalTimeMins > expiryTimeMins) {
-                                return 'Expiry time must be greater than reset time';
-                              }
-                            }
-
-                            return null;
-                          },
+                          ],
                         ),
                         const SizedBox(height: 16.0),
                       ],
@@ -459,51 +756,41 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
+                child: Column(
                   children: <Widget>[
-                    Expanded(
-                      child: ConstrainedBox(
+                    if (!_showBudgetFields)
+                      ConstrainedBox(
                         constraints: const BoxConstraints(minHeight: 48.0),
-                        child: OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.white),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                          ),
-                          icon: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Icon(
-                              _showBudgetFields ? Icons.remove_circle_outline : Icons.add_circle_outline,
-                              size: 20.0,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.white),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                             ),
+                            onPressed: _toggleBudgetFields,
+                            child: const Text('SET BUDGET'),
                           ),
-                          label: const Text('BUDGET'),
-                          onPressed: _toggleBudgetFields,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ConstrainedBox(
+                    if (!_showBudgetFields && !_showExpiryFields) const SizedBox(height: 16),
+                    if (!_showExpiryFields)
+                      ConstrainedBox(
                         constraints: const BoxConstraints(minHeight: 48.0),
-                        child: OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.white),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                          ),
-                          icon: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Icon(
-                              _showExpiryFields ? Icons.remove_circle_outline : Icons.add_circle_outline,
-                              size: 20.0,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.white),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                             ),
+                            onPressed: _toggleExpiryFields,
+                            child: const Text('SET EXPIRATION TIME'),
                           ),
-                          label: const Text('EXPIRY'),
-                          onPressed: _toggleExpiryFields,
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
