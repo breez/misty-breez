@@ -7,7 +7,6 @@ extension ConfigCopyWith on Config {
     String? workingDir,
     LiquidNetwork? network,
     BigInt? paymentTimeoutSec,
-    int? zeroConfMinFeeRateMsat,
     BigInt? zeroConfMaxAmountSat,
     String? breezApiKey,
     List<ExternalInputParser>? externalInputParsers,
@@ -16,6 +15,8 @@ extension ConfigCopyWith on Config {
     List<AssetMetadata>? assetMetadata,
     String? sideswapApiKey,
     bool? useMagicRoutingHints,
+    int? onchainSyncPeriodSec,
+    int? onchainSyncRequestTimeoutSec,
   }) {
     return Config(
       liquidExplorer: liquidExplorer ?? this.liquidExplorer,
@@ -32,6 +33,8 @@ extension ConfigCopyWith on Config {
       assetMetadata: assetMetadata ?? this.assetMetadata,
       sideswapApiKey: sideswapApiKey ?? this.sideswapApiKey,
       useMagicRoutingHints: useMagicRoutingHints ?? this.useMagicRoutingHints,
+      onchainSyncPeriodSec: onchainSyncPeriodSec ?? this.onchainSyncPeriodSec,
+      onchainSyncRequestTimeoutSec: onchainSyncRequestTimeoutSec ?? this.onchainSyncRequestTimeoutSec,
     );
   }
 }
