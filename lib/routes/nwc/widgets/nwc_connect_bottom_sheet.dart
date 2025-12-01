@@ -484,7 +484,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         },
                       ),
                       if (_showBudgetFields) ...<Widget>[
-                        const SizedBox(height: 16.0),
+                        Divider(color: Color.fromRGBO(40, 59, 74, 0.5), indent: 16.0, endIndent: 16.0),
                         Text(
                           'Budget Renewal',
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
@@ -678,7 +678,7 @@ class _NwcConnectBottomSheetState extends State<NwcConnectBottomSheet> {
                         const SizedBox(height: 16.0),
                       ],
                       if (_showExpiryFields) ...<Widget>[
-                        const SizedBox(height: 16.0),
+                        Divider(color: Color.fromRGBO(40, 59, 74, 0.5), indent: 16.0, endIndent: 16.0),
                         Text(
                           'Connection Expiration',
                           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
