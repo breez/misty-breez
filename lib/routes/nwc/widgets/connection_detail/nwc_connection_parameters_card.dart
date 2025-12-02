@@ -21,23 +21,30 @@ class NwcConnectionParametersCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: themeData.customData.surfaceBgColor,
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            'Connection Parameters',
-            style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-          ),
-          const SizedBox(height: 8),
-          if (connection.periodicBudget != null)
-            StatusItem(label: 'Budget renewal', value: _formatBudgetRenewal(connection.periodicBudget!)),
-          StatusItem(label: 'Expiry Time', value: _formatExpiryTime(connection.expiresAt)),
-        ],
+        children:
+            <Widget>[
+                if (connection.periodicBudget != null)
+                  StatusItem(
+                    label: 'Budget renewal',
+                    value: _formatBudgetRenewal(connection.periodicBudget!),
+                  ),
+                StatusItem(label: 'Expiry Time', value: _formatExpiryTime(connection.expiresAt)),
+              ].expand((Widget widget) sync* {
+                yield widget;
+                yield const Divider(
+                  height: 8.0,
+                  color: Color.fromRGBO(40, 59, 74, 0.5),
+                  indent: 0.0,
+                  endIndent: 0.0,
+                );
+              }).toList()
+              ..removeLast(),
       ),
     );
   }

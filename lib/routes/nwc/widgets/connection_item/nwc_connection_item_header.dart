@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:misty_breez/theme/src/theme_extensions.dart';
 
 class NwcConnectionItemHeader extends StatelessWidget {
   final String connectionName;
@@ -16,14 +15,10 @@ class NwcConnectionItemHeader extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF142340),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
-        border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      decoration: const ShapeDecoration(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
+        color: Color(0xFF142340),
       ),
       child: Row(
         children: <Widget>[

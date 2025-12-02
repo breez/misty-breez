@@ -13,7 +13,6 @@ class NwcConnectionUriCard extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: themeData.customData.surfaceBgColor,
         borderRadius: BorderRadius.circular(12.0),
@@ -27,7 +26,10 @@ class NwcConnectionUriCard extends StatelessWidget {
             tilePadding: EdgeInsets.zero,
             dividerColor: Colors.transparent,
             shouldPop: false,
-            titleTextStyle: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
+            titleTextStyle: themeData.textTheme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
             childrenTextStyle: themeData.primaryTextTheme.displaySmall!.copyWith(
               fontSize: 18.0,
               fontWeight: FontWeight.w500,

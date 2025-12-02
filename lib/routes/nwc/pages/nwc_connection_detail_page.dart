@@ -6,6 +6,8 @@ import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
 
+import 'package:misty_breez/routes/nwc/widgets/connection_item/nwc_connection_item_header.dart';
+
 class NwcConnectionDetailPage extends StatelessWidget {
   static const String routeName = '/nwc/connection/detail';
 
@@ -41,31 +43,44 @@ class NwcConnectionDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Card(
-                    color: Theme.of(context).customData.surfaceBgColor,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            <Widget>[
-                                NwcConnectionInfoCard(connectionName: updated.name),
-                                NwcConnectionParametersCard(connection: updated),
-                                NwcConnectionUriCard(
-                                  connectionString: updated.connectionString,
-                                  onShowQr: () => NwcQrDialog.show(context, updated.connectionString),
-                                ),
-                              ].expand((Widget widget) sync* {
-                                yield widget;
-                                yield const Divider(
-                                  height: 8.0,
-                                  color: Color.fromRGBO(40, 59, 74, 0.5),
-                                  indent: 0.0,
-                                  endIndent: 0.0,
-                                );
-                              }).toList()
-                              ..removeLast(),
+                  Container(
+                    decoration: ShapeDecoration(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
+                      color: Theme.of(context).customData.surfaceBgColor,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        NwcConnectionItemHeader(
+                          connectionName: updated.name,
+                          isExpiringWithinWeek: _isExpiringWithinWeek(updated),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:
+                                <Widget>[
+                                    NwcConnectionParametersCard(connection: updated),
+                                    NwcConnectionUriCard(
+                                      connectionString: updated.connectionString,
+                                      onShowQr: () => NwcQrDialog.show(context, updated.connectionString),
+                                    ),
+                                  ].expand((Widget widget) sync* {
+                                    yield widget;
+                                    yield const Divider(
+                                      height: 8.0,
+                                      color: Color.fromRGBO(40, 59, 74, 0.5),
+                                      indent: 16.0,
+                                      endIndent: 16.0,
+                                    );
+                                  }).toList()
+                                  ..removeLast(),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -84,4 +99,13 @@ class NwcConnectionDetailPage extends StatelessWidget {
 
   bool _existsIn(NwcState state, NwcConnectionModel target) =>
       state.connections.any((NwcConnectionModel c) => c.name == target.name);
+
+  bool _isExpiringWithinWeek(NwcConnectionModel connection) {
+    if (connection.expiresAt == null) {
+      return false;
+    }
+    final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
+    final Duration diff = expiryDate.difference(DateTime.now());
+    return diff.inDays <= 7 && diff.inDays >= 0;
+  }
 }
