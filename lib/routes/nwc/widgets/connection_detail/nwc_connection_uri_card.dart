@@ -26,15 +26,9 @@ class NwcConnectionUriCard extends StatelessWidget {
             tilePadding: EdgeInsets.zero,
             dividerColor: Colors.transparent,
             shouldPop: false,
-            titleTextStyle: themeData.textTheme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-            childrenTextStyle: themeData.primaryTextTheme.displaySmall!.copyWith(
+            titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
               fontSize: 18.0,
-              fontWeight: FontWeight.w500,
               color: Colors.white,
-              height: 1.156,
             ),
           ),
           const SizedBox(height: 16),
