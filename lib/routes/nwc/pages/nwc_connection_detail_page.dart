@@ -30,7 +30,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
         }
       },
       builder: (BuildContext context, NwcState state) {
-        final NwcConnectionModel updated = state.connections.firstWhere(
+        final NwcConnectionModel updatedConnection = state.connections.firstWhere(
           (NwcConnectionModel c) => c.name == connection.name,
           orElse: () => connection,
         );
@@ -54,8 +54,9 @@ class NwcConnectionDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         NwcConnectionItemHeader(
-                          connectionName: updated.name,
-                          isExpiringWithinWeek: _isExpiringWithinWeek(updated),
+                          connectionName: updatedConnection.name,
+                          hasPeriodicBudget: updatedConnection.periodicBudget != null,
+                          isExpiringWithinWeek: _isExpiringWithinWeek(updatedConnection),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -63,18 +64,21 @@ class NwcConnectionDetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children:
                                 <Widget>[
-                                    NwcConnectionParametersCard(connection: updated),
+                                    if (updatedConnection.periodicBudget != null ||
+                                        updatedConnection.expiresAt != null)
+                                      NwcConnectionParametersCard(connection: updatedConnection),
                                     NwcConnectionUriCard(
-                                      connectionString: updated.connectionString,
-                                      onShowQr: () => NwcQrDialog.show(context, updated.connectionString),
+                                      connectionString: updatedConnection.connectionString,
+                                      onShowQr: () =>
+                                          NwcQrDialog.show(context, updatedConnection.connectionString),
                                     ),
                                   ].expand((Widget widget) sync* {
                                     yield widget;
                                     yield const Divider(
                                       height: 8.0,
                                       color: Color.fromRGBO(40, 59, 74, 0.5),
-                                      indent: 16.0,
-                                      endIndent: 16.0,
+                                      indent: 0.0,
+                                      endIndent: 0.0,
                                     );
                                   }).toList()
                                   ..removeLast(),
@@ -90,7 +94,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
           bottomNavigationBar: SingleButtonBottomBar(
             text: 'EDIT CONNECTION',
             loading: state.isLoading,
-            onPressed: () => showNwcConnectBottomSheet(context, existingConnection: updated),
+            onPressed: () => showNwcConnectBottomSheet(context, existingConnection: updatedConnection),
           ),
         );
       },

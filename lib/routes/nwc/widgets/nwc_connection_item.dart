@@ -22,12 +22,9 @@ class NwcConnectionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-      color: themeData.customData.paymentListBgColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-        side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
-      ),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      color: themeData.customData.surfaceBgColor,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
       child: InkWell(
         onTap: () {
           Navigator.of(context).pushNamed(NwcConnectionDetailPage.routeName, arguments: connection);
@@ -38,6 +35,7 @@ class NwcConnectionItem extends StatelessWidget {
           children: <Widget>[
             NwcConnectionItemHeader(
               connectionName: connection.name,
+              hasPeriodicBudget: connection.periodicBudget != null,
               isExpiringWithinWeek: _isExpiringWithinWeek,
             ),
             NwcConnectionItemContent(connection: connection, isExpiringWithinWeek: _isExpiringWithinWeek),

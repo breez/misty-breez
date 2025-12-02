@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class NwcConnectionItemHeader extends StatelessWidget {
   final String connectionName;
+  final bool hasPeriodicBudget;
   final bool isExpiringWithinWeek;
 
   const NwcConnectionItemHeader({
     required this.connectionName,
+    required this.hasPeriodicBudget,
     required this.isExpiringWithinWeek,
     super.key,
   });
@@ -16,9 +18,14 @@ class NwcConnectionItemHeader extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-      decoration: const ShapeDecoration(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
-        color: Color(0xFF142340),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: const Radius.circular(12.0),
+            bottom: Radius.circular(hasPeriodicBudget ? 0.0 : 12.0),
+          ),
+        ),
+        color: const Color(0xFF142340),
       ),
       child: Row(
         children: <Widget>[

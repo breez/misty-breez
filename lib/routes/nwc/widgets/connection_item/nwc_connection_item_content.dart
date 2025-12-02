@@ -11,6 +11,10 @@ class NwcConnectionItemContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (connection.periodicBudget == null && !isExpiringWithinWeek) {
+      return const SizedBox.shrink();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
