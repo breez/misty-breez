@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 
 Future<dynamic> showNwcConnectBottomSheet(
   BuildContext context, {
-  NwcCubit? nwcCubit,
   NwcConnectionModel? existingConnection,
 }) async {
   final ThemeData themeData = Theme.of(context);
-  final NwcCubit activeCubit = nwcCubit ?? context.read<NwcCubit>();
 
   return await showModalBottomSheet(
     context: context,
     backgroundColor: themeData.customData.paymentListBgColor,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
     isScrollControlled: true,
-    builder: (BuildContext context) => BlocProvider<NwcCubit>.value(
-      value: activeCubit,
-      child: NwcConnectBottomSheet(existingConnection: existingConnection),
-    ),
+    builder: (BuildContext context) => NwcConnectBottomSheet(existingConnection: existingConnection),
   );
 }
 

@@ -46,8 +46,7 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
   }
 
   void _editConnection() {
-    final NwcCubit nwcCubit = context.read<NwcCubit>();
-    showNwcConnectBottomSheet(context, nwcCubit: nwcCubit, existingConnection: _connection);
+    showNwcConnectBottomSheet(context, existingConnection: _connection);
   }
 
   @override
