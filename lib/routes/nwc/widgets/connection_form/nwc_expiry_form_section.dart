@@ -67,7 +67,7 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
           children: <Widget>[
             Expanded(
               child: DropdownButtonFormField<ExpiryTimeOption>(
-                value: widget.selectedExpiryTime,
+                initialValue: widget.selectedExpiryTime,
                 isExpanded: true,
                 decoration: InputDecoration(
                   labelText: 'Expiration Time',
