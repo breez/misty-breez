@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/models/currency.dart';
-import 'package:misty_breez/routes/nwc/widgets/connection_item/nwc_connection_item_info_row.dart';
+import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/routes/routes.dart';
 
 class NwcConnectionItemContent extends StatelessWidget {
   final NwcConnectionModel connection;
@@ -22,12 +22,12 @@ class NwcConnectionItemContent extends StatelessWidget {
         children: <Widget>[
           // Budget information
           if (connection.periodicBudget != null) ...<Widget>[
-            NwcConnectionItemInfoRow(label: 'Budget:', value: _buildBudgetValue()),
+            StatusItem(label: 'Budget:', value: _buildBudgetValue()),
           ],
 
           // Renewal date
           if (connection.periodicBudget?.renewsAt != null) ...<Widget>[
-            NwcConnectionItemInfoRow(
+            StatusItem(
               label: 'Renews:',
               value: _formatCompactDate(
                 DateTime.fromMillisecondsSinceEpoch(connection.periodicBudget!.renewsAt! * 1000),
@@ -38,7 +38,7 @@ class NwcConnectionItemContent extends StatelessWidget {
 
           // Expiration date (only if expiring within a week)
           if (isExpiringWithinWeek) ...<Widget>[
-            NwcConnectionItemInfoRow(
+            StatusItem(
               label: 'Expires:',
               value: _formatCompactDate(DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000)),
               labelColor: const Color(0xFFFB923C),
