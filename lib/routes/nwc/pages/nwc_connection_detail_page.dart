@@ -196,7 +196,6 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
           builder: (BuildContext context, NwcState state) {
             return SingleButtonBottomBar(
               text: 'EDIT CONNECTION',
-              expand: false,
               loading: state.isLoading,
               onPressed: _editConnection,
             );
