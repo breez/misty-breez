@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
-import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
-import 'package:misty_breez/utils/utils.dart';
-import 'package:misty_breez/models/models.dart';
 
 class NwcConnectionDetailPage extends StatefulWidget {
   static const String routeName = '/nwc/connection/detail';
@@ -22,64 +19,28 @@ class NwcConnectionDetailPage extends StatefulWidget {
 class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
   late NwcConnectionModel _connection;
 
-  String? _formatResetInterval(int renewalTimeMins) {
-    switch (renewalTimeMins) {
-      case 0:
-        return null;
-      case 1440:
-        return 'day';
-      case 10080:
-        return 'week';
-      case 43200:
-        return 'month';
-      case 525600:
-        return 'year';
-      default:
-        return null;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     _connection = widget.connection;
   }
 
-  void _editConnection() {
-    showNwcConnectBottomSheet(context, existingConnection: _connection);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-
     return BlocListener<NwcCubit, NwcState>(
       listenWhen: (NwcState previous, NwcState current) {
+        // Listen when loading completes or connection is deleted
         if (previous.isLoading && !current.isLoading) {
           return true;
         }
-        final bool wasDeleted = !current.connections.any(
-          (NwcConnectionModel c) => c.name == _connection.name,
-        );
-        if (wasDeleted && !previous.connections.any((NwcConnectionModel c) => c.name == _connection.name)) {
-          return false;
-        }
-        return wasDeleted;
+        return _isConnectionDeleted(current) && !_isConnectionDeleted(previous);
       },
       listener: (BuildContext context, NwcState state) {
-        final bool wasDeleted = !state.connections.any((NwcConnectionModel c) => c.name == _connection.name);
-        if (wasDeleted && mounted) {
-          Navigator.of(context).pop();
+        if (_isConnectionDeleted(state)) {
+          _handleConnectionDeleted();
           return;
         }
-        final NwcConnectionModel? updatedConnection = state.connections
-            .cast<NwcConnectionModel?>()
-            .firstWhere((NwcConnectionModel? c) => c?.name == _connection.name, orElse: () => null);
-        if (updatedConnection != null && mounted) {
-          setState(() {
-            _connection = updatedConnection;
-          });
-        }
+        _updateConnectionIfChanged(state);
       },
       child: Scaffold(
         appBar: AppBar(leading: const back_button.BackButton(), title: Text(_connection.name)),
@@ -90,101 +51,13 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: themeData.customData.surfaceBgColor,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: StatusItem(label: 'Connection Name', value: _connection.name),
-                  ),
+                  NwcConnectionInfoCard(connectionName: _connection.name),
                   const SizedBox(height: 16),
-                  if (_connection.periodicBudget != null || _connection.expiresAt != null) ...<Widget>[
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: themeData.customData.surfaceBgColor,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Connection Parameters',
-                            style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                          ),
-                          const SizedBox(height: 8),
-                          if (_connection.periodicBudget != null) ...<Widget>[
-                            StatusItem(
-                              label: 'Budget renewal',
-                              value: () {
-                                final int maxBudgetSat = _connection.periodicBudget!.maxBudgetSat.toInt();
-                                final String amount = BitcoinCurrency.sat.format(maxBudgetSat);
-                                if (_connection.periodicBudget!.renewsAt != null) {
-                                  final int renewalIntervalMins =
-                                      ((_connection.periodicBudget!.renewsAt! -
-                                                  _connection.periodicBudget!.updatedAt) /
-                                              60)
-                                          .round();
-                                  final String? interval = _formatResetInterval(renewalIntervalMins);
-                                  return interval == null ? amount : '$amount / $interval';
-                                }
-                                return amount;
-                              }(),
-                            ),
-                          ],
-                          StatusItem(
-                            label: 'Expiry Time',
-                            value: _connection.expiresAt != null
-                                ? BreezDateUtils.formatYearMonthDayHourMinuteSecond(
-                                    DateTime.fromMillisecondsSinceEpoch(_connection.expiresAt! * 1000),
-                                  )
-                                : 'Never',
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: themeData.customData.surfaceBgColor,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        ShareablePaymentRow(
-                          title: 'Connection URI',
-                          sharedValue: _connection.connectionString,
-                          tilePadding: EdgeInsets.zero,
-                          dividerColor: Colors.transparent,
-                          shouldPop: false,
-                          titleTextStyle: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
-                          childrenTextStyle: themeData.primaryTextTheme.displaySmall!.copyWith(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                            height: 1.156,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.white),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                          ),
-                          icon: const Padding(
-                            padding: EdgeInsets.only(right: 8.0),
-                            child: Icon(Icons.qr_code, size: 20.0),
-                          ),
-                          label: const Text('SHOW QR'),
-                          onPressed: () => _showQRDialog(context),
-                        ),
-                      ],
-                    ),
+                  NwcConnectionParametersCard(connection: _connection),
+                  const SizedBox(height: 16),
+                  NwcConnectionUriCard(
+                    connectionString: _connection.connectionString,
+                    onShowQr: () => NwcQrDialog.show(context, _connection.connectionString),
                   ),
                 ],
               ),
@@ -196,7 +69,7 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
             return SingleButtonBottomBar(
               text: 'EDIT CONNECTION',
               loading: state.isLoading,
-              onPressed: _editConnection,
+              onPressed: () => showNwcConnectBottomSheet(context, existingConnection: _connection),
             );
           },
         ),
@@ -204,38 +77,29 @@ class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
     );
   }
 
-  void _showQRDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        final Size screenSize = MediaQuery.of(context).size;
-        final double qrSize = screenSize.width * 0.8;
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: EdgeInsets.zero,
-          child: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: Container(
-              width: screenSize.width,
-              height: screenSize.height,
-              color: Colors.black.withValues(alpha: 0.7),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(24.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).customData.surfaceBgColor,
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: CompactQRImage(data: _connection.connectionString, size: qrSize),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+  bool _isConnectionDeleted(NwcState state) {
+    return !state.connections.any((NwcConnectionModel c) => c.name == _connection.name);
+  }
+
+  void _handleConnectionDeleted() {
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _updateConnectionIfChanged(NwcState state) {
+    final NwcConnectionModel? updatedConnection = _findUpdatedConnection(state);
+    if (updatedConnection != null && mounted) {
+      setState(() {
+        _connection = updatedConnection;
+      });
+    }
+  }
+
+  NwcConnectionModel? _findUpdatedConnection(NwcState state) {
+    return state.connections.cast<NwcConnectionModel?>().firstWhere(
+      (NwcConnectionModel? c) => c?.name == _connection.name,
+      orElse: () => null,
     );
   }
 }
