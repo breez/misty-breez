@@ -78,7 +78,9 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
         _showExpiryFields = false;
       }
     }
-    _notifyValuesChanged();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _notifyValuesChanged();
+    });
   }
 
   void _notifyValuesChanged() {
