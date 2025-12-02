@@ -29,12 +29,16 @@ class StatusItem extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: AutoSizeText(
-              value,
-              style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 18.0, color: Colors.white),
-              textAlign: TextAlign.right,
-              maxLines: 3,
-              group: labelAutoSizeGroup,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: AutoSizeText(
+                value,
+                style: themeData.primaryTextTheme.displaySmall!.copyWith(fontSize: 18.0, color: Colors.white),
+                textAlign: TextAlign.left,
+                maxLines: 1,
+                group: labelAutoSizeGroup,
+              ),
             ),
           ),
         ],
