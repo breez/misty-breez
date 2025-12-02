@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/routes/nwc/widgets/nwc_connection_form.dart';
+import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_connection_form.dart';
 import 'package:misty_breez/routes/receive_payment/widgets/destination_widget/widgets/compact_qr_image.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';

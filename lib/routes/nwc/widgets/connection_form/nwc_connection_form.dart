@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
 import 'package:misty_breez/routes/nwc/models/nwc_form_models.dart';
-import 'package:misty_breez/routes/nwc/widgets/nwc_budget_form_section.dart';
-import 'package:misty_breez/routes/nwc/widgets/nwc_expiry_form_section.dart';
+import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_budget_form_section.dart';
+import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_expiry_form_section.dart';
 
 class NwcConnectionForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
