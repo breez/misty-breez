@@ -29,7 +29,7 @@ class BreezSDKLiquid {
     try {
       _subscribeToLogStream();
       _instance = await liquid_sdk.connect(req: req);
-      _nwc = await _instance!.useNwcService(config: const liquid_sdk.NwcConfig());
+      _nwc = await _instance!.useNwcPlugin(config: const liquid_sdk.NwcConfig());
       _initializeEventsStream(_instance!);
       _subscribeToEventsStream(_instance!);
       await _fetchWalletData(_instance!);
