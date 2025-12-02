@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:misty_breez/theme/src/theme.dart';
 
 class NwcConnectionItemHeader extends StatelessWidget {
   final String connectionName;
@@ -42,14 +43,11 @@ class NwcConnectionItemHeader extends StatelessWidget {
           if (isExpiringWithinWeek)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFB923C).withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
+              decoration: BoxDecoration(color: warningBoxColor, borderRadius: BorderRadius.circular(12.0)),
               child: Text(
-                'Expiring soon',
+                'Expires soon',
                 style: themeData.textTheme.bodySmall?.copyWith(
-                  color: const Color(0xFFFB923C),
+                  color: Theme.of(context).errorTextStyle.color,
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                 ),
