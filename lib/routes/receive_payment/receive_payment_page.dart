@@ -36,17 +36,15 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   void initState() {
     super.initState();
     setState(() {
-      _currentPageIndex =
-          widget.initialPageIndex ?? ReceiveLightningAddressPage.pageIndex;
+      _currentPageIndex = widget.initialPageIndex ?? ReceiveLightningAddressPage.pageIndex;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final PermissionStatus notificationStatus = context
-        .select<PermissionsCubit, PermissionStatus>(
-          (PermissionsCubit cubit) => cubit.state.notificationStatus,
-        );
+    final PermissionStatus notificationStatus = context.select<PermissionsCubit, PermissionStatus>(
+      (PermissionsCubit cubit) => cubit.state.notificationStatus,
+    );
     _hasNotificationPermission = notificationStatus == PermissionStatus.granted;
     _hasLnAddressStateError = context.select<LnAddressCubit, bool>(
       (LnAddressCubit cubit) => cubit.state.hasError,
@@ -62,8 +60,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       appBar: AppBar(
         leading: back_button.BackButton(
           onPressed: () {
-            final bool canReturnToLNAddressPage =
-                (_hasNotificationPermission && !_hasLnAddressStateError);
+            final bool canReturnToLNAddressPage = (_hasNotificationPermission && !_hasLnAddressStateError);
             if (_showInvoicePage && canReturnToLNAddressPage) {
               setState(() {
                 _showInvoicePage = false;
@@ -71,8 +68,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
               return;
             }
 
-            final bool canReturnToAmountlessBtcPage =
-                !_hasAmountlessBtcAddressError;
+            final bool canReturnToAmountlessBtcPage = !_hasAmountlessBtcAddressError;
             if (_showBtcPaymentRequestPage && canReturnToAmountlessBtcPage) {
               setState(() {
                 _showBtcPaymentRequestPage = false;
@@ -99,8 +95,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
                 setState(() {
                   _showInvoicePage = true;
                 });
-              } else if (_currentPageIndex ==
-                  ReceiveAmountlessBitcoinAddressPage.pageIndex) {
+              } else if (_currentPageIndex == ReceiveAmountlessBitcoinAddressPage.pageIndex) {
                 setState(() {
                   _showBtcPaymentRequestPage = true;
                 });
@@ -131,20 +126,14 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     // - without notification permissions
     // - when LN Address state had errors
     if (_currentPaymentMethod == PaymentMethod.bolt11Invoice) {
-      final bool shouldRedirect =
-          _showInvoicePage ||
-          !_hasNotificationPermission ||
-          _hasLnAddressStateError;
-      return shouldRedirect
-          ? ReceiveLightningPaymentPage.pageIndex
-          : ReceiveLightningAddressPage.pageIndex;
+      final bool shouldRedirect = _showInvoicePage || !_hasNotificationPermission || _hasLnAddressStateError;
+      return shouldRedirect ? ReceiveLightningPaymentPage.pageIndex : ReceiveLightningAddressPage.pageIndex;
     }
 
     // Redirect to BTC Invoice page if amountless BTC Address page is opened
     // - when Amountless BTC Address state had errors
     if (_currentPaymentMethod == PaymentMethod.bitcoinAddress) {
-      final bool shouldRedirect =
-          _showBtcPaymentRequestPage || _hasAmountlessBtcAddressError;
+      final bool shouldRedirect = _showBtcPaymentRequestPage || _hasAmountlessBtcAddressError;
       return shouldRedirect
           ? ReceiveBitcoinAddressPaymentPage.pageIndex
           : ReceiveAmountlessBitcoinAddressPage.pageIndex;
@@ -161,8 +150,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   }
 
   Future<void> _onPaymentMethodChanged(PaymentMethod newMethod) async {
-    if (newMethod == PaymentMethod.liquidAddress ||
-        newMethod == _currentPaymentMethod) {
+    if (newMethod == PaymentMethod.liquidAddress || newMethod == _currentPaymentMethod) {
       return;
     }
     Future<void>.microtask(() async {
