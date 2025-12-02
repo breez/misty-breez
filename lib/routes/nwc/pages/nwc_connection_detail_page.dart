@@ -43,7 +43,6 @@ class NwcConnectionDetailPage extends StatelessWidget {
                 children: <Widget>[
                   Card(
                     color: Theme.of(context).customData.surfaceBgColor,
-                    margin: const EdgeInsets.all(16),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
