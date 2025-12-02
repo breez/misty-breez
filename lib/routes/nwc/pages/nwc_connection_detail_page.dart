@@ -5,7 +5,7 @@ import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
 
-class NwcConnectionDetailPage extends StatefulWidget {
+class NwcConnectionDetailPage extends StatelessWidget {
   static const String routeName = '/nwc/connection/detail';
 
   final NwcConnectionModel connection;
@@ -13,93 +13,55 @@ class NwcConnectionDetailPage extends StatefulWidget {
   const NwcConnectionDetailPage({required this.connection, super.key});
 
   @override
-  State<NwcConnectionDetailPage> createState() => _NwcConnectionDetailPageState();
-}
-
-class _NwcConnectionDetailPageState extends State<NwcConnectionDetailPage> {
-  late NwcConnectionModel _connection;
-
-  @override
-  void initState() {
-    super.initState();
-    _connection = widget.connection;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocListener<NwcCubit, NwcState>(
+    return BlocConsumer<NwcCubit, NwcState>(
       listenWhen: (NwcState previous, NwcState current) {
-        // Listen when loading completes or connection is deleted
-        if (previous.isLoading && !current.isLoading) {
-          return true;
-        }
-        return _isConnectionDeleted(current) && !_isConnectionDeleted(previous);
+        final bool prevExists = _existsIn(previous, connection);
+        final bool currExists = _existsIn(current, connection);
+        return (previous.isLoading && !current.isLoading) || (prevExists && !currExists);
       },
       listener: (BuildContext context, NwcState state) {
-        if (_isConnectionDeleted(state)) {
-          _handleConnectionDeleted();
-          return;
+        final bool exists = _existsIn(state, connection);
+        if (!exists && context.mounted) {
+          Navigator.of(context).pop();
         }
-        _updateConnectionIfChanged(state);
       },
-      child: Scaffold(
-        appBar: AppBar(leading: const back_button.BackButton(), title: Text(_connection.name)),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+      builder: (BuildContext context, NwcState state) {
+        final NwcConnectionModel updated = state.connections.firstWhere(
+          (NwcConnectionModel c) => c.name == connection.name,
+          orElse: () => connection,
+        );
+
+        return Scaffold(
+          appBar: AppBar(leading: const back_button.BackButton(), title: Text(updated.name)),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  NwcConnectionInfoCard(connectionName: _connection.name),
+                  NwcConnectionInfoCard(connectionName: updated.name),
                   const SizedBox(height: 16),
-                  NwcConnectionParametersCard(connection: _connection),
+                  NwcConnectionParametersCard(connection: updated),
                   const SizedBox(height: 16),
                   NwcConnectionUriCard(
-                    connectionString: _connection.connectionString,
-                    onShowQr: () => NwcQrDialog.show(context, _connection.connectionString),
+                    connectionString: updated.connectionString,
+                    onShowQr: () => NwcQrDialog.show(context, updated.connectionString),
                   ),
                 ],
               ),
             ),
           ),
-        ),
-        bottomNavigationBar: BlocBuilder<NwcCubit, NwcState>(
-          builder: (BuildContext context, NwcState state) {
-            return SingleButtonBottomBar(
-              text: 'EDIT CONNECTION',
-              loading: state.isLoading,
-              onPressed: () => showNwcConnectBottomSheet(context, existingConnection: _connection),
-            );
-          },
-        ),
-      ),
+          bottomNavigationBar: SingleButtonBottomBar(
+            text: 'EDIT CONNECTION',
+            loading: state.isLoading,
+            onPressed: () => showNwcConnectBottomSheet(context, existingConnection: updated),
+          ),
+        );
+      },
     );
   }
 
-  bool _isConnectionDeleted(NwcState state) {
-    return !state.connections.any((NwcConnectionModel c) => c.name == _connection.name);
-  }
-
-  void _handleConnectionDeleted() {
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
-  }
-
-  void _updateConnectionIfChanged(NwcState state) {
-    final NwcConnectionModel? updatedConnection = _findUpdatedConnection(state);
-    if (updatedConnection != null && mounted) {
-      setState(() {
-        _connection = updatedConnection;
-      });
-    }
-  }
-
-  NwcConnectionModel? _findUpdatedConnection(NwcState state) {
-    return state.connections.cast<NwcConnectionModel?>().firstWhere(
-      (NwcConnectionModel? c) => c?.name == _connection.name,
-      orElse: () => null,
-    );
-  }
+  bool _existsIn(NwcState state, NwcConnectionModel target) =>
+      state.connections.any((NwcConnectionModel c) => c.name == target.name);
 }
