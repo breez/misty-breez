@@ -30,8 +30,8 @@ const List<BudgetAmountOptionData> presetBudgetAmountOptions = <BudgetAmountOpti
   BudgetAmountOptionData(type: BudgetAmountOption.tenK, label: '10k sats', sats: 10000),
   BudgetAmountOptionData(type: BudgetAmountOption.hundredK, label: '100k sats', sats: 100000),
   BudgetAmountOptionData(type: BudgetAmountOption.oneM, label: '1M sats', sats: 1000000),
-  BudgetAmountOptionData(type: BudgetAmountOption.unlimited, label: 'Unlimited', sats: null),
-  BudgetAmountOptionData(type: BudgetAmountOption.custom, label: 'Custom', sats: null),
+  BudgetAmountOptionData(type: BudgetAmountOption.unlimited, label: 'Unlimited'),
+  BudgetAmountOptionData(type: BudgetAmountOption.custom, label: 'Custom'),
 ];
 
 enum ExpiryTimeOption { oneWeek, oneMonth, oneYear, never, custom }
@@ -48,6 +48,6 @@ const List<ExpiryTimeOptionData> presetExpiryTimeOptions = <ExpiryTimeOptionData
   ExpiryTimeOptionData(type: ExpiryTimeOption.oneWeek, label: '1 week', minutes: 10080),
   ExpiryTimeOptionData(type: ExpiryTimeOption.oneMonth, label: '1 month', minutes: 43200),
   ExpiryTimeOptionData(type: ExpiryTimeOption.oneYear, label: '1 year', minutes: 525600),
-  ExpiryTimeOptionData(type: ExpiryTimeOption.never, label: 'Never', minutes: null),
-  ExpiryTimeOptionData(type: ExpiryTimeOption.custom, label: 'Custom', minutes: null),
+  ExpiryTimeOptionData(type: ExpiryTimeOption.never, label: 'Never'),
+  ExpiryTimeOptionData(type: ExpiryTimeOption.custom, label: 'Custom'),
 ];
