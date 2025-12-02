@@ -242,6 +242,7 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
               return null;
             },
           ),
+          const SizedBox(height: 16.0),
           NwcBudgetFormSection(
             showBudgetFields: _showBudgetFields,
             selectedBudgetAmount: _selectedBudgetAmount,
@@ -266,6 +267,7 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
                   });
                 },
           ),
+          const SizedBox(height: 16.0),
           NwcExpiryFormSection(
             showExpiryFields: _showExpiryFields,
             showBudgetFields: _showBudgetFields,
@@ -279,23 +281,6 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
               });
             },
           ),
-          if (!_showBudgetFields && !_showExpiryFields) const SizedBox(height: 16),
-          if (!_showExpiryFields)
-            ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 48.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.white),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                  ),
-                  onPressed: () => _toggleExpiryFields(true),
-                  child: const Text('SET EXPIRATION TIME'),
-                ),
-              ),
-            ),
         ],
       ),
     );

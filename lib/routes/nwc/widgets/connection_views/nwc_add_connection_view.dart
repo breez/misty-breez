@@ -96,7 +96,7 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
         if (_connectionString == null) ...<Widget>[
           const BottomSheetTitle(title: 'Connect a new app'),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: NwcConnectionForm(
               formKey: _formKey,
               nameController: _nameController,
@@ -118,7 +118,6 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
                   },
             ),
           ),
-          const SizedBox(height: 8.0),
           BlocBuilder<NwcCubit, NwcState>(
             builder: (BuildContext context, NwcState state) {
               return Align(

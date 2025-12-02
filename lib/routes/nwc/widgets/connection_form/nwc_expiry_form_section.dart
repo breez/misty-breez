@@ -57,7 +57,7 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Divider(color: Color.fromRGBO(40, 59, 74, 0.5), indent: 16.0, endIndent: 16.0),
+        const Divider(color: Color.fromRGBO(40, 59, 74, 0.5), indent: 0.0, endIndent: 0.0),
         Text(
           'Connection Expiration',
           style: themeData.textTheme.labelMedium?.copyWith(color: Colors.white70),
