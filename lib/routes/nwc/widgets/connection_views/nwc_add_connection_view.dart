@@ -154,7 +154,8 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
                       child: AspectRatio(aspectRatio: 1.0, child: CompactQRImage(data: _connectionString!)),
                     ),
                   ),
-                  if (_isObscured) Positioned.fill(child: Container(color: Colors.black.withOpacity(0.32))),
+                  if (_isObscured)
+                    Positioned.fill(child: Container(color: Colors.black.withValues(alpha: .32))),
                   if (_isObscured)
                     FilledButton(
                       onPressed: () {
