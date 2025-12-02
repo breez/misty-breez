@@ -38,40 +38,43 @@ class _NwcPageState extends State<NwcPage> {
             );
           }
 
-          return Column(
-            children: <Widget>[
-              Expanded(
-                child: state.connections.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              const Icon(Icons.link_off, size: 64, color: Colors.grey),
-                              const SizedBox(height: 16),
-                              Text('No NWC connections', style: Theme.of(context).textTheme.titleLarge),
-                            ],
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(8.0),
-                        itemCount: state.connections.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return NwcConnectionItem(connection: state.connections[index]);
-                        },
-                      ),
+          if (state.connections.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Icon(Icons.link_off, size: 64, color: Colors.grey),
+                    const SizedBox(height: 16),
+                    Text('No NWC connections', style: Theme.of(context).textTheme.titleLarge),
+                  ],
+                ),
               ),
-              SingleButtonBottomBar(
-                text: 'CONNECT',
-                stickToBottom: true,
-                onPressed: () {
-                  final NwcCubit nwcCubit = context.read<NwcCubit>();
-                  showNwcConnectBottomSheet(context, nwcCubit: nwcCubit);
-                },
-              ),
-            ],
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: state.connections.length,
+            itemBuilder: (BuildContext context, int index) =>
+                NwcConnectionItem(connection: state.connections[index]),
+          );
+        },
+      ),
+      bottomNavigationBar: BlocBuilder<NwcCubit, NwcState>(
+        buildWhen: (NwcState previous, NwcState current) => previous.isLoading != current.isLoading,
+        builder: (BuildContext context, NwcState state) {
+          if (state.isLoading) {
+            return const SizedBox.shrink();
+          }
+
+          return SingleButtonBottomBar(
+            text: 'CONNECT',
+            stickToBottom: true,
+            onPressed: () {
+              showNwcConnectBottomSheet(context);
+            },
           );
         },
       ),
