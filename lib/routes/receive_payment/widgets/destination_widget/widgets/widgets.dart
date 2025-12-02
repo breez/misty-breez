@@ -1,4 +1,3 @@
-export 'compact_qr_image.dart';
 export 'destination_actions.dart';
 export 'destination_information.dart';
 export 'destination_qr_image.dart';
