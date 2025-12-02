@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_connection_form.dart';
+import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 
 class NwcEditConnectionView extends StatefulWidget {
