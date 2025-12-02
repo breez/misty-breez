@@ -155,35 +155,47 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
         ] else ...<Widget>[
           const BottomSheetTitle(title: 'Connection Secret:'),
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(16.0),
-                    child: ImageFiltered(
-                      imageFilter: _isObscured
-                          ? ImageFilter.blur(sigmaX: 14, sigmaY: 14)
-                          : ImageFilter.blur(),
-                      child: AspectRatio(aspectRatio: 1.0, child: CompactQRImage(data: _connectionString!)),
+            padding: const EdgeInsets.symmetric(horizontal: 48.0, vertical: 16.0),
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                TweenAnimationBuilder<double>(
+                  duration: const Duration(milliseconds: 300),
+                  tween: Tween<double>(begin: _isObscured ? 14.0 : 0.0, end: _isObscured ? 14.0 : 0.0),
+                  builder: (BuildContext context, double blurValue, Widget? child) {
+                    return ImageFiltered(
+                      imageFilter: ImageFilter.blur(sigmaX: blurValue, sigmaY: blurValue),
+                      child: child,
+                    );
+                  },
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      width: 230.0,
+                      height: 230.0,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const ShapeDecoration(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                      ),
+                      child: CompactQRImage(data: _connectionString!),
                     ),
                   ),
-                  if (_isObscured)
-                    Positioned.fill(child: Container(color: Colors.black.withValues(alpha: .32))),
-                  if (_isObscured)
-                    FilledButton(
-                      onPressed: () {
-                        setState(() {
-                          _isObscured = false;
-                        });
-                      },
-                      child: const Text('SHOW QR'),
-                    ),
-                ],
-              ),
+                ),
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  opacity: _isObscured ? 1.0 : 0.0,
+                  child: Positioned.fill(child: Container(color: Colors.black.withValues(alpha: .32))),
+                ),
+                if (_isObscured)
+                  FilledButton(
+                    onPressed: () {
+                      setState(() {
+                        _isObscured = false;
+                      });
+                    },
+                    child: const Text('SHOW QR'),
+                  ),
+              ],
             ),
           ),
           const SizedBox(height: 16),
