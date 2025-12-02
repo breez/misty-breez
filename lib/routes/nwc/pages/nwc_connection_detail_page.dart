@@ -34,7 +34,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
         );
 
         return Scaffold(
-          appBar: AppBar(leading: const back_button.BackButton(), title: Text(updated.name)),
+          appBar: AppBar(leading: const back_button.BackButton(), title: const Text('Connection Details')),
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
