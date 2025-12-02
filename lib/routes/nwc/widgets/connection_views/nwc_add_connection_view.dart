@@ -1,9 +1,11 @@
 import 'dart:ui';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
@@ -57,18 +59,35 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
       }
     }
 
-    final String? connectionString = await context.read<NwcCubit>().createConnection(
-      name: name,
-      expiryTimeMins: expiryTimeMins,
-      periodicBudgetReq: periodicBudgetReq,
-    );
+    try {
+      final String? connectionString = await context.read<NwcCubit>().createConnection(
+        name: name,
+        expiryTimeMins: expiryTimeMins,
+        periodicBudgetReq: periodicBudgetReq,
+      );
 
-    if (connectionString != null && mounted) {
-      setState(() {
-        _connectionString = connectionString;
-      });
-    } else if (mounted) {
-      showFlushbar(context, message: 'Failed to create connection', duration: const Duration(seconds: 3));
+      if (connectionString != null && mounted) {
+        setState(() {
+          _connectionString = connectionString;
+        });
+      } else if (mounted) {
+        final String? error = context.read<NwcCubit>().state.error;
+        showFlushbar(
+          context,
+          message: error != null
+              ? ExceptionHandler.extractMessage(error, context.texts())
+              : 'Failed to create connection',
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        showFlushbar(
+          context,
+          message: 'Failed to create connection: ${e.toString()}',
+          duration: const Duration(seconds: 3),
+        );
+      }
     }
   }
 
