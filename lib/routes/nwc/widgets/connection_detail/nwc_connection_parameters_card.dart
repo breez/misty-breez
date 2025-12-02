@@ -31,7 +31,7 @@ class NwcConnectionParametersCard extends StatelessWidget {
             <Widget>[
                 if (connection.periodicBudget != null)
                   StatusItem(
-                    label: 'Budget renewal',
+                    label: 'Budget ${connection.periodicBudget!.renewsAt != null ? 'Renewal' : 'Amount'}',
                     value: _formatBudgetRenewal(connection.periodicBudget!),
                   ),
                 StatusItem(label: 'Expiry Time', value: _formatExpiryTime(connection.expiresAt)),
