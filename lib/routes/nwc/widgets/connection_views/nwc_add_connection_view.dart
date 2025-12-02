@@ -1,10 +1,12 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:service_injector/service_injector.dart';
@@ -20,6 +22,7 @@ class NwcAddConnectionView extends StatefulWidget {
 class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AutoSizeGroup _buttonTextGroup = AutoSizeGroup();
   String? _connectionString;
   bool _isObscured = true;
 
@@ -155,7 +158,7 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
         ] else ...<Widget>[
           const BottomSheetTitle(title: 'Connection Secret:'),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
             child: Stack(
               alignment: Alignment.center,
               children: <Widget>[
@@ -198,48 +201,54 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
           Padding(
             padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: MediaQuery.of(context).viewPadding.bottom,
+              left: 32.0,
+              right: 32.0,
+              top: 24.0,
+              bottom: MediaQuery.of(context).viewPadding.bottom + 24.0,
             ),
             child: Row(
               children: <Widget>[
                 Expanded(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 48.0),
+                    constraints: const BoxConstraints(minHeight: 48.0, minWidth: 138.0),
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                       ),
-                      icon: const Padding(
-                        padding: EdgeInsets.only(right: 8.0),
-                        child: Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
+                      icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon'), size: 20.0),
+                      label: AutoSizeText(
+                        'COPY',
+                        style: balanceFiatConversionTextStyle,
+                        maxLines: 1,
+                        group: _buttonTextGroup,
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
                       ),
-                      label: const Text('COPY'),
                       onPressed: _copyConnectionString,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16.0),
+                const SizedBox(width: 32.0),
                 Expanded(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 48.0),
+                    constraints: const BoxConstraints(minHeight: 48.0, minWidth: 138.0),
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                       ),
-                      icon: const Padding(
-                        padding: EdgeInsets.only(right: 8.0),
-                        child: Icon(IconData(0xe917, fontFamily: 'icomoon'), size: 20.0),
+                      icon: const Icon(IconData(0xe917, fontFamily: 'icomoon'), size: 20.0),
+                      label: AutoSizeText(
+                        'SHARE',
+                        style: balanceFiatConversionTextStyle,
+                        maxLines: 1,
+                        group: _buttonTextGroup,
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
                       ),
-                      label: const Text('SHARE'),
                       onPressed: _shareConnectionString,
                     ),
                   ),
@@ -247,7 +256,6 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
         ],
       ],
     );
