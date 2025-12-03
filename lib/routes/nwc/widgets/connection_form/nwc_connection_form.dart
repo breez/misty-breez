@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
 import 'package:misty_breez/routes/nwc/models/nwc_form_models.dart';
@@ -40,6 +41,7 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
   BudgetAmountOption? _selectedBudgetAmount;
   ExpiryTimeOption? _selectedExpiryTime;
   int? _customBudgetAmount;
+  DateTime? _customExpiryDate;
 
   @override
   void initState() {
@@ -68,6 +70,9 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
         final int remainingMins = ((connection.expiresAt! - now) / 60).round();
         if (remainingMins > 0) {
           _selectedExpiryTime = _resolveExpiryTimeOption(remainingMins);
+          if (_selectedExpiryTime == ExpiryTimeOption.custom) {
+            _customExpiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
+          }
           _showExpiryFields = true;
         } else {
           _selectedExpiryTime = ExpiryTimeOption.never;
@@ -118,6 +123,7 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
       _showExpiryFields = value;
       if (!_showExpiryFields) {
         _selectedExpiryTime = null;
+        _customExpiryDate = null;
       } else {
         if (widget.existingConnection?.expiresAt == null) {
           _selectedExpiryTime = ExpiryTimeOption.never;
@@ -166,8 +172,9 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
   }
 
   ExpiryTimeOption _resolveExpiryTimeOption(int minutes) {
+    const int toleranceMins = 15;
     for (final ExpiryTimeOptionData option in presetExpiryTimeOptions) {
-      if (option.minutes == minutes) {
+      if (option.minutes != null && (option.minutes! - minutes).abs() <= toleranceMins) {
         return option.type;
       }
     }
@@ -203,8 +210,12 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
       return null;
     }
     if (_selectedExpiryTime == ExpiryTimeOption.custom) {
-      // TODO(ayush): Custom not implemented yet
-      return null;
+      if (_customExpiryDate == null) {
+        return null;
+      }
+      final DateTime now = DateTime.now();
+      final int minutes = _customExpiryDate!.difference(now).inMinutes;
+      return minutes > 0 ? minutes : null;
     }
     for (final ExpiryTimeOptionData option in presetExpiryTimeOptions) {
       if (option.type == _selectedExpiryTime) {
@@ -227,6 +238,8 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
             controller: widget.nameController,
             autofocus: !widget.isEditMode,
             enabled: !widget.isEditMode,
+            maxLength: 90,
+            maxLengthEnforcement: MaxLengthEnforcement.enforced,
             decoration: InputDecoration(
               labelText: 'Name',
               hintText: 'Name of the app or purpose of the connection',
@@ -236,6 +249,7 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
               ),
               border: const OutlineInputBorder(),
               disabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+              counterStyle: themeData.primaryTextTheme.bodySmall,
             ),
             validator: (String? value) {
               if (value == null || value.trim().isEmpty) {
@@ -275,10 +289,20 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
             showBudgetFields: _showBudgetFields,
             selectedExpiryTime: _selectedExpiryTime,
             renewalTimeMins: _selectedRenewalTimeMinutes,
+            customExpiryDate: _customExpiryDate,
             onToggle: _toggleExpiryFields,
             onValuesChanged: (ExpiryTimeOption? value) {
               setState(() {
                 _selectedExpiryTime = value;
+                if (value != ExpiryTimeOption.custom) {
+                  _customExpiryDate = null;
+                }
+                _notifyValuesChanged();
+              });
+            },
+            onCustomExpiryDateChanged: (DateTime? date) {
+              setState(() {
+                _customExpiryDate = date;
                 _notifyValuesChanged();
               });
             },
