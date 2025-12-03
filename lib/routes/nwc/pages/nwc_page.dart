@@ -62,21 +62,11 @@ class _NwcPageState extends State<NwcPage> {
           );
         },
       ),
-      bottomNavigationBar: BlocBuilder<NwcCubit, NwcState>(
-        buildWhen: (NwcState previous, NwcState current) => previous.isLoading != current.isLoading,
-        builder: (BuildContext context, NwcState state) {
-          if (state.isLoading) {
-            return const SizedBox.shrink();
-          }
-
-          return SingleButtonBottomBar(
-            text: 'CONNECT',
-            stickToBottom: true,
-            onPressed: () {
-              showNwcConnectBottomSheet(context);
-            },
-          );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(NwcAddConnectionPage.routeName);
         },
+        child: const Icon(Icons.add),
       ),
     );
   }
