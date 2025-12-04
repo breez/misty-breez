@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_item/connection_item.dart';
+import 'package:misty_breez/routes/nwc/widgets/connection_detail/nwc_connection_details_sheet.dart';
 import 'package:misty_breez/theme/src/theme.dart';
 
 class NwcConnectionItem extends StatelessWidget {
@@ -27,7 +28,7 @@ class NwcConnectionItem extends StatelessWidget {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed(NwcConnectionDetailPage.routeName, arguments: connection);
+          showNwcConnectionDetailsSheet(context, connection: connection);
         },
         borderRadius: BorderRadius.circular(12.0),
         child: Column(

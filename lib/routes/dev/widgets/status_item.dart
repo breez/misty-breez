@@ -31,7 +31,7 @@ class StatusItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: AutoSizeText(
-              label,
+              '$label:',
               style: themeData.primaryTextTheme.headlineMedium?.copyWith(
                 fontSize: 18.0,
                 color: labelColor ?? Colors.white,

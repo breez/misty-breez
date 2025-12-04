@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-
-import 'package:misty_breez/routes/nwc/models/nwc_form_models.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_budget_form_section.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_expiry_form_section.dart';
 
@@ -11,14 +9,7 @@ class NwcConnectionForm extends StatefulWidget {
   final TextEditingController nameController;
   final bool isEditMode;
   final NwcConnectionModel? existingConnection;
-  final Function(
-    int? maxBudgetSat,
-    int? renewalTimeMins,
-    int? expiryTimeMins,
-    bool showBudgetFields,
-    bool showExpiryFields,
-  )
-  onValuesChanged;
+  final Function(int? maxBudgetSat, int? renewalTimeMins, int? expiryTimeMins) onValuesChanged;
 
   const NwcConnectionForm({
     required this.formKey,
@@ -34,14 +25,9 @@ class NwcConnectionForm extends StatefulWidget {
 }
 
 class _NwcConnectionFormState extends State<NwcConnectionForm> {
-  bool _showBudgetFields = false;
-  bool _showExpiryFields = false;
-  BudgetRenewalType? _selectedBudgetRenewal = BudgetRenewalType.daily;
-  int? _customRenewalTimeMins;
-  BudgetAmountOption? _selectedBudgetAmount;
-  ExpiryTimeOption? _selectedExpiryTime;
+  int? _renewalTimeDays;
   int? _customBudgetAmount;
-  DateTime? _customExpiryDate;
+  DateTime? _expiryDate;
 
   @override
   void initState() {
@@ -50,37 +36,19 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
       final NwcConnectionModel connection = widget.existingConnection!;
       if (connection.periodicBudget != null) {
         final int maxBudgetSat = connection.periodicBudget!.maxBudgetSat.toInt();
-        _selectedBudgetAmount = _resolveBudgetAmountOption(maxBudgetSat);
-        if (_selectedBudgetAmount == BudgetAmountOption.custom) {
-          _customBudgetAmount = maxBudgetSat;
-        }
+        _customBudgetAmount = maxBudgetSat;
         if (connection.periodicBudget!.renewsAt != null) {
           final int renewalIntervalMins =
               ((connection.periodicBudget!.renewsAt! - connection.periodicBudget!.updatedAt) / 60).round();
-          _selectedBudgetRenewal = _resolveBudgetRenewalType(renewalIntervalMins);
-        } else {
-          _selectedBudgetRenewal = BudgetRenewalType.never;
+          _renewalTimeDays = (renewalIntervalMins / 1440).round();
         }
-        _showBudgetFields = true;
-      } else {
-        _showBudgetFields = false;
       }
       if (connection.expiresAt != null) {
         final int now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         final int remainingMins = ((connection.expiresAt! - now) / 60).round();
         if (remainingMins > 0) {
-          _selectedExpiryTime = _resolveExpiryTimeOption(remainingMins);
-          if (_selectedExpiryTime == ExpiryTimeOption.custom) {
-            _customExpiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
-          }
-          _showExpiryFields = true;
-        } else {
-          _selectedExpiryTime = ExpiryTimeOption.never;
-          _showExpiryFields = true;
+          _expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
         }
-      } else {
-        _selectedExpiryTime = ExpiryTimeOption.never;
-        _showExpiryFields = false;
       }
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -91,138 +59,26 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
   void _notifyValuesChanged() {
     widget.onValuesChanged(
       _selectedBudgetAmountSats,
-      _selectedRenewalTimeMinutes,
-      _selectedExpiryTimeMinutes,
-      _showBudgetFields,
-      _showExpiryFields,
+      _renewalTimeDays != null ? _renewalTimeDays! * 1440 : null,
+      _expiryDate != null ? _expiryDate!.difference(DateTime.now()).inMinutes : null,
     );
   }
 
-  void _toggleBudgetFields(bool value) {
-    setState(() {
-      _showBudgetFields = value;
-      if (!_showBudgetFields) {
-        _selectedBudgetRenewal = BudgetRenewalType.daily;
-        _customRenewalTimeMins = null;
-        _selectedBudgetAmount = null;
-        _customBudgetAmount = null;
-      } else {
-        if (widget.existingConnection?.periodicBudget == null) {
-          _selectedBudgetAmount = BudgetAmountOption.unlimited;
-          _selectedBudgetRenewal = BudgetRenewalType.never;
-        } else {
-          _selectedBudgetRenewal ??= BudgetRenewalType.daily;
-        }
-      }
-      _notifyValuesChanged();
-    });
-  }
-
-  void _toggleExpiryFields(bool value) {
-    setState(() {
-      _showExpiryFields = value;
-      if (!_showExpiryFields) {
-        _selectedExpiryTime = null;
-        _customExpiryDate = null;
-      } else {
-        if (widget.existingConnection?.expiresAt == null) {
-          _selectedExpiryTime = ExpiryTimeOption.never;
-        }
-      }
-      _notifyValuesChanged();
-    });
-  }
-
   int? get _selectedRenewalTimeMinutes {
-    if (!_showBudgetFields || _selectedBudgetRenewal == null) {
-      return null;
-    }
-    if (_selectedBudgetRenewal == BudgetRenewalType.custom) {
-      return _customRenewalTimeMins;
-    }
-    for (final BudgetRenewalOption option in presetBudgetRenewalOptions) {
-      if (option.type == _selectedBudgetRenewal) {
-        return option.minutes;
-      }
-    }
-    return null;
-  }
-
-  BudgetRenewalType _resolveBudgetRenewalType(int renewalTimeMins) {
-    const int toleranceMins = 15;
-    for (final BudgetRenewalOption option in presetBudgetRenewalOptions) {
-      if ((option.minutes - renewalTimeMins).abs() <= toleranceMins) {
-        _customRenewalTimeMins = null;
-        return option.type;
-      }
-    }
-    _customRenewalTimeMins = renewalTimeMins;
-    return BudgetRenewalType.custom;
-  }
-
-  BudgetAmountOption _resolveBudgetAmountOption(int sats) {
-    for (final BudgetAmountOptionData option in presetBudgetAmountOptions) {
-      if (option.sats == sats) {
-        _customBudgetAmount = null;
-        return option.type;
-      }
-    }
-    _customBudgetAmount = sats;
-    return BudgetAmountOption.custom;
-  }
-
-  ExpiryTimeOption _resolveExpiryTimeOption(int minutes) {
-    const int toleranceMins = 15;
-    for (final ExpiryTimeOptionData option in presetExpiryTimeOptions) {
-      if (option.minutes != null && (option.minutes! - minutes).abs() <= toleranceMins) {
-        return option.type;
-      }
-    }
-    if (minutes <= 0) {
-      return ExpiryTimeOption.never;
-    }
-    return ExpiryTimeOption.custom;
-  }
-
-  int? get _selectedBudgetAmountSats {
-    if (!_showBudgetFields || _selectedBudgetAmount == null) {
-      return null;
-    }
-    if (_selectedBudgetAmount == BudgetAmountOption.unlimited) {
-      return null; // Unlimited
-    }
-    if (_selectedBudgetAmount == BudgetAmountOption.custom) {
-      return _customBudgetAmount;
-    }
-    for (final BudgetAmountOptionData option in presetBudgetAmountOptions) {
-      if (option.type == _selectedBudgetAmount) {
-        return option.sats;
-      }
-    }
-    return null;
+    return _renewalTimeDays != null ? _renewalTimeDays! * 1440 : null;
   }
 
   int? get _selectedExpiryTimeMinutes {
-    if (!_showExpiryFields || _selectedExpiryTime == null) {
+    if (_expiryDate == null) {
       return null;
     }
-    if (_selectedExpiryTime == ExpiryTimeOption.never) {
-      return null;
-    }
-    if (_selectedExpiryTime == ExpiryTimeOption.custom) {
-      if (_customExpiryDate == null) {
-        return null;
-      }
-      final DateTime now = DateTime.now();
-      final int minutes = _customExpiryDate!.difference(now).inMinutes;
-      return minutes > 0 ? minutes : null;
-    }
-    for (final ExpiryTimeOptionData option in presetExpiryTimeOptions) {
-      if (option.type == _selectedExpiryTime) {
-        return option.minutes;
-      }
-    }
-    return null;
+    final DateTime now = DateTime.now();
+    final int minutes = _expiryDate!.difference(now).inMinutes;
+    return minutes > 0 ? minutes : null;
+  }
+
+  int? get _selectedBudgetAmountSats {
+    return _customBudgetAmount;
   }
 
   @override
@@ -242,15 +98,15 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
             decoration: InputDecoration(
               labelText: 'Name',
-              hintText: 'Name of the app or purpose of the connection',
               errorBorder: OutlineInputBorder(borderSide: BorderSide(color: themeData.colorScheme.error)),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: themeData.colorScheme.error),
               ),
               border: const OutlineInputBorder(),
               disabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-              counterStyle: themeData.primaryTextTheme.bodySmall,
+              counterText: '',
             ),
+            onChanged: (_) => setState(() {}),
             validator: (String? value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter a name';
@@ -258,51 +114,40 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
               return null;
             },
           ),
-          const SizedBox(height: 16.0),
-          NwcBudgetFormSection(
-            showBudgetFields: _showBudgetFields,
-            selectedBudgetAmount: _selectedBudgetAmount,
-            selectedBudgetRenewal: _selectedBudgetRenewal,
-            customBudgetAmount: _customBudgetAmount,
-            customRenewalTimeMins: _customRenewalTimeMins,
-            expiryTimeMins: _selectedExpiryTimeMinutes,
-            onToggle: _toggleBudgetFields,
-            onValuesChanged:
-                (
-                  BudgetAmountOption? amountOption,
-                  int? customAmount,
-                  BudgetRenewalType? renewalOption,
-                  int? customRenewal,
-                ) {
-                  setState(() {
-                    _selectedBudgetAmount = amountOption;
-                    _customBudgetAmount = customAmount;
-                    _selectedBudgetRenewal = renewalOption;
-                    _customRenewalTimeMins = customRenewal;
-                    _notifyValuesChanged();
-                  });
-                },
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    'Name of the app or purpose of the connection.',
+                    style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70),
+                  ),
+                ),
+                Text('${widget.nameController.text.length}/90', style: themeData.primaryTextTheme.bodySmall),
+              ],
+            ),
           ),
           const SizedBox(height: 16.0),
-          NwcExpiryFormSection(
-            showExpiryFields: _showExpiryFields,
-            showBudgetFields: _showBudgetFields,
-            selectedExpiryTime: _selectedExpiryTime,
-            renewalTimeMins: _selectedRenewalTimeMinutes,
-            customExpiryDate: _customExpiryDate,
-            onToggle: _toggleExpiryFields,
-            onValuesChanged: (ExpiryTimeOption? value) {
+          NwcBudgetFormSection(
+            budgetAmount: _customBudgetAmount,
+            renewalTimeDays: _renewalTimeDays,
+            expiryTimeMins: _selectedExpiryTimeMinutes,
+            onValuesChanged: (int? budgetAmount, int? renewalDays) {
               setState(() {
-                _selectedExpiryTime = value;
-                if (value != ExpiryTimeOption.custom) {
-                  _customExpiryDate = null;
-                }
+                _customBudgetAmount = budgetAmount;
+                _renewalTimeDays = renewalDays;
                 _notifyValuesChanged();
               });
             },
-            onCustomExpiryDateChanged: (DateTime? date) {
+          ),
+          NwcExpiryFormSection(
+            expiryDate: _expiryDate,
+            renewalTimeMins: _selectedRenewalTimeMinutes,
+            onExpiryDateChanged: (DateTime? date) {
               setState(() {
-                _customExpiryDate = date;
+                _expiryDate = date;
                 _notifyValuesChanged();
               });
             },

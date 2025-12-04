@@ -4,8 +4,7 @@ import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
-import 'package:misty_breez/widgets/widgets.dart';
-
+import 'package:misty_breez/widgets/error_dialog.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_item/nwc_connection_item_header.dart';
 
 class NwcConnectionDetailPage extends StatelessWidget {
@@ -26,7 +25,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
       listener: (BuildContext context, NwcState state) {
         final bool exists = _existsIn(state, connection);
         if (!exists && context.mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacementNamed(NwcPage.routeName);
         }
       },
       builder: (BuildContext context, NwcState state) {
@@ -36,7 +35,19 @@ class NwcConnectionDetailPage extends StatelessWidget {
         );
 
         return Scaffold(
-          appBar: AppBar(leading: const back_button.BackButton(), title: const Text('Connection Details')),
+          appBar: AppBar(
+            leading: const back_button.BackButton(),
+            title: const Text('Connection Details'),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: state.isLoading
+                    ? null
+                    : () => _confirmAndDeleteConnection(context, updatedConnection.name),
+                tooltip: 'Delete connection',
+              ),
+            ],
+          ),
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -57,9 +68,31 @@ class NwcConnectionDetailPage extends StatelessWidget {
                           connectionName: updatedConnection.name,
                           hasPeriodicBudget: updatedConnection.periodicBudget != null,
                           isExpiringWithinWeek: _isExpiringWithinWeek(updatedConnection),
+                          centerTitle: true,
+                          actions: <Widget>[
+                            IconButton(
+                              icon: const Icon(Icons.qr_code, size: 20.0, color: Colors.white),
+                              onPressed: () => NwcQrDialog.show(context, updatedConnection.connectionString),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              tooltip: 'Show QR',
+                            ),
+                            const SizedBox(width: 8.0),
+                            IconButton(
+                              icon: const Icon(Icons.edit_note_rounded, size: 24.0, color: Colors.white),
+                              onPressed: () {
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(NwcEditConnectionPage.routeName, arguments: updatedConnection);
+                              },
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              tooltip: 'Edit',
+                            ),
+                          ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children:
@@ -69,13 +102,11 @@ class NwcConnectionDetailPage extends StatelessWidget {
                                       NwcConnectionParametersCard(connection: updatedConnection),
                                     NwcConnectionUriCard(
                                       connectionString: updatedConnection.connectionString,
-                                      onShowQr: () =>
-                                          NwcQrDialog.show(context, updatedConnection.connectionString),
                                     ),
                                   ].expand((Widget widget) sync* {
                                     yield widget;
                                     yield const Divider(
-                                      height: 8.0,
+                                      height: 32.0,
                                       color: Color.fromRGBO(40, 59, 74, 0.5),
                                       indent: 0.0,
                                       endIndent: 0.0,
@@ -90,11 +121,6 @@ class NwcConnectionDetailPage extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          bottomNavigationBar: SingleButtonBottomBar(
-            text: 'EDIT CONNECTION',
-            loading: state.isLoading,
-            onPressed: () => showNwcConnectBottomSheet(context, existingConnection: updatedConnection),
           ),
         );
       },
@@ -111,5 +137,17 @@ class NwcConnectionDetailPage extends StatelessWidget {
     final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
     final Duration diff = expiryDate.difference(DateTime.now());
     return diff.inDays <= 7 && diff.inDays >= 0;
+  }
+
+  Future<void> _confirmAndDeleteConnection(BuildContext context, String connectionName) async {
+    final bool? confirmed = await promptAreYouSure(
+      context,
+      title: 'Delete Connection',
+      body: Text('Are you sure you want to delete "$connectionName"? This action cannot be undone.'),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await context.read<NwcCubit>().deleteConnection(connectionName);
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/routes/dev/widgets/status_item.dart';
 
 class NwcConnectionItemContent extends StatelessWidget {
   final NwcConnectionModel connection;
@@ -15,93 +16,61 @@ class NwcConnectionItemContent extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final ThemeData themeData = Theme.of(context);
-
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // Budget information
-          if (connection.periodicBudget != null) ...<Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Budget',
-                  style: themeData.primaryTextTheme.headlineMedium?.copyWith(
-                    fontSize: 14.3,
-                    color: Colors.white60,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                _buildBudgetValue(themeData),
-              ],
-            ),
-          ],
+        children:
+            <Widget>[
+                // Budget information
+                if (connection.periodicBudget != null) ...<Widget>[
+                  StatusItem(label: 'Budget', value: _formatBudgetValue(connection.periodicBudget!)),
+                ],
 
-          // Renewal date
-          if (connection.periodicBudget?.renewsAt != null) ...<Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: _buildRenewalText(
-                themeData,
-                DateTime.fromMillisecondsSinceEpoch(connection.periodicBudget!.renewsAt! * 1000),
-              ),
-            ),
-          ],
-        ],
+                // Renewal date
+                if (connection.periodicBudget?.renewsAt != null) ...<Widget>[
+                  StatusItem(
+                    label: 'Renewal',
+                    value: _formatRenewalTime(
+                      DateTime.fromMillisecondsSinceEpoch(connection.periodicBudget!.renewsAt! * 1000),
+                    ),
+                  ),
+                ],
+              ].expand((Widget widget) sync* {
+                yield widget;
+                yield const Divider(
+                  height: 32.0,
+                  color: Color.fromRGBO(40, 59, 74, 0.5),
+                  indent: 0.0,
+                  endIndent: 0.0,
+                );
+              }).toList()
+              ..removeLast(),
       ),
     );
   }
 
-  Widget _buildRenewalText(ThemeData themeData, DateTime date) {
+  String _formatRenewalTime(DateTime date) {
     final Duration diff = date.difference(DateTime.now());
     final int days = diff.inDays;
     final int hours = diff.inHours;
     final int minutes = diff.inMinutes;
 
-    String number;
-    String unit;
-
     if (days > 1) {
-      number = '$days';
-      unit = ' days';
+      return '$days days';
     } else if (days == 1) {
-      number = '1';
-      unit = ' day';
+      return '1 day';
     } else if (hours > 1) {
-      number = '$hours';
-      unit = ' hours';
+      return '$hours hours';
     } else if (hours == 1) {
-      number = '1';
-      unit = ' hour';
+      return '1 hour';
     } else if (minutes > 1) {
-      number = '$minutes';
-      unit = ' minutes';
+      return '$minutes minutes';
     } else if (minutes == 1) {
-      number = '1';
-      unit = ' minute';
+      return '1 minute';
     } else {
-      return Text(
-        'Renews soon',
-        style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 10.0, color: Colors.white70),
-      );
+      return 'Renews soon';
     }
-
-    return RichText(
-      text: TextSpan(
-        style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 10.0, color: Colors.white54),
-        children: <TextSpan>[
-          const TextSpan(text: 'Renews in '),
-          TextSpan(
-            text: number,
-            style: const TextStyle(fontSize: 12.0, color: Colors.white),
-          ),
-          TextSpan(text: unit),
-        ],
-      ),
-    );
   }
 
   String _getRenewalLabel(int renewalTimeMins) {
@@ -123,12 +92,7 @@ class NwcConnectionItemContent extends StatelessWidget {
     return BitcoinCurrency.sat.format(amount, removeTrailingZeros: true);
   }
 
-  Widget _buildBudgetValue(ThemeData themeData) {
-    if (connection.periodicBudget == null) {
-      return const SizedBox.shrink();
-    }
-
-    final PeriodicBudget budget = connection.periodicBudget!;
+  String _formatBudgetValue(PeriodicBudget budget) {
     final int maxBudgetSat = budget.maxBudgetSat.toInt();
     final int usedBudgetSat = budget.usedBudgetSat.toInt();
     final int remainingBudgetSat = maxBudgetSat - usedBudgetSat;
@@ -140,31 +104,16 @@ class NwcConnectionItemContent extends StatelessWidget {
       renewalLabel = _getRenewalLabel(renewalIntervalMins);
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        // Budget amount with used/max
-        RichText(
-          textAlign: TextAlign.right,
-          text: TextSpan(
-            style: themeData.primaryTextTheme.displaySmall?.copyWith(fontSize: 16.0, color: Colors.white),
-            children: <TextSpan>[
-              // Show remaining budget if different from max (i.e., some has been used)
-              if (remainingBudgetSat < maxBudgetSat) ...<TextSpan>[
-                TextSpan(text: '${_formatSats(remainingBudgetSat)} / '),
-              ],
-              // Max budget
-              TextSpan(text: _formatSats(maxBudgetSat)),
-              // Renewal label in lighter color
-              if (renewalLabel.isNotEmpty)
-                TextSpan(
-                  text: ' $renewalLabel',
-                  style: const TextStyle(color: Colors.white38),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
+    // Build the value string
+    String value = '';
+    if (remainingBudgetSat < maxBudgetSat) {
+      value = '${_formatSats(remainingBudgetSat)} / ';
+    }
+    value += _formatSats(maxBudgetSat);
+    if (renewalLabel.isNotEmpty) {
+      value += ' $renewalLabel';
+    }
+
+    return value;
   }
 }

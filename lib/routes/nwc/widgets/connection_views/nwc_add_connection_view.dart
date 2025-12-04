@@ -13,13 +13,15 @@ import 'package:service_injector/service_injector.dart';
 import 'package:share_plus/share_plus.dart';
 
 class NwcAddConnectionView extends StatefulWidget {
-  const NwcAddConnectionView({super.key});
+  final VoidCallback? onConnectionCreated;
+
+  const NwcAddConnectionView({super.key, this.onConnectionCreated});
 
   @override
-  State<NwcAddConnectionView> createState() => _NwcAddConnectionViewState();
+  State<NwcAddConnectionView> createState() => NwcAddConnectionViewState();
 }
 
-class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
+class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AutoSizeGroup _buttonTextGroup = AutoSizeGroup();
@@ -29,7 +31,6 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
   int? _maxBudgetSat;
   int? _renewalTimeMins;
   int? _expiryTimeMins;
-  bool _showBudgetFields = false;
 
   @override
   void dispose() {
@@ -37,7 +38,7 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
     super.dispose();
   }
 
-  Future<void> _createConnection() async {
+  Future<void> createConnection() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -46,19 +47,17 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
     final int? expiryTimeMins = _expiryTimeMins;
 
     PeriodicBudgetRequest? periodicBudgetReq;
-    if (_showBudgetFields) {
-      final int? maxBudgetSatInt = _maxBudgetSat;
-      final int? renewalTimeMins = _renewalTimeMins;
+    final int? maxBudgetSatInt = _maxBudgetSat;
+    final int? renewalTimeMins = _renewalTimeMins;
 
-      if (maxBudgetSatInt != null) {
-        if (renewalTimeMins != null && renewalTimeMins > 0) {
-          periodicBudgetReq = PeriodicBudgetRequest(
-            maxBudgetSat: BigInt.from(maxBudgetSatInt),
-            renewalTimeMins: renewalTimeMins,
-          );
-        } else {
-          periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
-        }
+    if (maxBudgetSatInt != null) {
+      if (renewalTimeMins != null && renewalTimeMins > 0) {
+        periodicBudgetReq = PeriodicBudgetRequest(
+          maxBudgetSat: BigInt.from(maxBudgetSatInt),
+          renewalTimeMins: renewalTimeMins,
+        );
+      } else {
+        periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
       }
     }
 
@@ -73,6 +72,7 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
         setState(() {
           _connectionString = connectionString;
         });
+        widget.onConnectionCreated?.call();
       } else if (mounted) {
         final String? error = context.read<NwcCubit>().state.error;
         showFlushbar(
@@ -110,53 +110,36 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const BottomSheetHandle(),
-        if (_connectionString == null) ...<Widget>[
-          const BottomSheetTitle(title: 'Connect a new app'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: NwcConnectionForm(
-              formKey: _formKey,
-              nameController: _nameController,
-              isEditMode: false,
-              onValuesChanged:
-                  (
-                    int? maxBudgetSat,
-                    int? renewalTimeMins,
-                    int? expiryTimeMins,
-                    bool showBudgetFields,
-                    bool showExpiryFields,
-                  ) {
-                    setState(() {
-                      _maxBudgetSat = maxBudgetSat;
-                      _renewalTimeMins = renewalTimeMins;
-                      _expiryTimeMins = expiryTimeMins;
-                      _showBudgetFields = showBudgetFields;
-                    });
-                  },
-            ),
-          ),
-          BlocBuilder<NwcCubit, NwcState>(
-            builder: (BuildContext context, NwcState state) {
-              return Align(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                  child: SingleButtonBottomBar(
-                    text: 'CONNECT',
-                    loading: state.isLoading,
-                    expand: true,
-                    onPressed: _createConnection,
-                  ),
-                ),
-              );
-            },
-          ),
-        ] else ...<Widget>[
-          const BottomSheetTitle(title: 'Connection Secret:'),
+    if (_connectionString == null) {
+      return Container(
+        decoration: ShapeDecoration(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+          color: Theme.of(context).customData.surfaceBgColor,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+        child: NwcConnectionForm(
+          formKey: _formKey,
+          nameController: _nameController,
+          isEditMode: false,
+          onValuesChanged:
+              (
+                int? maxBudgetSat,
+                int? renewalTimeMins,
+                int? expiryTimeMins,
+              ) {
+                setState(() {
+                  _maxBudgetSat = maxBudgetSat;
+                  _renewalTimeMins = renewalTimeMins;
+                  _expiryTimeMins = expiryTimeMins;
+                });
+              },
+        ),
+      );
+    } else {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0),
             child: Stack(
@@ -257,7 +240,7 @@ class _NwcAddConnectionViewState extends State<NwcAddConnectionView> {
             ),
           ),
         ],
-      ],
-    );
+      );
+    }
   }
 }
