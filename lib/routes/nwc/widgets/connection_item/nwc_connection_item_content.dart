@@ -12,7 +12,8 @@ class NwcConnectionItemContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (connection.periodicBudget == null) {
+    final PeriodicBudget? budget = connection.periodicBudget;
+    if (budget == null) {
       return const SizedBox.shrink();
     }
 
@@ -22,20 +23,14 @@ class NwcConnectionItemContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             <Widget>[
-                // Budget information
-                if (connection.periodicBudget != null) ...<Widget>[
-                  StatusItem(label: 'Budget', value: _formatBudgetValue(connection.periodicBudget!)),
-                ],
-
-                // Renewal date
-                if (connection.periodicBudget?.renewsAt != null) ...<Widget>[
+                StatusItem(label: 'Budget', value: _formatBudgetValue(budget)),
+                if (budget.usedBudgetSat > BigInt.zero)
+                  StatusItem(label: 'Spent', value: _formatSats(budget.usedBudgetSat.toInt())),
+                if (budget.renewsAt != null)
                   StatusItem(
                     label: 'Renewal',
-                    value: _formatRenewalTime(
-                      DateTime.fromMillisecondsSinceEpoch(connection.periodicBudget!.renewsAt! * 1000),
-                    ),
+                    value: _formatRenewalTime(DateTime.fromMillisecondsSinceEpoch(budget.renewsAt! * 1000)),
                   ),
-                ],
               ].expand((Widget widget) sync* {
                 yield widget;
                 yield const Divider(
