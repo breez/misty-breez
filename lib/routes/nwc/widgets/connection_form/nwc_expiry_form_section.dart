@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_expiry_date_picker_sheet.dart';
 import 'package:misty_breez/utils/utils.dart';
 
@@ -81,7 +82,7 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
             ),
             suffixIcon: widget.expirationDate != null
                 ? IconButton(icon: const Icon(Icons.close), onPressed: _clearDate, tooltip: 'Clear date')
-                : const Icon(Icons.calendar_today),
+                : IconButton(icon: SvgPicture.asset('assets/icons/calendar.svg'), onPressed: _showDatePicker),
           ),
           controller: _expiryDateController,
           validator: (_) {
