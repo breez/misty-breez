@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/widgets/widgets.dart';
 
 class DestinationQRImage extends StatelessWidget {
   final String destination;

@@ -45,7 +45,7 @@ class SingleButtonBottomBar extends StatelessWidget {
         bottom: stickToBottom ? MediaQuery.of(context).viewInsets.bottom + 40.0 : 40.0,
       ),
       child: Column(
-        mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48.0, minWidth: 168.0),
