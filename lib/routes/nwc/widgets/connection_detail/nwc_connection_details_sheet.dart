@@ -80,7 +80,7 @@ class NwcConnectionDetailsSheet extends StatelessWidget {
             title: const Text('Connection Details'),
             actions: <Widget>[
               IconButton(
-                icon: const Icon(Icons.delete_outline),
+                icon: const Icon(Icons.delete_forever),
                 onPressed: state.isLoading
                     ? null
                     : () => _confirmAndDeleteConnection(context, updatedConnection.name),
