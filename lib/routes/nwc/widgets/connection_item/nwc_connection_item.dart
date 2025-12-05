@@ -62,30 +62,34 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
                 context,
               ).pushNamed(NwcConnectionDetailPage.routeName, arguments: widget.connection);
             },
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
+            borderRadius: BorderRadius.vertical(
+              top: const Radius.circular(12.0),
+              bottom: Radius.circular(hasContent && _isExpanded ? 0.0 : 12.0),
+            ),
             child: NwcConnectionItemHeader(
               connectionName: widget.connection.name,
-              hasContent: _isExpanded,
+              hasContent: hasContent && _isExpanded,
               showDropdownArrow: hasContent,
               iconRotation: _iconRotation,
               onDropdownTap: hasContent ? _toggleExpanded : null,
             ),
           ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            child: hasContent && _isExpanded
-                ? InkWell(
-                    onTap: () {
-                      Navigator.of(
-                        context,
-                      ).pushNamed(NwcConnectionDetailPage.routeName, arguments: widget.connection);
-                    },
-                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12.0)),
-                    child: NwcConnectionItemContent(connection: widget.connection),
-                  )
-                : const SizedBox.shrink(),
-          ),
+          if (hasContent)
+            AnimatedSize(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: _isExpanded
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                        ).pushNamed(NwcConnectionDetailPage.routeName, arguments: widget.connection);
+                      },
+                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12.0)),
+                      child: NwcConnectionItemContent(connection: widget.connection),
+                    )
+                  : const SizedBox.shrink(),
+            ),
         ],
       ),
     );

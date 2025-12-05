@@ -85,19 +85,20 @@ class NwcConnectionItemHeader extends StatelessWidget {
                     textAlign: TextAlign.left,
                   ),
                 ),
-                if (showDropdownArrow && onDropdownTap != null)
-                  GestureDetector(
-                    onTap: onDropdownTap,
-                    onTapDown: (_) {},
-                    onTapUp: (_) {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: showDropdownArrow ? onDropdownTap : null,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Opacity(
+                      opacity: showDropdownArrow ? 1.0 : 0.0,
                       child: RotationTransition(
                         turns: iconRotation ?? const AlwaysStoppedAnimation<double>(0),
                         child: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 24.0),
                       ),
                     ),
                   ),
+                ),
                 if (onShowQr != null)
                   IconButton(
                     icon: const Icon(Icons.qr_code, size: 20.0, color: Colors.white),
