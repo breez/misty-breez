@@ -30,8 +30,8 @@ class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
   bool _isObscured = true;
 
   int? _maxBudgetSat;
-  int? _renewalTimeMins;
-  int? _expiryTimeMins;
+  int? _renewalIntervalMins;
+  int? _expirationTimeMins;
 
   @override
   void dispose() {
@@ -45,17 +45,17 @@ class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
     }
 
     final String name = _nameController.text.trim();
-    final int? expiryTimeMins = _expiryTimeMins;
+    final int? expirationTimeMins = _expirationTimeMins;
 
     PeriodicBudgetRequest? periodicBudgetReq;
     final int? maxBudgetSatInt = _maxBudgetSat;
-    final int? renewalTimeMins = _renewalTimeMins;
+    final int? renewalIntervalMins = _renewalIntervalMins;
 
     if (maxBudgetSatInt != null) {
-      if (renewalTimeMins != null && renewalTimeMins > 0) {
+      if (renewalIntervalMins != null && renewalIntervalMins > 0) {
         periodicBudgetReq = PeriodicBudgetRequest(
           maxBudgetSat: BigInt.from(maxBudgetSatInt),
-          renewalTimeMins: renewalTimeMins,
+          renewalTimeMins: renewalIntervalMins,
         );
       } else {
         periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
@@ -65,7 +65,7 @@ class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
     try {
       final String? connectionString = await context.read<NwcCubit>().createConnection(
         name: name,
-        expiryTimeMins: expiryTimeMins,
+        expirationTimeMins: expirationTimeMins,
         periodicBudgetReq: periodicBudgetReq,
       );
 
@@ -122,11 +122,11 @@ class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
           formKey: _formKey,
           nameController: _nameController,
           isEditMode: false,
-          onValuesChanged: (int? maxBudgetSat, int? renewalTimeMins, int? expiryTimeMins) {
+          onValuesChanged: (int? maxBudgetSat, int? renewalIntervalMins, int? expirationTimeMins) {
             setState(() {
               _maxBudgetSat = maxBudgetSat;
-              _renewalTimeMins = renewalTimeMins;
-              _expiryTimeMins = expiryTimeMins;
+              _renewalIntervalMins = renewalIntervalMins;
+              _expirationTimeMins = expirationTimeMins;
             });
           },
         ),

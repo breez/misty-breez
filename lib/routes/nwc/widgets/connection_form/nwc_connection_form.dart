@@ -9,7 +9,7 @@ class NwcConnectionForm extends StatefulWidget {
   final TextEditingController nameController;
   final bool isEditMode;
   final NwcConnectionModel? existingConnection;
-  final Function(int? maxBudgetSat, int? renewalTimeMins, int? expiryTimeMins) onValuesChanged;
+  final Function(int? maxBudgetSat, int? renewalIntervalMins, int? expirationTimeMins) onValuesChanged;
 
   const NwcConnectionForm({
     required this.formKey,
@@ -25,9 +25,9 @@ class NwcConnectionForm extends StatefulWidget {
 }
 
 class _NwcConnectionFormState extends State<NwcConnectionForm> {
-  int? _renewalTimeDays;
+  int? _renewalIntervalDays;
   int? _customBudgetAmount;
-  DateTime? _expiryDate;
+  DateTime? _expirationDate;
 
   @override
   void initState() {
@@ -40,14 +40,14 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
         if (connection.periodicBudget!.renewsAt != null) {
           final int renewalIntervalMins =
               ((connection.periodicBudget!.renewsAt! - connection.periodicBudget!.updatedAt) / 60).round();
-          _renewalTimeDays = (renewalIntervalMins / 1440).round();
+          _renewalIntervalDays = (renewalIntervalMins / 1440).round();
         }
       }
       if (connection.expiresAt != null) {
         final int now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         final int remainingMins = ((connection.expiresAt! - now) / 60).round();
         if (remainingMins > 0) {
-          _expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
+          _expirationDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
         }
       }
     }
@@ -59,21 +59,21 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
   void _notifyValuesChanged() {
     widget.onValuesChanged(
       _selectedBudgetAmountSats,
-      _renewalTimeDays != null ? _renewalTimeDays! * 1440 : null,
-      _expiryDate?.difference(DateTime.now()).inMinutes,
+      _renewalIntervalDays != null ? _renewalIntervalDays! * 1440 : null,
+      _expirationDate?.difference(DateTime.now()).inMinutes,
     );
   }
 
-  int? get _selectedRenewalTimeMinutes {
-    return _renewalTimeDays != null ? _renewalTimeDays! * 1440 : null;
+  int? get _selectedRenewalIntervalMinutes {
+    return _renewalIntervalDays != null ? _renewalIntervalDays! * 1440 : null;
   }
 
   int? get _selectedExpiryTimeMinutes {
-    if (_expiryDate == null) {
+    if (_expirationDate == null) {
       return null;
     }
     final DateTime now = DateTime.now();
-    final int minutes = _expiryDate!.difference(now).inMinutes;
+    final int minutes = _expirationDate!.difference(now).inMinutes;
     return minutes > 0 ? minutes : null;
   }
 
@@ -132,22 +132,22 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
           const SizedBox(height: 16.0),
           NwcBudgetFormSection(
             budgetAmount: _customBudgetAmount,
-            renewalTimeDays: _renewalTimeDays,
-            expiryTimeMins: _selectedExpiryTimeMinutes,
+            renewalIntervalDays: _renewalIntervalDays,
+            expirationTimeMins: _selectedExpiryTimeMinutes,
             onValuesChanged: (int? budgetAmount, int? renewalDays) {
               setState(() {
                 _customBudgetAmount = budgetAmount;
-                _renewalTimeDays = renewalDays;
+                _renewalIntervalDays = renewalDays;
                 _notifyValuesChanged();
               });
             },
           ),
           NwcExpiryFormSection(
-            expiryDate: _expiryDate,
-            renewalTimeMins: _selectedRenewalTimeMinutes,
-            onExpiryDateChanged: (DateTime? date) {
+            expirationDate: _expirationDate,
+            renewalIntervalMins: _selectedRenewalIntervalMinutes,
+            onExpirationDateChanged: (DateTime? date) {
               setState(() {
-                _expiryDate = date;
+                _expirationDate = date;
                 _notifyValuesChanged();
               });
             },

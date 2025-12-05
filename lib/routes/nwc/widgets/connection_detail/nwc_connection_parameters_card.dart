@@ -14,7 +14,11 @@ class NwcConnectionParametersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Don't show card if no parameters are set
-    if (connection.periodicBudget == null && connection.expiresAt == null) {
+    final PeriodicBudget? budget = connection.periodicBudget;
+    if (budget == null) {
+      return const SizedBox.shrink();
+    }
+    if (connection.expiresAt == null) {
       return const SizedBox.shrink();
     }
 
@@ -22,14 +26,24 @@ class NwcConnectionParametersCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
           <Widget>[
-              if (connection.periodicBudget != null) ...<Widget>[
-                StatusItem(label: 'Budget', value: _formatBudgetValue(connection.periodicBudget!)),
-              ],
-              if (connection.periodicBudget?.renewsAt != null) ...<Widget>[
+              StatusItem(
+                label: 'Budget',
+                value: BitcoinCurrency.sat.format(budget.maxBudgetSat.toInt(), removeTrailingZeros: true),
+              ),
+              if (budget.usedBudgetSat > BigInt.zero)
                 StatusItem(
-                  label: 'Renewal',
-                  value: _formatRenewalTime(
-                    DateTime.fromMillisecondsSinceEpoch(connection.periodicBudget!.renewsAt! * 1000),
+                  label: 'Spent',
+                  value: BitcoinCurrency.sat.format(budget.usedBudgetSat.toInt(), removeTrailingZeros: true),
+                ),
+              if (budget.renewsAt != null) ...<Widget>[
+                StatusItem(
+                  label: 'Renewal Interval',
+                  value: _getRenewalLabel(((budget.renewsAt! - budget.updatedAt) / 60).round()),
+                ),
+                StatusItem(
+                  label: 'Renewal Date',
+                  value: BreezDateUtils.formatYearMonthDay(
+                    DateTime.fromMillisecondsSinceEpoch(budget.renewsAt! * 1000),
                   ),
                 ),
               ],
@@ -47,45 +61,19 @@ class NwcConnectionParametersCard extends StatelessWidget {
     );
   }
 
-  String _formatRenewalTime(DateTime date) {
-    final Duration diff = date.difference(DateTime.now());
-    final int days = diff.inDays;
-    final int hours = diff.inHours;
-    final int minutes = diff.inMinutes;
-
-    if (days > 1) {
-      return '$days days';
-    } else if (days == 1) {
-      return '1 day';
-    } else if (hours > 1) {
-      return '$hours hours';
-    } else if (hours == 1) {
-      return '1 hour';
-    } else if (minutes > 1) {
-      return '$minutes minutes';
-    } else if (minutes == 1) {
-      return '1 minute';
-    } else {
-      return 'Renews soon';
+  String _getRenewalLabel(int renewalTimeMins) {
+    switch (renewalTimeMins) {
+      case 1440:
+        return 'per day';
+      case 10080:
+        return 'per week';
+      case 43200:
+        return 'per month';
+      case 525600:
+        return 'per year';
+      default:
+        return '';
     }
-  }
-
-  String _formatSats(int amount) {
-    return BitcoinCurrency.sat.format(amount, removeTrailingZeros: true);
-  }
-
-  String _formatBudgetValue(PeriodicBudget budget) {
-    final int maxBudgetSat = budget.maxBudgetSat.toInt();
-    final int usedBudgetSat = budget.usedBudgetSat.toInt();
-    final int remainingBudgetSat = maxBudgetSat - usedBudgetSat;
-
-    String value = '';
-    if (remainingBudgetSat < maxBudgetSat) {
-      value = '${_formatSats(remainingBudgetSat)} / ';
-    }
-    value += _formatSats(maxBudgetSat);
-
-    return value;
   }
 
   String _formatExpiryTime(int? expiresAt) {

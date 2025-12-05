@@ -3,12 +3,12 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/routes/dev/widgets/status_item.dart';
+import 'package:misty_breez/utils/date/breez_date_utils.dart';
 
 class NwcConnectionItemContent extends StatelessWidget {
   final NwcConnectionModel connection;
-  final bool isExpiringWithinWeek;
 
-  const NwcConnectionItemContent({required this.connection, required this.isExpiringWithinWeek, super.key});
+  const NwcConnectionItemContent({required this.connection, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +23,25 @@ class NwcConnectionItemContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             <Widget>[
-                StatusItem(label: 'Budget', value: _formatBudgetValue(budget)),
+                StatusItem(
+                  label: 'Budget',
+                  value: BitcoinCurrency.sat.format(budget.maxBudgetSat.toInt(), removeTrailingZeros: true),
+                ),
                 if (budget.usedBudgetSat > BigInt.zero)
-                  StatusItem(label: 'Spent', value: _formatSats(budget.usedBudgetSat.toInt())),
-                if (budget.renewsAt != null)
                   StatusItem(
-                    label: 'Renewal',
-                    value: _formatRenewalTime(DateTime.fromMillisecondsSinceEpoch(budget.renewsAt! * 1000)),
+                    label: 'Spent',
+                    value: BitcoinCurrency.sat.format(
+                      budget.usedBudgetSat.toInt(),
+                      removeTrailingZeros: true,
+                    ),
                   ),
+                if (budget.renewsAt != null) ...<Widget>[
+                  StatusItem(
+                    label: 'Renewal Interval',
+                    value: _getRenewalLabel(((budget.renewsAt! - budget.updatedAt) / 60).round()),
+                  ),
+                  StatusItem(label: 'Renewal Date', value: _formatRenewalDate(budget.renewsAt!)),
+                ],
               ].expand((Widget widget) sync* {
                 yield widget;
                 yield const Divider(
@@ -43,29 +54,6 @@ class NwcConnectionItemContent extends StatelessWidget {
               ..removeLast(),
       ),
     );
-  }
-
-  String _formatRenewalTime(DateTime date) {
-    final Duration diff = date.difference(DateTime.now());
-    final int days = diff.inDays;
-    final int hours = diff.inHours;
-    final int minutes = diff.inMinutes;
-
-    if (days > 1) {
-      return '$days days';
-    } else if (days == 1) {
-      return '1 day';
-    } else if (hours > 1) {
-      return '$hours hours';
-    } else if (hours == 1) {
-      return '1 hour';
-    } else if (minutes > 1) {
-      return '$minutes minutes';
-    } else if (minutes == 1) {
-      return '1 minute';
-    } else {
-      return 'Renews soon';
-    }
   }
 
   String _getRenewalLabel(int renewalTimeMins) {
@@ -83,32 +71,7 @@ class NwcConnectionItemContent extends StatelessWidget {
     }
   }
 
-  String _formatSats(int amount) {
-    return BitcoinCurrency.sat.format(amount, removeTrailingZeros: true);
-  }
-
-  String _formatBudgetValue(PeriodicBudget budget) {
-    final int maxBudgetSat = budget.maxBudgetSat.toInt();
-    final int usedBudgetSat = budget.usedBudgetSat.toInt();
-    final int remainingBudgetSat = maxBudgetSat - usedBudgetSat;
-
-    // Get renewal label
-    String renewalLabel = '';
-    if (budget.renewsAt != null) {
-      final int renewalIntervalMins = ((budget.renewsAt! - budget.updatedAt) / 60).round();
-      renewalLabel = _getRenewalLabel(renewalIntervalMins);
-    }
-
-    // Build the value string
-    String value = '';
-    if (remainingBudgetSat < maxBudgetSat) {
-      value = '${_formatSats(remainingBudgetSat)} / ';
-    }
-    value += _formatSats(maxBudgetSat);
-    if (renewalLabel.isNotEmpty) {
-      value += ' $renewalLabel';
-    }
-
-    return value;
+  String _formatRenewalDate(int renewsAt) {
+    return BreezDateUtils.formatYearMonthDay(DateTime.fromMillisecondsSinceEpoch(renewsAt * 1000));
   }
 }

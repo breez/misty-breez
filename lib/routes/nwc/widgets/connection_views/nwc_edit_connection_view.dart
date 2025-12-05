@@ -20,8 +20,8 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   int? _maxBudgetSat;
-  int? _renewalTimeMins;
-  int? _expiryTimeMins;
+  int? _renewalIntervalMins;
+  int? _expirationTimeMins;
 
   @override
   void initState() {
@@ -40,9 +40,9 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
       return;
     }
 
-    final int? expiryTimeMins = _expiryTimeMins;
+    final int? expirationTimeMins = _expirationTimeMins;
     final bool? removeExpiry;
-    if (_expiryTimeMins == null) {
+    if (_expirationTimeMins == null) {
       // If expiry is null, remove it if it previously existed
       removeExpiry = widget.existingConnection.expiresAt != null ? true : null;
     } else {
@@ -52,13 +52,13 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
     PeriodicBudgetRequest? periodicBudgetReq;
     bool? removePeriodicBudget;
     final int? maxBudgetSatInt = _maxBudgetSat;
-    final int? renewalTimeMins = _renewalTimeMins;
+    final int? renewalIntervalMins = _renewalIntervalMins;
 
     if (maxBudgetSatInt != null) {
-      if (renewalTimeMins != null && renewalTimeMins > 0) {
+      if (renewalIntervalMins != null && renewalIntervalMins > 0) {
         periodicBudgetReq = PeriodicBudgetRequest(
           maxBudgetSat: BigInt.from(maxBudgetSatInt),
-          renewalTimeMins: renewalTimeMins,
+          renewalTimeMins: renewalIntervalMins,
         );
       } else {
         periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
@@ -71,7 +71,7 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
 
     final bool success = await context.read<NwcCubit>().editConnection(
       name: widget.existingConnection.name,
-      expiryTimeMins: expiryTimeMins,
+      expirationTimeMins: expirationTimeMins,
       removeExpiry: removeExpiry,
       periodicBudgetReq: periodicBudgetReq,
       removePeriodicBudget: removePeriodicBudget,
@@ -104,11 +104,11 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
         nameController: _nameController,
         isEditMode: true,
         existingConnection: widget.existingConnection,
-        onValuesChanged: (int? maxBudgetSat, int? renewalTimeMins, int? expiryTimeMins) {
+        onValuesChanged: (int? maxBudgetSat, int? renewalIntervalMins, int? expirationTimeMins) {
           setState(() {
             _maxBudgetSat = maxBudgetSat;
-            _renewalTimeMins = renewalTimeMins;
-            _expiryTimeMins = expiryTimeMins;
+            _renewalIntervalMins = renewalIntervalMins;
+            _expirationTimeMins = expirationTimeMins;
           });
         },
       ),

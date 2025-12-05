@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:misty_breez/theme/theme.dart';
 
-Future<DateTime?> showNwcExpiryDatePickerSheet(
+Future<DateTime?> showNwcExpirationDatePickerSheet(
   BuildContext context, {
   DateTime? initialDate,
   DateTime? firstDate,

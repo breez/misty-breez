@@ -3,14 +3,14 @@ import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_expiry_date_p
 import 'package:misty_breez/utils/utils.dart';
 
 class NwcExpiryFormSection extends StatefulWidget {
-  final DateTime? expiryDate;
-  final int? renewalTimeMins;
-  final ValueChanged<DateTime?> onExpiryDateChanged;
+  final DateTime? expirationDate;
+  final int? renewalIntervalMins;
+  final ValueChanged<DateTime?> onExpirationDateChanged;
 
   const NwcExpiryFormSection({
-    required this.onExpiryDateChanged,
-    this.expiryDate,
-    this.renewalTimeMins,
+    required this.onExpirationDateChanged,
+    this.expirationDate,
+    this.renewalIntervalMins,
     super.key,
   });
 
@@ -25,16 +25,16 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
   void initState() {
     super.initState();
     _expiryDateController = TextEditingController(
-      text: widget.expiryDate != null ? BreezDateUtils.formatYearMonthDay(widget.expiryDate!) : '',
+      text: widget.expirationDate != null ? BreezDateUtils.formatYearMonthDay(widget.expirationDate!) : '',
     );
   }
 
   @override
   void didUpdateWidget(NwcExpiryFormSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.expiryDate != oldWidget.expiryDate) {
-      _expiryDateController.text = widget.expiryDate != null
-          ? BreezDateUtils.formatYearMonthDay(widget.expiryDate!)
+    if (widget.expirationDate != oldWidget.expirationDate) {
+      _expiryDateController.text = widget.expirationDate != null
+          ? BreezDateUtils.formatYearMonthDay(widget.expirationDate!)
           : '';
     }
   }
@@ -46,14 +46,17 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
   }
 
   Future<void> _showDatePicker() async {
-    final DateTime? picked = await showNwcExpiryDatePickerSheet(context, initialDate: widget.expiryDate);
+    final DateTime? picked = await showNwcExpirationDatePickerSheet(
+      context,
+      initialDate: widget.expirationDate,
+    );
     if (picked != null) {
-      widget.onExpiryDateChanged(picked);
+      widget.onExpirationDateChanged(picked);
     }
   }
 
   void _clearDate() {
-    widget.onExpiryDateChanged(null);
+    widget.onExpirationDateChanged(null);
   }
 
   @override
@@ -76,21 +79,21 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
             focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(color: themeData.colorScheme.error),
             ),
-            suffixIcon: widget.expiryDate != null
+            suffixIcon: widget.expirationDate != null
                 ? IconButton(icon: const Icon(Icons.close), onPressed: _clearDate, tooltip: 'Clear date')
                 : const Icon(Icons.calendar_today),
           ),
           controller: _expiryDateController,
           validator: (_) {
-            if (widget.expiryDate != null) {
-              if (widget.expiryDate!.isBefore(DateTime.now())) {
+            if (widget.expirationDate != null) {
+              if (widget.expirationDate!.isBefore(DateTime.now())) {
                 return 'Expiration date must be in the future';
               }
-              if (widget.renewalTimeMins != null) {
+              if (widget.renewalIntervalMins != null) {
                 final DateTime now = DateTime.now();
-                final int expiryMins = widget.expiryDate!.difference(now).inMinutes;
-                if (widget.renewalTimeMins! > expiryMins) {
-                  return 'Expiry time must be greater than renewal time';
+                final int expirationTimeMins = widget.expirationDate!.difference(now).inMinutes;
+                if (widget.renewalIntervalMins! > expirationTimeMins) {
+                  return 'Expiration must be greater than renewal interval';
                 }
               }
             }

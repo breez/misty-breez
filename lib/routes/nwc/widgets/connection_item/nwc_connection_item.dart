@@ -33,15 +33,6 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
     super.dispose();
   }
 
-  bool get _isExpiringWithinWeek {
-    if (widget.connection.expiresAt == null) {
-      return false;
-    }
-    final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(widget.connection.expiresAt! * 1000);
-    final Duration diff = expiryDate.difference(DateTime.now());
-    return diff.inDays <= 7 && diff.inDays >= 0;
-  }
-
   void _toggleExpanded() {
     setState(() {
       _isExpanded = !_isExpanded;
@@ -84,10 +75,7 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
             child: hasContent && _isExpanded
-                ? NwcConnectionItemContent(
-                    connection: widget.connection,
-                    isExpiringWithinWeek: _isExpiringWithinWeek,
-                  )
+                ? NwcConnectionItemContent(connection: widget.connection)
                 : const SizedBox.shrink(),
           ),
         ],

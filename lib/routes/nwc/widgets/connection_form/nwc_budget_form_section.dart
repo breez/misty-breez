@@ -9,16 +9,16 @@ final Logger _logger = Logger('NwcBudgetFormSection');
 class NwcBudgetFormSection extends StatefulWidget {
   final int? budgetAmount;
 
-  final int? renewalTimeDays;
-  final int? expiryTimeMins;
+  final int? renewalIntervalDays;
+  final int? expirationTimeMins;
 
   final Function(int? budgetAmount, int? renewalDays) onValuesChanged;
 
   const NwcBudgetFormSection({
     required this.onValuesChanged,
     this.budgetAmount,
-    this.renewalTimeDays,
-    this.expiryTimeMins,
+    this.renewalIntervalDays,
+    this.expirationTimeMins,
     super.key,
   });
 
@@ -36,8 +36,8 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
     if (widget.budgetAmount != null) {
       _maxBudgetController.text = BitcoinCurrency.sat.format(widget.budgetAmount!, includeDisplayName: false);
     }
-    if (widget.renewalTimeDays != null) {
-      _renewalDaysController.text = widget.renewalTimeDays.toString();
+    if (widget.renewalIntervalDays != null) {
+      _renewalDaysController.text = widget.renewalIntervalDays.toString();
     }
   }
 
@@ -54,11 +54,11 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
         _maxBudgetController.clear();
       }
     }
-    if (widget.renewalTimeDays != oldWidget.renewalTimeDays) {
-      if (widget.renewalTimeDays != null &&
-          _renewalDaysController.text != widget.renewalTimeDays.toString()) {
-        _renewalDaysController.text = widget.renewalTimeDays.toString();
-      } else if (widget.renewalTimeDays == null) {
+    if (widget.renewalIntervalDays != oldWidget.renewalIntervalDays) {
+      if (widget.renewalIntervalDays != null &&
+          _renewalDaysController.text != widget.renewalIntervalDays.toString()) {
+        _renewalDaysController.text = widget.renewalIntervalDays.toString();
+      } else if (widget.renewalIntervalDays == null) {
         _renewalDaysController.clear();
       }
     }
@@ -98,11 +98,11 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
 
             final String renewalText = _renewalDaysController.text.trim();
             final bool hasRenewalTime =
-                widget.renewalTimeDays != null ||
+                widget.renewalIntervalDays != null ||
                 (renewalText.isNotEmpty && int.tryParse(renewalText) != null);
 
             if (hasRenewalTime && trimmedValue.isEmpty) {
-              return 'Budget is required when renewal time is set';
+              return 'Budget is required when renewal interval is set';
             }
 
             if (trimmedValue.isEmpty) {
@@ -122,12 +122,12 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
           onChanged: (String value) {
             final String trimmedValue = value.trim();
             if (trimmedValue.isEmpty) {
-              widget.onValuesChanged(null, widget.renewalTimeDays);
+              widget.onValuesChanged(null, widget.renewalIntervalDays);
               return;
             }
             try {
               final int parsedValue = BitcoinCurrency.sat.parse(trimmedValue);
-              widget.onValuesChanged(parsedValue, widget.renewalTimeDays);
+              widget.onValuesChanged(parsedValue, widget.renewalIntervalDays);
             } catch (e) {
               _logger.warning(e);
             }
@@ -148,7 +148,7 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            labelText: 'Renewal Time (Optional)',
+            labelText: 'Renewal Interval (Optional)',
             border: const OutlineInputBorder(),
             errorBorder: OutlineInputBorder(borderSide: BorderSide(color: themeData.colorScheme.error)),
             focusedErrorBorder: OutlineInputBorder(
@@ -164,13 +164,13 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
                 return 'Please enter a valid number';
               }
               if (parsedValue <= 0) {
-                return 'Renewal time must be greater than 0';
+                return 'Renewal interval must be greater than 0';
               }
-              final int? expiryTimeMins = widget.expiryTimeMins;
-              if (expiryTimeMins != null) {
-                final int renewalTimeMins = parsedValue * 1440;
-                if (renewalTimeMins > expiryTimeMins) {
-                  return 'Renewal time cannot be greater than expiry time';
+              final int? expirationTimeMins = widget.expirationTimeMins;
+              if (expirationTimeMins != null) {
+                final int renewalIntervalMins = parsedValue * 1440;
+                if (renewalIntervalMins > expirationTimeMins) {
+                  return 'Renewal interval cannot be greater than expiration';
                 }
               }
             }

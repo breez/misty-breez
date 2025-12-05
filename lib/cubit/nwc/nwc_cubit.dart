@@ -122,7 +122,7 @@ class NwcCubit extends Cubit<NwcState> {
   /// Creates a new NWC connection with the given name
   Future<String?> createConnection({
     required String name,
-    int? expiryTimeMins,
+    int? expirationTimeMins,
     PeriodicBudgetRequest? periodicBudgetReq,
   }) async {
     emit(state.copyWith(isLoading: true));
@@ -137,7 +137,7 @@ class NwcCubit extends Cubit<NwcState> {
 
       final AddConnectionRequest request = AddConnectionRequest(
         name: name,
-        expiryTimeMins: expiryTimeMins,
+        expiryTimeMins: expirationTimeMins,
         periodicBudgetReq: periodicBudgetReq,
       );
 
@@ -183,7 +183,7 @@ class NwcCubit extends Cubit<NwcState> {
   /// Edits an NWC connection
   Future<bool> editConnection({
     required String name,
-    int? expiryTimeMins,
+    int? expirationTimeMins,
     bool? removeExpiry,
     PeriodicBudgetRequest? periodicBudgetReq,
     bool? removePeriodicBudget,
@@ -200,7 +200,7 @@ class NwcCubit extends Cubit<NwcState> {
 
       final EditConnectionRequest request = EditConnectionRequest(
         name: name,
-        expiryTimeMins: expiryTimeMins,
+        expiryTimeMins: expirationTimeMins,
         removeExpiry: removeExpiry,
         periodicBudgetReq: periodicBudgetReq,
         removePeriodicBudget: removePeriodicBudget,
