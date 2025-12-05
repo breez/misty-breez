@@ -5,7 +5,6 @@ import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/error_dialog.dart';
-import 'package:misty_breez/routes/nwc/widgets/connection_item/nwc_connection_item_header.dart';
 
 class NwcConnectionDetailPage extends StatelessWidget {
   static const String routeName = '/nwc/connection/detail';

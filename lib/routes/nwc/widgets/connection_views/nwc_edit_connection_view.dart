@@ -104,18 +104,13 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
         nameController: _nameController,
         isEditMode: true,
         existingConnection: widget.existingConnection,
-        onValuesChanged:
-            (
-              int? maxBudgetSat,
-              int? renewalTimeMins,
-              int? expiryTimeMins,
-            ) {
-              setState(() {
-                _maxBudgetSat = maxBudgetSat;
-                _renewalTimeMins = renewalTimeMins;
-                _expiryTimeMins = expiryTimeMins;
-              });
-            },
+        onValuesChanged: (int? maxBudgetSat, int? renewalTimeMins, int? expiryTimeMins) {
+          setState(() {
+            _maxBudgetSat = maxBudgetSat;
+            _renewalTimeMins = renewalTimeMins;
+            _expiryTimeMins = expiryTimeMins;
+          });
+        },
       ),
     );
   }

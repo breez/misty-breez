@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/routes/routes.dart';
-import 'package:misty_breez/routes/nwc/widgets/connection_item/connection_item.dart';
-import 'package:misty_breez/routes/nwc/widgets/connection_detail/nwc_connection_details_sheet.dart';
 import 'package:misty_breez/theme/src/theme.dart';
 
 class NwcConnectionItem extends StatefulWidget {
@@ -55,10 +53,6 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
     });
   }
 
-  void _openDetails() {
-    showNwcConnectionDetailsSheet(context, connection: widget.connection);
-  }
-
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
@@ -72,7 +66,9 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           InkWell(
-            onTap: _openDetails,
+            onTap: () {
+              Navigator.of(context).pushNamed(NwcEditConnectionPage.routeName, arguments: widget.connection);
+            },
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
             child: NwcConnectionItemHeader(
               connectionName: widget.connection.name,

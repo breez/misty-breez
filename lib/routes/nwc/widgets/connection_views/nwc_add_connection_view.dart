@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
@@ -121,18 +122,13 @@ class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
           formKey: _formKey,
           nameController: _nameController,
           isEditMode: false,
-          onValuesChanged:
-              (
-                int? maxBudgetSat,
-                int? renewalTimeMins,
-                int? expiryTimeMins,
-              ) {
-                setState(() {
-                  _maxBudgetSat = maxBudgetSat;
-                  _renewalTimeMins = renewalTimeMins;
-                  _expiryTimeMins = expiryTimeMins;
-                });
-              },
+          onValuesChanged: (int? maxBudgetSat, int? renewalTimeMins, int? expiryTimeMins) {
+            setState(() {
+              _maxBudgetSat = maxBudgetSat;
+              _renewalTimeMins = renewalTimeMins;
+              _expiryTimeMins = expiryTimeMins;
+            });
+          },
         ),
       );
     } else {
