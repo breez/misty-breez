@@ -128,6 +128,15 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
             } catch (e) {}
           },
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            'This is the maximum your connection can spend.',
+            style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70),
+          ),
+        ),
+        const SizedBox(height: 16.0),
+        const Divider(height: 8.0, color: Color.fromRGBO(40, 59, 74, 0.5), indent: 0.0, endIndent: 0.0),
         const SizedBox(height: 16.0),
         TextFormField(
           controller: _renewalDaysController,

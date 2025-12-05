@@ -97,6 +97,13 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
             return null;
           },
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            'This connection expires after the set time.',
+            style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70),
+          ),
+        ),
         const SizedBox(height: 16.0),
       ],
     );
