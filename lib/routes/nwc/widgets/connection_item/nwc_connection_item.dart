@@ -65,7 +65,7 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
             child: NwcConnectionItemHeader(
               connectionName: widget.connection.name,
-              hasContent: hasContent,
+              hasContent: _isExpanded,
               showDropdownArrow: hasContent,
               iconRotation: _iconRotation,
               onDropdownTap: hasContent ? _toggleExpanded : null,
