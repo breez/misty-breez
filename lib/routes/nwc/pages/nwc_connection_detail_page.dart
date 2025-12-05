@@ -66,8 +66,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
                       children: <Widget>[
                         NwcConnectionItemHeader(
                           connectionName: updatedConnection.name,
-                          hasPeriodicBudget: updatedConnection.periodicBudget != null,
-                          isExpiringWithinWeek: _isExpiringWithinWeek(updatedConnection),
+                          hasContent: true,
                           centerTitle: true,
                           actions: <Widget>[
                             IconButton(
@@ -129,15 +128,6 @@ class NwcConnectionDetailPage extends StatelessWidget {
 
   bool _existsIn(NwcState state, NwcConnectionModel target) =>
       state.connections.any((NwcConnectionModel c) => c.name == target.name);
-
-  bool _isExpiringWithinWeek(NwcConnectionModel connection) {
-    if (connection.expiresAt == null) {
-      return false;
-    }
-    final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
-    final Duration diff = expiryDate.difference(DateTime.now());
-    return diff.inDays <= 7 && diff.inDays >= 0;
-  }
 
   Future<void> _confirmAndDeleteConnection(BuildContext context, String connectionName) async {
     final bool? confirmed = await promptAreYouSure(

@@ -100,8 +100,7 @@ class NwcConnectionDetailsSheet extends StatelessWidget {
                         children: <Widget>[
                           NwcConnectionItemHeader(
                             connectionName: updatedConnection.name,
-                            hasPeriodicBudget: updatedConnection.periodicBudget != null,
-                            isExpiringWithinWeek: false,
+                            hasContent: true,
                             centerTitle: true,
                             onShowQr: () => NwcQrDialog.show(context, updatedConnection.connectionString),
                             actions: <Widget>[

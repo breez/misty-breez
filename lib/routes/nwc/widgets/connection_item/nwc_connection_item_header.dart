@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:misty_breez/theme/src/theme.dart';
 
 class NwcConnectionItemHeader extends StatelessWidget {
   final String connectionName;
-  final bool hasPeriodicBudget;
-  final bool isExpiringWithinWeek;
+  final bool hasContent;
   final VoidCallback? onEdit;
   final VoidCallback? onShowQr;
   final bool centerTitle;
@@ -15,8 +13,7 @@ class NwcConnectionItemHeader extends StatelessWidget {
 
   const NwcConnectionItemHeader({
     required this.connectionName,
-    required this.hasPeriodicBudget,
-    required this.isExpiringWithinWeek,
+    required this.hasContent,
     this.onEdit,
     this.onShowQr,
     this.centerTitle = false,
@@ -37,7 +34,7 @@ class NwcConnectionItemHeader extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: const Radius.circular(12.0),
-            bottom: Radius.circular(hasPeriodicBudget ? 0.0 : 12.0),
+            bottom: Radius.circular(hasContent ? 0.0 : 12.0),
           ),
         ),
         color: const Color(0xFF142340),
