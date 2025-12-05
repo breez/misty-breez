@@ -75,7 +75,15 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
             child: hasContent && _isExpanded
-                ? NwcConnectionItemContent(connection: widget.connection)
+                ? InkWell(
+                    onTap: () {
+                      Navigator.of(
+                        context,
+                      ).pushNamed(NwcConnectionDetailPage.routeName, arguments: widget.connection);
+                    },
+                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12.0)),
+                    child: NwcConnectionItemContent(connection: widget.connection),
+                  )
                 : const SizedBox.shrink(),
           ),
         ],
