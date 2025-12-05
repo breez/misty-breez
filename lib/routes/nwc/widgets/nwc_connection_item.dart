@@ -5,43 +5,95 @@ import 'package:misty_breez/routes/nwc/widgets/connection_item/connection_item.d
 import 'package:misty_breez/routes/nwc/widgets/connection_detail/nwc_connection_details_sheet.dart';
 import 'package:misty_breez/theme/src/theme.dart';
 
-class NwcConnectionItem extends StatelessWidget {
+class NwcConnectionItem extends StatefulWidget {
   final NwcConnectionModel connection;
 
   const NwcConnectionItem({required this.connection, super.key});
 
+  @override
+  State<NwcConnectionItem> createState() => _NwcConnectionItemState();
+}
+
+class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTickerProviderStateMixin {
+  bool _isExpanded = false;
+  late AnimationController _animationController;
+  late Animation<double> _iconRotation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+    _iconRotation = Tween<double>(
+      begin: 0.0,
+      end: 0.5,
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   bool get _isExpiringWithinWeek {
-    if (connection.expiresAt == null) {
+    if (widget.connection.expiresAt == null) {
       return false;
     }
-    final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
+    final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(widget.connection.expiresAt! * 1000);
     final Duration diff = expiryDate.difference(DateTime.now());
     return diff.inDays <= 7 && diff.inDays >= 0;
+  }
+
+  void _toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  void _openDetails() {
+    showNwcConnectionDetailsSheet(context, connection: widget.connection);
   }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
+    final bool hasContent = widget.connection.periodicBudget != null;
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       color: themeData.customData.surfaceBgColor,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-      child: InkWell(
-        onTap: () {
-          showNwcConnectionDetailsSheet(context, connection: connection);
-        },
-        borderRadius: BorderRadius.circular(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            NwcConnectionItemHeader(
-              connectionName: connection.name,
-              hasPeriodicBudget: connection.periodicBudget != null,
-              isExpiringWithinWeek: _isExpiringWithinWeek,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          InkWell(
+            onTap: _openDetails,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
+            child: NwcConnectionItemHeader(
+              connectionName: widget.connection.name,
+              hasPeriodicBudget: hasContent && _isExpanded,
+              isExpiringWithinWeek: false,
+              showDropdownArrow: hasContent,
+              iconRotation: _iconRotation,
+              onDropdownTap: hasContent ? _toggleExpanded : null,
             ),
-            NwcConnectionItemContent(connection: connection, isExpiringWithinWeek: _isExpiringWithinWeek),
-          ],
-        ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            child: hasContent && _isExpanded
+                ? NwcConnectionItemContent(
+                    connection: widget.connection,
+                    isExpiringWithinWeek: _isExpiringWithinWeek,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
       ),
     );
   }

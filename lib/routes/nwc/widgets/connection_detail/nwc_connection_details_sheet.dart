@@ -35,15 +35,6 @@ class NwcConnectionDetailsSheet extends StatelessWidget {
     _logger.info('NwcConnectionDetailsSheet for connection: ${connection.name}');
   }
 
-  bool _isExpiringWithinWeek(NwcConnectionModel connection) {
-    if (connection.expiresAt == null) {
-      return false;
-    }
-    final DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(connection.expiresAt! * 1000);
-    final Duration diff = expiryDate.difference(DateTime.now());
-    return diff.inDays <= 7 && diff.inDays >= 0;
-  }
-
   bool _existsIn(NwcState state, NwcConnectionModel target) =>
       state.connections.any((NwcConnectionModel c) => c.name == target.name);
 
@@ -51,7 +42,7 @@ class NwcConnectionDetailsSheet extends StatelessWidget {
     final bool? confirmed = await promptAreYouSure(
       context,
       title: 'Delete Connection',
-      body: Text('Are you sure you want to delete "$connectionName"? This action cannot be undone.'),
+      body: Text('Are you sure you want to delete "$connectionName"?'),
     );
 
     if (confirmed == true && context.mounted) {
@@ -110,18 +101,10 @@ class NwcConnectionDetailsSheet extends StatelessWidget {
                           NwcConnectionItemHeader(
                             connectionName: updatedConnection.name,
                             hasPeriodicBudget: updatedConnection.periodicBudget != null,
-                            isExpiringWithinWeek: _isExpiringWithinWeek(updatedConnection),
+                            isExpiringWithinWeek: false,
                             centerTitle: true,
+                            onShowQr: () => NwcQrDialog.show(context, updatedConnection.connectionString),
                             actions: <Widget>[
-                              IconButton(
-                                icon: const Icon(Icons.qr_code, size: 20.0, color: Colors.white),
-                                onPressed: () =>
-                                    NwcQrDialog.show(context, updatedConnection.connectionString),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                tooltip: 'Show QR',
-                              ),
-                              const SizedBox(width: 8.0),
                               IconButton(
                                 icon: const Icon(Icons.edit_note_rounded, size: 24.0, color: Colors.white),
                                 onPressed: () {

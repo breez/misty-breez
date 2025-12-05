@@ -33,7 +33,7 @@ class NwcConnectionParametersCard extends StatelessWidget {
                   ),
                 ),
               ],
-              StatusItem(label: 'Expiry Time', value: _formatExpiryTime(connection.expiresAt)),
+              StatusItem(label: 'Expiration', value: _formatExpiryTime(connection.expiresAt)),
             ].expand((Widget widget) sync* {
               yield widget;
               yield const Divider(
@@ -92,8 +92,6 @@ class NwcConnectionParametersCard extends StatelessWidget {
     if (expiresAt == null) {
       return 'Never';
     }
-    return BreezDateUtils.formatYearMonthDayHourMinuteSecond(
-      DateTime.fromMillisecondsSinceEpoch(expiresAt * 1000),
-    );
+    return BreezDateUtils.formatYearMonthDay(DateTime.fromMillisecondsSinceEpoch(expiresAt * 1000));
   }
 }

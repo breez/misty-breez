@@ -9,6 +9,9 @@ class NwcConnectionItemHeader extends StatelessWidget {
   final VoidCallback? onShowQr;
   final bool centerTitle;
   final List<Widget>? actions;
+  final bool showDropdownArrow;
+  final Animation<double>? iconRotation;
+  final VoidCallback? onDropdownTap;
 
   const NwcConnectionItemHeader({
     required this.connectionName,
@@ -18,6 +21,9 @@ class NwcConnectionItemHeader extends StatelessWidget {
     this.onShowQr,
     this.centerTitle = false,
     this.actions,
+    this.showDropdownArrow = false,
+    this.iconRotation,
+    this.onDropdownTap,
     super.key,
   });
 
@@ -40,6 +46,17 @@ class NwcConnectionItemHeader extends StatelessWidget {
           ? Stack(
               alignment: Alignment.center,
               children: <Widget>[
+                if (onShowQr != null)
+                  Positioned(
+                    left: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.qr_code, size: 20.0, color: Colors.white),
+                      onPressed: onShowQr,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      tooltip: 'Show QR',
+                    ),
+                  ),
                 Center(
                   child: Text(
                     connectionName,
@@ -71,19 +88,16 @@ class NwcConnectionItemHeader extends StatelessWidget {
                     textAlign: TextAlign.left,
                   ),
                 ),
-                if (isExpiringWithinWeek)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: warningBoxColor,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Text(
-                      'Expires soon',
-                      style: themeData.textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).errorTextStyle.color,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
+                if (showDropdownArrow && onDropdownTap != null)
+                  GestureDetector(
+                    onTap: onDropdownTap,
+                    onTapDown: (_) {},
+                    onTapUp: (_) {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RotationTransition(
+                        turns: iconRotation ?? const AlwaysStoppedAnimation<double>(0),
+                        child: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 24.0),
                       ),
                     ),
                   ),
@@ -96,7 +110,8 @@ class NwcConnectionItemHeader extends StatelessWidget {
                     tooltip: 'Show QR',
                   ),
                 if (onEdit != null) ...<Widget>[
-                  if (onShowQr != null || isExpiringWithinWeek) const SizedBox(width: 8.0),
+                  if (onShowQr != null || (showDropdownArrow && onDropdownTap != null))
+                    const SizedBox(width: 8.0),
                   IconButton(
                     icon: const Icon(Icons.edit_note_rounded, size: 24.0, color: Colors.white),
                     onPressed: onEdit,
