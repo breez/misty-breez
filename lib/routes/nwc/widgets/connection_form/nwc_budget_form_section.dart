@@ -163,8 +163,8 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
               if (parsedValue == null) {
                 return 'Please enter a valid number';
               }
-              if (parsedValue <= 0) {
-                return 'Renewal interval must be greater than 0';
+              if (parsedValue < 1 || parsedValue > 365) {
+                return 'Renewal interval must be between 1 and 365 days';
               }
               final int? expirationTimeMins = widget.expirationTimeMins;
               if (expirationTimeMins != null) {
