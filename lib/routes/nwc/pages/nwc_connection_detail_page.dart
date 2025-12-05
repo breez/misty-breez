@@ -119,7 +119,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
                       children: <Widget>[
                         if (updatedConnection.periodicBudget != null || updatedConnection.expiresAt != null)
                           NwcConnectionParametersCard(connection: updatedConnection),
-                        if (updatedConnection.periodicBudget != null || updatedConnection.expiresAt != null)
+                        if (updatedConnection.periodicBudget != null && updatedConnection.expiresAt != null)
                           const Divider(
                             height: 32.0,
                             color: Color.fromRGBO(40, 59, 74, 0.5),
