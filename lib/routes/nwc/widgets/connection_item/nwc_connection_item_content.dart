@@ -38,7 +38,7 @@ class NwcConnectionItemContent extends StatelessWidget {
                 if (budget.renewsAt != null) ...<Widget>[
                   StatusItem(
                     label: 'Renewal Interval',
-                    value: _getRenewalLabel(((budget.renewsAt! - budget.updatedAt) / 60 / 1440).round()),
+                    value: '${((budget.renewsAt! - budget.updatedAt) / 60 / 1440).round()} days',
                   ),
                   StatusItem(label: 'Renewal Date', value: _formatRenewalDate(budget.renewsAt!)),
                 ],
@@ -54,21 +54,6 @@ class NwcConnectionItemContent extends StatelessWidget {
               ..removeLast(),
       ),
     );
-  }
-
-  String _getRenewalLabel(int renewalDays) {
-    switch (renewalDays) {
-      case 1:
-        return 'Daily';
-      case 7:
-        return 'Weekly';
-      case 30:
-        return 'Monthly';
-      case 365:
-        return 'Annually';
-      default:
-        return '$renewalDays days';
-    }
   }
 
   String _formatRenewalDate(int renewsAt) {
