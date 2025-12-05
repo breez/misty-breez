@@ -76,7 +76,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 32.0, bottom: 0.0),
+                    padding: const EdgeInsets.only(top: 32.0),
                     child: Center(
                       child: Column(
                         children: <Widget>[

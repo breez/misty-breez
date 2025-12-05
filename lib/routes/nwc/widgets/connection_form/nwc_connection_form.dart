@@ -60,7 +60,7 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
     widget.onValuesChanged(
       _selectedBudgetAmountSats,
       _renewalTimeDays != null ? _renewalTimeDays! * 1440 : null,
-      _expiryDate != null ? _expiryDate!.difference(DateTime.now()).inMinutes : null,
+      _expiryDate?.difference(DateTime.now()).inMinutes,
     );
   }
 

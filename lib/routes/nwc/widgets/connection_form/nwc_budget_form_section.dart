@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/widgets/amount_form_field/input_formatter/sat_amount_form_field_formatter.dart';
+
+final Logger _logger = Logger('NwcBudgetFormSection');
 
 class NwcBudgetFormSection extends StatefulWidget {
   final int? budgetAmount;
@@ -125,7 +128,9 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
             try {
               final int parsedValue = BitcoinCurrency.sat.parse(trimmedValue);
               widget.onValuesChanged(parsedValue, widget.renewalTimeDays);
-            } catch (e) {}
+            } catch (e) {
+              _logger.warning(e);
+            }
           },
         ),
         Padding(
