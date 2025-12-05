@@ -54,11 +54,16 @@ class _NwcPageState extends State<NwcPage> {
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: state.connections.length,
-            itemBuilder: (BuildContext context, int index) =>
-                NwcConnectionItem(connection: state.connections[index]),
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+              child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 8),
+                itemCount: state.connections.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    NwcConnectionItem(connection: state.connections[index]),
+              ),
+            ),
           );
         },
       ),

@@ -50,7 +50,6 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
     final bool hasContent = widget.connection.periodicBudget != null;
 
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       color: themeData.customData.surfaceBgColor,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
       child: Column(

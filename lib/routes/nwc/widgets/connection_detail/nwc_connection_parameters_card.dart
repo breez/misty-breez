@@ -3,8 +3,8 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/routes/dev/widgets/status_item.dart';
-import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/routes/routes.dart';
+import 'package:misty_breez/utils/utils.dart';
 
 class NwcConnectionParametersCard extends StatelessWidget {
   final NwcConnectionModel connection;

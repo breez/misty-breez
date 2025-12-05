@@ -24,27 +24,30 @@ class _NwcEditConnectionPageState extends State<NwcEditConnectionPage> {
     return Scaffold(
       appBar: AppBar(leading: const back_button.BackButton(), title: const Text('Edit Connection')),
       body: SafeArea(
-        child: BlocBuilder<NwcCubit, NwcState>(
-          buildWhen: (NwcState previous, NwcState current) => previous.isLoading != current.isLoading,
-          builder: (BuildContext context, NwcState state) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: BlocBuilder<NwcCubit, NwcState>(
+            buildWhen: (NwcState previous, NwcState current) => previous.isLoading != current.isLoading,
+            builder: (BuildContext context, NwcState state) {
+              return SingleChildScrollView(
                 child: NwcEditConnectionView(key: _viewKey, existingConnection: widget.connection),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
       bottomNavigationBar: BlocBuilder<NwcCubit, NwcState>(
         builder: (BuildContext context, NwcState state) {
-          return SingleButtonBottomBar(
-            stickToBottom: true,
-            text: 'SAVE',
-            loading: state.isLoading,
-            onPressed: () {
-              _viewKey.currentState?.editConnection();
-            },
+          return Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: SingleButtonBottomBar(
+              stickToBottom: true,
+              text: 'SAVE',
+              loading: state.isLoading,
+              onPressed: () {
+                _viewKey.currentState?.editConnection();
+              },
+            ),
           );
         },
       ),

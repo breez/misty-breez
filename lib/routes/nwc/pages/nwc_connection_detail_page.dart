@@ -70,14 +70,13 @@ class NwcConnectionDetailPage extends StatelessWidget {
               ),
             ],
           ),
-          body: SingleChildScrollView(
+          body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: Center(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Center(
                       child: Column(
                         children: <Widget>[
                           NwcConnectionItemHeader(
@@ -103,34 +102,34 @@ class NwcConnectionDetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
-                  Container(
-                    decoration: ShapeDecoration(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                        ),
-                      ),
-                      color: themeData.customData.surfaceBgColor,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-                    child: Column(
-                      children: <Widget>[
-                        if (updatedConnection.periodicBudget != null || updatedConnection.expiresAt != null)
-                          NwcConnectionParametersCard(connection: updatedConnection),
-                        if (updatedConnection.periodicBudget != null && updatedConnection.expiresAt != null)
-                          const Divider(
-                            height: 32.0,
-                            color: Color.fromRGBO(40, 59, 74, 0.5),
-                            indent: 0.0,
-                            endIndent: 0.0,
+                    Container(
+                      decoration: ShapeDecoration(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(12),
+                            bottomRight: Radius.circular(12),
                           ),
-                        NwcConnectionUriCard(connectionString: updatedConnection.connectionString),
-                      ],
+                        ),
+                        color: themeData.customData.surfaceBgColor,
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+                      child: Column(
+                        children: <Widget>[
+                          if (updatedConnection.periodicBudget != null || updatedConnection.expiresAt != null)
+                            NwcConnectionParametersCard(connection: updatedConnection),
+                          if (updatedConnection.periodicBudget != null && updatedConnection.expiresAt != null)
+                            const Divider(
+                              height: 32.0,
+                              color: Color.fromRGBO(40, 59, 74, 0.5),
+                              indent: 0.0,
+                              endIndent: 0.0,
+                            ),
+                          NwcConnectionUriCard(connectionString: updatedConnection.connectionString),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

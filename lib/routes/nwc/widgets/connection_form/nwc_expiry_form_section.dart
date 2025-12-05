@@ -108,7 +108,6 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
             style: themeData.textTheme.bodySmall?.copyWith(color: Colors.white70),
           ),
         ),
-        const SizedBox(height: 16.0),
       ],
     );
   }
