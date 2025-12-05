@@ -67,7 +67,9 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
         children: <Widget>[
           InkWell(
             onTap: () {
-              Navigator.of(context).pushNamed(NwcEditConnectionPage.routeName, arguments: widget.connection);
+              Navigator.of(
+                context,
+              ).pushNamed(NwcConnectionDetailPage.routeName, arguments: widget.connection);
             },
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
             child: NwcConnectionItemHeader(
