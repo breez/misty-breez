@@ -47,15 +47,12 @@ class NwcConnectionItemHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   if (onShowQr != null)
-                    Positioned(
-                      left: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.qr_code, size: 20.0, color: Colors.white),
-                        onPressed: onShowQr,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        tooltip: 'Show QR',
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.qr_code, size: 20.0, color: Colors.white),
+                      onPressed: onShowQr,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      tooltip: 'Show QR',
                     ),
                   Expanded(
                     child: Text(
@@ -69,10 +66,7 @@ class NwcConnectionItemHeader extends StatelessWidget {
                     ),
                   ),
                   if (actions != null && actions!.isNotEmpty)
-                    Positioned(
-                      right: 0,
-                      child: Row(mainAxisSize: MainAxisSize.min, children: actions!),
-                    ),
+                    Row(mainAxisSize: MainAxisSize.min, children: actions!),
                 ],
               ),
             )

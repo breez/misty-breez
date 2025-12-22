@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
 
@@ -13,12 +13,13 @@ export 'services/services.dart';
 
 final Logger _logger = Logger('NwcCubit');
 
-class NwcCubit extends Cubit<NwcState> {
+class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
   final BreezSDKLiquid breezSdkLiquid;
   final NwcRegistrationManager nwcRegistrationManager;
   StreamSubscription<NwcEvent>? _nwcEventSubscription;
 
   NwcCubit({required this.breezSdkLiquid, required this.nwcRegistrationManager}) : super(NwcState.initial()) {
+    hydrate();
     loadConnections();
     _setupEventListener();
   }
@@ -219,4 +220,37 @@ class NwcCubit extends Cubit<NwcState> {
       return false;
     }
   }
+
+  @override
+  NwcState? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      _logger.severe('No stored data found.');
+      return null;
+    }
+
+    try {
+      final NwcState result = NwcState.fromJson(json);
+      _logger.fine('Successfully hydrated with $result');
+      return result;
+    } catch (e, stackTrace) {
+      _logger.severe('Error hydrating: $e');
+      _logger.fine('Stack trace: $stackTrace');
+      return NwcState.initial();
+    }
+  }
+
+  @override
+  Map<String, dynamic>? toJson(NwcState state) {
+    try {
+      final Map<String, dynamic> result = state.toJson();
+      _logger.fine('Serialized: $result');
+      return result;
+    } catch (e) {
+      _logger.severe('Error serializing: $e');
+      return null;
+    }
+  }
+
+  @override
+  String get storagePrefix => 'NwcCubit';
 }

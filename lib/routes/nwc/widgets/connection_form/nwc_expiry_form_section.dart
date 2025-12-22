@@ -34,9 +34,13 @@ class _NwcExpiryFormSectionState extends State<NwcExpiryFormSection> {
   void didUpdateWidget(NwcExpiryFormSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.expirationDate != oldWidget.expirationDate) {
-      _expiryDateController.text = widget.expirationDate != null
-          ? BreezDateUtils.formatYearMonthDay(widget.expirationDate!)
-          : '';
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _expiryDateController.text = widget.expirationDate != null
+              ? BreezDateUtils.formatYearMonthDay(widget.expirationDate!)
+              : '';
+        }
+      });
     }
   }
 

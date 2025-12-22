@@ -166,7 +166,7 @@ class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
                 AnimatedOpacity(
                   duration: const Duration(milliseconds: 300),
                   opacity: _isObscured ? 1.0 : 0.0,
-                  child: Positioned.fill(child: Container(color: Colors.black.withValues(alpha: .32))),
+                  child: Container(color: Colors.black.withValues(alpha: .32)),
                 ),
                 if (_isObscured)
                   FilledButton(
