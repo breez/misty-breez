@@ -1,8 +1,10 @@
 export 'amount_form_field/amount_form_field.dart';
 export 'back_button.dart';
 export 'backup_in_progress_dialog.dart';
+export 'bottom_sheet_widgets.dart';
 export 'breez_avatar.dart';
 export 'centered_loader.dart';
+export 'compact_qr_image.dart';
 export 'error_dialog.dart';
 export 'flushbar.dart';
 export 'keyboard_done_action.dart';

@@ -9,6 +9,7 @@ export 'currency/currency_cubit.dart';
 export 'input/input_cubit.dart';
 export 'ln_address/ln_address_cubit.dart';
 export 'model/models.dart';
+export 'nwc/nwc_cubit.dart';
 export 'payment_limits/payment_limits_cubit.dart';
 export 'payments/payments_cubit.dart';
 export 'permissions/permissions_cubit.dart';

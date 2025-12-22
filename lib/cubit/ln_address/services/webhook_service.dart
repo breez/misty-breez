@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/webhooks.dart';
+import 'package:misty_breez/utils/webhooks/webhook_generator.dart';
 
 final Logger _logger = Logger('WebhookService');
 
