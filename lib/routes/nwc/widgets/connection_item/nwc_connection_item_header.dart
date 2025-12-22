@@ -71,8 +71,8 @@ class NwcConnectionItemHeader extends StatelessWidget {
               ),
             )
           : Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Row(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Text(
@@ -101,7 +101,7 @@ class NwcConnectionItemHeader extends StatelessWidget {
                   ),
                 ],
               ),
-          ),
+            ),
     );
   }
 }
