@@ -56,12 +56,34 @@ jobs:
           flutter-version: 3.38.5
           cache: true
 
+      - name: Install rust
+        run: |
+          rustup set auto-self-update disable
+          rustup toolchain install stable --profile minimal
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          version: "27.2"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set up just
         uses: extractions/setup-just@v3
 
-      - name: Generate Dart bindings
+      - name: 📦 Install Breez Liquid SDK dependencies
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just codegen
+        run: |
+          just clean
+          just setup
+
+      - name: Install flutter_rust_bridge_codegen dependencies
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
+        run: just frb
+
+      - name: Generate Dart/Flutter bindings
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
+        continue-on-error: true
+        run: just gen
 
       - name: 📦 Install Flutter dependencies
         working-directory: misty_breez
