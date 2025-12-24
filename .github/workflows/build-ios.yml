@@ -90,7 +90,6 @@ jobs:
       TESTFLIGHT_USERNAME: ${{ secrets.TESTFLIGHT_USERNAME }}
       TESTFLIGHT_PASSWORD: ${{ secrets.TESTFLIGHT_PASSWORD }}
       IOS_VERSION_STRING: 0.2.1
-      DISTRIBUTION_CERT: ${{ secrets.DISTRIBUTION_CERT }}
       P12_BASE64: ${{ secrets.P12_BASE64 }}
       P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
       GOOGLE_SERVICES_IOS: ${{ secrets.GOOGLE_SERVICES_IOS }}
@@ -208,15 +207,14 @@ jobs:
           security unlock-keychain -p ci $KEYCHAIN_PATH
           security set-keychain-settings -t 6400 -l $KEYCHAIN_PATH
 
-          CERT_PATH=$RUNNER_TEMP/apple_distribution.cer
-          echo -n "$DISTRIBUTION_CERT" | base64 --decode -o $CERT_PATH
-          security import $CERT_PATH -k $KEYCHAIN_PATH -A
-
           P12_KEY_PATH=$RUNNER_TEMP/key.p12
           echo -n "$P12_BASE64" | base64 --decode -o $P12_KEY_PATH
-          security import $P12_KEY_PATH -k $KEYCHAIN_PATH -P "$P12_PASSWORD" -A
+          security import $P12_KEY_PATH -k $KEYCHAIN_PATH -P "$P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
 
           security set-key-partition-list -S apple-tool:,apple: -s -k ci $KEYCHAIN_PATH > /dev/null
+
+          # Cleanup
+          rm -f $P12_KEY_PATH
 
       - name: 🏗️ Copy Firebase configuration file
         working-directory: misty_breez
