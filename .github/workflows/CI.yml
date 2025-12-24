@@ -32,7 +32,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: 🏗️ Check-out misty-breez repository
         uses: actions/checkout@v5
-        with: 
+        with:
           path: 'misty_breez'
 
       - name: 🏗️ Setup breez-sdk-liquid repository
@@ -55,6 +55,13 @@ jobs:
           channel: 'stable'
           flutter-version: 3.38.5
           cache: true
+
+      - name: Set up just
+        uses: extractions/setup-just@v3
+
+      - name: Generate Dart bindings
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
+        run: just codegen
 
       - name: 📦 Install Flutter dependencies
         working-directory: misty_breez
