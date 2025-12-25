@@ -213,6 +213,9 @@ jobs:
 
           security set-key-partition-list -S apple-tool:,apple: -s -k ci $KEYCHAIN_PATH > /dev/null
 
+          echo "=== Imported signing identities ==="
+          security find-identity -v -p codesigning $KEYCHAIN_PATH
+
           # Cleanup
           rm -f $P12_KEY_PATH
 
