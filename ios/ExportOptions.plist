@@ -9,9 +9,9 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>com.breez.misty</key>
-		<string>Misty Breez Dist Profile</string>
+		<string>Misty Breez</string>
 		<key>com.breez.misty.NotificationService</key>
-		<string>Misty Breez Notification Service</string>
+		<string>Misty Breez NSE</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>Apple Distribution</string>
