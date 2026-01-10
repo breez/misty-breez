@@ -10,7 +10,12 @@ class NwcRegistrationManager {
 
   NwcRegistrationManager({required this.requestBuilder, required this.webhookService});
 
-  Future<String> setupWebhook(String appPubkey, List<String> relays) async {
+  Future<String> setupWebhook(
+    String walletPubkey,
+    String userPubkey,
+    String appPubkey,
+    List<String> relays,
+  ) async {
     _logger.info('Setting up webhook for app: $appPubkey');
 
     // First, generate the new webhook URL
@@ -18,17 +23,27 @@ class NwcRegistrationManager {
 
     final RegisterNwcWebhookRequest req = await requestBuilder.buildRegisterRequest(
       webhookUrl: webhookUrl,
+      userPubkey: userPubkey,
       appPubkey: appPubkey,
       relays: relays,
     );
 
-    // Finally register the new webhook and update preferences in parallel
-    await Future.wait(<Future<void>>[
-      webhookService.register(req),
-      // _updatePreferences(webhookUrl: webhookUrl),
-    ]);
+    await Future.wait(<Future<void>>[webhookService.register(walletPubkey, req)]);
 
     _logger.info('Successfully setup webhook');
     return webhookUrl;
+  }
+
+  Future<void> removeWebhook(String walletPubkey, String userPubkey, String appPubkey) async {
+    _logger.info('Removing webhook for app: $appPubkey');
+
+    final UnregisterNwcWebhookRequest req = await requestBuilder.buildUnregisterRequest(
+      userPubkey: userPubkey,
+      appPubkey: appPubkey,
+    );
+
+    await Future.wait(<Future<void>>[webhookService.unregister(walletPubkey, req)]);
+
+    _logger.info('Successfully removed webhook');
   }
 }

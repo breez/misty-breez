@@ -23,10 +23,10 @@ class NwcWebhookService {
     PermissionsCubit permissionsCubit,
   ) : _generator = WebhookGenerator(_logger, notificationsClient, permissionsCubit);
 
-  Future<void> register(RegisterNwcWebhookRequest req) async {
+  Future<void> register(String walletPubkey, RegisterNwcWebhookRequest req) async {
     _logger.info('Registering webhook: ${req.webhookUrl} for appPubkey ${req.appPubkey}');
     await executeWithRetry<void>(
-      () => _registerWebhook(req),
+      () => _registerWebhook(walletPubkey, req),
       operationName: 'register webhook',
       maxRetries: 3,
       logger: _logger,
@@ -34,15 +34,13 @@ class NwcWebhookService {
     _logger.info('Successfully registered webhook');
   }
 
-  Future<void> _registerWebhook(RegisterNwcWebhookRequest body) async {
+  Future<void> _registerWebhook(String walletPubkey, RegisterNwcWebhookRequest body) async {
     try {
       final BreezSdkLiquid? sdk = _breezSdkLiquid.instance;
       if (sdk == null) {
         throw RegisterWebhookException('Breez SDK not initialized');
       }
-      final String walletPubkey = await sdk.getInfo().then((GetInfoResponse info) => info.walletInfo.pubkey);
-
-      final Uri uri = Uri.parse('${WebhookConstants.nwcWebhooksEndpoint}/$walletPubkey');
+      final Uri uri = Uri.parse('${WebhookConstants.breezWebhooksEndpoint}/nwc/$walletPubkey');
       final Map<String, String> headers = <String, String>{'Content-Type': 'application/json'};
       final http.Response res = await _client.post(uri, body: jsonEncode(body.toJson()), headers: headers);
       if (res.statusCode != HttpStatus.ok) {
@@ -53,6 +51,37 @@ class NwcWebhookService {
     } catch (e, stackTrace) {
       _logger.severe('Failed to register webhook', e, stackTrace);
       throw RegisterWebhookException('Failed to register webhook: $e');
+    }
+  }
+
+  Future<void> unregister(String walletPubkey, UnregisterNwcWebhookRequest req) async {
+    _logger.info('Unregistering webhook: userPubkey ${req.userPubkey}, appPubkey ${req.appPubkey}');
+    await executeWithRetry<void>(
+      () => _unregisterWebhook(walletPubkey, req),
+      operationName: 'unregister webhook',
+      maxRetries: 3,
+      logger: _logger,
+    );
+    _logger.info('Successfully unregistered webhook');
+  }
+
+  Future<void> _unregisterWebhook(String walletPubkey, UnregisterNwcWebhookRequest body) async {
+    try {
+      final BreezSdkLiquid? sdk = _breezSdkLiquid.instance;
+      if (sdk == null) {
+        throw UnregisterWebhookException('Breez SDK not initialized');
+      }
+      final Uri uri = Uri.parse('${WebhookConstants.breezWebhooksEndpoint}/nwc/$walletPubkey');
+      final Map<String, String> headers = <String, String>{'Content-Type': 'application/json'};
+      final http.Response res = await _client.delete(uri, body: jsonEncode(body.toJson()), headers: headers);
+      if (res.statusCode != HttpStatus.ok) {
+        throw UnregisterWebhookException(
+          'Failed to unregister webhook: server responded with error status. Response body: ${res.body}',
+        );
+      }
+    } catch (e, stackTrace) {
+      _logger.severe('Failed to unregister webhook', e, stackTrace);
+      throw UnregisterWebhookException('Failed to unregister webhook: $e');
     }
   }
 

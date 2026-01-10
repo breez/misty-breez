@@ -1,12 +1,13 @@
 package com.breez.misty
 
-import android.content.SharedPreferences
 import breez_sdk_liquid.ConnectRequest
 import breez_sdk_liquid.LiquidNetwork
 import breez_sdk_liquid.LogEntry
+import breez_sdk_liquid.NwcConfig
 import breez_sdk_liquid.defaultConfig
 import breez_sdk_liquid_notification.ForegroundService
 import breez_sdk_liquid_notification.NotificationHelper.Companion.registerNotificationChannels
+import breez_sdk_liquid_notification.PluginConfigs
 import com.breez.breez_sdk_liquid.SdkLogInitializer
 import com.breez.breez_sdk_liquid.SdkLogListener
 import com.breez.misty.utils.FlutterSecuredStorageHelper.Companion.readSecuredValue
@@ -21,7 +22,7 @@ class BreezForegroundService : ForegroundService() {
         private const val ACCOUNT_MNEMONIC = "account_mnemonic"
         private const val DEFAULT_CLICK_ACTION = "FLUTTER_NOTIFICATION_CLICK"
         private const val ELEMENT_PREFERENCES_KEY_PREFIX =
-            "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg"
+                "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg"
     }
 
     private var listener: SdkLogListener? = null
@@ -38,7 +39,7 @@ class BreezForegroundService : ForegroundService() {
                     "WARN" -> Logger.tag(TAG).warn { l.line }
                     "INFO" -> Logger.tag(TAG).info { l.line }
                     "DEBUG" -> Logger.tag(TAG).debug { l.line }
-                    // Ignore TRACE logs, they get filtered out by the logger
+                // Ignore TRACE logs, they get filtered out by the logger
                 }
             }
             setServiceLogger(it)
@@ -58,14 +59,16 @@ class BreezForegroundService : ForegroundService() {
         Logger.tag(TAG).trace { "API_KEY: $apiKey" }
         val config = defaultConfig(LiquidNetwork.MAINNET, apiKey)
 
-        config.workingDir = PathUtils.getDataDirectory(applicationContext)        
+        config.workingDir = PathUtils.getDataDirectory(applicationContext)
 
         return readSecuredValue(
-            applicationContext,
-            "${ELEMENT_PREFERENCES_KEY_PREFIX}_${ACCOUNT_MNEMONIC}"
-        )
-            ?.let { mnemonic ->
-                ConnectRequest(config, mnemonic)
-            }
+                        applicationContext,
+                        "${ELEMENT_PREFERENCES_KEY_PREFIX}_${ACCOUNT_MNEMONIC}"
+                )
+                ?.let { mnemonic -> ConnectRequest(config, mnemonic) }
+    }
+
+    override fun getPluginConfigs(): PluginConfigs {
+        return PluginConfigs(nwc = NwcConfig(listenToEvents = false))
     }
 }

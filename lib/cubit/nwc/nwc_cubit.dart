@@ -5,6 +5,7 @@ import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:collection/collection.dart';
 
 export 'factories/factories.dart';
 export 'models/models.dart';
@@ -53,21 +54,21 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
     }
   }
 
-  void _removeConnectionFromState(String connectionName) {
-    final bool connectionExists = state.connections.any(
+  NwcConnectionModel? _removeConnectionFromState(String connectionName) {
+    final NwcConnectionModel? connection = state.connections.firstWhereOrNull(
       (NwcConnectionModel connection) => connection.name == connectionName,
     );
 
-    if (!connectionExists) {
+    if (connection == null) {
       _logger.fine('Connection "$connectionName" already removed from state');
-      return;
+      return null;
     }
-
     final List<NwcConnectionModel> updatedConnections = state.connections
         .where((NwcConnectionModel connection) => connection.name != connectionName)
         .toList();
     emit(state.copyWith(connections: updatedConnections));
     _logger.info('Removed connection "$connectionName" from state');
+    return connection;
   }
 
   @override
@@ -145,6 +146,24 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
       final AddConnectionResponse response = await nwcService.addConnection(req: request);
       final String connectionString = response.connection.connectionString;
 
+      final InputType parsedNwcUri = await breezSdkLiquid.instance!.parse(
+        input: response.connection.connectionString,
+      );
+      switch (parsedNwcUri) {
+        case InputType_NostrWalletConnectUri(data: final NostrWalletConnectUri uri):
+          // According to NIP-47:
+          // - walletPublicKey = wallet service pubkey (Breez)
+          // - appPublicKey = client app pubkey (derived from secret)
+          await nwcRegistrationManager.setupWebhook(
+            (await breezSdkLiquid.instance!.getInfo()).walletInfo.pubkey,
+            uri.walletPublicKey, // userPubkey = wallet service (Breez)
+            uri.appPublicKey, // appPubkey = client app
+            uri.relays,
+          );
+        default:
+          throw Exception('Invalid response type returned from the SDK.');
+      }
+
       emit(state.copyWith(isLoading: false));
 
       await loadConnections();
@@ -169,9 +188,24 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
         return;
       }
 
-      _removeConnectionFromState(name);
+      final NwcConnectionModel? connection = _removeConnectionFromState(name);
+      if (connection == null) {
+        return;
+      }
 
       await nwcService.removeConnection(name: name);
+
+      final InputType parsedNwcUri = await breezSdkLiquid.instance!.parse(input: connection.connectionString);
+      switch (parsedNwcUri) {
+        case InputType_NostrWalletConnectUri(data: final NostrWalletConnectUri uri):
+          await nwcRegistrationManager.removeWebhook(
+            (await breezSdkLiquid.instance!.getInfo()).walletInfo.pubkey,
+            uri.walletPublicKey, // userPubkey = wallet service (Breez)
+            uri.appPublicKey, // appPubkey = client app
+          );
+        default:
+          throw Exception('Invalid response type returned from the SDK.');
+      }
 
       await loadConnections();
     } catch (e) {
