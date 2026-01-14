@@ -71,14 +71,16 @@ class BreezSDKLiquid {
 
   /// Initializes SDK log stream.
   ///
-  /// Call once on your Dart entrypoint file, e.g.; `lib/main.dart`.
+  /// On Android, it also merges logs from the EventChannel to capture Notification Service logs.
   void initializeLogStream() {
+    final Stream<liquid_sdk.LogEntry> stream = liquid_sdk.breezLogStream().asBroadcastStream();
     if (defaultTargetPlatform == TargetPlatform.android) {
-      _breezLogStream ??= const EventChannel('breez_sdk_liquid_logs').receiveBroadcastStream().map(
-        (dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']),
-      );
+      final Stream<liquid_sdk.LogEntry> androidLogs = const EventChannel('breez_sdk_liquid_logs')
+          .receiveBroadcastStream()
+          .map((dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']));
+      _breezLogStream ??= Rx.merge(<Stream<liquid_sdk.LogEntry>>[stream, androidLogs]).asBroadcastStream();
     } else {
-      _breezLogStream ??= liquid_sdk.breezLogStream().asBroadcastStream();
+      _breezLogStream ??= stream;
     }
   }
 
