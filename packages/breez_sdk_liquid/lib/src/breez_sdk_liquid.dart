@@ -69,18 +69,24 @@ class BreezSDKLiquid {
 
   Stream<liquid_sdk.LogEntry>? _breezLogStream;
 
+  Stream<liquid_sdk.LogEntry>? _serviceLogStream;
+  Stream<liquid_sdk.LogEntry> get serviceLogStream {
+    if (_serviceLogStream == null) {
+      initializeLogStream();
+    }
+    return _serviceLogStream!;
+  }
+
   /// Initializes SDK log stream.
-  ///
-  /// On Android, it also merges logs from the EventChannel to capture Notification Service logs.
   void initializeLogStream() {
-    final Stream<liquid_sdk.LogEntry> stream = liquid_sdk.breezLogStream().asBroadcastStream();
+    _breezLogStream ??= liquid_sdk.breezLogStream().asBroadcastStream();
     if (defaultTargetPlatform == TargetPlatform.android) {
-      final Stream<liquid_sdk.LogEntry> androidLogs = const EventChannel('breez_sdk_liquid_logs')
+      _serviceLogStream ??= const EventChannel('breez_sdk_liquid_logs')
           .receiveBroadcastStream()
-          .map((dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']));
-      _breezLogStream ??= Rx.merge(<Stream<liquid_sdk.LogEntry>>[stream, androidLogs]).asBroadcastStream();
+          .map((dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']))
+          .asBroadcastStream();
     } else {
-      _breezLogStream ??= stream;
+      _serviceLogStream ??= const Stream<liquid_sdk.LogEntry>.empty();
     }
   }
 

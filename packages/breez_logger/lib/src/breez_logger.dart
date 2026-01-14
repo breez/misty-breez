@@ -105,6 +105,38 @@ class BreezLogger {
     );
   }
 
+  void registerBreezServiceLogs(Stream<liquid_sdk.LogEntry> serviceLogStream) {
+    serviceLogStream.listen((liquid_sdk.LogEntry e) {
+      _logBreezSdkLiquidEntries(e, _breezSdkLiquidLogger);
+      _writeToExtensionLog(e);
+    });
+  }
+
+  IOSink? _extensionLogSink;
+
+  void _writeToExtensionLog(liquid_sdk.LogEntry log) {
+    if (_extensionLogSink == null) {
+      _createExtensionLogFile();
+    }
+    _extensionLogSink?.writeln('${DateTime.now().toIso8601String()} ${log.level}: ${log.line}');
+  }
+
+  void _createExtensionLogFile() async {
+    try {
+      final AppConfig config = await AppConfig.instance();
+      final Directory appDir = Directory(config.sdkConfig.workingDir);
+      final File logFile = File(
+        '${appDir.path}/logs/${DateTime.now().millisecondsSinceEpoch}.android-extension.log',
+      );
+      if (!logFile.existsSync()) {
+        logFile.createSync(recursive: true);
+      }
+      _extensionLogSink = logFile.openWrite(mode: FileMode.append);
+    } catch (e) {
+      _logger.severe('Failed to create extension log file', e);
+    }
+  }
+
   void _logBreezSdkLiquidEntries(liquid_sdk.LogEntry log, Logger logger) {
     switch (log.level) {
       case 'ERROR':

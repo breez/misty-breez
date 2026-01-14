@@ -11,11 +11,10 @@ import androidx.core.content.ContextCompat
 import breez_sdk_liquid_notification.Constants
 import breez_sdk_liquid_notification.Message
 import breez_sdk_liquid_notification.MessagingService
-import com.breez.misty.BreezLogger.Companion.configureLogger
+import breez_sdk_liquid_notification.ServiceLogger
 import com.google.android.gms.common.util.PlatformVersion.isAtLeastLollipop
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import org.tinylog.kotlin.Logger
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class BreezFcmService : MessagingService, FirebaseMessagingService() {
@@ -23,18 +22,19 @@ class BreezFcmService : MessagingService, FirebaseMessagingService() {
         private const val TAG = "BreezFcmService"
     }
 
+    private val logger by lazy { ServiceLogger(null, applicationContext) }
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        configureLogger(applicationContext)
-        Logger.tag(TAG).debug { "FCM message received!" }
+        logger.log(TAG, "FCM message received!", "DEBUG")
 
         if (remoteMessage.priority == RemoteMessage.PRIORITY_HIGH) {
-            Logger.tag(TAG).debug { "onMessageReceived from: ${remoteMessage.from}" }
-            Logger.tag(TAG).debug { "onMessageReceived data: ${remoteMessage.data}" }
+            logger.log(TAG, "onMessageReceived from: ${remoteMessage.from}", "DEBUG")
+            logger.log(TAG, "onMessageReceived data: ${remoteMessage.data}", "DEBUG")
             remoteMessage.asMessage()
                 ?.also { message -> startServiceIfNeeded(applicationContext, message) }
         } else {
-            Logger.tag(TAG).debug { "Ignoring FCM message" }
+            logger.log(TAG, "Ignoring FCM message", "DEBUG")
         }
     }
 
@@ -47,7 +47,7 @@ class BreezFcmService : MessagingService, FirebaseMessagingService() {
     }
 
     override fun startForegroundService(message: Message) {
-        Logger.tag(TAG).debug { "Starting BreezForegroundService w/ message ${message.type}: ${message.payload}" }
+        logger.log(TAG, "Starting BreezForegroundService w/ message ${message.type}: ${message.payload}", "DEBUG")
         val intent = Intent(applicationContext, BreezForegroundService::class.java)
         intent.putExtra(Constants.EXTRA_REMOTE_MESSAGE, message)
         ContextCompat.startForegroundService(applicationContext, intent)

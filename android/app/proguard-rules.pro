@@ -10,13 +10,6 @@
 -keep class io.flutter.plugin.editing.** { *; }
 
 #--------------------------------------
-# Tinylog
-#--------------------------------------
--keepnames interface org.tinylog.**
--keepnames class * implements org.tinylog.**
--keepclassmembers class * implements org.tinylog.** { <init>(...); }
-
-#--------------------------------------
 # JNA
 #--------------------------------------
 -keep class com.sun.jna.** { *; }
