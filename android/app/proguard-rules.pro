@@ -49,6 +49,13 @@
 -keep public class * extends android.os.Binder { public static *; }
 
 #--------------------------------------
+# breez_sdk_liquid plugin
+#--------------------------------------
+-keep class com.breez.breez_sdk_liquid.** { *; }
+-keep class breez_sdk_liquid.** { *; }
+-keepclassmembers class com.breez.breez_sdk_liquid.** { *; }
+
+#--------------------------------------
 # image_cropper / UCrop
 #--------------------------------------
 -keep class okhttp3.** { *; }
