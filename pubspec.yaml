@@ -1,7 +1,7 @@
 name: misty_breez
 description: "Flutter app showcasing Breez SDK - Nodeless (Liquid Implementation)."
 publish_to: 'none'
-version: 0.2.1
+version: 0.2.1+1
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -128,21 +128,21 @@ dev_dependencies:
     sdk: flutter
   build_runner: <2.8.0
   flutter_lints: ^6.0.0
-  test: <1.26.3
-  test_api: <0.7.7
+  test: <1.29.0
+  test_api: <0.7.9
 
 dependency_overrides:
   # Use local path during development:
-   flutter_breez_liquid:
-    path: ../breez-sdk-liquid/packages/flutter_breez_liquid
+  # flutter_breez_liquid:
+  # path: ../breez-sdk-liquid/packages/flutter_breez_liquid
 
   # --- OR ---
 
   # Use published Git repo instead of local path:
-  # flutter_breez_liquid:
-  #   git:
-  #     url: https://github.com/breez/breez-sdk-liquid-flutter
-#     ref: v0.11.3-dev7
+   flutter_breez_liquid:
+     git:
+       url: https://github.com/breez/breez-sdk-liquid-flutter
+       ref: v0.11.9
 
 flutter:
   uses-material-design: true
