@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart' as liquid_sdk;
 import 'package:rxdart/rxdart.dart';
 
@@ -69,25 +68,9 @@ class BreezSDKLiquid {
 
   Stream<liquid_sdk.LogEntry>? _breezLogStream;
 
-  Stream<liquid_sdk.LogEntry>? _serviceLogStream;
-  Stream<liquid_sdk.LogEntry> get serviceLogStream {
-    if (_serviceLogStream == null) {
-      initializeLogStream();
-    }
-    return _serviceLogStream!;
-  }
-
   /// Initializes SDK log stream.
   void initializeLogStream() {
     _breezLogStream ??= liquid_sdk.breezLogStream().asBroadcastStream();
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      _serviceLogStream ??= const EventChannel('breez_sdk_liquid_logs')
-          .receiveBroadcastStream()
-          .map((dynamic log) => liquid_sdk.LogEntry(line: log['line'], level: log['level']))
-          .asBroadcastStream();
-    } else {
-      _serviceLogStream ??= const Stream<liquid_sdk.LogEntry>.empty();
-    }
   }
 
   StreamSubscription<liquid_sdk.SdkEvent>? _breezEventsSubscription;

@@ -42,7 +42,6 @@ Future<void> bootstrap(AppBuilder builder) async {
       final ServiceInjector injector = ServiceInjector();
       final BreezLogger breezLogger = injector.breezLogger;
       breezLogger.registerBreezSdkLiquidLogs(injector.breezSdkLiquid);
-      breezLogger.registerBreezServiceLogs(injector.breezSdkLiquid.serviceLogStream);
       BreezDateUtils.setupLocales();
       if (Firebase.apps.isEmpty) {
         _logger.info('List of Firebase apps: ${Firebase.apps}');

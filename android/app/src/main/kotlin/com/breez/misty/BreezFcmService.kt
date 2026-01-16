@@ -12,6 +12,7 @@ import breez_sdk_liquid_notification.Constants.MESSAGE_DATA_PAYLOAD
 import breez_sdk_liquid_notification.Constants.MESSAGE_DATA_TYPE
 import breez_sdk_liquid_notification.Message
 import breez_sdk_liquid_notification.MessagingService
+import breez_sdk_liquid_notification.ServiceLogger
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -19,14 +20,27 @@ import com.google.firebase.messaging.RemoteMessage
 class BreezFcmService :
     FirebaseMessagingService(),
     MessagingService {
+    companion object {
+        private const val TAG = "BreezFcmService"
+    }
+
+    private val logger by lazy { ServiceLogger(BreezFileLogger.getInstance(applicationContext)) }
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+        logger.log(TAG, "FCM message received!", "DEBUG")
+
         if (remoteMessage.priority == RemoteMessage.PRIORITY_HIGH) {
+            logger.log(TAG, "onMessageReceived from: ${remoteMessage.from}", "DEBUG")
+            logger.log(TAG, "onMessageReceived data: ${remoteMessage.data}", "DEBUG")
             remoteMessage.toMessage()?.let { startServiceIfNeeded(applicationContext, it) }
+        } else {
+            logger.log(TAG, "Ignoring FCM message", "DEBUG")
         }
     }
 
     override fun startForegroundService(message: Message) {
+        logger.log(TAG, "Starting BreezForegroundService w/ message ${message.type}: ${message.payload}", "DEBUG")
         Intent(applicationContext, BreezForegroundService::class.java)
             .putExtra(EXTRA_REMOTE_MESSAGE, message)
             .let { ContextCompat.startForegroundService(applicationContext, it) }
