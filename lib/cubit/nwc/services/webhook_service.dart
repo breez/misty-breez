@@ -55,7 +55,9 @@ class NwcWebhookService {
   }
 
   Future<void> unregister(String walletPubkey, UnregisterNwcWebhookRequest req) async {
-    _logger.info('Unregistering webhook: userPubkey ${req.userPubkey}, appPubkey ${req.appPubkey}');
+    _logger.info(
+      'Unregistering webhook: walletServicePubkey ${req.walletServicePubkey}, appPubkey ${req.appPubkey}',
+    );
     await executeWithRetry<void>(
       () => _unregisterWebhook(walletPubkey, req),
       operationName: 'unregister webhook',

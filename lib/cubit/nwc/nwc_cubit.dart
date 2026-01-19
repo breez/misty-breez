@@ -152,12 +152,12 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
       switch (parsedNwcUri) {
         case InputType_NostrWalletConnectUri(data: final NostrWalletConnectUri uri):
           // According to NIP-47:
-          // - walletPublicKey = wallet service pubkey (Breez)
+          // - walletServicePublicKey = wallet service pubkey (Breez)
           // - appPublicKey = client app pubkey (derived from secret)
           await nwcRegistrationManager.setupWebhook(
             (await breezSdkLiquid.instance!.getInfo()).walletInfo.pubkey,
-            uri.walletPublicKey, // userPubkey = wallet service (Breez)
-            uri.appPublicKey, // appPubkey = client app
+            uri.walletServicePublicKey,
+            uri.appPublicKey,
             uri.relays,
           );
         default:
@@ -200,8 +200,8 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
         case InputType_NostrWalletConnectUri(data: final NostrWalletConnectUri uri):
           await nwcRegistrationManager.removeWebhook(
             (await breezSdkLiquid.instance!.getInfo()).walletInfo.pubkey,
-            uri.walletPublicKey, // userPubkey = wallet service (Breez)
-            uri.appPublicKey, // appPubkey = client app
+            uri.walletServicePublicKey,
+            uri.appPublicKey,
           );
         default:
           throw Exception('Invalid response type returned from the SDK.');

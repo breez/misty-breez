@@ -12,7 +12,7 @@ class NwcRegistrationManager {
 
   Future<String> setupWebhook(
     String walletPubkey,
-    String userPubkey,
+    String walletServicePubkey,
     String appPubkey,
     List<String> relays,
   ) async {
@@ -23,7 +23,7 @@ class NwcRegistrationManager {
 
     final RegisterNwcWebhookRequest req = await requestBuilder.buildRegisterRequest(
       webhookUrl: webhookUrl,
-      userPubkey: userPubkey,
+      walletServicePubkey: walletServicePubkey,
       appPubkey: appPubkey,
       relays: relays,
     );
@@ -34,11 +34,11 @@ class NwcRegistrationManager {
     return webhookUrl;
   }
 
-  Future<void> removeWebhook(String walletPubkey, String userPubkey, String appPubkey) async {
+  Future<void> removeWebhook(String walletPubkey, String walletServicePubkey, String appPubkey) async {
     _logger.info('Removing webhook for app: $appPubkey');
 
     final UnregisterNwcWebhookRequest req = await requestBuilder.buildUnregisterRequest(
-      userPubkey: userPubkey,
+      walletServicePubkey: walletServicePubkey,
       appPubkey: appPubkey,
     );
 

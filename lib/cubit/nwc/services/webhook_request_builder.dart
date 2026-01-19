@@ -11,7 +11,7 @@ class NwcWebhookRequestBuilder {
 
   Future<RegisterNwcWebhookRequest> buildRegisterRequest({
     required String webhookUrl,
-    required String userPubkey,
+    required String walletServicePubkey,
     required String appPubkey,
     required List<String> relays,
   }) async {
@@ -21,7 +21,7 @@ class NwcWebhookRequestBuilder {
       // Build the signed request
       final String signature = await _buildSignedRegisterRequest(
         webhookUrl: webhookUrl,
-        userPubkey: userPubkey,
+        walletServicePubkey: walletServicePubkey,
         appPubkey: appPubkey,
         relays: relays,
       );
@@ -29,7 +29,7 @@ class NwcWebhookRequestBuilder {
       // Create and return the final request object
       final RegisterNwcWebhookRequest request = RegisterNwcWebhookRequest(
         webhookUrl: webhookUrl,
-        userPubkey: userPubkey,
+        walletServicePubkey: walletServicePubkey,
         appPubkey: appPubkey,
         relays: relays,
         signature: signature,
@@ -45,17 +45,17 @@ class NwcWebhookRequestBuilder {
 
   Future<String> _buildSignedRegisterRequest({
     required String webhookUrl,
-    required String userPubkey,
+    required String walletServicePubkey,
     required String appPubkey,
     required List<String> relays,
   }) async {
-    final String message = '$webhookUrl-$userPubkey-$appPubkey-[${relays.join(' ')}]';
+    final String message = '$webhookUrl-$walletServicePubkey-$appPubkey-[${relays.join(' ')}]';
     _logger.fine('Signing message: $message');
     return await messageSigner.signMessage(message);
   }
 
   Future<UnregisterNwcWebhookRequest> buildUnregisterRequest({
-    required String userPubkey,
+    required String walletServicePubkey,
     required String appPubkey,
   }) async {
     try {
@@ -63,14 +63,14 @@ class NwcWebhookRequestBuilder {
 
       // Build the signed request data
       final SignedRequestData requestData = await _buildSignedUnregisterRequest(
-        userPubkey: userPubkey,
+        walletServicePubkey: walletServicePubkey,
         appPubkey: appPubkey,
       );
 
       // Create and return the final request object
       final UnregisterNwcWebhookRequest request = UnregisterNwcWebhookRequest(
         time: requestData.timestamp,
-        userPubkey: userPubkey,
+        walletServicePubkey: walletServicePubkey,
         appPubkey: appPubkey,
         signature: requestData.signature,
       );
@@ -84,14 +84,14 @@ class NwcWebhookRequestBuilder {
   }
 
   Future<SignedRequestData> _buildSignedUnregisterRequest({
-    required String userPubkey,
+    required String walletServicePubkey,
     required String appPubkey,
   }) async {
     // Create a Unix timestamp (seconds since epoch)
     final int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
     // Build the message to sign
-    final String message = '$timestamp-$userPubkey-$appPubkey';
+    final String message = '$timestamp-$walletServicePubkey-$appPubkey';
     _logger.fine('Signing message: $message');
 
     // Sign the message
