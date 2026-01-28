@@ -248,7 +248,7 @@ jobs:
       - name: 🔨 Build Breez Liquid SDK Android bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just build-uniffi-android
+        run: SKIP_BUILD=0 just build-uniffi-android
 
       - name: Generate Dart/Flutter bindings & Softlink C Headers
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
