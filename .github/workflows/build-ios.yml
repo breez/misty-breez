@@ -83,7 +83,7 @@ jobs:
   build-ios:
     needs: setup
     name: Build iOS
-    runs-on: macos-15
+    runs-on: macos-26
     env:
       SCHEME: Runner
       BUILD_CONFIGURATION: Release
@@ -108,10 +108,6 @@ jobs:
           echo "::endgroup::"
           echo "::group::Cleaned Files"
           sudo rm -rf /Users/runner/Library/Android/sdk
-          sudo rm -rf /Applications/Xcode_15.4.app
-          sudo rm -rf /Applications/Xcode_16.1.app
-          sudo rm -rf /Applications/Xcode_16.2.app
-          sudo rm -rf /Applications/Xcode_16.3_Release_Candidate_2.app
           echo "::endgroup::"
           echo "::group::Free space after cleanup"
           df -hI
@@ -156,13 +152,13 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: 3.38.5
+          flutter-version: 3.38.9
           cache: true
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.4'
+          xcode-version: '26.2'
 
       - name: Set up just
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
