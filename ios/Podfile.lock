@@ -2,7 +2,7 @@ PODS:
   - app_group_directory (1.0.0):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_breez_liquid (0.11.7):
+  - flutter_breez_liquid (0.11.13):
     - Flutter
   - flutter_fgbg (0.0.1):
     - Flutter
@@ -74,7 +74,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_group_directory: 7bf9f8f9819ead554de29da7c25fb7a680d6a9a0
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_breez_liquid: e507deb5d39d68456f1778bd3021405361877eb5
+  flutter_breez_liquid: 111b5de51cf1384dd21c7f5079fcce8d5b91710f
   flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d
   flutter_inappwebview_ios: 6f63631e2c62a7c350263b13fa5427aedefe81d4
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
