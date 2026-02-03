@@ -19,7 +19,7 @@ class NotificationService: SDKNotificationService {
         let extensionLogFile = logsDir.appendingPathComponent("\(Date().timeIntervalSince1970).ios-extension.log")
         let xcgLogger: XCGLogger = {
             let log = XCGLogger.default
-            log.setup(level: .debug, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: extensionLogFile.path)
+            log.setup(level: .info, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: extensionLogFile.path)
             return log
         }()
 
