@@ -17,6 +17,11 @@ on:
         required: false
         type: string
         default: 'main'
+      device-only-build:
+        description: 'Build only for physical devices (faster CI, skips simulator/macOS targets). Default = false.'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   pre-setup:
@@ -31,6 +36,7 @@ jobs:
       use-published-plugins: ${{ inputs.use-published-plugins }}
       liquid-sdk-plugin-version: ${{ inputs.liquid-sdk-plugin-version }}
       liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
+      device-only-build: ${{ inputs.device-only-build }}
     steps:
       - name: Checkout repository
         if:  ${{ needs.pre-setup.outputs.use-published-plugins == 'true' && needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
@@ -77,6 +83,7 @@ jobs:
       use-published-plugins: ${{ needs.pre-setup.outputs.use-published-plugins }}
       liquid-sdk-plugin-version: ${{ needs.pre-setup.outputs.liquid-sdk-plugin-version }}
       liquid-sdk-ref: ${{ needs.pre-setup.outputs.liquid-sdk-ref }}
+      device-only-build: ${{ needs.pre-setup.outputs.device-only-build }}
     steps:
       - run: echo "set setup output variables"
 
@@ -257,13 +264,25 @@ jobs:
       - name: 🔨 Build Breez Liquid SDK Swift bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just build-uniffi-swift
+        run: |
+          if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
+            echo "🚀 Device-only build enabled - building aarch64-apple-ios only"
+            just build-uniffi-swift-device-only
+          else
+            just build-uniffi-swift
+          fi
 
       - name: Generate Dart/Flutter bindings & Softlink C Headers
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
-        run: just gen
+        run: |
+          if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
+            just codegen
+            just build-ios-framework-device-only
+          else
+            just gen
+          fi
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: misty_breez
