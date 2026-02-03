@@ -247,11 +247,6 @@ jobs:
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         run: just setup
 
-      - name: Install flutter_rust_bridge_codegen dependencies
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just frb
-
       - name: 🔒 Install SSH Key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.REPO_SSH_KEY }}
@@ -261,26 +256,18 @@ jobs:
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
 
-      - name: 🔨 Build Breez Liquid SDK Swift bindings
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: |
-          if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
-            echo "🚀 Device-only build enabled - building aarch64-apple-ios only"
-            just build-uniffi-swift-device-only
-          else
-            just build-uniffi-swift
-          fi
-
-      - name: Generate Dart/Flutter bindings & Softlink C Headers
+      - name: 🔨 Build Breez Liquid SDK & Generate bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
         run: |
           if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
+            echo "🚀 Device-only build enabled - building aarch64-apple-ios only"
+            just build-uniffi-swift-device-only
             just codegen
             just build-ios-framework-device-only
           else
+            just build-uniffi-swift
             just gen
           fi
 
