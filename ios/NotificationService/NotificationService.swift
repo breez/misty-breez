@@ -87,6 +87,9 @@ class NotificationService: SDKNotificationService {
             .path
         self.logger.log(tag: TAG, line: "Working directory: \(config.workingDir)", level: "DEBUG")
 
+        // Disable realtime sync in NSE to reduce memory usage and background tasks
+        config.syncServiceUrl = nil
+
         guard let mnemonic = KeychainHelper.shared.getFlutterString(accessGroup: accessGroup, key: accountMnemonic) else {
             self.logger.log(tag: TAG, line: "Mnemonic not found in keychain", level: "ERROR")
             return nil
