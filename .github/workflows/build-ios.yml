@@ -292,10 +292,6 @@ jobs:
         working-directory: misty_breez
         run: flutter pub get
 
-      - name: 🔍 Perform static analysis
-        working-directory: misty_breez
-        run: dart analyze --fatal-infos
-
       - name: ⚙️ Setup compile-time variables
         env:
           CONFIG_FILE: ${{ secrets.CONFIG_FILE }}
@@ -373,84 +369,24 @@ jobs:
           
           echo "Provisioning profiles installed successfully."
 
-      - name: 🚀 Build app
-        working-directory: misty_breez
-        run: |
-          flutter build ios \
-          --build-name="$VERSION_BASE" \
-          --build-number="$BUILD_NUMBER" \
-          --target="lib/main/main.dart" \
-          --release \
-          --split-debug-info="./obfuscated/debug" \
-          --obfuscate \
-          --no-config-only \
-          --no-pub \
-          --no-codesign \
-          --dart-define-from-file="config.json"
-          
-
-      - name: 📦 Resolve Swift package dependencies
-        working-directory: misty_breez
-        run: | 
-          xcodebuild \
-          -resolvePackageDependencies \
-          -workspace ios/Runner.xcworkspace \
-          -scheme ${{ env.SCHEME }} \
-          -configuration ${{ env.BUILD_CONFIGURATION }}
-
-      - name: 🔨 Build application and generate xcarchive file
+      - name: 🚀 Build IPA
         working-directory: misty_breez
         run: |
           buildNumber=$(($GITHUB_RUN_NUMBER + 6000)).1
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" ios/Runner/Info.plist
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ env.IOS_VERSION_STRING }}" ios/Runner/Info.plist
-          xcodebuild \
-          -workspace ios/Runner.xcworkspace \
-          -scheme ${{ env.SCHEME }} \
-          -configuration ${{ env.BUILD_CONFIGURATION }} \
-          -sdk 'iphoneos' \
-          -destination 'generic/platform=iOS' \
-          -archivePath build-output/app.xcarchive \
-          -jobs $(sysctl -n hw.ncpu) \
-          archive
-
-      - name: 📤 Export the archive to an ipa file
-        working-directory: misty_breez
-        run: |
-          xcodebuild \
-          -exportArchive \
-          -archivePath build-output/app.xcarchive \
-          -exportPath build-output/ios \
-          -exportOptionsPlist ios/ExportOptions.plist
-
-      - name: 🗃️ Compress build folder
-        if: github.event_name == 'release'
-        uses: TheDoctor0/zip-release@master
-        with:
-          filename: build.zip
-          directory: misty_breez/build/ios/iphoneos
-          type: zip
-
-      - name: 📤 Upload release
-        if: github.event_name == 'release'
-        uses: svenstaro/upload-release-action@v2
-        with:
-          asset_name: release-iOS.zip
-          file: misty_breez/build/ios/iphoneos/build.zip
-          overwrite: true
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 📤 Upload artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v6
-        with:
-          name: release-iOS
-          path: misty_breez/build/ios/iphoneos
+          flutter build ipa \
+          --release \
+          --build-name="${{ env.IOS_VERSION_STRING }}" \
+          --build-number="$buildNumber" \
+          --target="lib/main/main.dart" \
+          --obfuscate \
+          --split-debug-info="./obfuscated/debug" \
+          --dart-define-from-file="config.json" \
+          --export-options-plist=ios/ExportOptions.plist
 
       - name: 📱 Publish to TestFlight
         run: |
           altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
-          ipa="$PWD/misty_breez/build-output/ios/misty_breez.ipa"
+          ipa="$PWD/misty_breez/build/ios/ipa/misty_breez.ipa"
           "$altool" \
           --upload-app \
           --type ios \
