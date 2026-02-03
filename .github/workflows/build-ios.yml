@@ -411,7 +411,8 @@ jobs:
           -sdk 'iphoneos' \
           -destination 'generic/platform=iOS' \
           -archivePath build-output/app.xcarchive \
-          clean archive
+          -jobs $(sysctl -n hw.ncpu) \
+          archive
 
       - name: 📤 Export the archive to an ipa file
         working-directory: misty_breez
