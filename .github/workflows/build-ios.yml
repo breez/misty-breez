@@ -373,7 +373,7 @@ jobs:
           
           echo "Provisioning profiles installed successfully."
 
-      - name: 🚀 Configure Flutter build
+      - name: 🚀 Build app
         working-directory: misty_breez
         run: |
           flutter build ios \
@@ -383,7 +383,7 @@ jobs:
           --release \
           --split-debug-info="./obfuscated/debug" \
           --obfuscate \
-          --config-only \
+          --no-config-only \
           --no-pub \
           --no-codesign \
           --dart-define-from-file="config.json"
