@@ -10,6 +10,7 @@ class NotificationService: SDKNotificationService {
     private let accountApiKey: String = "account_api_key"
     private let initTime: Date
     private var didReceiveTime: Date?
+    private var xcgLogger: XCGLogger?
 
     override init() {
         self.initTime = Date()
@@ -17,16 +18,17 @@ class NotificationService: SDKNotificationService {
         let logsDir = FileManager
             .default.containerURL(forSecurityApplicationGroupIdentifier: accessGroup)!.appendingPathComponent("logs")
         let extensionLogFile = logsDir.appendingPathComponent("\(Date().timeIntervalSince1970).ios-extension.log")
-        let xcgLogger: XCGLogger = {
+        let logger: XCGLogger = {
             let log = XCGLogger.default
             log.setup(level: .info, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: extensionLogFile.path)
             return log
         }()
+        self.xcgLogger = logger
 
         super.init()
 
         // Set Notification Service Logger to SdkLogListener that utilizes XCGLogger library
-        let sdkLogger = SdkLogListener(logger: xcgLogger)
+        let sdkLogger = SdkLogListener(logger: logger)
         self.setServiceLogger(logger: sdkLogger)
         // Use the same SdkLogListener to listen in on BreezSDKLiquid node logs
         do {
@@ -60,6 +62,18 @@ class NotificationService: SDKNotificationService {
         self.logger.log(tag: TAG, line: "serviceExtensionTimeWillExpire() called - timeSinceInit: \(String(format: "%.3f", timeSinceInit))s, timeSinceDidReceive: \(String(format: "%.3f", timeSinceDidReceive))s, memory: \(self.memoryUsageString())", level: "WARN")
 
         super.serviceExtensionTimeWillExpire()
+
+        // Close logger file handle to allow iOS to terminate the process
+        cleanupLogger()
+    }
+
+    /// Closes the XCGLogger file destination to release file handles
+    /// This allows iOS to properly terminate the NSE process
+    private func cleanupLogger() {
+        if let fileDestination = xcgLogger?.destination(withIdentifier: XCGLogger.Constants.fileDestinationIdentifier) as? FileDestination {
+            fileDestination.owner = nil  // This triggers closeFile()
+        }
+        xcgLogger?.remove(destinationWithIdentifier: XCGLogger.Constants.fileDestinationIdentifier)
     }
 
     override func getConnectRequest() -> ConnectRequest? {
