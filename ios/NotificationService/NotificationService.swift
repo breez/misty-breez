@@ -8,7 +8,6 @@ class NotificationService: SDKNotificationService {
 
     private let accountMnemonic: String = "account_mnemonic"
     private let accountApiKey: String = "account_api_key"
-    private var xcgLogger: XCGLogger?
 
     override init() {
         let logsDir = FileManager
@@ -19,7 +18,6 @@ class NotificationService: SDKNotificationService {
             log.setup(level: .info, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: extensionLogFile.path)
             return log
         }()
-        self.xcgLogger = logger
 
         super.init()
 
@@ -32,21 +30,6 @@ class NotificationService: SDKNotificationService {
         } catch let e {
             self.logger.log(tag: TAG, line:"Failed to set log stream: \(e)", level: "ERROR")
         }
-    }
-
-    override func serviceExtensionTimeWillExpire() {
-        super.serviceExtensionTimeWillExpire()
-        // Close logger file handle to allow iOS to terminate the process
-        cleanupLogger()
-    }
-
-    /// Closes the XCGLogger file destination to release file handles
-    /// This allows iOS to properly terminate the NSE process
-    private func cleanupLogger() {
-        if let fileDestination = xcgLogger?.destination(withIdentifier: XCGLogger.Constants.fileDestinationIdentifier) as? FileDestination {
-            fileDestination.owner = nil  // This triggers closeFile()
-        }
-        xcgLogger?.remove(destinationWithIdentifier: XCGLogger.Constants.fileDestinationIdentifier)
     }
 
     override func getConnectRequest() -> ConnectRequest? {

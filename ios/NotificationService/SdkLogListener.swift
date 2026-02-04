@@ -15,15 +15,15 @@ class SdkLogListener : Logger {
 
         switch(l.level) {
         case "ERROR":
-            logger.logln(line, level: .error, functionName: "", fileName: "SDK", lineNumber: 0)
+            logger.logln(line, level: .error, functionName: "", fileName: "BreezSDK", lineNumber: 0)
         case "WARN":
-            logger.logln(line, level: .warning, functionName: "", fileName: "SDK", lineNumber: 0)
+            logger.logln(line, level: .warning, functionName: "", fileName: "BreezSDK", lineNumber: 0)
         case "INFO":
-            logger.logln(line, level: .info, functionName: "", fileName: "SDK", lineNumber: 0)
+            logger.logln(line, level: .info, functionName: "", fileName: "BreezSDK", lineNumber: 0)
         case "DEBUG":
-            logger.logln(line, level: .debug, functionName: "", fileName: "SDK", lineNumber: 0)
+            logger.logln(line, level: .debug, functionName: "", fileName: "BreezSDK", lineNumber: 0)
         case "TRACE":
-            logger.logln(line, level: .verbose, functionName: "", fileName: "SDK", lineNumber: 0)
+            logger.logln(line, level: .verbose, functionName: "", fileName: "BreezSDK", lineNumber: 0)
         default:
             return
         }
