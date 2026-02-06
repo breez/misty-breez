@@ -140,6 +140,5 @@ dependencies {
     /* FCM */
     implementation 'com.google.firebase:firebase-messaging:23.4.1'
     /* Logging */
-    implementation 'org.tinylog:tinylog-api-kotlin:2.6.2'
-    implementation 'org.tinylog:tinylog-impl:2.6.2'
+
 }
