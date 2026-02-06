@@ -122,6 +122,8 @@ class BreezLogger {
       case 'TRACE':
         logger.finest(log.line);
         break;
+      default:
+        logger.fine(log.line);
     }
   }
 

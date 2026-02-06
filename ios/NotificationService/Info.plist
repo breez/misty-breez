@@ -13,5 +13,10 @@
 	</dict>
 	<key>lnurl_pay_metadata_plain_text</key>
 	<string>Pay with Misty Breez</string>
+	<key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+    </dict>
 </dict>
 </plist>
