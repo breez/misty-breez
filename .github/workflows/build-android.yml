@@ -239,13 +239,16 @@ jobs:
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
 
-      - name: 🔨 Build Breez Liquid SDK & Generate bindings
+      - name: 🔨 Build Breez Liquid SDK Android bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
+        run: just build-uniffi-android
+
+      - name: Generate Dart/Flutter bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
-        run: |
-          just build-uniffi-android
-          just codegen
+        run: just codegen
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: misty_breez

@@ -256,18 +256,26 @@ jobs:
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
 
-      - name: 🔨 Build Breez Liquid SDK & Generate bindings
+      - name: 🔨 Build Breez Liquid SDK iOS bindings
+        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
+        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
+        run: |
+          if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
+            echo "🚀 Device-only build enabled - building aarch64-apple-ios only"
+            just build-uniffi-swift-device-only
+          else
+            just build-uniffi-swift
+          fi
+
+      - name: Generate Dart/Flutter bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
         run: |
           if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
-            echo "🚀 Device-only build enabled - building aarch64-apple-ios only"
-            just build-uniffi-swift-device-only
             just codegen
             just build-ios-framework-device-only
           else
-            just build-uniffi-swift
             just gen
           fi
 
