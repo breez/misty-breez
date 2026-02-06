@@ -16,6 +16,7 @@ class BreezForegroundService : ForegroundService() {
     override fun onCreate() {
         super.onCreate()
         val fileLogger = BreezFileLogger.getInstance(applicationContext)
+        fileLogger.minLevel = BreezFileLogger.LogLevel.INFO
         this.logger = ServiceLogger(fileLogger)
         // Set the SDK logger for background operations
         // The SDK logger is separate from the service logger used by the notification plugin
@@ -27,24 +28,35 @@ class BreezForegroundService : ForegroundService() {
                 }
             })
         } catch (e: Exception) {
-            logger.log(TAG, "Failed to set SDK logger: ${e.message}", "WARN")
+            logger.log(TAG, "Failed to set SDK logger: ${e.message}", "ERROR")
         }
-        logger.log(TAG, "Creating Breez foreground service...", "DEBUG")
+        logger.log(TAG, "Creating Breez foreground service...", "INFO")
         registerNotificationChannels(applicationContext, DEFAULT_CLICK_ACTION)
-        logger.log(TAG, "Breez foreground service created.", "DEBUG")
+        logger.log(TAG, "Breez foreground service created.", "INFO")
     }
 
     override fun getConnectRequest(): ConnectRequest? {
         val apiKey = applicationContext.getString(R.string.breezApiKey)
         val config =
-            defaultConfig(LiquidNetwork.MAINNET, apiKey).apply {
-                workingDir = PathUtils.getDataDirectory(applicationContext)
+            try {
+                defaultConfig(LiquidNetwork.MAINNET, apiKey).apply {
+                    workingDir = PathUtils.getDataDirectory(applicationContext)
+                }
+            } catch (e: Exception) {
+                logger.log(TAG, "Failed to get default config: ${e.message}", "ERROR")
+                return null
             }
 
-        return readSecuredValue(
+        val mnemonic = readSecuredValue(
             applicationContext,
             "${STORAGE_PREFIX}_$ACCOUNT_MNEMONIC",
-        )?.let { ConnectRequest(config, it) }
+        )
+        if (mnemonic == null) {
+            logger.log(TAG, "Mnemonic not found in secure storage", "ERROR")
+            return null
+        }
+
+        return ConnectRequest(config, mnemonic)
     }
 
     companion object {
