@@ -10,13 +10,6 @@
 -keep class io.flutter.plugin.editing.** { *; }
 
 #--------------------------------------
-# Tinylog
-#--------------------------------------
--keepnames interface org.tinylog.**
--keepnames class * implements org.tinylog.**
--keepclassmembers class * implements org.tinylog.** { <init>(...); }
-
-#--------------------------------------
 # JNA
 #--------------------------------------
 -keep class com.sun.jna.** { *; }
@@ -47,3 +40,32 @@
     public static class *;
 }
 -keep public class * extends android.os.Binder { public static *; }
+
+#--------------------------------------
+# breez_sdk_liquid plugin
+#--------------------------------------
+-keep class com.breez.breez_sdk_liquid.** { *; }
+-keep class breez_sdk_liquid.** { *; }
+-keepclassmembers class com.breez.breez_sdk_liquid.** { *; }
+
+#--------------------------------------
+# image_cropper / UCrop
+#--------------------------------------
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+-keep class com.yalantis.ucrop.** { *; }
+-dontwarn com.yalantis.ucrop.**
+
+#--------------------------------------
+# Core suppressions (Android internals & Java standard library)
+#--------------------------------------
+-dontwarn dalvik.system.VMStack
+-dontwarn java.lang.**
+-dontwarn javax.naming.**
+-dontwarn java.awt.**
+-dontwarn sun.reflect.Reflection
+
+#--------------------------------------
+# Optimization
+#--------------------------------------
+-dontoptimize
