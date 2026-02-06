@@ -28,7 +28,7 @@ class NotificationService: SDKNotificationService {
         do {
             try setLogger(logger: sdkLogger)
         } catch let e {
-            self.logger.log(tag: TAG, line:"Failed to set log stream: \(e)", level: "ERROR")
+            self.logger.log(tag: TAG, line:"Failed to set SDK logger: \(e)", level: "ERROR")
         }
     }
 

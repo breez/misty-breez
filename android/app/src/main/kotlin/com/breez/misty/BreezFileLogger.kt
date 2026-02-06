@@ -10,8 +10,25 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class BreezFileLogger private constructor(private val context: Context) : Logger {
+class BreezFileLogger private constructor(
+    private val context: Context,
+    var minLevel: LogLevel = LogLevel.TRACE,
+) : Logger {
     private var logFile: File? = null
+
+    enum class LogLevel(val priority: Int) {
+        TRACE(0),
+        DEBUG(1),
+        INFO(2),
+        WARN(3),
+        ERROR(4),
+        ;
+
+        companion object {
+            fun fromString(level: String): LogLevel =
+                entries.find { it.name.equals(level, ignoreCase = true) } ?: TRACE
+        }
+    }
 
     companion object {
         private const val TAG = "BreezFileLogger"
@@ -44,7 +61,9 @@ class BreezFileLogger private constructor(private val context: Context) : Logger
     }
 
     override fun log(l: LogEntry) {
-        logToFile(l.line, l.level)
+        if (LogLevel.fromString(l.level).priority >= minLevel.priority) {
+            logToFile(l.line, l.level)
+        }
     }
 
     private fun logToFile(message: String, level: String) {

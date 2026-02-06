@@ -24,23 +24,27 @@ class BreezFcmService :
         private const val TAG = "BreezFcmService"
     }
 
-    private val logger by lazy { ServiceLogger(BreezFileLogger.getInstance(applicationContext)) }
+    private val logger by lazy {
+        val fileLogger = BreezFileLogger.getInstance(applicationContext)
+        fileLogger.minLevel = BreezFileLogger.LogLevel.INFO
+        ServiceLogger(fileLogger)
+    }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        logger.log(TAG, "FCM message received!", "DEBUG")
+        logger.log(TAG, "FCM message received!", "INFO")
 
         if (remoteMessage.priority == RemoteMessage.PRIORITY_HIGH) {
-            logger.log(TAG, "onMessageReceived from: ${remoteMessage.from}", "DEBUG")
-            logger.log(TAG, "onMessageReceived data: ${remoteMessage.data}", "DEBUG")
+            logger.log(TAG, "onMessageReceived from: ${remoteMessage.from}", "INFO")
+            logger.log(TAG, "onMessageReceived data: ${remoteMessage.data}", "INFO")
             remoteMessage.toMessage()?.let { startServiceIfNeeded(applicationContext, it) }
         } else {
-            logger.log(TAG, "Ignoring FCM message", "DEBUG")
+            logger.log(TAG, "Ignoring FCM message", "INFO")
         }
     }
 
     override fun startForegroundService(message: Message) {
-        logger.log(TAG, "Starting BreezForegroundService w/ message ${message.type}: ${message.payload}", "DEBUG")
+        logger.log(TAG, "Starting BreezForegroundService w/ message ${message.type}: ${message.payload}", "INFO")
         Intent(applicationContext, BreezForegroundService::class.java)
             .putExtra(EXTRA_REMOTE_MESSAGE, message)
             .let { ContextCompat.startForegroundService(applicationContext, it) }
