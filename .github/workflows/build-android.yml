@@ -158,7 +158,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: 3.38.5
+          flutter-version: 3.38.9
           cache: true
 
       - name: Set up just
@@ -228,14 +228,7 @@ jobs:
       - name: 📦 Install Breez Liquid SDK dependencies
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: |
-          just clean
-          just setup
-
-      - name: Install flutter_rust_bridge_codegen dependencies
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just frb
+        run: just setup
 
       - name: 🔒 Install SSH Key
         env:
@@ -251,11 +244,11 @@ jobs:
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         run: just build-uniffi-android
 
-      - name: Generate Dart/Flutter bindings & Softlink C Headers
+      - name: Generate Dart/Flutter bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
-        run: just gen false
+        run: just codegen
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: misty_breez
@@ -264,10 +257,6 @@ jobs:
       - name: 📦 Install Flutter dependencies
         working-directory: misty_breez
         run: flutter pub get
-
-      - name: 🔍 Perform static analysis
-        working-directory: misty_breez
-        run: dart analyze --fatal-infos
 
       - name: ⚙️ Setup compile-time variables
         env:

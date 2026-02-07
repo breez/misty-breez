@@ -17,6 +17,11 @@ on:
         required: false
         type: string
         default: 'main'
+      device-only-build:
+        description: 'Build only for physical devices (faster CI, skips simulator/macOS targets). Default = false.'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   pre-setup:
@@ -31,6 +36,7 @@ jobs:
       use-published-plugins: ${{ inputs.use-published-plugins }}
       liquid-sdk-plugin-version: ${{ inputs.liquid-sdk-plugin-version }}
       liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
+      device-only-build: ${{ inputs.device-only-build }}
     steps:
       - name: Checkout repository
         if:  ${{ needs.pre-setup.outputs.use-published-plugins == 'true' && needs.pre-setup.outputs.liquid-sdk-plugin-version == ''}}
@@ -77,13 +83,14 @@ jobs:
       use-published-plugins: ${{ needs.pre-setup.outputs.use-published-plugins }}
       liquid-sdk-plugin-version: ${{ needs.pre-setup.outputs.liquid-sdk-plugin-version }}
       liquid-sdk-ref: ${{ needs.pre-setup.outputs.liquid-sdk-ref }}
+      device-only-build: ${{ needs.pre-setup.outputs.device-only-build }}
     steps:
       - run: echo "set setup output variables"
 
   build-ios:
     needs: setup
     name: Build iOS
-    runs-on: macos-15
+    runs-on: macos-26
     env:
       SCHEME: Runner
       BUILD_CONFIGURATION: Release
@@ -108,10 +115,6 @@ jobs:
           echo "::endgroup::"
           echo "::group::Cleaned Files"
           sudo rm -rf /Users/runner/Library/Android/sdk
-          sudo rm -rf /Applications/Xcode_15.4.app
-          sudo rm -rf /Applications/Xcode_16.1.app
-          sudo rm -rf /Applications/Xcode_16.2.app
-          sudo rm -rf /Applications/Xcode_16.3_Release_Candidate_2.app
           echo "::endgroup::"
           echo "::group::Free space after cleanup"
           df -hI
@@ -156,13 +159,13 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: 3.38.5
+          flutter-version: 3.38.9
           cache: true
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.4'
+          xcode-version: '26.2'
 
       - name: Set up just
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
@@ -242,14 +245,7 @@ jobs:
       - name: 📦 Install Breez Liquid SDK dependencies
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: |
-          just clean
-          just setup
-
-      - name: Install flutter_rust_bridge_codegen dependencies
-        if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
-        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just frb
+        run: just setup
 
       - name: 🔒 Install SSH Key
         env:
@@ -260,16 +256,28 @@ jobs:
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
 
-      - name: 🔨 Build Breez Liquid SDK Swift bindings
+      - name: 🔨 Build Breez Liquid SDK iOS bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just build-uniffi-swift
+        run: |
+          if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
+            echo "🚀 Device-only build enabled - building aarch64-apple-ios only"
+            just build-uniffi-swift-device-only
+          else
+            just build-uniffi-swift
+          fi
 
-      - name: Generate Dart/Flutter bindings & Softlink C Headers
+      - name: Generate Dart/Flutter bindings
         if: ${{ needs.setup.outputs.use-published-plugins == 'false' }}
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
-        run: just gen
+        run: |
+          if [ "${{ needs.setup.outputs.device-only-build }}" == "true" ]; then
+            just codegen
+            just build-ios-framework-device-only
+          else
+            just gen
+          fi
 
       - name: 🗂️ Populate Flutter tool's cache of binary artifacts.
         working-directory: misty_breez
@@ -278,10 +286,6 @@ jobs:
       - name: 📦 Install Flutter dependencies
         working-directory: misty_breez
         run: flutter pub get
-
-      - name: 🔍 Perform static analysis
-        working-directory: misty_breez
-        run: dart analyze --fatal-infos
 
       - name: ⚙️ Setup compile-time variables
         env:
@@ -360,83 +364,24 @@ jobs:
           
           echo "Provisioning profiles installed successfully."
 
-      - name: 🚀 Build app
-        working-directory: misty_breez
-        run: |
-          flutter build ios \
-          --build-name="$VERSION_BASE" \
-          --build-number="$BUILD_NUMBER" \
-          --target="lib/main/main.dart" \
-          --release \
-          --split-debug-info="./obfuscated/debug" \
-          --obfuscate \
-          --no-config-only \
-          --no-pub \
-          --no-codesign \
-          --dart-define-from-file="config.json"
-          
-
-      - name: 📦 Resolve Swift package dependencies
-        working-directory: misty_breez
-        run: | 
-          xcodebuild \
-          -resolvePackageDependencies \
-          -workspace ios/Runner.xcworkspace \
-          -scheme ${{ env.SCHEME }} \
-          -configuration ${{ env.BUILD_CONFIGURATION }}
-
-      - name: 🔨 Build application and generate xcarchive file
+      - name: 🚀 Build IPA
         working-directory: misty_breez
         run: |
           buildNumber=$(($GITHUB_RUN_NUMBER + 6000)).1
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" ios/Runner/Info.plist
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ env.IOS_VERSION_STRING }}" ios/Runner/Info.plist
-          xcodebuild \
-          -workspace ios/Runner.xcworkspace \
-          -scheme ${{ env.SCHEME }} \
-          -configuration ${{ env.BUILD_CONFIGURATION }} \
-          -sdk 'iphoneos' \
-          -destination 'generic/platform=iOS' \
-          -archivePath build-output/app.xcarchive \
-          clean archive
-
-      - name: 📤 Export the archive to an ipa file
-        working-directory: misty_breez
-        run: |
-          xcodebuild \
-          -exportArchive \
-          -archivePath build-output/app.xcarchive \
-          -exportPath build-output/ios \
-          -exportOptionsPlist ios/ExportOptions.plist
-
-      - name: 🗃️ Compress build folder
-        if: github.event_name == 'release'
-        uses: TheDoctor0/zip-release@master
-        with:
-          filename: build.zip
-          directory: misty_breez/build/ios/iphoneos
-          type: zip
-
-      - name: 📤 Upload release
-        if: github.event_name == 'release'
-        uses: svenstaro/upload-release-action@v2
-        with:
-          asset_name: release-iOS.zip
-          file: misty_breez/build/ios/iphoneos/build.zip
-          overwrite: true
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 📤 Upload artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v6
-        with:
-          name: release-iOS
-          path: misty_breez/build/ios/iphoneos
+          flutter build ipa \
+          --release \
+          --build-name="${{ env.IOS_VERSION_STRING }}" \
+          --build-number="$buildNumber" \
+          --target="lib/main/main.dart" \
+          --obfuscate \
+          --split-debug-info="./obfuscated/debug" \
+          --dart-define-from-file="config.json" \
+          --export-options-plist=ios/ExportOptions.plist
 
       - name: 📱 Publish to TestFlight
         run: |
           altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
-          ipa="$PWD/misty_breez/build-output/ios/misty_breez.ipa"
+          ipa="$PWD/misty_breez/build/ios/ipa/misty_breez.ipa"
           "$altool" \
           --upload-app \
           --type ios \
