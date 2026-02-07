@@ -1,3 +1,4 @@
+export 'bolt12/receive_bolt12_offer_page.dart';
 export 'lightning/receive_lightning_page.dart';
 export 'ln_address/receive_lightning_address_page.dart';
 export 'lnurl/lnurl_withdraw_page.dart';
