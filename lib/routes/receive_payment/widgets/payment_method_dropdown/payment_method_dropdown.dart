@@ -24,6 +24,7 @@ class PaymentMethodDropdown extends StatelessWidget {
 
     final List<PaymentMethod> allMethods = <PaymentMethod>[
       PaymentMethod.bolt11Invoice,
+      PaymentMethod.bolt12Offer,
       PaymentMethod.bitcoinAddress,
     ];
 

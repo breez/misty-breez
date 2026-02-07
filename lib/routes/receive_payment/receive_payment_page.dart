@@ -22,6 +22,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     ReceiveLightningAddressPage(),
     ReceiveAmountlessBitcoinAddressPage(),
     ReceiveBitcoinAddressPaymentPage(),
+    ReceiveBolt12OfferPage(),
   ];
 
   bool _hasNotificationPermission = false;
@@ -36,7 +37,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   void initState() {
     super.initState();
     setState(() {
-      _currentPageIndex = widget.initialPageIndex ?? ReceiveLightningAddressPage.pageIndex;
+      _currentPageIndex = widget.initialPageIndex ?? _indexOf<ReceiveLightningAddressPage>();
     });
   }
 
@@ -85,23 +86,25 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
         ),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            alignment: Alignment.center,
-            icon: const Icon(Icons.edit_note_rounded, size: 24.0),
-            // TODO(erdemyerebasmaz): Add message to Breez-Translations
-            tooltip: 'Specify amount for payment request',
-            onPressed: () {
-              if (_currentPageIndex == ReceiveLightningAddressPage.pageIndex) {
-                setState(() {
-                  _showInvoicePage = true;
-                });
-              } else if (_currentPageIndex == ReceiveAmountlessBitcoinAddressPage.pageIndex) {
-                setState(() {
-                  _showBtcPaymentRequestPage = true;
-                });
-              }
-            },
-          ),
+          if (_hasAmountToggle)
+            IconButton(
+              alignment: Alignment.center,
+              icon: const Icon(Icons.edit_note_rounded, size: 24.0),
+              // TODO(erdemyerebasmaz): Add message to Breez-Translations
+              tooltip: 'Specify amount for payment request',
+              onPressed: () {
+                final StatefulWidget currentPage = pages[_currentPageIndex];
+                if (currentPage is ReceiveLightningAddressPage) {
+                  setState(() {
+                    _showInvoicePage = true;
+                  });
+                } else if (currentPage is ReceiveAmountlessBitcoinAddressPage) {
+                  setState(() {
+                    _showBtcPaymentRequestPage = true;
+                  });
+                }
+              },
+            ),
         ],
       ),
       body: Padding(
@@ -127,7 +130,13 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     // - when LN Address state had errors
     if (_currentPaymentMethod == PaymentMethod.bolt11Invoice) {
       final bool shouldRedirect = _showInvoicePage || !_hasNotificationPermission || _hasLnAddressStateError;
-      return shouldRedirect ? ReceiveLightningPaymentPage.pageIndex : ReceiveLightningAddressPage.pageIndex;
+      return shouldRedirect
+          ? _indexOf<ReceiveLightningPaymentPage>()
+          : _indexOf<ReceiveLightningAddressPage>();
+    }
+
+    if (_currentPaymentMethod == PaymentMethod.bolt12Offer) {
+      return _indexOf<ReceiveBolt12OfferPage>();
     }
 
     // Redirect to BTC Invoice page if amountless BTC Address page is opened
@@ -135,18 +144,26 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     if (_currentPaymentMethod == PaymentMethod.bitcoinAddress) {
       final bool shouldRedirect = _showBtcPaymentRequestPage || _hasAmountlessBtcAddressError;
       return shouldRedirect
-          ? ReceiveBitcoinAddressPaymentPage.pageIndex
-          : ReceiveAmountlessBitcoinAddressPage.pageIndex;
+          ? _indexOf<ReceiveBitcoinAddressPaymentPage>()
+          : _indexOf<ReceiveAmountlessBitcoinAddressPage>();
     }
 
     return _currentPageIndex;
   }
 
+  bool get _hasAmountToggle =>
+      _currentPaymentMethod == PaymentMethod.bolt11Invoice ||
+      _currentPaymentMethod == PaymentMethod.bitcoinAddress;
+
   PaymentMethod get _currentPaymentMethod {
-    return _currentPageIndex == ReceiveAmountlessBitcoinAddressPage.pageIndex ||
-            _currentPageIndex == ReceiveBitcoinAddressPaymentPage.pageIndex
-        ? PaymentMethod.bitcoinAddress
-        : PaymentMethod.bolt11Invoice;
+    final StatefulWidget currentPage = pages[_currentPageIndex];
+    if (currentPage is ReceiveAmountlessBitcoinAddressPage || currentPage is ReceiveBitcoinAddressPaymentPage) {
+      return PaymentMethod.bitcoinAddress;
+    }
+    if (currentPage is ReceiveBolt12OfferPage) {
+      return PaymentMethod.bolt12Offer;
+    }
+    return PaymentMethod.bolt11Invoice;
   }
 
   Future<void> _onPaymentMethodChanged(PaymentMethod newMethod) async {
@@ -162,18 +179,23 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     });
   }
 
+  static int _indexOf<T>() {
+    final int index = pages.indexWhere((StatefulWidget p) => p is T);
+    assert(index >= 0, 'Page type $T not found in pages list');
+    return index;
+  }
+
   // Get the appropriate page index for a payment method
   int _getPageIndexForPaymentMethod(PaymentMethod method) {
     switch (method) {
       case PaymentMethod.bitcoinAddress:
-        return ReceiveAmountlessBitcoinAddressPage.pageIndex;
+        return _indexOf<ReceiveAmountlessBitcoinAddressPage>();
       case PaymentMethod.bolt12Offer:
-        // TODO(dangeross): Add a BOLT12 offer to the Lightning address page
-        return ReceiveLightningAddressPage.pageIndex;
+        return _indexOf<ReceiveBolt12OfferPage>();
       case PaymentMethod.bolt11Invoice:
-        return ReceiveLightningAddressPage.pageIndex;
+        return _indexOf<ReceiveLightningAddressPage>();
       case PaymentMethod.liquidAddress:
-        return ReceiveAmountlessBitcoinAddressPage.pageIndex; // Fallback
+        return _indexOf<ReceiveAmountlessBitcoinAddressPage>(); // Fallback
     }
   }
 }
