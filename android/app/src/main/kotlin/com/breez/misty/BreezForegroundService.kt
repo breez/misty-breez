@@ -4,10 +4,12 @@ import breez_sdk_liquid.ConnectRequest
 import breez_sdk_liquid.LiquidNetwork
 import breez_sdk_liquid.LogEntry
 import breez_sdk_liquid.Logger
+import breez_sdk_liquid.NwcConfig
 import breez_sdk_liquid.defaultConfig
 import breez_sdk_liquid.setLogger
 import breez_sdk_liquid_notification.ForegroundService
 import breez_sdk_liquid_notification.NotificationHelper.Companion.registerNotificationChannels
+import breez_sdk_liquid_notification.PluginConfigs
 import breez_sdk_liquid_notification.ServiceLogger
 import com.breez.misty.utils.readSecuredValue
 import io.flutter.util.PathUtils
@@ -57,6 +59,10 @@ class BreezForegroundService : ForegroundService() {
         }
 
         return ConnectRequest(config, mnemonic)
+    }
+
+    override fun getPluginConfigs(): PluginConfigs {
+        return PluginConfigs(nwc = NwcConfig(listenToEvents = false))
     }
 
     companion object {
