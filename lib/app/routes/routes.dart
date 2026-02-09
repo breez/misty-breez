@@ -35,154 +35,163 @@ Route<dynamic>? onGenerateRoute({
       );
     case Home.routeName:
       return FadeInRoute<void>(
-        builder: (BuildContext _) => NavigatorPopHandler(
-          onPopWithResult: (Object? result) => homeNavigatorKey.currentState!.maybePop(),
-          child: Navigator(
-            initialRoute: Home.routeName,
-            key: homeNavigatorKey,
-            onGenerateRoute: (RouteSettings settings) {
-              _logger.info('New inner route: ${settings.name}');
-              switch (settings.name) {
-                case Home.routeName:
-                  return FadeInRoute<void>(builder: (BuildContext _) => const Home(), settings: settings);
-                case ReceivePaymentPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: ReceivePaymentPage(initialPageIndex: settings.arguments as int?),
-                    ),
-                    settings: settings,
-                  );
-                case ReceiveLightningAddressPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) => const ReceiveLightningAddressPage(),
-                    settings: settings,
-                  );
-                case ReceiveLightningPaymentPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: const ReceiveLightningPaymentPage(),
-                    ),
-                    settings: settings,
-                  );
-                case ReceiveBitcoinAddressPaymentPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: const ReceiveBitcoinAddressPaymentPage(),
-                    ),
-                    settings: settings,
-                  );
-                case GetRefundPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) => const GetRefundPage(),
-                    settings: settings,
-                  );
-                case RefundPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) => RefundPage(swapInfo: settings.arguments as RefundableSwap),
-                    settings: settings,
-                  );
-                case EnterPaymentInfoPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) => const EnterPaymentInfoPage(),
-                    settings: settings,
-                  );
-                case SendChainSwapPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: SendChainSwapPage(btcAddressData: settings.arguments as BitcoinAddressData?),
-                    ),
-                    settings: settings,
-                  );
-                case LnPaymentPage.routeName:
-                  return FadeInRoute<SendPaymentRequest?>(
-                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: LnPaymentPage(lnInvoice: settings.arguments as LNInvoice),
-                    ),
-                    settings: settings,
-                  );
-                case LnOfferPaymentPage.routeName:
-                  return FadeInRoute<SendPaymentRequest?>(
-                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: LnOfferPaymentPage(
-                        lnOfferPaymentArguments: settings.arguments as LnOfferPaymentArguments,
+        builder: (BuildContext context) => BlocProvider<NwcCubit>(
+          create: NwcCubitFactory.of,
+          child: NavigatorPopHandler(
+            onPopWithResult: (Object? result) => homeNavigatorKey.currentState!.maybePop(),
+            child: Navigator(
+              initialRoute: Home.routeName,
+              key: homeNavigatorKey,
+              onGenerateRoute: (RouteSettings settings) {
+                _logger.info('New inner route: ${settings.name}');
+                switch (settings.name) {
+                  case Home.routeName:
+                    return FadeInRoute<void>(builder: (BuildContext _) => const Home(), settings: settings);
+                  case ReceivePaymentPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                        create: (BuildContext context) =>
+                            PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                        child: ReceivePaymentPage(initialPageIndex: settings.arguments as int?),
                       ),
-                    ),
-                    settings: settings,
-                  );
-                case LnUrlPaymentPage.routeName:
-                  return FadeInRoute<PrepareLnUrlPayResponse?>(
-                    builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
-                      create: (BuildContext context) => PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
-                      child: LnUrlPaymentPage(
-                        lnUrlPaymentArguments: settings.arguments as LnUrlPaymentArguments,
+                      settings: settings,
+                    );
+                  case ReceiveLightningAddressPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) => const ReceiveLightningAddressPage(),
+                      settings: settings,
+                    );
+                  case ReceiveLightningPaymentPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                        create: (BuildContext context) =>
+                            PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                        child: const ReceiveLightningPaymentPage(),
                       ),
-                    ),
-                    settings: settings,
-                  );
-                case NwcPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) =>
-                        const BlocProvider<NwcCubit>(create: NwcCubitFactory.of, child: NwcPage()),
-                    settings: settings,
-                  );
-                case NwcAddConnectionPage.routeName:
-                  return OptionalBlocFadeInRoute<NwcCubit>(
-                    create: NwcCubitFactory.of,
-                    childBuilder: (_) => const NwcAddConnectionPage(),
-                    settings: settings,
-                  );
-                case NwcEditConnectionPage.routeName:
-                  final NwcConnectionModel connection = settings.arguments as NwcConnectionModel;
-                  return OptionalBlocFadeInRoute<NwcCubit>(
-                    create: NwcCubitFactory.of,
-                    childBuilder: (_) => NwcEditConnectionPage(connection: connection),
-                    settings: settings,
-                  );
-                case NwcConnectionDetailPage.routeName:
-                  final NwcConnectionModel connection = settings.arguments as NwcConnectionModel;
-                  return OptionalBlocFadeInRoute<NwcCubit>(
-                    create: NwcCubitFactory.of,
-                    childBuilder: (_) => NwcConnectionDetailPage(connection: connection),
-                    settings: settings,
-                  );
-                case FiatCurrencySettings.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) => const FiatCurrencySettings(),
-                    settings: settings,
-                  );
-                case SecuritySettings.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) =>
-                        const SecuredPage<SecuritySettings>(securedWidget: SecuritySettings()),
-                    settings: settings,
-                  );
-                case MnemonicsConfirmationPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) =>
-                        MnemonicsConfirmationPage(mnemonics: settings.arguments as String),
-                    settings: settings,
-                  );
-                case DevelopersView.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext _) => const DevelopersView(),
-                    settings: settings,
-                  );
-                case QRScanView.routeName:
-                  return MaterialPageRoute<String>(
-                    fullscreenDialog: true,
-                    builder: (BuildContext _) => const QRScanView(),
-                    settings: settings,
-                  );
-              }
-              assert(false);
-              return null;
-            },
+                      settings: settings,
+                    );
+                  case ReceiveBitcoinAddressPaymentPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                        create: (BuildContext context) =>
+                            PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                        child: const ReceiveBitcoinAddressPaymentPage(),
+                      ),
+                      settings: settings,
+                    );
+                  case GetRefundPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) => const GetRefundPage(),
+                      settings: settings,
+                    );
+                  case RefundPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) => RefundPage(swapInfo: settings.arguments as RefundableSwap),
+                      settings: settings,
+                    );
+                  case EnterPaymentInfoPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) => const EnterPaymentInfoPage(),
+                      settings: settings,
+                    );
+                  case SendChainSwapPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                        create: (BuildContext context) =>
+                            PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                        child: SendChainSwapPage(btcAddressData: settings.arguments as BitcoinAddressData?),
+                      ),
+                      settings: settings,
+                    );
+                  case LnPaymentPage.routeName:
+                    return FadeInRoute<SendPaymentRequest?>(
+                      builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                        create: (BuildContext context) =>
+                            PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                        child: LnPaymentPage(lnInvoice: settings.arguments as LNInvoice),
+                      ),
+                      settings: settings,
+                    );
+                  case LnOfferPaymentPage.routeName:
+                    return FadeInRoute<SendPaymentRequest?>(
+                      builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                        create: (BuildContext context) =>
+                            PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                        child: LnOfferPaymentPage(
+                          lnOfferPaymentArguments: settings.arguments as LnOfferPaymentArguments,
+                        ),
+                      ),
+                      settings: settings,
+                    );
+                  case LnUrlPaymentPage.routeName:
+                    return FadeInRoute<PrepareLnUrlPayResponse?>(
+                      builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
+                        create: (BuildContext context) =>
+                            PaymentLimitsCubit(ServiceInjector().breezSdkLiquid),
+                        child: LnUrlPaymentPage(
+                          lnUrlPaymentArguments: settings.arguments as LnUrlPaymentArguments,
+                        ),
+                      ),
+                      settings: settings,
+                    );
+                  case NwcPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) => const NwcPage(),
+                      settings: settings,
+                    );
+                  case NwcAddConnectionPage.routeName:
+                    return OptionalBlocFadeInRoute<NwcCubit>(
+                      create: NwcCubitFactory.of,
+                      childBuilder: (_) => const NwcAddConnectionPage(),
+                      settings: settings,
+                    );
+                  case NwcEditConnectionPage.routeName:
+                    final NwcConnectionModel connection = settings.arguments as NwcConnectionModel;
+                    return OptionalBlocFadeInRoute<NwcCubit>(
+                      create: NwcCubitFactory.of,
+                      childBuilder: (_) => NwcEditConnectionPage(connection: connection),
+                      settings: settings,
+                    );
+                  case NwcConnectionDetailPage.routeName:
+                    final NwcConnectionModel connection = settings.arguments as NwcConnectionModel;
+                    return OptionalBlocFadeInRoute<NwcCubit>(
+                      create: NwcCubitFactory.of,
+                      childBuilder: (_) => NwcConnectionDetailPage(connection: connection),
+                      settings: settings,
+                    );
+                  case FiatCurrencySettings.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) => const FiatCurrencySettings(),
+                      settings: settings,
+                    );
+                  case SecuritySettings.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) =>
+                          const SecuredPage<SecuritySettings>(securedWidget: SecuritySettings()),
+                      settings: settings,
+                    );
+                  case MnemonicsConfirmationPage.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) =>
+                          MnemonicsConfirmationPage(mnemonics: settings.arguments as String),
+                      settings: settings,
+                    );
+                  case DevelopersView.routeName:
+                    return FadeInRoute<void>(
+                      builder: (BuildContext _) => const DevelopersView(),
+                      settings: settings,
+                    );
+                  case QRScanView.routeName:
+                    return MaterialPageRoute<String>(
+                      fullscreenDialog: true,
+                      builder: (BuildContext _) => const QRScanView(),
+                      settings: settings,
+                    );
+                }
+                assert(false);
+                return null;
+              },
+            ),
           ),
         ),
         settings: settings,

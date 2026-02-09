@@ -29,9 +29,6 @@ class NwcConnectionDetailPage extends StatelessWidget {
 
     if (confirmed == true && context.mounted) {
       await context.read<NwcCubit>().deleteConnection(connectionName);
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
     }
   }
 
@@ -43,11 +40,10 @@ class NwcConnectionDetailPage extends StatelessWidget {
       listenWhen: (NwcState previous, NwcState current) {
         final bool prevExists = _existsIn(previous, connection);
         final bool currExists = _existsIn(current, connection);
-        return (previous.isLoading && !current.isLoading) || (prevExists && !currExists);
+        return prevExists && !currExists;
       },
       listener: (BuildContext context, NwcState state) {
-        final bool exists = _existsIn(state, connection);
-        if (!exists && context.mounted) {
+        if (context.mounted) {
           Navigator.of(context).pop();
         }
       },
