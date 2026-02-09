@@ -128,55 +128,29 @@ Route<dynamic>? onGenerateRoute({
                 case NwcPage.routeName:
                   return FadeInRoute<void>(
                     builder: (BuildContext context) => BlocProvider<NwcCubit>(
-                      create: (BuildContext context) =>
-                          NwcCubitFactory.create(ServiceInjector(), context.read<PermissionsCubit>()),
+                      create: NwcCubitFactory.of,
                       child: const NwcPage(),
                     ),
                     settings: settings,
                   );
                 case NwcAddConnectionPage.routeName:
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) {
-                      final NwcCubit? maybeCubit = context.read<NwcCubit?>();
-                      return maybeCubit != null
-                          ? const NwcAddConnectionPage()
-                          : BlocProvider<NwcCubit>(
-                              create: (BuildContext context) =>
-                                  NwcCubitFactory.create(ServiceInjector(), context.read<PermissionsCubit>()),
-                              child: const NwcAddConnectionPage(),
-                            );
-                    },
+                  return OptionalBlocFadeInRoute<NwcCubit>(
+                    create: NwcCubitFactory.of,
+                    childBuilder: (_) => const NwcAddConnectionPage(),
                     settings: settings,
                   );
                 case NwcEditConnectionPage.routeName:
                   final NwcConnectionModel connection = settings.arguments as NwcConnectionModel;
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) {
-                      final NwcCubit? maybeCubit = context.read<NwcCubit?>();
-                      return maybeCubit != null
-                          ? NwcEditConnectionPage(connection: connection)
-                          : BlocProvider<NwcCubit>(
-                              create: (BuildContext context) =>
-                                  NwcCubitFactory.create(ServiceInjector(), context.read<PermissionsCubit>()),
-                              child: NwcEditConnectionPage(connection: connection),
-                            );
-                    },
+                  return OptionalBlocFadeInRoute<NwcCubit>(
+                    create: NwcCubitFactory.of,
+                    childBuilder: (_) => NwcEditConnectionPage(connection: connection),
                     settings: settings,
                   );
                 case NwcConnectionDetailPage.routeName:
                   final NwcConnectionModel connection = settings.arguments as NwcConnectionModel;
-                  return FadeInRoute<void>(
-                    builder: (BuildContext context) {
-                      // Try to reuse existing NwcCubit if it already exists in context (e.g., if the page is opened from NwcPage)
-                      final NwcCubit? maybeCubit = context.read<NwcCubit?>();
-                      return maybeCubit != null
-                          ? NwcConnectionDetailPage(connection: connection)
-                          : BlocProvider<NwcCubit>(
-                              create: (BuildContext context) =>
-                                  NwcCubitFactory.create(ServiceInjector(), context.read<PermissionsCubit>()),
-                              child: NwcConnectionDetailPage(connection: connection),
-                            );
-                    },
+                  return OptionalBlocFadeInRoute<NwcCubit>(
+                    create: NwcCubitFactory.of,
+                    childBuilder: (_) => NwcConnectionDetailPage(connection: connection),
                     settings: settings,
                   );
                 case FiatCurrencySettings.routeName:
