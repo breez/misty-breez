@@ -49,3 +49,15 @@ class BlockTimes {
   /// Average time between Liquid blocks in seconds (1 minute)
   static const int liquidBlockTimeSeconds = 60;
 }
+
+class WebhookConstants {
+  /// Private constructor to prevent instantiation
+  WebhookConstants._();
+
+  /// Base URL for the notification service.
+  static const String notifierServiceURL = 'https://notifier.breez.technology';
+
+  /// NWC endpoint for the webhook registration
+  // TODO(yse): Update with actual endpoint
+  static const String breezWebhooksEndpoint = 'https://breez.fun';
+}

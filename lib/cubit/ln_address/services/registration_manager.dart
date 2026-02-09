@@ -21,7 +21,7 @@ class LnUrlRegistrationManager {
 
   final LnUrlPayService lnAddressService;
   final BreezPreferences breezPreferences;
-  final WebhookRequestBuilder requestBuilder;
+  final LnUrlWebhookRequestBuilder requestBuilder;
   final UsernameResolver usernameResolver;
   final WebhookService webhookService;
 
