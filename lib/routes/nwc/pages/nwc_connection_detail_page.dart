@@ -116,7 +116,7 @@ class NwcConnectionDetailPage extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           if (updatedConnection.periodicBudget != null || updatedConnection.expiresAt != null)
-                            NwcConnectionParametersCard(connection: updatedConnection),
+                            NwcConnectionParametersCard(connection: updatedConnection, showExpiration: true),
                           if (updatedConnection.periodicBudget != null && updatedConnection.expiresAt != null)
                             const Divider(
                               height: 32.0,

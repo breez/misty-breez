@@ -28,7 +28,7 @@ class NwcRegistrationManager {
       relays: relays,
     );
 
-    await Future.wait(<Future<void>>[webhookService.register(walletPubkey, req)]);
+    await webhookService.register(walletPubkey, req);
 
     _logger.info('Successfully setup webhook');
     return webhookUrl;
@@ -42,7 +42,7 @@ class NwcRegistrationManager {
       appPubkey: appPubkey,
     );
 
-    await Future.wait(<Future<void>>[webhookService.unregister(walletPubkey, req)]);
+    await webhookService.unregister(walletPubkey, req);
 
     _logger.info('Successfully removed webhook');
   }

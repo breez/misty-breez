@@ -85,7 +85,10 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
                         ).pushNamed(NwcConnectionDetailPage.routeName, arguments: widget.connection);
                       },
                       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12.0)),
-                      child: NwcConnectionItemContent(connection: widget.connection),
+                      child: NwcConnectionParametersCard(
+                        connection: widget.connection,
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+                      ),
                     )
                   : const SizedBox.shrink(),
             ),

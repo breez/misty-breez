@@ -6,8 +6,7 @@ import 'package:misty_breez/utils/utils.dart';
 import 'package:service_injector/service_injector.dart';
 
 class NwcCubitFactory {
-  static NwcCubit of(BuildContext context) =>
-      create(ServiceInjector(), context.read<PermissionsCubit>());
+  static NwcCubit of(BuildContext context) => create(ServiceInjector(), context.read<PermissionsCubit>());
 
   static NwcCubit create(ServiceInjector injector, PermissionsCubit permissionsCubit) {
     final BreezSDKLiquid breezSdkLiquid = injector.breezSdkLiquid;
@@ -23,6 +22,10 @@ class NwcCubitFactory {
       webhookService: webhookService,
     );
 
-    return NwcCubit(breezSdkLiquid: breezSdkLiquid, nwcRegistrationManager: nwcRegistrationManager);
+    return NwcCubit(
+      breezSdkLiquid: breezSdkLiquid,
+      nwcService: breezSdkLiquid.nwc!,
+      nwcRegistrationManager: nwcRegistrationManager,
+    );
   }
 }

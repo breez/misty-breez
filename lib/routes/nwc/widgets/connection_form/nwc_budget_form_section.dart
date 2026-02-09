@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/widgets/amount_form_field/input_formatter/sat_amount_form_field_formatter.dart';
 
 final Logger _logger = Logger('NwcBudgetFormSection');
@@ -168,7 +169,7 @@ class _NwcBudgetFormSectionState extends State<NwcBudgetFormSection> {
               }
               final int? expirationTimeMins = widget.expirationTimeMins;
               if (expirationTimeMins != null) {
-                final int renewalIntervalMins = parsedValue * 1440;
+                final int renewalIntervalMins = parsedValue * TimeConstants.minutesPerDay;
                 if (renewalIntervalMins > expirationTimeMins) {
                   return 'Renewal interval cannot be greater than expiration';
                 }

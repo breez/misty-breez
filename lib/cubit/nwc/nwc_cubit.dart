@@ -16,22 +16,18 @@ final Logger _logger = Logger('NwcCubit');
 
 class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
   final BreezSDKLiquid breezSdkLiquid;
+  final BreezNwcService nwcService;
   final NwcRegistrationManager nwcRegistrationManager;
   StreamSubscription<NwcEvent>? _nwcEventSubscription;
 
-  NwcCubit({required this.breezSdkLiquid, required this.nwcRegistrationManager}) : super(NwcState.initial()) {
+  NwcCubit({required this.breezSdkLiquid, required this.nwcService, required this.nwcRegistrationManager})
+    : super(NwcState.initial()) {
     hydrate();
     loadConnections();
     _setupEventListener();
   }
 
   void _setupEventListener() {
-    final BreezNwcService? nwcService = breezSdkLiquid.nwc;
-    if (nwcService == null) {
-      _logger.warning('NWC service is not available, cannot set up event listener');
-      return;
-    }
-
     _nwcEventSubscription?.cancel();
     _nwcEventSubscription = nwcService.addEventListener().listen(
       (NwcEvent event) {
@@ -82,19 +78,6 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
     emit(state.copyWith(isLoading: true));
 
     try {
-      final BreezNwcService? nwcService = breezSdkLiquid.nwc;
-
-      if (nwcService == null) {
-        emit(
-          state.copyWith(
-            connections: <NwcConnectionModel>[],
-            isLoading: false,
-            error: 'NWC service is not available',
-          ),
-        );
-        return;
-      }
-
       final Map<String, NwcConnection> connectionsMap = await nwcService.listConnections();
 
       final List<NwcConnectionModel> connections =
@@ -130,13 +113,6 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
     emit(state.copyWith(isLoading: true));
 
     try {
-      final BreezNwcService? nwcService = breezSdkLiquid.nwc;
-
-      if (nwcService == null) {
-        emit(state.copyWith(isLoading: false, error: 'NWC service is not available'));
-        return null;
-      }
-
       final AddConnectionRequest request = AddConnectionRequest(
         name: name,
         expiryTimeMins: expirationTimeMins,
@@ -181,13 +157,6 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
     emit(state.copyWith(isLoading: true));
 
     try {
-      final BreezNwcService? nwcService = breezSdkLiquid.nwc;
-
-      if (nwcService == null) {
-        emit(state.copyWith(isLoading: false, error: 'NWC service is not available'));
-        return;
-      }
-
       final NwcConnectionModel? connection = _removeConnectionFromState(name);
       if (connection == null) {
         return;
@@ -226,13 +195,6 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
     emit(state.copyWith(isLoading: true));
 
     try {
-      final BreezNwcService? nwcService = breezSdkLiquid.nwc;
-
-      if (nwcService == null) {
-        emit(state.copyWith(isLoading: false, error: 'NWC service is not available'));
-        return false;
-      }
-
       final EditConnectionRequest request = EditConnectionRequest(
         name: name,
         expiryTimeMins: expirationTimeMins,
