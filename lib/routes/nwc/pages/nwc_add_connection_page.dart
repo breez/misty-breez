@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:misty_breez/cubit/cubit.dart';
-import 'package:misty_breez/routes/nwc/pages/nwc_page.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_views/nwc_add_connection_view.dart';
 import 'package:misty_breez/widgets/back_button.dart' as back_button;
 import 'package:misty_breez/widgets/widgets.dart';
@@ -52,7 +51,7 @@ class _NwcAddConnectionPageState extends State<NwcAddConnectionPage> {
                 stickToBottom: true,
                 text: 'CLOSE',
                 onPressed: () {
-                  Navigator.of(context).pushReplacementNamed(NwcPage.routeName);
+                  Navigator.of(context).pop();
                 },
               );
             }

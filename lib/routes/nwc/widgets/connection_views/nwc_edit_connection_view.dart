@@ -67,13 +67,6 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
 
     if (success && mounted) {
       Navigator.of(context).pop();
-      if (mounted) {
-        showFlushbar(
-          context,
-          message: 'Connection updated successfully',
-          duration: const Duration(seconds: 3),
-        );
-      }
     } else if (mounted) {
       showFlushbar(context, message: 'Failed to update connection', duration: const Duration(seconds: 3));
     }
