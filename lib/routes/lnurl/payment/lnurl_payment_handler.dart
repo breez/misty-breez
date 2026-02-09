@@ -1,10 +1,8 @@
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:logging/logging.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/services/services.dart';
-import 'package:misty_breez/utils/exceptions/exception_handler.dart';
 import 'package:misty_breez/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -59,20 +57,7 @@ Future<LNURLPageResult?> handlePayRequest(
     // Navigate to home after handling the result
     if (context.mounted) {
       Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
-
-      // Payment timeout doesn't necessarily mean the payment failed.
-      // We're popping to Home page to avoid user retries and duplicate payments.
-      if (result is LnUrlPayError_PaymentTimeout) {
-        final ThemeData themeData = Theme.of(context);
-        promptError(
-          context,
-          title: context.texts().unexpected_error_title,
-          body: Text(
-            ExceptionHandler.extractMessage(result, context.texts()),
-            style: themeData.dialogTheme.contentTextStyle,
-          ),
-        );
-      } else if (pageResult.hasError) {
+      if (pageResult.hasError) {
         showFlushbar(context, message: pageResult.errorMessage);
       }
     }
