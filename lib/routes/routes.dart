@@ -4,6 +4,7 @@ export 'fiat_currencies/fiat_currencies.dart';
 export 'home/home.dart';
 export 'initial_walkthrough/initial_walkthrough.dart';
 export 'lnurl/lnurl.dart';
+export 'nwc/nwc.dart';
 export 'qr_scan/qr_scan.dart';
 export 'receive_payment/receive_payment.dart';
 export 'refund/refund.dart';
