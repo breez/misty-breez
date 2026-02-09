@@ -1,20 +1,21 @@
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/utils/webhooks/webhooks.dart';
 
-final Logger _logger = Logger('WebhookRequestBuilder');
+final Logger _logger = Logger('LnUrlWebhookRequestBuilder');
 
 /// Builds signed webhook requests for Lightning Network services.
 ///
 /// This class is responsible for creating properly formatted and signed
 /// webhook requests for LNURL-pay registration, recovery, and unregistration.
-class WebhookRequestBuilder {
+class LnUrlWebhookRequestBuilder {
   /// Service used to sign messages with the node's private key
   final MessageSigner messageSigner;
 
   /// Creates a new WebhookRequestBuilder with the given message signer.
   ///
   /// @param messageSigner The service used to create cryptographic signatures
-  WebhookRequestBuilder(this.messageSigner);
+  LnUrlWebhookRequestBuilder(this.messageSigner);
 
   /// Builds a request to register a webhook URL with an optional username.
   ///

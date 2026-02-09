@@ -45,21 +45,3 @@ class MaxRetriesExceededException implements Exception {
   @override
   String toString() => 'Maximum retry attempts exceeded';
 }
-
-class GenerateWebhookUrlException implements Exception {
-  final String message;
-
-  GenerateWebhookUrlException(this.message);
-
-  @override
-  String toString() => message;
-}
-
-class RegisterWebhookException implements Exception {
-  final String message;
-
-  RegisterWebhookException(this.message);
-
-  @override
-  String toString() => message;
-}
