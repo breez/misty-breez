@@ -1,6 +1,6 @@
 include: package:flutter_lints/flutter.yaml
 
-formatter:  
+formatter:
   page_width: 110
 
 linter:
