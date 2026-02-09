@@ -18,13 +18,16 @@ class BreezSDKLiquid {
   }
 
   liquid_sdk.BreezSdkLiquid? _instance;
+  liquid_sdk.BreezNwcService? _nwc;
 
   liquid_sdk.BreezSdkLiquid? get instance => _instance;
+  liquid_sdk.BreezNwcService? get nwc => _nwc;
 
   Future<void> connect({required liquid_sdk.ConnectRequest req}) async {
     try {
       _subscribeToLogStream();
       _instance = await liquid_sdk.connect(req: req);
+      _nwc = await _instance!.useNwcPlugin(config: const liquid_sdk.NwcConfig());
       _initializeEventsStream(_instance!);
       _subscribeToEventsStream(_instance!);
       await _fetchWalletData(_instance!);
