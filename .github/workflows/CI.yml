@@ -70,20 +70,20 @@ jobs:
       - name: Set up just
         uses: extractions/setup-just@v3
 
+      - name: 🏗️ Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: breez-sdk-liquid/lib/
+          cache-all-crates: true
+
       - name: 📦 Install Breez Liquid SDK dependencies
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: |
-          just clean
-          just setup
-
-      - name: Install flutter_rust_bridge_codegen dependencies
-        working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
-        run: just frb
+        run: just setup
 
       - name: Generate Dart/Flutter bindings
         working-directory: breez-sdk-liquid/packages/flutter_breez_liquid/
         continue-on-error: true
-        run: just gen
+        run: just codegen
 
       - name: 📦 Install Flutter dependencies
         working-directory: misty_breez
