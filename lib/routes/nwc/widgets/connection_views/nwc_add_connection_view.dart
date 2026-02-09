@@ -4,8 +4,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/utils/utils.dart';
@@ -45,28 +45,15 @@ class NwcAddConnectionViewState extends State<NwcAddConnectionView> {
     }
 
     final String name = _nameController.text.trim();
-    final int? expirationTimeMins = _expirationTimeMins;
-
-    PeriodicBudgetRequest? periodicBudgetReq;
-    final int? maxBudgetSatInt = _maxBudgetSat;
-    final int? renewalIntervalMins = _renewalIntervalMins;
-
-    if (maxBudgetSatInt != null) {
-      if (renewalIntervalMins != null && renewalIntervalMins > 0) {
-        periodicBudgetReq = PeriodicBudgetRequest(
-          maxBudgetSat: BigInt.from(maxBudgetSatInt),
-          renewalTimeMins: renewalIntervalMins,
-        );
-      } else {
-        periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
-      }
-    }
 
     try {
       final String? connectionString = await context.read<NwcCubit>().createConnection(
         name: name,
-        expirationTimeMins: expirationTimeMins,
-        periodicBudgetReq: periodicBudgetReq,
+        expirationTimeMins: _expirationTimeMins,
+        periodicBudgetReq: PeriodicBudgetRequestBuilder.fromSats(
+          maxBudgetSat: _maxBudgetSat,
+          renewalIntervalMins: _renewalIntervalMins,
+        ),
       );
 
       if (connectionString != null && mounted) {

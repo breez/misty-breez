@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FadeInRoute<T> extends CupertinoPageRoute<T> {
@@ -26,16 +25,13 @@ class OptionalBlocFadeInRoute<C extends Cubit<Object?>> extends FadeInRoute<void
     required Widget Function(BuildContext context) childBuilder,
     super.settings,
   }) : super(
-          builder: (BuildContext context) {
-            final C? existing = context.read<C?>();
-            return existing != null
-                ? childBuilder(context)
-                : BlocProvider<C>(
-                    create: (_) => create(context),
-                    child: childBuilder(context),
-                  );
-          },
-        );
+         builder: (BuildContext context) {
+           final C? existing = context.read<C?>();
+           return existing != null
+               ? childBuilder(context)
+               : BlocProvider<C>(create: (_) => create(context), child: childBuilder(context));
+         },
+       );
 }
 
 class NoTransitionRoute<T> extends CupertinoPageRoute<T> {

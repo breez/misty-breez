@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/models.dart';
+import 'package:misty_breez/utils/utils.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_budget_form_section.dart';
 import 'package:misty_breez/routes/nwc/widgets/connection_form/nwc_expiry_form_section.dart';
 
@@ -37,11 +39,7 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
       if (connection.periodicBudget != null) {
         final int maxBudgetSat = connection.periodicBudget!.maxBudgetSat.toInt();
         _customBudgetAmount = maxBudgetSat;
-        if (connection.periodicBudget!.renewsAt != null) {
-          final int renewalIntervalMins =
-              ((connection.periodicBudget!.renewsAt! - connection.periodicBudget!.updatedAt) / 60).round();
-          _renewalIntervalDays = (renewalIntervalMins / 1440).round();
-        }
+        _renewalIntervalDays = connection.periodicBudget!.renewalIntervalDays;
       }
       if (connection.expiresAt != null) {
         final int now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -59,13 +57,13 @@ class _NwcConnectionFormState extends State<NwcConnectionForm> {
   void _notifyValuesChanged() {
     widget.onValuesChanged(
       _selectedBudgetAmountSats,
-      _renewalIntervalDays != null ? _renewalIntervalDays! * 1440 : null,
+      _renewalIntervalDays != null ? _renewalIntervalDays! * TimeConstants.minutesPerDay : null,
       _expirationDate?.difference(DateTime.now()).inMinutes,
     );
   }
 
   int? get _selectedRenewalIntervalMinutes {
-    return _renewalIntervalDays != null ? _renewalIntervalDays! * 1440 : null;
+    return _renewalIntervalDays != null ? _renewalIntervalDays! * TimeConstants.minutesPerDay : null;
   }
 
   int? get _selectedExpiryTimeMinutes {

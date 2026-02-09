@@ -127,10 +127,8 @@ Route<dynamic>? onGenerateRoute({
                   );
                 case NwcPage.routeName:
                   return FadeInRoute<void>(
-                    builder: (BuildContext context) => BlocProvider<NwcCubit>(
-                      create: NwcCubitFactory.of,
-                      child: const NwcPage(),
-                    ),
+                    builder: (BuildContext context) =>
+                        const BlocProvider<NwcCubit>(create: NwcCubitFactory.of, child: NwcPage()),
                     settings: settings,
                   );
                 case NwcAddConnectionPage.routeName:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/models/models.dart';
 import 'package:misty_breez/routes/routes.dart';
 import 'package:misty_breez/theme/theme.dart';
 import 'package:misty_breez/widgets/widgets.dart';
@@ -49,25 +50,12 @@ class NwcEditConnectionViewState extends State<NwcEditConnectionView> {
       removeExpiry = null;
     }
 
-    PeriodicBudgetRequest? periodicBudgetReq;
-    bool? removePeriodicBudget;
-    final int? maxBudgetSatInt = _maxBudgetSat;
-    final int? renewalIntervalMins = _renewalIntervalMins;
-
-    if (maxBudgetSatInt != null) {
-      if (renewalIntervalMins != null && renewalIntervalMins > 0) {
-        periodicBudgetReq = PeriodicBudgetRequest(
-          maxBudgetSat: BigInt.from(maxBudgetSatInt),
-          renewalTimeMins: renewalIntervalMins,
-        );
-      } else {
-        periodicBudgetReq = PeriodicBudgetRequest(maxBudgetSat: BigInt.from(maxBudgetSatInt));
-      }
-    } else {
-      if (widget.existingConnection.periodicBudget != null) {
-        removePeriodicBudget = true;
-      }
-    }
+    final PeriodicBudgetRequest? periodicBudgetReq = PeriodicBudgetRequestBuilder.fromSats(
+      maxBudgetSat: _maxBudgetSat,
+      renewalIntervalMins: _renewalIntervalMins,
+    );
+    final bool? removePeriodicBudget =
+        _maxBudgetSat == null && widget.existingConnection.periodicBudget != null ? true : null;
 
     final bool success = await context.read<NwcCubit>().editConnection(
       name: widget.existingConnection.name,
