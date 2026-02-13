@@ -50,6 +50,14 @@ class BlockTimes {
   static const int liquidBlockTimeSeconds = 60;
 }
 
+/// Time conversion constants
+class TimeConstants {
+  TimeConstants._();
+
+  /// Minutes in a day (24 * 60)
+  static const int minutesPerDay = 1440;
+}
+
 class WebhookConstants {
   /// Private constructor to prevent instantiation
   WebhookConstants._();
