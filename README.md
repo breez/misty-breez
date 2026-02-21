@@ -8,7 +8,7 @@
 
 Lightning made easy!
 
-Misty Breez is the simplest self-custodial app for sending and receiving Lightning payments. It's a Flutter mobile app that serves as a reference implementation for the [Breez SDK - Nodeless](https://sdk-doc-liquid.breez.technology/) to:
+Misty Breez is the simplest self-custodial app for sending and receiving Lightning payments. It's a Flutter mobile app that serves as a reference implementation for the [Breez SDK - Liquid](https://sdk-doc-liquid.breez.technology/) to:
 * Demonstrate the full capabilities of building with the SDK
 * Showcase best practices for designing an intuitive UI and UX for self-custodial Lightning payments
 * Offer a ready-made solution that can be white-labeled for partners looking to build a new app
