@@ -60,4 +60,8 @@ class NotificationService: SDKNotificationService {
 
         return ConnectRequest(config: config, mnemonic: mnemonic)
     }
+
+    override func getPluginConfigs() -> PluginConfigs {
+        return PluginConfigs(nwc: NwcConfig(listenToEvents: false))
+    }
 }
