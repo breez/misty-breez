@@ -40,7 +40,7 @@ class NwcWebhookService {
       if (sdk == null) {
         throw RegisterWebhookException('Breez SDK not initialized');
       }
-      final Uri uri = Uri.parse('${WebhookConstants.breezWebhooksEndpoint}/nwc/$walletPubkey');
+      final Uri uri = Uri.parse('${WebhookConstants.breezWebhooksURL}/nwc/$walletPubkey');
       final Map<String, String> headers = <String, String>{'Content-Type': 'application/json'};
       final http.Response res = await _client.post(uri, body: jsonEncode(body.toJson()), headers: headers);
       if (res.statusCode != HttpStatus.ok) {
@@ -73,7 +73,7 @@ class NwcWebhookService {
       if (sdk == null) {
         throw UnregisterWebhookException('Breez SDK not initialized');
       }
-      final Uri uri = Uri.parse('${WebhookConstants.breezWebhooksEndpoint}/nwc/$walletPubkey');
+      final Uri uri = Uri.parse('${WebhookConstants.breezWebhooksURL}/nwc/$walletPubkey');
       final Map<String, String> headers = <String, String>{'Content-Type': 'application/json'};
       final http.Response res = await _client.delete(uri, body: jsonEncode(body.toJson()), headers: headers);
       if (res.statusCode != HttpStatus.ok) {

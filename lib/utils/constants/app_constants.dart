@@ -66,6 +66,5 @@ class WebhookConstants {
   static const String notifierServiceURL = 'https://notifier.breez.technology';
 
   /// NWC endpoint for the webhook registration
-  // TODO(yse): Update with actual endpoint
-  static const String breezWebhooksEndpoint = 'https://breez.fun';
+  static const String breezWebhooksURL = 'https://breez.fun';
 }
