@@ -25,7 +25,6 @@ linter:
     avoid_escaping_inner_quotes: true
     avoid_init_to_null: true
     avoid_multiple_declarations_per_line: true
-    avoid_null_checks_in_equality_operators: true
     avoid_print: true
     avoid_private_typedef_functions: true
     avoid_redundant_argument_values: true
