@@ -47,7 +47,7 @@ class _NwcConnectionItemState extends State<NwcConnectionItem> with SingleTicker
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final bool hasContent = widget.connection.periodicBudget != null;
+    final bool hasContent = widget.connection.periodicBudget != null || widget.connection.expiresAt != null;
 
     return Card(
       color: themeData.customData.surfaceBgColor,

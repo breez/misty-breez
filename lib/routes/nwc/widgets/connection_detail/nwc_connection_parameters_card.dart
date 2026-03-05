@@ -7,44 +7,49 @@ import 'package:misty_breez/utils/utils.dart';
 
 class NwcConnectionParametersCard extends StatelessWidget {
   final NwcConnectionModel connection;
-  final bool showExpiration;
   final EdgeInsetsGeometry? padding;
 
-  const NwcConnectionParametersCard({
-    required this.connection,
-    this.showExpiration = false,
-    this.padding,
-    super.key,
-  });
+  const NwcConnectionParametersCard({required this.connection, this.padding, super.key});
 
   @override
   Widget build(BuildContext context) {
     final PeriodicBudget? budget = connection.periodicBudget;
-    if (budget == null) {
-      return const SizedBox.shrink();
+
+    final List<Widget> items = <Widget>[];
+
+    if (budget != null) {
+      items.addAll(<Widget>[
+        StatusItem(
+          label: 'Budget',
+          value: BitcoinCurrency.sat.format(budget.maxBudgetSat.toInt(), removeTrailingZeros: true),
+        ),
+      ]);
+
+      if (budget.usedBudgetSat > BigInt.zero) {
+        items.add(
+          StatusItem(
+            label: 'Spent',
+            value: BitcoinCurrency.sat.format(budget.usedBudgetSat.toInt(), removeTrailingZeros: true),
+          ),
+        );
+      }
+
+      if (budget.renewsAt != null) {
+        items.addAll(<Widget>[
+          StatusItem(label: 'Renewal Interval', value: '${budget.renewalIntervalDays} days'),
+          StatusItem(
+            label: 'Renewal Date',
+            value: BreezDateUtils.formatYearMonthDay(
+              DateTime.fromMillisecondsSinceEpoch(budget.renewsAt! * 1000),
+            ),
+          ),
+        ]);
+      }
     }
 
-    final List<Widget> items = <Widget>[
-      StatusItem(
-        label: 'Budget',
-        value: BitcoinCurrency.sat.format(budget.maxBudgetSat.toInt(), removeTrailingZeros: true),
-      ),
-      if (budget.usedBudgetSat > BigInt.zero)
-        StatusItem(
-          label: 'Spent',
-          value: BitcoinCurrency.sat.format(budget.usedBudgetSat.toInt(), removeTrailingZeros: true),
-        ),
-      if (budget.renewsAt != null) ...<Widget>[
-        StatusItem(label: 'Renewal Interval', value: '${budget.renewalIntervalDays} days'),
-        StatusItem(
-          label: 'Renewal Date',
-          value: BreezDateUtils.formatYearMonthDay(
-            DateTime.fromMillisecondsSinceEpoch(budget.renewsAt! * 1000),
-          ),
-        ),
-      ],
-      if (showExpiration) StatusItem(label: 'Expiration', value: _formatExpiryTime(connection.expiresAt)),
-    ];
+    if (connection.expiresAt != null) {
+      items.add(StatusItem(label: 'Expiration', value: _formatExpiryTime(connection.expiresAt!)));
+    }
 
     final Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,10 +70,7 @@ class NwcConnectionParametersCard extends StatelessWidget {
     return content;
   }
 
-  String _formatExpiryTime(int? expiresAt) {
-    if (expiresAt == null) {
-      return 'Never';
-    }
+  String _formatExpiryTime(int expiresAt) {
     return BreezDateUtils.formatYearMonthDay(DateTime.fromMillisecondsSinceEpoch(expiresAt * 1000));
   }
 }
