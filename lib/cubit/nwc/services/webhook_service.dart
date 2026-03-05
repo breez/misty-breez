@@ -23,6 +23,11 @@ class NwcWebhookService {
     PermissionsCubit permissionsCubit,
   ) : _generator = WebhookGenerator(_logger, notificationsClient, permissionsCubit);
 
+  /// Closes the HTTP client when the service is no longer needed.
+  void dispose() {
+    _client.close();
+  }
+
   Future<void> register(String walletPubkey, RegisterNwcWebhookRequest req) async {
     _logger.info('Registering webhook: ${req.webhookUrl} for appPubkey ${req.appPubkey}');
     await executeWithRetry<void>(
