@@ -46,6 +46,7 @@ class BreezSDKLiquid {
     _instance!.disconnect();
     _unsubscribeFromSdkStreams();
     _instance = null;
+    _nwc = null;
   }
 
   Future<void> _fetchWalletData(liquid_sdk.BreezSdkLiquid sdk) async {
