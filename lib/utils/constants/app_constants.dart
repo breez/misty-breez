@@ -50,6 +50,14 @@ class BlockTimes {
   static const int liquidBlockTimeSeconds = 60;
 }
 
+/// Time conversion constants
+class TimeConstants {
+  TimeConstants._();
+
+  /// Minutes in a day (24 * 60)
+  static const int minutesPerDay = 1440;
+}
+
 class WebhookConstants {
   /// Private constructor to prevent instantiation
   WebhookConstants._();
@@ -58,6 +66,5 @@ class WebhookConstants {
   static const String notifierServiceURL = 'https://notifier.breez.technology';
 
   /// NWC endpoint for the webhook registration
-  // TODO(yse): Update with actual endpoint
-  static const String breezWebhooksEndpoint = 'https://breez.fun';
+  static const String breezWebhooksURL = 'https://breez.fun';
 }

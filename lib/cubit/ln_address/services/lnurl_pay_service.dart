@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:misty_breez/cubit/cubit.dart';
+import 'package:misty_breez/utils/constants/app_constants.dart';
 
 final Logger _logger = Logger('LnUrlPayService');
 
@@ -15,7 +16,6 @@ class LnUrlPayService {
   static const int _maxRetries = 2;
   static const Duration _defaultTimeout = Duration(seconds: 30);
 
-  static const String _baseUrl = 'https://breez.fun';
   static const String _lnurlPayEndpoint = '/lnurlpay';
 
   final http.Client _client;
@@ -129,7 +129,7 @@ class LnUrlPayService {
 
   /// Builds a URI for the specified endpoint.
   Uri _buildUri(String endpoint) {
-    return Uri.parse('$_baseUrl$endpoint');
+    return Uri.parse('${WebhookConstants.breezWebhooksURL}$endpoint');
   }
 
   /// Executes a POST request with the given URI and body.
