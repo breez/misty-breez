@@ -157,12 +157,12 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
     emit(state.copyWith(isLoading: true));
 
     try {
-      final NwcConnectionModel? connection = _removeConnectionFromState(name);
+      final NwcConnectionModel? connection = state.connections.firstWhereOrNull(
+        (NwcConnectionModel connection) => connection.name == name,
+      );
       if (connection == null) {
         return;
       }
-
-      await nwcService.removeConnection(name: name);
 
       final InputType parsedNwcUri = await breezSdkLiquid.instance!.parse(input: connection.connectionString);
       switch (parsedNwcUri) {
@@ -172,15 +172,17 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
             uri.walletServicePublicKey,
             uri.appPublicKey,
           );
+          await nwcService.removeConnection(name: name);
         default:
           throw Exception('Invalid response type returned from the SDK.');
       }
-
       await loadConnections();
     } catch (e) {
       _logger.severe('Failed to delete NWC connection', e);
       await loadConnections();
       emit(state.copyWith(isLoading: false, error: 'Failed to delete connection: ${e.toString()}'));
+    } finally {
+      emit(state.copyWith(isLoading: false));
     }
   }
 
