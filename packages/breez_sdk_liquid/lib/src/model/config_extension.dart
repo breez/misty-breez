@@ -7,7 +7,6 @@ extension ConfigCopyWith on Config {
     String? workingDir,
     LiquidNetwork? network,
     BigInt? paymentTimeoutSec,
-    int? zeroConfMinFeeRateMsat,
     BigInt? zeroConfMaxAmountSat,
     String? breezApiKey,
     List<ExternalInputParser>? externalInputParsers,
