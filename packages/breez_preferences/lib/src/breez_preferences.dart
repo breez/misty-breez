@@ -13,6 +13,7 @@ class BreezPreferences {
   static const String _kWebhookUrl = 'webhook_url';
   static const String _kLnUrlWebhookRegistered = 'lnurl_webhook_registered';
   static const String _kLnAddressUsername = 'ln_address_username';
+  static const String _kBolt12OfferDescription = 'bolt12_offer_description';
 
   const BreezPreferences();
 
@@ -124,6 +125,24 @@ class BreezPreferences {
     await prefs.setString(_kLnAddressUsername, lnAddressUsername);
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       await SharedPreferenceAppGroup.setString(_kLnAddressUsername, lnAddressUsername);
+    }
+  }
+
+  // BOLT12 Offer Description
+  Future<String?> get bolt12OfferDescription async {
+    final SharedPreferences prefs = await _preferences;
+    final String? description = prefs.getString(_kBolt12OfferDescription);
+
+    _logger.info('Fetched BOLT12 Offer Description: $description');
+    return description;
+  }
+
+  Future<void> setBolt12OfferDescription(String description) async {
+    _logger.info('Setting BOLT12 Offer Description: $description');
+    final SharedPreferences prefs = await _preferences;
+    await prefs.setString(_kBolt12OfferDescription, description);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await SharedPreferenceAppGroup.setString(_kBolt12OfferDescription, description);
     }
   }
 }
