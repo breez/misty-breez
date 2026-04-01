@@ -34,7 +34,7 @@ class BreezFcmService :
         super.onMessageReceived(remoteMessage)
         logger.log(TAG, "FCM message received!", "INFO")
 
-        if (remoteMessage.priority == RemoteMessage.PRIORITY_HIGH) {
+        if (remoteMessage.originalPriority == RemoteMessage.PRIORITY_HIGH) {
             logger.log(TAG, "onMessageReceived from: ${remoteMessage.from}", "INFO")
             logger.log(TAG, "onMessageReceived data: ${remoteMessage.data}", "INFO")
             remoteMessage.toMessage()?.let { startServiceIfNeeded(applicationContext, it) }
