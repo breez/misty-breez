@@ -152,7 +152,9 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
     }
   }
 
-  /// Deletes an NWC connection by name
+  /// Deletes an NWC connection by name.
+  /// The local connection is always removed first. The server webhook removal is
+  /// attempted independently; on failure [NwcState.webhookError] is set
   Future<void> deleteConnection(String name) async {
     emit(state.copyWith(isLoading: true));
 
@@ -161,28 +163,37 @@ class NwcCubit extends Cubit<NwcState> with HydratedMixin<NwcState> {
         (NwcConnectionModel connection) => connection.name == name,
       );
       if (connection == null) {
+        emit(state.copyWith(isLoading: false));
         return;
       }
 
-      final InputType parsedNwcUri = await breezSdkLiquid.instance!.parse(input: connection.connectionString);
-      switch (parsedNwcUri) {
-        case InputType_NostrWalletConnectUri(data: final NostrWalletConnectUri uri):
-          await nwcRegistrationManager.removeWebhook(
-            (await breezSdkLiquid.instance!.getInfo()).walletInfo.pubkey,
-            uri.walletServicePublicKey,
-            uri.appPublicKey,
-          );
-          await nwcService.removeConnection(name: name);
-        default:
-          throw Exception('Invalid response type returned from the SDK.');
+      await nwcService.removeConnection(name: name);
+      final List<NwcConnectionModel> updatedConnections = state.connections
+          .where((NwcConnectionModel c) => c.name != name)
+          .toList();
+      emit(NwcState(connections: updatedConnections));
+
+      try {
+        final InputType parsedNwcUri = await breezSdkLiquid.instance!.parse(
+          input: connection.connectionString,
+        );
+        switch (parsedNwcUri) {
+          case InputType_NostrWalletConnectUri(data: final NostrWalletConnectUri uri):
+            await nwcRegistrationManager.removeWebhook(
+              (await breezSdkLiquid.instance!.getInfo()).walletInfo.pubkey,
+              uri.walletServicePublicKey,
+              uri.appPublicKey,
+            );
+          default:
+            throw Exception('Invalid response type returned from the SDK.');
+        }
+      } catch (e) {
+        _logger.severe('Failed to remove webhook for connection "$name"', e);
+        emit(state.copyWith(webhookError: 'Failed to remove webhook: ${e.toString()}'));
       }
-      await loadConnections();
     } catch (e) {
       _logger.severe('Failed to delete NWC connection', e);
-      await loadConnections();
       emit(state.copyWith(isLoading: false, error: 'Failed to delete connection: ${e.toString()}'));
-    } finally {
-      emit(state.copyWith(isLoading: false));
     }
   }
 

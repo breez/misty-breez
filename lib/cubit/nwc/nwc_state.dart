@@ -62,16 +62,28 @@ class NwcState {
   final List<NwcConnectionModel> connections;
   final bool isLoading;
   final String? error;
+  final String? webhookError;
 
-  const NwcState({this.connections = const <NwcConnectionModel>[], this.isLoading = false, this.error});
+  const NwcState({
+    this.connections = const <NwcConnectionModel>[],
+    this.isLoading = false,
+    this.error,
+    this.webhookError,
+  });
 
   NwcState.initial() : this();
 
-  NwcState copyWith({List<NwcConnectionModel>? connections, bool? isLoading, String? error}) {
+  NwcState copyWith({
+    List<NwcConnectionModel>? connections,
+    bool? isLoading,
+    String? error,
+    String? webhookError,
+  }) {
     return NwcState(
       connections: connections ?? this.connections,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
+      webhookError: webhookError ?? this.webhookError,
     );
   }
 

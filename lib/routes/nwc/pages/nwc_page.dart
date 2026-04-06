@@ -19,7 +19,12 @@ class _NwcPageState extends State<NwcPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: const back_button.BackButton(), title: const Text('Nostr Wallet Connect')),
-      body: BlocBuilder<NwcCubit, NwcState>(
+      body: BlocConsumer<NwcCubit, NwcState>(
+        listenWhen: (NwcState previous, NwcState current) =>
+            current.webhookError != null && current.webhookError != previous.webhookError,
+        listener: (BuildContext context, NwcState state) {
+          showFlushbar(context, message: state.webhookError);
+        },
         builder: (BuildContext context, NwcState state) {
           if (state.isLoading && state.connections.isEmpty) {
             return const CenteredLoader(color: Colors.white);
