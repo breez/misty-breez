@@ -68,7 +68,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up just
-        uses: extractions/setup-just@v3
+        uses: extractions/setup-just@v4
 
       - name: 🏗️ Rust cache
         uses: Swatinem/rust-cache@v2
