@@ -72,6 +72,10 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
 
   bool _isDrain = false;
 
+  bool get _shouldPrepareEagerly =>
+      _isFixedAmount &&
+      (widget.isConfirmation || widget.lnUrlPaymentArguments.requestData.commentAllowed <= 0);
+
   @override
   void initState() {
     super.initState();
@@ -135,7 +139,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       effectiveMaxSat: effectiveMaxSat,
       throwError: true,
     );
-    if (errorMessage == null && _isFixedAmount) {
+    if (errorMessage == null && _shouldPrepareEagerly) {
       await _prepareLnUrlPayment(amountSat);
       if (mounted && _isDrain) {
         final AccountCubit accountCubit = context.read<AccountCubit>();
@@ -170,10 +174,12 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
       final PayAmount payAmount = _isDrain
           ? const PayAmount_Drain()
           : PayAmount_Bitcoin(receiverAmountSat: BigInt.from(amountSat));
+      final String? comment = _descriptionController.text.isEmpty ? null : _descriptionController.text;
       final PrepareLnUrlPayRequest req = PrepareLnUrlPayRequest(
         data: widget.lnUrlPaymentArguments.requestData,
         bip353Address: widget.lnUrlPaymentArguments.bip353Address,
         amount: payAmount,
+        comment: comment,
         validateSuccessActionUrl: false,
       );
       final PrepareLnUrlPayResponse response = await lnUrlService.prepareLnurlPay(req: req);
@@ -432,15 +438,16 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                                       hasError: !_isFormEnabled || errorMessage.isNotEmpty,
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                    child: LnPaymentFee(
-                                      isCalculatingFees: _isCalculatingFees,
-                                      feesSat: errorMessage.isEmpty
-                                          ? _prepareResponse?.feesSat.toInt()
-                                          : null,
+                                  if (_shouldPrepareEagerly)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      child: LnPaymentFee(
+                                        isCalculatingFees: _isCalculatingFees,
+                                        feesSat: errorMessage.isEmpty
+                                            ? _prepareResponse?.feesSat.toInt()
+                                            : null,
+                                      ),
                                     ),
-                                  ),
                                   if (metadataText != null && metadataText.isNotEmpty) ...<Widget>[
                                     Padding(
                                       padding: _prepareResponse == null
@@ -500,7 +507,7 @@ class LnUrlPaymentPageState extends State<LnUrlPaymentPage> {
                 Navigator.of(context).pop();
               },
             )
-          : !_isFixedAmount
+          : !_shouldPrepareEagerly
           ? SingleButtonBottomBar(
               stickToBottom: true,
               text: texts.lnurl_payment_page_action_next,
