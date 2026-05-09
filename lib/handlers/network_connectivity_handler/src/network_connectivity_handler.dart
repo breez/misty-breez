@@ -39,11 +39,12 @@ class NetworkConnectivityHandler extends Handler {
 
   void _listen(ConnectivityState connectivityState) async {
     _logger.info('Received connectivityState $connectivityState');
-    if (!connectivityState.hasNetworkConnection) {
-      showNoInternetConnectionFlushbar();
-    } else {
-      dismissFlushbarIfNeed();
-    }
+    // Recovery build (case 43): the no-connection flushbar is non-dismissible
+    // and covers the menu/warning controls, blocking seed backup and log
+    // export on a wallet that won't initialize online. Suppress it so the
+    // user can reach Preferences > Security & Backup and Preferences >
+    // Developers > Logs while in airplane mode.
+    dismissFlushbarIfNeed();
   }
 
   void showNoInternetConnectionFlushbar() {
