@@ -17,6 +17,15 @@ on:
         required: false
         type: string
         default: 'main'
+  schedule:
+    # ~60-day cadence (1st of every other month at 09:00 UTC). Builds main
+    # against the published Liquid SDK plugin (production config); see the
+    # pre-setup resolve defaults below. Mirrors build-ios.yml.
+    - cron: '0 9 1 */2 *'
+
+concurrency:
+  group: build-android
+  cancel-in-progress: false
 
 jobs:
 
@@ -29,9 +38,12 @@ jobs:
       # changes that you won't want to commit to main yet.
       # You can set these values manually, to test how the CI behaves with
       # certain inputs.
-      use-published-plugins: ${{ inputs.use-published-plugins }}
-      liquid-sdk-plugin-version: ${{ inputs.liquid-sdk-plugin-version }}
-      liquid-sdk-ref: ${{ inputs.liquid-sdk-ref }}
+      # Schedule events don't populate inputs.* — build main against the
+      # production published Liquid SDK plugin. Bump the pinned version when
+      # production moves to a newer breez-sdk-liquid-flutter release.
+      use-published-plugins: ${{ github.event_name == 'schedule' && 'true' || inputs.use-published-plugins }}
+      liquid-sdk-plugin-version: ${{ github.event_name == 'schedule' && 'v0.12.4' || inputs.liquid-sdk-plugin-version }}
+      liquid-sdk-ref: ${{ github.event_name == 'schedule' && 'main' || inputs.liquid-sdk-ref }}
     steps:
       - name: Checkout repository
         if:  ${{ inputs.use-published-plugins == 'true' && inputs.liquid-sdk-plugin-version == ''}}
