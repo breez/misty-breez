@@ -26,19 +26,11 @@ class PaymentTrackingFilter {
       return payment.details is PaymentDetails_Lightning;
     }
     if (trackingConfig.expectedDestination != null) {
-      // TODO(erdemyerebasmaz): Cleanup isBitcoinPayment workaround once SDK includes destination or swap ID on resulting payment.
-      // Depends on: https://github.com/breez/breez-sdk-liquid/issues/913
-      // Treat any incoming BTC payment as valid until we can match it via destination (BIP21 URI) or swap ID.
-      // TODO(erdemyerebasmaz): Issue above is resolved but not tested yet.
-      /*
       final PaymentDetails paymentDetails = payment.details;
       if (paymentDetails is PaymentDetails_Bitcoin) {
-        return paymentDetails.bitcoinAddress == expectedDestination;
+        return paymentDetails.bitcoinAddress == trackingConfig.expectedDestination;
       }
-      */
-      return trackingConfig.isBitcoinPayment
-          ? payment.details is PaymentDetails_Bitcoin
-          : payment.destination == trackingConfig.expectedDestination;
+      return payment.destination == trackingConfig.expectedDestination;
     }
     return false;
   }
