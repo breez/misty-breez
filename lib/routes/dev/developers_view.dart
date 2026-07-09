@@ -40,6 +40,7 @@ class _DevelopersViewState extends State<DevelopersView> {
   BugReportBehavior _bugReportBehavior = BugReportBehavior.prompt;
   String _sdkVersion = '';
   String _bolt12Offer = '';
+  String _bolt12Description = PaymentConstants.bolt12OfferDescription;
 
   @override
   void initState() {
@@ -85,9 +86,11 @@ class _DevelopersViewState extends State<DevelopersView> {
     }
   }
 
-  /// Loads the default BOLT12 offer
+  /// Loads the BOLT12 offer using the persisted or default description
   Future<void> _loadBolt12Offer() async {
     try {
+      final String description =
+          await _preferences.bolt12OfferDescription ?? PaymentConstants.bolt12OfferDescription;
       final BreezSdkLiquid sdk = ServiceInjector().breezSdkLiquid.instance!;
       const PrepareReceiveRequest prepareReq = PrepareReceiveRequest(
         paymentMethod: PaymentMethod.bolt12Offer,
@@ -95,12 +98,15 @@ class _DevelopersViewState extends State<DevelopersView> {
       final PrepareReceiveResponse prepareRes = await sdk.prepareReceivePayment(req: prepareReq);
       final ReceivePaymentRequest receiveReq = ReceivePaymentRequest(
         prepareResponse: prepareRes,
-        description: PaymentConstants.bolt12OfferDescription,
+        description: description,
       );
       final ReceivePaymentResponse receiveRes = await sdk.receivePayment(req: receiveReq);
 
       if (mounted) {
-        setState(() => _bolt12Offer = receiveRes.destination);
+        setState(() {
+          _bolt12Offer = receiveRes.destination;
+          _bolt12Description = description;
+        });
       }
     } catch (e) {
       _logger.warning('Failed to load BOLT12 offer: $e');
@@ -253,6 +259,63 @@ class _DevelopersViewState extends State<DevelopersView> {
     }
   }
 
+  /// Shows a dialog to edit the BOLT12 offer description
+  Future<void> _showEditBolt12DescriptionDialog() async {
+    final TextEditingController controller = TextEditingController(text: _bolt12Description);
+    final ThemeData themeData = Theme.of(context);
+
+    final String? newDescription = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Edit Offer Description',
+            style: themeData.primaryTextTheme.headlineMedium?.copyWith(color: Colors.white),
+          ),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            maxLength: 90,
+            decoration: const InputDecoration(
+              labelText: 'Description',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newDescription == null || newDescription.trim().isEmpty || newDescription == _bolt12Description) {
+      return;
+    }
+
+    _overlayManager.showLoadingOverlay(this.context);
+    try {
+      await _preferences.setBolt12OfferDescription(newDescription);
+      await _loadBolt12Offer();
+      if (mounted) {
+        _showSuccessMessage('Offer description updated.');
+      }
+    } catch (e) {
+      _logger.warning('Failed to update BOLT12 offer description: $e');
+      if (mounted) {
+        _showErrorMessage('Failed to update offer description.');
+      }
+    } finally {
+      _overlayManager.removeLoadingOverlay();
+    }
+  }
+
   /// Shows a success message to the user
   void _showSuccessMessage(String message) {
     showFlushbar(context, message: message);
@@ -315,17 +378,28 @@ class _DevelopersViewState extends State<DevelopersView> {
                     if (_bolt12Offer.isNotEmpty) ...<Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: ShareablePaymentRow(
-                          tilePadding: EdgeInsets.zero,
-                          dividerColor: Colors.transparent,
-                          title: 'BOLT 12 Offer',
-                          titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
-                            fontSize: 18.0,
-                            color: Colors.white,
-                          ),
-                          sharedValue: _bolt12Offer,
-                          shouldPop: false,
-                          trimTitle: false,
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: ShareablePaymentRow(
+                                tilePadding: EdgeInsets.zero,
+                                dividerColor: Colors.transparent,
+                                title: 'BOLT 12 Offer',
+                                titleTextStyle: themeData.primaryTextTheme.headlineMedium?.copyWith(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
+                                sharedValue: _bolt12Offer,
+                                shouldPop: false,
+                                trimTitle: false,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit, size: 20.0, color: Colors.white),
+                              tooltip: 'Edit offer description',
+                              onPressed: _showEditBolt12DescriptionDialog,
+                            ),
+                          ],
                         ),
                       ),
                     ],
