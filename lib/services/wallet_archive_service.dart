@@ -54,9 +54,8 @@ class WalletArchiveService {
   static Future<String> createLogsArchive() async {
     _logger.info('Creating logs archive...');
 
-    final AppConfig config = await _getAppConfig();
-    final String workingDir = config.sdkConfig.workingDir;
-    final String zipFilePath = '$workingDir/$_logsArchiveFilename';
+    final Directory tempDir = await getTemporaryDirectory();
+    final String zipFilePath = '${tempDir.path}/$_logsArchiveFilename';
     final ZipFileEncoder encoder = ZipFileEncoder();
 
     try {
