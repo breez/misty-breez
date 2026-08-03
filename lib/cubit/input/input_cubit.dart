@@ -79,6 +79,8 @@ class InputCubit extends Cubit<InputState> {
       result = InputState.nodeId(parsedInput.nodeId, source);
     } else if (parsedInput is InputType_BitcoinAddress) {
       result = InputState.bitcoinAddress(parsedInput.address, source);
+    } else if (parsedInput is InputType_LiquidAddress) {
+      result = InputState.liquidAddress(parsedInput.address, source);
     } else if (parsedInput is InputType_Url) {
       result = InputState.url(parsedInput.url, source);
     } else {

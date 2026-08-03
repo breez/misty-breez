@@ -98,6 +98,8 @@ class InputHandler extends Handler {
       throw inputState.data.reason;
     } else if (inputState is BitcoinAddressInputState) {
       return handleBitcoinAddress(context, inputState);
+    } else if (inputState is LiquidAddressInputState) {
+      return handleLiquidAddress(context, inputState);
     } else if (unsupportedInputStates.contains(inputState.runtimeType)) {
       throw context.texts().payment_info_dialog_error_unsupported_input;
     } else if (inputState is EmptyInputState) {
@@ -185,6 +187,37 @@ class InputHandler extends Handler {
   Future<dynamic> handleBitcoinAddress(BuildContext context, BitcoinAddressInputState inputState) async {
     _logger.fine('Handle Bitcoin Address $inputState');
     return await Navigator.of(context).pushNamed(SendChainSwapPage.routeName, arguments: inputState.data);
+  }
+
+  Future<dynamic> handleLiquidAddress(BuildContext context, LiquidAddressInputState inputState) async {
+    _logger.fine('Handle Liquid Address $inputState');
+    if (inputState.data.assetId != null) {
+      throw context.texts().payment_info_dialog_error_unsupported_input;
+    }
+
+    final NavigatorState navigator = Navigator.of(context);
+    final SendPaymentRequest? sendPaymentRequest = await navigator.pushNamed<SendPaymentRequest?>(
+      LiquidAddressPaymentPage.routeName,
+      arguments: inputState.data,
+    );
+    if (sendPaymentRequest == null || !context.mounted) {
+      return Future<dynamic>.value();
+    }
+
+    return await showProcessingPaymentSheet(
+      context,
+      paymentFunc: () async {
+        final PaymentsCubit paymentsCubit = context.read<PaymentsCubit>();
+        return await paymentsCubit.sendPayment(prepareResponse: sendPaymentRequest.prepareResponse);
+      },
+    ).then((dynamic result) {
+      if (context.mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(Home.routeName, (Route<dynamic> route) => false);
+        if (result is String) {
+          showFlushbar(context, message: result);
+        }
+      }
+    });
   }
 
   void handleResult(dynamic result) {

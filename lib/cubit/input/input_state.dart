@@ -6,6 +6,8 @@ typedef TypeCheck = bool Function(InputType);
 final List<TypeCheck> unsupportedInputTypeChecks = <TypeCheck>[
   (InputType input) => input is InputType_NodeId,
   (InputType input) => input is InputType_Url,
+  // ponytail: Liquid sends are L-BTC only, so an address naming an asset is unsupported.
+  (InputType input) => input is InputType_LiquidAddress && input.address.assetId != null,
 ];
 
 const Set<Type> unsupportedInputStates = <Type>{NodeIdInputState, UrlInputState};
@@ -36,6 +38,9 @@ class InputState {
 
   const factory InputState.bitcoinAddress(BitcoinAddressData data, InputSource source) =
       BitcoinAddressInputState;
+
+  const factory InputState.liquidAddress(LiquidAddressData data, InputSource source) =
+      LiquidAddressInputState;
 
   const factory InputState.url(String url, InputSource source) = UrlInputState;
 }
@@ -252,6 +257,29 @@ class BitcoinAddressInputState extends InputState {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is BitcoinAddressInputState &&
+          runtimeType == other.runtimeType &&
+          data == other.data &&
+          source == other.source;
+
+  @override
+  int get hashCode => Object.hash(data, source);
+}
+
+class LiquidAddressInputState extends InputState {
+  const LiquidAddressInputState(this.data, this.source) : super._();
+
+  final LiquidAddressData data;
+  final InputSource source;
+
+  @override
+  String toString() {
+    return 'LiquidAddressInputState{address: ${data.address}, source: $source}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LiquidAddressInputState &&
           runtimeType == other.runtimeType &&
           data == other.data &&
           source == other.source;

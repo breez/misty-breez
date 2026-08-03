@@ -100,7 +100,7 @@ class _EnterPaymentInfoPageState extends State<EnterPaymentInfoPage> {
               prefixIconConstraints: BoxConstraints.tight(const Size(16, 56)),
               prefixIcon: const SizedBox.shrink(),
               contentPadding: EdgeInsets.zero,
-              hintText: 'Invoice | Lightning Address | BTC Address | LNURL',
+              hintText: 'Invoice | Lightning Address | BTC Address | Liquid Address | LNURL',
               hintStyle: FieldTextStyle.labelStyle.copyWith(fontSize: 14.3),
               floatingLabelBehavior: FloatingLabelBehavior.never,
               helper: Text(
