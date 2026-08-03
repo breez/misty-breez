@@ -74,8 +74,9 @@ class ExceptionHandler {
       if (error.err.toLowerCase().contains('non-final') ||
           error.err.toLowerCase().contains('rpc error -26')) {
         message = 'The transaction cannot be broadcast at this time. Please try again later.';
+      } else {
+        message = 'Payment error: ${error.err}';
       }
-      message = 'Payment error: ${error.err}';
     } else if (error is PaymentError_InvalidOrExpiredFees) {
       message = 'The provided fees have expired';
     } else if (error is PaymentError_InsufficientFunds) {
@@ -87,7 +88,9 @@ class ExceptionHandler {
     } else if (error is PaymentError_InvalidPreimage) {
       message = 'The generated preimage is not valid';
     } else if (error is PaymentError_PairsNotFound) {
-      message = 'Boltz did not return any pairs from the request';
+      // The swapper answered but offers no BTC/L-BTC pair, which is what a suspended
+      // swap service looks like. Liquid send & receive need no swapper, so point there.
+      message = 'Swaps are temporarily unavailable. You can still send and receive using a Liquid address.';
     } else if (error is PaymentError_PaymentTimeout) {
       message = 'Payment start could not be verified within the configured timeout';
     } else if (error is PaymentError_PersistError) {
