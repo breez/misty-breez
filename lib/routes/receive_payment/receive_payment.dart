@@ -1,4 +1,5 @@
 export 'lightning/receive_lightning_page.dart';
+export 'liquid/receive_liquid_address_payment_page.dart';
 export 'ln_address/receive_lightning_address_page.dart';
 export 'lnurl/lnurl_withdraw_page.dart';
 export 'onchain/onchain.dart';

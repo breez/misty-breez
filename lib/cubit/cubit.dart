@@ -7,6 +7,7 @@ export 'chain_swap/chain_swap_cubit.dart';
 export 'connectivity/connectivity_cubit.dart';
 export 'currency/currency_cubit.dart';
 export 'input/input_cubit.dart';
+export 'liquid_address/liquid_address_cubit.dart';
 export 'ln_address/ln_address_cubit.dart';
 export 'model/models.dart';
 export 'nwc/nwc_cubit.dart';

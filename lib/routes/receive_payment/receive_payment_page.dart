@@ -22,6 +22,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
     ReceiveLightningAddressPage(),
     ReceiveAmountlessBitcoinAddressPage(),
     ReceiveBitcoinAddressPaymentPage(),
+    ReceiveLiquidAddressPage(),
   ];
 
   bool _hasNotificationPermission = false;
@@ -143,6 +144,9 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   }
 
   PaymentMethod get _currentPaymentMethod {
+    if (_currentPageIndex == ReceiveLiquidAddressPage.pageIndex) {
+      return PaymentMethod.liquidAddress;
+    }
     return _currentPageIndex == ReceiveAmountlessBitcoinAddressPage.pageIndex ||
             _currentPageIndex == ReceiveBitcoinAddressPaymentPage.pageIndex
         ? PaymentMethod.bitcoinAddress
@@ -150,7 +154,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
   }
 
   Future<void> _onPaymentMethodChanged(PaymentMethod newMethod) async {
-    if (newMethod == PaymentMethod.liquidAddress || newMethod == _currentPaymentMethod) {
+    if (newMethod == _currentPaymentMethod) {
       return;
     }
     Future<void>.microtask(() async {
@@ -173,7 +177,7 @@ class _ReceivePaymentPageState extends State<ReceivePaymentPage> {
       case PaymentMethod.bolt11Invoice:
         return ReceiveLightningAddressPage.pageIndex;
       case PaymentMethod.liquidAddress:
-        return ReceiveAmountlessBitcoinAddressPage.pageIndex; // Fallback
+        return ReceiveLiquidAddressPage.pageIndex;
     }
   }
 }
