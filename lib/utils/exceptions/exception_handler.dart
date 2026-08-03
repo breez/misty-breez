@@ -10,6 +10,11 @@ class ExceptionHandler {
   /// Private constructor to prevent instantiation
   ExceptionHandler._();
 
+  /// Shown whenever the swap service is unavailable. Liquid send & receive need no
+  /// swapper, so they keep working and are the way forward for the user.
+  static const String _swapsUnavailable =
+      'Swaps are temporarily unavailable. You can still send and receive using a Liquid address.';
+
   /// Extracts a user-friendly message from an exception
   ///
   /// [exception] The exception to extract a message from
@@ -74,6 +79,10 @@ class ExceptionHandler {
       if (error.err.toLowerCase().contains('non-final') ||
           error.err.toLowerCase().contains('rpc error -26')) {
         message = 'The transaction cannot be broadcast at this time. Please try again later.';
+      } else if (error.err.toLowerCase().contains('swap creation is disabled')) {
+        // Boltz keeps serving pairs while refusing to create swaps, so prepare_* succeeds
+        // and the refusal only surfaces here, as a 400 body flattened into a generic error.
+        message = _swapsUnavailable;
       } else {
         message = 'Payment error: ${error.err}';
       }
@@ -88,9 +97,8 @@ class ExceptionHandler {
     } else if (error is PaymentError_InvalidPreimage) {
       message = 'The generated preimage is not valid';
     } else if (error is PaymentError_PairsNotFound) {
-      // The swapper answered but offers no BTC/L-BTC pair, which is what a suspended
-      // swap service looks like. Liquid send & receive need no swapper, so point there.
-      message = 'Swaps are temporarily unavailable. You can still send and receive using a Liquid address.';
+      // The swapper answered but offers no BTC/L-BTC pair.
+      message = _swapsUnavailable;
     } else if (error is PaymentError_PaymentTimeout) {
       message = 'Payment start could not be verified within the configured timeout';
     } else if (error is PaymentError_PersistError) {
