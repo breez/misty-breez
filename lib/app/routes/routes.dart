@@ -103,6 +103,13 @@ Route<dynamic>? onGenerateRoute({
                       ),
                       settings: settings,
                     );
+                  case LiquidAddressPaymentPage.routeName:
+                    return FadeInRoute<SendPaymentRequest?>(
+                      builder: (BuildContext _) => LiquidAddressPaymentPage(
+                        addressData: settings.arguments as LiquidAddressData,
+                      ),
+                      settings: settings,
+                    );
                   case LnPaymentPage.routeName:
                     return FadeInRoute<SendPaymentRequest?>(
                       builder: (BuildContext context) => BlocProvider<PaymentLimitsCubit>(
