@@ -206,9 +206,7 @@ class _LiquidAddressPaymentPageState extends State<LiquidAddressPaymentPage> {
                                 errorMessage,
                                 maxLines: 3,
                                 textAlign: TextAlign.left,
-                                style: FieldTextStyle.labelStyle.copyWith(
-                                  color: themeData.colorScheme.error,
-                                ),
+                                style: FieldTextStyle.labelStyle.copyWith(color: themeData.colorScheme.error),
                               ),
                             ],
                           ] else ...<Widget>[
@@ -253,10 +251,8 @@ class _LiquidAddressPaymentPageState extends State<LiquidAddressPaymentPage> {
                 ? SingleButtonBottomBar(
                     stickToBottom: true,
                     text: texts.ln_payment_action_send,
-                    onPressed: () => Navigator.pop(
-                      context,
-                      SendPaymentRequest(prepareResponse: _prepareResponse!),
-                    ),
+                    onPressed: () =>
+                        Navigator.pop(context, SendPaymentRequest(prepareResponse: _prepareResponse!)),
                   )
                 : errorMessage.isNotEmpty
                 ? SingleButtonBottomBar(
@@ -287,10 +283,7 @@ class _LiquidAddressPaymentPageState extends State<LiquidAddressPaymentPage> {
           style: themeData.primaryTextTheme.headlineMedium?.copyWith(fontSize: 18.0, color: Colors.white),
         ),
         const SizedBox(height: 8.0),
-        Text(
-          widget.addressData.address,
-          style: FieldTextStyle.labelStyle.copyWith(fontSize: 14.0),
-        ),
+        Text(widget.addressData.address, style: FieldTextStyle.labelStyle.copyWith(fontSize: 14.0)),
       ],
     );
   }

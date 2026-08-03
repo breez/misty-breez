@@ -105,9 +105,8 @@ Route<dynamic>? onGenerateRoute({
                     );
                   case LiquidAddressPaymentPage.routeName:
                     return FadeInRoute<SendPaymentRequest?>(
-                      builder: (BuildContext _) => LiquidAddressPaymentPage(
-                        addressData: settings.arguments as LiquidAddressData,
-                      ),
+                      builder: (BuildContext _) =>
+                          LiquidAddressPaymentPage(addressData: settings.arguments as LiquidAddressData),
                       settings: settings,
                     );
                   case LnPaymentPage.routeName:
