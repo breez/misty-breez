@@ -9,7 +9,7 @@
 
     <application
         android:label="${appName}"
-        android:name="${applicationName}"
+        android:name=".MistyApplication"
         android:roundIcon="@mipmap/ic_launcher"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false">
