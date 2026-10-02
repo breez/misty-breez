@@ -1,3 +1,4 @@
+import 'package:breez_preferences/breez_preferences.dart';
 import 'package:breez_sdk_liquid/breez_sdk_liquid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
@@ -16,8 +17,9 @@ final Logger _logger = Logger('LnAddressCubit');
 class LnAddressCubit extends Cubit<LnAddressState> {
   final BreezSDKLiquid breezSdkLiquid;
   final LnUrlRegistrationManager registrationManager;
+  final BreezPreferences breezPreferences;
 
-  LnAddressCubit({required this.breezSdkLiquid, required this.registrationManager})
+  LnAddressCubit({required this.breezSdkLiquid, required this.registrationManager, required this.breezPreferences})
     : super(const LnAddressState()) {
     _initializeLnAddressCubit();
   }
@@ -149,6 +151,8 @@ class LnAddressCubit extends Cubit<LnAddressState> {
 
   Future<String?> _getBolt12Offer() async {
     try {
+      final String description =
+          await breezPreferences.bolt12OfferDescription ?? PaymentConstants.bolt12OfferDescription;
       final BreezSdkLiquid sdkInstance = breezSdkLiquid.instance!;
       const PrepareReceiveRequest prepareReq = PrepareReceiveRequest(
         paymentMethod: PaymentMethod.bolt12Offer,
@@ -156,7 +160,7 @@ class LnAddressCubit extends Cubit<LnAddressState> {
       final PrepareReceiveResponse prepareRes = await sdkInstance.prepareReceivePayment(req: prepareReq);
       final ReceivePaymentRequest receiveReq = ReceivePaymentRequest(
         prepareResponse: prepareRes,
-        description: PaymentConstants.bolt12OfferDescription,
+        description: description,
       );
       final ReceivePaymentResponse receiveRes = await sdkInstance.receivePayment(req: receiveReq);
       return receiveRes.destination;

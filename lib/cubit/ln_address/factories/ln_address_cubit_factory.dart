@@ -27,6 +27,10 @@ class LnAddressCubitFactory {
       webhookService: webhookService,
     );
 
-    return LnAddressCubit(breezSdkLiquid: breezSdkLiquid, registrationManager: registrationManager);
+    return LnAddressCubit(
+      breezSdkLiquid: breezSdkLiquid,
+      registrationManager: registrationManager,
+      breezPreferences: breezPreferences,
+    );
   }
 }
