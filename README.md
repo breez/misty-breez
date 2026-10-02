@@ -1,41 +1,13 @@
-![Build Android workflow](https://github.com/breez/misty-breez/actions/workflows/build-android.yml/badge.svg)
-![Build iOS workflow](https://github.com/breez/misty-breez/actions/workflows/build-ios.yml/badge.svg)
-![CI workflow](https://github.com/breez/misty-breez/actions/workflows/CI.yml/badge.svg)
+![Breez](https://raw.githubusercontent.com/breez/website/main/src/assets/images/open-graph-home.jpg)
 
 # Misty Breez
 
-![Image](https://github.com/user-attachments/assets/e1b818c0-075b-4f2c-a71f-4b7970e5cd3c)
+## Notice
 
-Lightning made easy!
+Misty Breez is discontinued and has been removed from the app stores. The service it relies on is no longer available, so on-chain and Lightning payments cannot be made in the app. Sending and receiving with a Liquid address still works, and is how you move your funds out: see [How to Move Your Funds](https://breez.technology/misty/).
 
-Misty Breez is the simplest self-custodial app for sending and receiving Lightning payments. It's a Flutter mobile app that serves as a reference implementation for the [Breez SDK - Liquid](https://sdk-doc-liquid.breez.technology/) to:
-* Demonstrate the full capabilities of building with the SDK
-* Showcase best practices for designing an intuitive UI and UX for self-custodial Lightning payments
-* Offer a ready-made solution that can be white-labeled for partners looking to build a new app
+We recommend [Glow](https://breez.technology/glow), our new reference app, powered by the Breez SDK. Builders should start with the [Breez SDK](https://sdk-doc-spark.breez.technology/).
 
-## Features
+## Support
 
-- [x] **Sending payments** via various protocols such as: Bolt11, Bolt12, BIP353, LNURL-Pay, Lightning address, BTC address
-- [x] **Receiving payments** via various protocols such as: Bolt11, Bolt12, BIP353, LNURL-Withdraw, LNURL-Pay, Lightning address, BTC address
-- [x] A built-in, customizable user@breez.fun Lightning address
-- [x] Receive payments even when the app is offline (requires notifications)
-- [x] No channel management 
-- [x] Self-custodial: keys are only held by users
-- [x] Free open-source software (ofc!)
-
-## Installation 
-
-[![Google Play](.github/assets/images/google-play.svg)](https://play.google.com/store/apps/details?id=com.breez.misty)   [![TestFlight](.github/assets/images/app-store.svg)](https://testflight.apple.com/join/nEegHvBX) 
-
-For de-googled devices running GrapheneOS or similar, please install an APK that fits your device architecture from our [latest release](https://github.com/breez/misty-breez/releases).
-
-## Coming Soon
-- [ ] Auto-complete Lightning addresses from history 
-
-## For Developers
-
-Please refer to [Setting up your Environment](.github/docs/DEVENV_SETUP.md) for detailed instructions on configuring your local development environment.
-
-### How do I contribute?
-
-For guidance on contributing to the project, please refer to the [Contribution Guidelines](.github/docs/CONTRIBUTING.md).
+Contact us on [Telegram](https://t.me/breezsdk) or email contact@breez.technology.
